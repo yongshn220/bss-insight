@@ -45,7 +45,16 @@ def fmt_change(change: Any) -> str:
 
 
 def momentum_label(row: dict[str, Any]) -> str:
-    mapping = {"new": "NEW", "rising": "RISING", "stable": "STABLE", "falling": "FALLING"}
+    mapping = {
+        "new": "NEW",
+        "new_shift": "NEW SHIFT",
+        "accelerating": "ACCELERATING",
+        "rising": "RISING",
+        "stable": "STABLE",
+        "cooling": "COOLING",
+        "falling": "FALLING",
+        "watchlist": "WATCHLIST",
+    }
     return mapping.get(row.get("momentum"), str(row.get("momentum") or "—").upper())
 
 
@@ -75,7 +84,7 @@ def shell(title: str, body: str, active: str = "weekly") -> str:
   {body}
   <footer class="footer wrap">
     <span>Generated {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
-    <span>Public-data MVP · item ranking, source links, BSS retail notes</span>
+    <span>Verified URL evidence counted · search links are watchlists only</span>
   </footer>
 </body>
 </html>"""
@@ -92,9 +101,10 @@ def score_bar(score: Any) -> str:
 def evidence_chips(row: dict[str, Any]) -> str:
     counts = row.get("source_counts", {})
     chips = [
-        ("News", counts.get("news_magazine", 0)),
-        ("Layers", counts.get("source_layers", 0)),
-        ("Refs", counts.get("manual_references", 0)),
+        ("Evidence", counts.get("verified_evidence", counts.get("news_magazine", 0))),
+        ("Recent", counts.get("recent_evidence", 0)),
+        ("Exact", counts.get("exact_evidence", 0)),
+        ("Domains", counts.get("unique_domains", 0)),
         ("BSS", f'{row.get("bss_fit")}/5'),
     ]
     if row.get("seasonal_now"):
@@ -118,6 +128,7 @@ def item_card(row: dict[str, Any], compact: bool = False) -> str:
         </div>
         <h3>{esc(row.get('item_name'))}</h3>
         <p>{esc(desc)}</p>
+        <p class="change-note">{esc(row.get('change_note'))}</p>
         <div class="chips">{evidence_chips(row)}</div>
       </div>
       <div class="score-box">
@@ -160,7 +171,7 @@ def render_home(data: dict[str, Any]) -> str:
         <div class="hero-copy">
           <p class="eyebrow">BSS-wide · Specific product ranking</p>
           <h1>Beauty Supply 제품별 트렌드 순위</h1>
-          <p class="lead">Jewelry만 보지 않고 wigs, braiding hair, hair care, lashes, nails, cosmetics, tools까지 BSS 시장의 구체적 제품 단위로 순위·점수·근거·소매점 액션을 봅니다.</p>
+          <p class="lead">검색 링크를 근거로 세지 않고, 실제 URL과 날짜가 잡힌 public evidence만 점수에 반영합니다. 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
         </div>
         <div class="hero-panel">
           <span>Latest run</span>
@@ -208,7 +219,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         <div class="hero-copy">
           <p class="eyebrow">{esc(TIMEFRAME_LABELS.get(timeframe, timeframe.title()))} · {esc(cfg.get('days'))} days</p>
           <h1>{esc(TIMEFRAME_LABELS.get(timeframe, timeframe.title()))} ranking</h1>
-          <p class="lead">{esc(cfg.get('description'))}. 아이템 기준으로 정렬하고, 카테고리별로 다시 나눠 보여줍니다.</p>
+          <p class="lead">{esc(cfg.get('description'))}. 실제 URL 근거, 최근성, 이전 run 대비 변화를 기준으로 정렬하고, 근거 없는 항목은 watchlist로 낮춰 표시합니다.</p>
         </div>
         <div class="hero-panel">
           <span>Ranked items</span>
@@ -232,19 +243,19 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
 
 def grouped_sources(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for src in row.get("news_evidence", []):
-        groups["News / Magazine"].append(src)
-    for src in row.get("manual_references", []):
+    for src in row.get("verified_evidence", row.get("news_evidence", [])):
+        groups["Verified evidence · actual URL/date"].append(src)
+    for src in row.get("watchlist_links", row.get("manual_references", [])):
         label = {
-            "sns": "SNS / TikTok",
-            "visual": "Pinterest / Visual",
-            "social": "X / Twitter",
-            "community": "Reddit",
-            "marketplace": "Amazon / Marketplace",
-            "search_interest": "Google Trends",
-            "bss_online_store": "BSS Online Stores",
-            "wholesale": "Wholesale / Supply",
-        }.get(src.get("source_type"), src.get("source_type", "Other"))
+            "sns": "Watchlist only · SNS / TikTok",
+            "visual": "Watchlist only · Pinterest / Visual",
+            "social": "Watchlist only · X / Twitter",
+            "community": "Watchlist only · Reddit",
+            "marketplace": "Watchlist only · Amazon / Marketplace",
+            "search_interest": "Watchlist only · Google Trends",
+            "bss_online_store": "Watchlist only · BSS Online Stores",
+            "wholesale": "Watchlist only · Wholesale / Supply",
+        }.get(src.get("source_type"), f"Watchlist only · {src.get('source_type', 'Other')}")
         groups[label].append(src)
     return groups
 
@@ -260,15 +271,21 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         if r:
             rank_cards.append(f'<div class="metric-card"><span>{TIMEFRAME_LABELS[tf]}</span><strong>#{esc(r.get("rank"))}</strong><small>Score {esc(r.get("score"))}</small></div>')
     evidence_items = "".join(f"<li>{esc(x)}</li>" for x in row.get("evidence_summary", []))
+    breakdown = row.get("score_breakdown", {})
+    breakdown_items = "".join(
+        f"<li><b>{esc(k.replace('_', ' ').title())}</b>: {esc(v)}</li>"
+        for k, v in breakdown.items()
+    )
     source_sections = []
     for label, sources in grouped_sources(row).items():
         source_cards = []
         for src in sources[:12]:
             title = src.get("title") or src.get("publisher") or src.get("source_kind") or src.get("source_type")
-            summary = src.get("summary") or src.get("snippet") or src.get("published") or "Reference source"
+            date = src.get("published_date") or src.get("seendate") or src.get("published") or ""
+            summary = src.get("summary") or src.get("snippet") or date or "Reference source"
             source_cards.append(f"""
             <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer">
-              <span>{esc(src.get('publisher') or src.get('source_kind') or src.get('source_type'))}</span>
+              <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date) if date else ''}</span>
               <strong>{esc(title)}</strong>
               <p>{esc(summary)}</p>
             </a>""")
@@ -295,9 +312,11 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         <article><span>Risk</span><p>{esc(row.get('risk'))}</p></article>
         <article><span>Owner message</span><p>{esc(row.get('owner_message_en'))}</p></article>
         <article><span>Evidence summary</span><ul>{evidence_items}</ul></article>
+        <article><span>Score breakdown</span><ul>{breakdown_items}</ul></article>
+        <article><span>Movement rule</span><p>{esc(row.get('change_note'))}</p></article>
       </section>
       <section class="wrap sources">
-        <div class="section-title"><div><span>References</span><h2>참조 자료</h2></div></div>
+        <div class="section-title"><div><span>Evidence vs watchlist</span><h2>실제 근거와 참고 링크 분리</h2></div></div>
         {''.join(source_sections)}
       </section>
     </main>"""

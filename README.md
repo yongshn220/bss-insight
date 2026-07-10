@@ -17,7 +17,9 @@ Beauty Supply Store(BSS) retail 사장님이 바로 이해할 수 있도록 만�
   - Tools & Accessories
   - Jewelry & Fashion Accessories
 - 각 item은 rank, score, momentum, 근거 요약, source layer, retail display tip, risk/caution, owner message를 가집니다.
-- 공개 접근 가능한 source부터 사용합니다. TikTok/X/Amazon/Google Trends/Reddit/BSS stores는 MVP 단계에서 reference/watchlist 링크로 붙이고, Google News/RSS는 실제 fetch합니다.
+- 공개 접근 가능한 source부터 사용합니다. Bing News RSS/Google News RSS에서 실제 URL과 발행일이 잡힌 source만 score에 반영합니다.
+- TikTok/X/Amazon/Google Trends/Reddit/BSS stores 검색 URL은 **watchlist only**로 분리합니다. 특정 post/listing/article URL이 잡히기 전에는 evidence로 세지 않습니다.
+- 근거가 없는 항목은 trend claim으로 표시하지 않고 `WATCHLIST`로 낮춰 표시합니다.
 
 ## 구조
 
@@ -39,7 +41,7 @@ vercel.json                     Vercel output config
 
 ```bash
 cd /opt/data/gns_research_hub
-npm run build
+npm run refresh
 python3 -m http.server 8765
 ```
 
@@ -55,7 +57,8 @@ http://127.0.0.1:8765/rankings/weekly.html
 Vercel Git import 또는 Vercel CLI에서 이 repo를 사용합니다.
 
 ```bash
-npm run build
+npm run refresh   # evidence 수집 + local/public build
+npm run build     # committed data로 정적 사이트만 build
 ```
 
 Vercel 설정:
@@ -67,7 +70,7 @@ Output Directory: public
 
 ## 데이터/점수 주의사항
 
-현재 score는 public-data MVP 기준의 방향성 점수입니다. 실제 판매 예측이 아니라, BSS retail owner가 볼 만한 item signal을 빠르게 정리하기 위한 ranking입니다.
+현재 score는 public-data MVP 기준의 방향성 점수입니다. 실제 판매 예측이 아니라, BSS retail owner가 볼 만한 item signal을 빠르게 정리하기 위한 ranking입니다. 단, 검색 링크 개수는 score에 반영하지 않고, 실제 URL/date evidence와 최근성, BSS 적합도, 시즌성만 반영합니다.
 
 향후 강화 우선순위:
 

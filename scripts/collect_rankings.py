@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """Build item-first BSS beauty product trend rankings.
 
-Public-data MVP: fetches Google News RSS where possible and attaches structured
-reference links for TikTok, Pinterest, X/Twitter, Reddit, Amazon, Google Trends,
-BSS online stores, and wholesale/vendor pages. Rankings cover the broader Beauty
-Supply Store market, not only jewelry. Ranked entries are specific product/item
-types rather than broad categories.
+Public-data MVP: collects verifiable evidence from live public sources. Search
+pages are never counted as evidence. Published Bing News/RSS URLs drive trend
+movement; live BSS/wholesale product URLs validate retail availability but do
+not by themselves create a weekly trend claim. TikTok/Pinterest/X/Reddit/
+Amazon/Google Trends search pages remain watchlists until a specific post,
+listing, thread, or numeric extract is captured.
 """
 from __future__ import annotations
 
 import datetime as dt
 import email.utils
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import html
 import json
 import re
@@ -50,6 +52,26 @@ GENERIC_RELEVANCE_TOKENS = {
     "gold", "silver", "black", "brown", "deep", "long", "short", "large", "small", "set", "sets",
     "pack", "kit", "piece", "pieces", "inch", "inches", "style", "styles", "product", "products",
 }
+
+CATEGORY_ANCHORS = {
+    "wigs-hair-pieces": {"wig", "wigs", "lace", "frontal", "glueless", "ponytail"},
+    "braiding-crochet-hair": {"braid", "braids", "braiding", "crochet", "loc", "locs", "twist", "twists"},
+    "hair-care-styling": {"edge", "gel", "lace", "mousse", "oil", "conditioner", "scalp", "wig"},
+    "lashes-brows": {"lash", "lashes", "cluster", "strip", "flare", "bond", "seal"},
+    "nails": {"nail", "nails", "press", "coffin", "square", "chrome", "cuticle", "rhinestone"},
+    "makeup-cosmetics": {"lip", "liner", "gloss", "powder", "eyeliner", "makeup", "cosmetic"},
+    "tools-accessories": {"bonnet", "brush", "comb", "wig", "durag", "cap", "band", "pintail"},
+    "jewelry-fashion-accessories": {"earring", "earrings", "hoop", "hoops", "necklace", "pendant", "anklet", "ring", "stud", "belly", "nose", "cuff", "cuffs", "jewelry"},
+}
+
+SHOPIFY_STORES = [
+    {"id": "ebonyline", "name": "Ebonyline", "base_url": "https://www.ebonyline.com", "source_type": "bss_online_store"},
+    {"id": "glamourtress", "name": "Glamourtress", "base_url": "https://www.glamourtress.com", "source_type": "bss_online_store"},
+    {"id": "hairtobeauty", "name": "HairToBeauty", "base_url": "https://www.hairtobeauty.com", "source_type": "bss_online_store"},
+    {"id": "wigtypes", "name": "WigTypes", "base_url": "https://www.wigtypes.com", "source_type": "bss_online_store"},
+    {"id": "beautyofnewyork", "name": "Beauty of New York", "base_url": "https://www.beautyofnewyork.com", "source_type": "bss_online_store"},
+    {"id": "wholesaleaccessorymarket", "name": "Wholesale Accessory Market", "base_url": "https://www.wholesaleaccessorymarket.com", "source_type": "wholesale"},
+]
 
 
 def item(
@@ -222,8 +244,7 @@ def google_news_rss(query: str, days: int, limit: int = 8) -> list[dict[str, Any
         title = html.unescape((node.findtext("title") or "").strip())
         link = (node.findtext("link") or "").strip()
         pub = (node.findtext("pubDate") or "").strip()
-        desc = re.sub("<.*?>", " ", html.unescape(node.findtext("description") or ""))
-        desc = re.sub(r"\s+", " ", desc).strip()
+        desc = strip_markup(node.findtext("description") or "")
         publisher = title.rsplit(" - ", 1)[-1] if " - " in title else ""
         lower_pub = publisher.lower()
         source_kind = "magazine" if any(m in lower_pub for m in MAGAZINE_PUBLISHERS) else "news"
@@ -236,44 +257,47 @@ def google_news_rss(query: str, days: int, limit: int = 8) -> list[dict[str, Any
         items.append({
             "source_type": "news_magazine",
             "source_kind": source_kind,
+            "source_layer": "published_news",
             "query": query,
             "title": title,
             "publisher": publisher,
             "url": link,
             "published": pub,
             "published_date": pub_date,
+            "date_kind": "published",
             "snippet": desc[:260],
         })
     return items
 
 
-def manual_references(row: dict[str, Any]) -> list[dict[str, Any]]:
+def watchlist_links(row: dict[str, Any]) -> list[dict[str, Any]]:
+    """Reference/search links for follow-up only; never counted as evidence."""
     query = row["name"]
     encoded = urllib.parse.quote_plus(query)
     tag = re.sub(r"[^a-z0-9]", "", row["aliases"][0].lower())
     refs = [
-        ("sns", "tiktok", f"TikTok search: {query}", f"https://www.tiktok.com/search?q={encoded}", "Short-video demand/look signal"),
-        ("sns", "tiktok_tag", f"TikTok hashtag: #{tag}", f"https://www.tiktok.com/tag/{tag}", "Hashtag watchlist for visual momentum"),
-        ("visual", "pinterest", f"Pinterest search: {query}", f"https://www.pinterest.com/search/pins/?q={encoded}", "Visual styling and product-language signal"),
-        ("social", "x_twitter", f"X/Twitter search: {query}", f"https://twitter.com/search?q={encoded}&src=typed_query&f=live", "Real-time public conversation watchlist"),
-        ("community", "reddit", f"Reddit search: {query}", f"https://www.reddit.com/search/?q={encoded}", "Community discussion and problem language"),
-        ("marketplace", "amazon", f"Amazon search: {query}", f"https://www.amazon.com/s?k={encoded}", "Marketplace assortment/review signal"),
-        ("marketplace", "walmart", f"Walmart search: {query}", f"https://www.walmart.com/search?q={encoded}", "Mass-market pricing and assortment reference"),
-        ("search_interest", "google_trends", f"Google Trends: {query}", f"https://trends.google.com/trends/explore?geo=US&q={encoded}", "Search interest reference"),
-        ("bss_online_store", "samsbeauty", f"SamsBeauty search: {query}", f"https://www.samsbeauty.com/service/search?q={encoded}", "BSS online store category/assortment check"),
-        ("bss_online_store", "ebonyline", f"Ebonyline search: {query}", f"https://www.ebonyline.com/search?q={encoded}", "BSS online store category/assortment check"),
-        ("bss_online_store", "beauty_of_new_york", f"Beauty of New York search: {query}", f"https://www.beautyofnewyork.com/search?q={encoded}", "BSS online store category/assortment check"),
-        ("bss_online_store", "wigtypes", f"WigTypes search: {query}", f"https://www.wigtypes.com/search?q={encoded}", "Wigs/hair BSS online assortment check"),
-        ("wholesale", "faire", f"Faire wholesale search: {query}", f"https://www.faire.com/search?q={encoded}", "Wholesale/vendor assortment check"),
-        ("wholesale", "fashiongo", f"FashionGo search: {query}", f"https://www.fashiongo.net/search?q={encoded}", "Wholesale/vendor assortment check"),
+        ("sns", "tiktok", f"TikTok search: {query}", f"https://www.tiktok.com/search?q={encoded}", "Watchlist only — not counted until a specific post/video URL is captured."),
+        ("sns", "tiktok_tag", f"TikTok hashtag: #{tag}", f"https://www.tiktok.com/tag/{tag}", "Watchlist only — hashtag page is not evidence by itself."),
+        ("visual", "pinterest", f"Pinterest search: {query}", f"https://www.pinterest.com/search/pins/?q={encoded}", "Watchlist only — pin-level URLs should be captured in a deeper run."),
+        ("social", "x_twitter", f"X/Twitter search: {query}", f"https://twitter.com/search?q={encoded}&src=typed_query&f=live", "Watchlist only — tweet/post URLs are required for evidence."),
+        ("community", "reddit", f"Reddit search: {query}", f"https://www.reddit.com/search/?q={encoded}", "Watchlist only — thread URLs are required for evidence."),
+        ("marketplace", "amazon", f"Amazon search: {query}", f"https://www.amazon.com/s?k={encoded}", "Watchlist only — product/listing URLs are required for evidence."),
+        ("marketplace", "walmart", f"Walmart search: {query}", f"https://www.walmart.com/search?q={encoded}", "Watchlist only — listing URLs are required for evidence."),
+        ("search_interest", "google_trends", f"Google Trends: {query}", f"https://trends.google.com/trends/explore?geo=US&q={encoded}", "Watchlist only — numeric trend extracts are required for scoring."),
+        ("bss_online_store", "samsbeauty", f"SamsBeauty search: {query}", f"https://www.samsbeauty.com/service/search?q={encoded}", "Watchlist only — product/category URLs should be captured in a deeper run."),
+        ("bss_online_store", "ebonyline", f"Ebonyline search: {query}", f"https://www.ebonyline.com/search?q={encoded}", "Watchlist only — product/category URLs should be captured in a deeper run."),
+        ("bss_online_store", "beauty_of_new_york", f"Beauty of New York search: {query}", f"https://www.beautyofnewyork.com/search?q={encoded}", "Watchlist only — product/category URLs should be captured in a deeper run."),
+        ("bss_online_store", "wigtypes", f"WigTypes search: {query}", f"https://www.wigtypes.com/search?q={encoded}", "Watchlist only — product/category URLs should be captured in a deeper run."),
+        ("wholesale", "faire", f"Faire wholesale search: {query}", f"https://www.faire.com/search?q={encoded}", "Watchlist only — vendor listing URLs are required for evidence."),
+        ("wholesale", "fashiongo", f"FashionGo search: {query}", f"https://www.fashiongo.net/search?q={encoded}", "Watchlist only — vendor listing URLs are required for evidence."),
     ]
     if row["category_id"] == "jewelry-fashion-accessories":
         refs.extend([
-            ("wholesale", "nihao", f"Nihao Jewelry search: {query}", f"https://www.nihaojewelry.com/search?q={encoded}", "Jewelry wholesale assortment check"),
-            ("wholesale", "judson", f"Judson search: {query}", f"https://www.judson.biz/search?q={encoded}", "Jewelry wholesale assortment check"),
+            ("wholesale", "nihao", f"Nihao Jewelry search: {query}", f"https://www.nihaojewelry.com/search?q={encoded}", "Watchlist only — jewelry listing URLs are required for evidence."),
+            ("wholesale", "judson", f"Judson search: {query}", f"https://www.judson.biz/search?q={encoded}", "Watchlist only — jewelry listing URLs are required for evidence."),
         ])
     return [
-        {"source_type": source_type, "source_kind": kind, "title": title, "url": url, "summary": summary}
+        {"source_type": source_type, "source_kind": kind, "title": title, "url": url, "summary": summary, "evidence_status": "watchlist_only"}
         for source_type, kind, title, url, summary in refs
     ]
 
@@ -287,23 +311,316 @@ def important_tokens(row: dict[str, Any]) -> list[str]:
     return sorted(tokens)
 
 
-def relevant_news(row: dict[str, Any], days: int) -> list[dict[str, Any]]:
-    primary = row["aliases"][0]
-    query = f'"{primary}" OR "{row["name"]}" {row.get("search_context", "beauty supply")}'
-    results = google_news_rss(query, days=days, limit=8)
+def parse_signal_date(value: str | None) -> dt.date | None:
+    if not value:
+        return None
+    value = value.strip()
+    for fmt in ("%Y%m%dT%H%M%SZ", "%Y%m%dT%H%M%S", "%Y-%m-%d", "%a, %d %b %Y %H:%M:%S %Z"):
+        try:
+            parsed = dt.datetime.strptime(value, fmt)
+            return parsed.date()
+        except ValueError:
+            continue
+    try:
+        return email.utils.parsedate_to_datetime(value).date()
+    except Exception:
+        return None
+
+
+def is_within_days(source: dict[str, Any], days: int) -> bool:
+    signal_date = parse_signal_date(source.get("published_date") or source.get("seendate") or source.get("published"))
+    if signal_date is None:
+        return days >= 365
+    return (CURRENT_DATE - signal_date).days <= days
+
+
+def strip_markup(value: str) -> str:
+    text = re.sub("<.*?>", " ", html.unescape(value or ""))
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def evidence_relevance(row: dict[str, Any], source: dict[str, Any]) -> str | None:
+    hay = " ".join(str(source.get(k, "")).lower() for k in ["title", "snippet", "body", "domain", "publisher", "vendor"])
     phrases = [a.lower() for a in [row["name"], *row.get("aliases", [])] if len(a) >= 4]
+    if any(phrase in hay for phrase in phrases):
+        return "exact_phrase"
     tokens = important_tokens(row)
-    kept = []
+    if not tokens:
+        return None
+    token_match_count = sum(1 for tok in tokens if tok in hay or (tok.endswith("s") and tok[:-1] in hay))
+    anchor_match = any(anchor in hay for anchor in CATEGORY_ANCHORS.get(row.get("category_id"), set()))
+    # Many BSS item names contain generic category words that were stripped from
+    # important_tokens. One distinctive token plus a category anchor is enough
+    # for live product/listing evidence; published trend claims still keep the
+    # relevance label visible in score_breakdown.
+    if token_match_count >= 2 or (token_match_count >= 1 and anchor_match):
+        return "item_type"
+    return None
+
+
+def evidence_match(row: dict[str, Any], source: dict[str, Any]) -> bool:
+    relevance = evidence_relevance(row, source)
+    if relevance:
+        source["evidence_relevance"] = relevance
+        return True
+    return False
+
+
+def canonical_news_url(url: str) -> str:
+    parsed = urllib.parse.urlparse(url)
+    if "bing.com" in parsed.netloc and "apiclick" in parsed.path:
+        target = urllib.parse.parse_qs(parsed.query).get("url", [""])[0]
+        if target:
+            return target
+    return url
+
+
+def domain_from_url(url: str) -> str:
+    parsed = urllib.parse.urlparse(url)
+    return parsed.netloc.removeprefix("www.")
+
+
+def rss_child_text(node: ET.Element, suffix: str) -> str:
+    for child in list(node):
+        if child.tag.lower().endswith(suffix.lower()) and child.text:
+            return child.text.strip()
+    return ""
+
+
+def bing_news_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> list[dict[str, Any]]:
+    query = row["aliases"][0]
+    url = "https://www.bing.com/news/search?" + urllib.parse.urlencode({"q": query, "format": "rss"})
+    status, text, error = fetch(url, timeout=10)
+    if error or not text:
+        return [{"source_type": "news_magazine", "source_kind": "bing_news", "query": query, "url": url, "error": error or f"HTTP {status}"}]
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError as exc:
+        return [{"source_type": "news_magazine", "source_kind": "bing_news", "query": query, "url": url, "error": f"XML parse error: {exc}"}]
+    articles: list[dict[str, Any]] = []
+    for node in root.findall(".//item")[:limit]:
+        title = html.unescape((node.findtext("title") or "").strip())
+        link = canonical_news_url((node.findtext("link") or "").strip())
+        pub = (node.findtext("pubDate") or "").strip()
+        desc = strip_markup(node.findtext("description") or "")
+        pub_date = parse_signal_date(pub)
+        source = rss_child_text(node, "Source") or domain_from_url(link) or "Bing News"
+        signal = {
+            "source_type": "news_magazine",
+            "source_kind": "bing_news",
+            "source_layer": "published_news",
+            "query": query,
+            "title": title,
+            "publisher": source,
+            "domain": domain_from_url(link) or source,
+            "url": link,
+            "published": pub,
+            "published_date": pub_date.isoformat() if pub_date else "",
+            "date_kind": "published",
+            "snippet": desc[:320],
+            "evidence_status": "verified_url",
+        }
+        if is_within_days(signal, days) and evidence_match(row, signal):
+            articles.append(signal)
+    return articles
+
+
+def gdelt_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> list[dict[str, Any]]:
+    query_terms = " OR ".join(f'"{alias}"' for alias in [row["aliases"][0], row["name"]])
+    url = "https://api.gdeltproject.org/api/v2/doc/doc?" + urllib.parse.urlencode({
+        "query": query_terms,
+        "mode": "ArtList",
+        "format": "json",
+        "maxrecords": str(limit),
+        "sort": "HybridRel",
+        "timespan": f"{days}d",
+    })
+    status, text, error = fetch(url, timeout=8)
+    if error or not text:
+        return [{"source_type": "article", "source_kind": "gdelt", "query": query_terms, "url": url, "error": error or f"HTTP {status}"}]
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError as exc:
+        return [{"source_type": "article", "source_kind": "gdelt", "query": query_terms, "url": url, "error": f"JSON parse error: {exc}"}]
+    articles = []
+    seen_urls: set[str] = set()
+    for article in payload.get("articles", [])[:limit]:
+        article_url = article.get("url") or ""
+        if not article_url or article_url in seen_urls:
+            continue
+        seen_urls.add(article_url)
+        signal = {
+            "source_type": "article",
+            "source_kind": "gdelt",
+            "source_layer": "published_news",
+            "query": query_terms,
+            "title": html.unescape(article.get("title") or ""),
+            "domain": article.get("domain") or "",
+            "publisher": article.get("domain") or "",
+            "url": article_url,
+            "seendate": article.get("seendate") or "",
+            "published_date": (parse_signal_date(article.get("seendate")) or CURRENT_DATE).isoformat(),
+            "date_kind": "published",
+            "snippet": html.unescape(article.get("socialimage") or article.get("language") or ""),
+            "evidence_status": "verified_url",
+        }
+        if evidence_match(row, signal):
+            articles.append(signal)
+    return articles
+
+
+def google_news_articles(row: dict[str, Any], days: int = 365, limit: int = 5) -> list[dict[str, Any]]:
+    # Secondary source; Google News can rate-limit, so errors are recorded but not fatal.
+    primary = row["aliases"][0]
+    query = f'"{primary}" {row.get("search_context", "beauty supply")}'
+    results = google_news_rss(query, days=days, limit=limit)
+    articles = []
     for result in results:
         if result.get("error"):
-            kept.append(result)
             continue
-        hay = " ".join(str(result.get(k, "")).lower() for k in ["title", "snippet", "publisher"])
-        phrase_match = any(phrase in hay for phrase in phrases)
-        token_match_count = sum(1 for tok in tokens if tok in hay or (tok.endswith("s") and tok[:-1] in hay))
-        if phrase_match or token_match_count >= min(2, max(1, len(tokens))):
-            kept.append(result)
-    return kept[:6]
+        result = dict(result)
+        result["evidence_status"] = "verified_url"
+        if evidence_match(row, result):
+            articles.append(result)
+    return articles
+
+
+def source_sort_date(source: dict[str, Any]) -> str:
+    return str(source.get("published_date") or source.get("observed_date") or source.get("seendate") or "")
+
+
+def is_published_evidence(source: dict[str, Any]) -> bool:
+    return source.get("date_kind") == "published" or source.get("source_type") in {"article", "news_magazine"}
+
+
+def is_retail_product_evidence(source: dict[str, Any]) -> bool:
+    return source.get("source_type") in {"bss_online_store", "wholesale", "marketplace_product"}
+
+
+def shopify_product_search(row: dict[str, Any], store: dict[str, str], limit: int = 3) -> list[dict[str, Any]]:
+    query = row["aliases"][0]
+    url = store["base_url"].rstrip("/") + "/search/suggest.json?" + urllib.parse.urlencode({
+        "q": query,
+        "resources[type]": "product",
+        "resources[limit]": str(limit),
+    })
+    status, text, error = fetch(url, timeout=8)
+    if error or not text:
+        return [{"source_type": store["source_type"], "source_kind": store["id"], "query": query, "url": url, "error": error or f"HTTP {status}"}]
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError as exc:
+        return [{"source_type": store["source_type"], "source_kind": store["id"], "query": query, "url": url, "error": f"JSON parse error: {exc}"}]
+    evidence: list[dict[str, Any]] = []
+    for product in payload.get("resources", {}).get("results", {}).get("products", [])[:limit]:
+        product_url = urllib.parse.urljoin(store["base_url"], str(product.get("url") or ""))
+        title = html.unescape(str(product.get("title") or "").strip())
+        body = strip_markup(str(product.get("body") or ""))
+        signal = {
+            "source_type": store["source_type"],
+            "source_kind": store["id"],
+            "source_layer": "retail_product_url" if store["source_type"] == "bss_online_store" else "wholesale_product_url",
+            "query": query,
+            "title": title,
+            "publisher": store["name"],
+            "domain": domain_from_url(store["base_url"]),
+            "vendor": product.get("vendor") or "",
+            "url": product_url,
+            "observed_date": CURRENT_DATE.isoformat(),
+            "date_kind": "observed_live_product",
+            "snippet": body[:320],
+            "price": str(product.get("price") or product.get("price_min") or ""),
+            "available": bool(product.get("available")),
+            "evidence_status": "verified_url",
+        }
+        if product_url and title and evidence_match(row, signal):
+            evidence.append(signal)
+    return evidence
+
+
+def retail_product_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
+    evidence: list[dict[str, Any]] = []
+    for store in SHOPIFY_STORES:
+        if store["source_type"] == "wholesale" and row.get("category_id") not in {"jewelry-fashion-accessories", "tools-accessories", "nails"}:
+            continue
+        for src in shopify_product_search(row, store, limit=3):
+            if not src.get("error"):
+                evidence.append(src)
+    return evidence
+
+
+def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
+    sources = []
+    errors = []
+    # Bing News RSS is the primary public source because it returns concrete article URLs and dates reliably.
+    # GDELT and Google News are secondary and can rate-limit; they are used only after Bing.
+    for fn in (bing_news_articles,):
+        results = fn(row, days=365)
+        for src in results:
+            if src.get("error"):
+                errors.append(src)
+            else:
+                sources.append(src)
+    if len(sources) < 2:
+        for fn in (google_news_articles,):
+            results = fn(row, days=365)
+            for src in results:
+                if src.get("error"):
+                    errors.append(src)
+                else:
+                    sources.append(src)
+    sources.extend(retail_product_evidence(row))
+    deduped = []
+    seen = set()
+    for src in sources:
+        url = src.get("url")
+        if url and url not in seen:
+            seen.add(url)
+            deduped.append(src)
+    deduped.sort(key=source_sort_date, reverse=True)
+    # Keep fetch errors only in collection notes, not as evidence.
+    return deduped[:10]
+
+
+def collect_all_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    evidence_by_item: dict[str, list[dict[str, Any]]] = {}
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        future_map = {executor.submit(collect_verified_evidence, row): row for row in rows}
+        for future in as_completed(future_map):
+            row = future_map[future]
+            try:
+                evidence_by_item[row["id"]] = future.result()
+            except Exception as exc:
+                evidence_by_item[row["id"]] = [{"source_type": "collection_error", "source_kind": "error", "error": f"{type(exc).__name__}: {exc}"}]
+    return evidence_by_item
+
+
+def retail_signal_sentence(row: dict[str, Any], trend_evidence: list[dict[str, Any]], retail_evidence: list[dict[str, Any]], timeframe: str) -> str:
+    category_notes = {
+        "wigs-hair-pieces": "wig 고객의 install 편의성, lace 자연스러움, 가격대 선택 신호를 봅니다",
+        "braiding-crochet-hair": "protective style 예약/시즌 수요와 반복 구매 가능성을 봅니다",
+        "hair-care-styling": "wig/braid 관리에 붙는 소모성 add-on인지 봅니다",
+        "lashes-brows": "DIY glam·event look과 front-end impulse 구매 가능성을 봅니다",
+        "nails": "salon 대체/DIY nail-art 수요와 작은 add-on 가능성을 봅니다",
+        "makeup-cosmetics": "lip/eye/complexion 반복 구매와 shade relevance를 봅니다",
+        "tools-accessories": "핵심 hair 제품에 붙는 attach-rate와 소모품성을 봅니다",
+        "jewelry-fashion-accessories": "BSS checkout/front wall에서 look-completion add-on으로 팔 수 있는지 봅니다",
+    }
+    category_note = category_notes.get(row["category_id"], "BSS retail fit을 봅니다")
+    if trend_evidence:
+        lead = trend_evidence[0]
+        title = lead.get("title") or lead.get("domain") or "verified source"
+        date = lead.get("published_date") or lead.get("seendate") or "date n/a"
+        publisher = lead.get("publisher") or lead.get("domain") or "source"
+        return f"{date} 발행된 {publisher}의 '{title}' 등 {len(trend_evidence)}개 발행 URL이 item 신호를 뒷받침합니다. {category_note}."
+    if retail_evidence:
+        lead = retail_evidence[0]
+        store = lead.get("publisher") or lead.get("domain") or "BSS/wholesale source"
+        title = lead.get("title") or row["name"]
+        return f"발행일 있는 trend URL은 아직 없지만 {store}의 실제 상품 URL('{title}') 등 {len(retail_evidence)}개 live listing을 확인했습니다. 이는 trend claim이 아니라 매장 검토용 supply/availability 신호입니다. {category_note}."
+    if timeframe == "weekly":
+        return f"최근 14일 내 item-specific 발행 URL 또는 실제 상품 URL이 없어 이번 주 트렌드 주장으로 올리지 않고 watchlist로만 표시합니다. {category_note}."
+    return f"이 기간에 item-specific 실제 URL 근거가 부족합니다. 순위는 BSS 적합도와 시즌성 기반의 watchlist 성격이며, 트렌드 주장으로 해석하면 안 됩니다."
 
 
 def previous_snapshot() -> dict[str, Any] | None:
@@ -314,7 +631,12 @@ def previous_snapshot() -> dict[str, Any] | None:
     except json.JSONDecodeError:
         return None
     runs = history.get("runs", [])
-    return runs[0] if runs else None
+    # Ignore same-day rebuilds while developing/deploying. Movement should compare
+    # against the previous research run date, not an earlier build from today.
+    for run in runs:
+        if run.get("date") and run.get("date") < CURRENT_DATE.isoformat():
+            return run
+    return None
 
 
 def previous_lookup(prev: dict[str, Any] | None, timeframe: str) -> dict[str, dict[str, Any]]:
@@ -324,56 +646,91 @@ def previous_lookup(prev: dict[str, Any] | None, timeframe: str) -> dict[str, di
     return {row.get("item_id"): row for row in rows}
 
 
-def score_item(row: dict[str, Any], timeframe: str, news: list[dict[str, Any]], refs: list[dict[str, Any]], prev_row: dict[str, Any] | None) -> dict[str, Any]:
-    usable_news = [n for n in news if not n.get("error")]
-    magazine_count = sum(1 for n in usable_news if n.get("source_kind") == "magazine")
-    news_count = len(usable_news)
-    source_types = {r["source_type"] for r in refs} | ({"news_magazine"} if usable_news else set())
-    diversity = len(source_types)
+def classify_momentum(score: float, trend_count: int, recent_trend_count: int, retail_count: int, prev_row: dict[str, Any] | None) -> tuple[str, float | None, str]:
+    previous_score = (prev_row or {}).get("score")
+    previous_counts = (prev_row or {}).get("source_counts") or {}
+    previous_trend = previous_counts.get("trend_evidence", previous_counts.get("news_magazine"))
+    if previous_score is None:
+        if recent_trend_count:
+            return "new_shift", None, "새 run에서 최근 발행 URL 근거가 잡힌 item"
+        if trend_count:
+            return "new", None, "새 run에서 발행일 있는 실제 URL 근거가 있는 item"
+        if retail_count:
+            return "watchlist", None, "실제 상품 URL은 확인했지만 발행일 있는 trend 근거가 없어 watchlist"
+        return "watchlist", None, "실제 URL 근거가 아직 없어 watchlist로만 표시"
+    score_change = round(score - float(previous_score), 1)
+    if not trend_count:
+        return "watchlist", score_change, "발행일 있는 trend 근거가 없어 변화 주장 금지"
+    if recent_trend_count and (previous_trend in (None, 0) or score_change >= 4):
+        return "new_shift", score_change, "최근 발행 URL 근거가 추가되어 주간 변화 후보"
+    if score_change >= 5:
+        return "accelerating", score_change, "발행 근거와 점수 상승폭이 함께 커진 가속 후보"
+    if score_change <= -5:
+        return "cooling", score_change, "발행 근거/점수 하락폭이 커서 cooling 후보"
+    return "stable", score_change, "발행 근거는 있으나 이전 run 대비 큰 변화는 없음"
+
+
+def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str, Any]], watchlist: list[dict[str, Any]], prev_row: dict[str, Any] | None) -> dict[str, Any]:
+    published_all = [src for src in all_evidence if not src.get("error") and is_published_evidence(src)]
+    trend_evidence = [src for src in published_all if is_within_days(src, TIMEFRAMES[timeframe]["days"])]
+    recent_trend = [src for src in trend_evidence if is_within_days(src, 14)]
+    retail_evidence = [src for src in all_evidence if not src.get("error") and is_retail_product_evidence(src)]
+    verified = trend_evidence + retail_evidence
+    article_count = len(trend_evidence)
+    source_types = {src.get("source_type") for src in verified if src.get("source_type")}
+    trend_domains = {src.get("domain") or src.get("publisher") for src in trend_evidence if src.get("domain") or src.get("publisher")}
+    retail_domains = {src.get("domain") or src.get("publisher") for src in retail_evidence if src.get("domain") or src.get("publisher")}
     seasonal = CURRENT_MONTH in set(row.get("season_months", []))
     bss_fit = int(row.get("bss_fit", 3))
 
-    raw = 0
-    raw += bss_fit * 9
-    raw += min(24, news_count * 6)
-    raw += min(8, magazine_count * 3)
-    raw += min(10, diversity)
-    raw += 10 if seasonal else 0
-    if timeframe == "weekly" and seasonal:
-        raw += 3
-    if row["category_id"] in {"wigs-hair-pieces", "braiding-crochet-hair", "hair-care-styling", "tools-accessories"}:
-        raw += 4
+    exact_count = sum(1 for src in trend_evidence if src.get("evidence_relevance") == "exact_phrase")
+    item_type_count = sum(1 for src in trend_evidence if src.get("evidence_relevance") == "item_type")
+    recent_exact_count = sum(1 for src in recent_trend if src.get("evidence_relevance") == "exact_phrase")
+    retail_exact_count = sum(1 for src in retail_evidence if src.get("evidence_relevance") == "exact_phrase")
+    trend_score = min(42, exact_count * 13 + item_type_count * 8 + len(trend_domains) * 3)
+    recency_score = min(20, recent_exact_count * 11 + (len(recent_trend) - recent_exact_count) * 7)
+    retail_score = min(16, retail_exact_count * 4 + (len(retail_evidence) - retail_exact_count) * 2 + len(retail_domains) * 2)
+    if timeframe == "weekly":
+        retail_score = min(retail_score, 8)
+    elif timeframe == "monthly":
+        retail_score = min(retail_score, 10)
+    bss_score = bss_fit * 5
+    season_score = 7 if seasonal else 0
+    specificity_score = 6
+    raw = trend_score + recency_score + retail_score + bss_score + season_score + specificity_score
+    # Published/date-bearing evidence is required for trend-level scores. Store
+    # product URLs keep useful items visible but cannot make a weekly trend alone.
+    if not trend_evidence:
+        raw = min(raw, 46 if retail_evidence else 34)
     score = max(1, min(100, raw))
 
-    previous_score = (prev_row or {}).get("score")
+    momentum, score_change, change_note = classify_momentum(score, len(trend_evidence), len(recent_trend), len(retail_evidence), prev_row)
     previous_rank = (prev_row or {}).get("rank")
-    if previous_score is None:
-        momentum = "new"
-        score_change = None
-    else:
-        score_change = round(score - float(previous_score), 1)
-        if score_change >= 5:
-            momentum = "rising"
-        elif score_change <= -5:
-            momentum = "falling"
-        else:
-            momentum = "stable"
 
     evidence_summary = []
-    if usable_news:
-        evidence_summary.append(f"뉴스/매거진 {news_count}개 item-specific 신호")
-    if magazine_count:
-        evidence_summary.append(f"패션/뷰티/업계 매거진 {magazine_count}개 포함")
-    evidence_summary.append(f"참조 source layer {diversity}종")
-    if seasonal:
-        evidence_summary.append("현재 시즌 적합도 높음")
+    if trend_evidence:
+        evidence_summary.append(f"발행일 있는 trend URL {len(trend_evidence)}개")
+        if recent_trend:
+            evidence_summary.append(f"최근 14일 발행 근거 {len(recent_trend)}개")
+        if exact_count:
+            evidence_summary.append(f"정확 phrase match {exact_count}개")
+        if item_type_count:
+            evidence_summary.append(f"item-type/adjacent match {item_type_count}개")
+        if trend_domains:
+            evidence_summary.append(f"서로 다른 publisher/domain {len(trend_domains)}개")
+        top_titles = [src.get("title") for src in trend_evidence[:2] if src.get("title")]
+        if top_titles:
+            evidence_summary.append("대표 trend 근거: " + " / ".join(top_titles))
+    else:
+        evidence_summary.append("발행일 있는 trend URL 없음 — 주간 변화 claim 금지")
+    if retail_evidence:
+        stores = sorted({src.get("publisher") or src.get("domain") for src in retail_evidence if src.get("publisher") or src.get("domain")})
+        evidence_summary.append(f"BSS/wholesale 실제 상품 URL {len(retail_evidence)}개" + (f" ({', '.join(stores[:3])})" if stores else ""))
     evidence_summary.append(f"BSS 적합도 {bss_fit}/5")
+    if seasonal:
+        evidence_summary.append("현재 시즌 적합")
 
-    reason = (
-        f"{row['name']}은 {row['category_name']} 카테고리의 구체적 제품 단위 item입니다. "
-        + "; ".join(evidence_summary)
-        + ". broad category가 아니라 실제 매장에서 SKU/상품군으로 테스트할 수 있는 단위로 랭킹했습니다."
-    )
+    reason = retail_signal_sentence(row, trend_evidence, retail_evidence, timeframe)
 
     return {
         "item_id": row["id"],
@@ -383,6 +740,7 @@ def score_item(row: dict[str, Any], timeframe: str, news: list[dict[str, Any]], 
         "score": round(score, 1),
         "momentum": momentum,
         "score_change": score_change,
+        "change_note": change_note,
         "previous_rank": previous_rank,
         "bss_fit": bss_fit,
         "seasonal_now": seasonal,
@@ -391,13 +749,38 @@ def score_item(row: dict[str, Any], timeframe: str, news: list[dict[str, Any]], 
         "display_tip": row["display_tip"],
         "risk": row["risk"],
         "owner_message_en": row["owner_message_en"],
-        "news_evidence": usable_news,
-        "manual_references": refs,
+        "verified_evidence": verified,
+        "trend_evidence": trend_evidence,
+        "retail_product_evidence": retail_evidence,
+        "news_evidence": trend_evidence,
+        "watchlist_links": watchlist,
+        "manual_references": watchlist,
+        "score_breakdown": {
+            "trend_evidence": trend_score,
+            "recency": recency_score,
+            "retail_product_urls": retail_score,
+            "bss_fit": bss_score,
+            "seasonality": season_score,
+            "specificity": specificity_score,
+            "cap_applied_without_trend_evidence": not bool(trend_evidence),
+        },
         "source_counts": {
-            "news_magazine": news_count,
-            "magazine": magazine_count,
-            "manual_references": len(refs),
-            "source_layers": diversity,
+            "verified_evidence": len(verified),
+            "trend_evidence": len(trend_evidence),
+            "recent_trend_evidence": len(recent_trend),
+            "recent_evidence": len(recent_trend),
+            "retail_product_evidence": len(retail_evidence),
+            "article_evidence": article_count,
+            "unique_domains": len(trend_domains | retail_domains),
+            "unique_trend_domains": len(trend_domains),
+            "unique_retail_domains": len(retail_domains),
+            "exact_evidence": exact_count,
+            "item_type_evidence": item_type_count,
+            "retail_exact_evidence": retail_exact_count,
+            "watchlist_links": len(watchlist),
+            "source_layers": len(source_types),
+            "manual_references": len(watchlist),
+            "news_magazine": article_count,
         },
     }
 
@@ -407,17 +790,23 @@ def build_rankings() -> dict[str, Any]:
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
     rows = flatten_items()
     prev = previous_snapshot()
+    evidence_by_item = collect_all_evidence(rows)
     output: dict[str, Any] = {
         "generated_at": dt.datetime.now(dt.UTC).isoformat().replace("+00:00", "Z"),
         "date": CURRENT_DATE.isoformat(),
         "title": "BSS Beauty Product Trend Rankings",
         "methodology": {
-            "summary": "Item-only rankings across the broader BSS beauty market: wigs, braiding hair, hair care, lashes, nails, cosmetics, tools/accessories, and jewelry.",
-            "score_components": ["BSS fit", "item-specific news/magazine evidence", "source diversity", "seasonality", "historical momentum"],
+            "summary": "Item-only rankings across the broader BSS beauty market. Search/watchlist pages are separated from evidence; ranking score only counts captured article/source URLs with dates.",
+            "score_components": ["verified URL evidence", "recent evidence", "BSS fit", "seasonality", "item specificity", "historical movement"],
+            "quality_rules": [
+                "출처 없는 주장은 trend claim으로 표시하지 않는다.",
+                "TikTok/Pinterest/X/Reddit/Amazon/Google Trends/BSS search pages are watchlist links only unless a specific post/listing/article URL is captured.",
+                "Weekly movement is NEW SHIFT / ACCELERATING / STABLE / COOLING / WATCHLIST based on evidence recency and previous run comparison.",
+            ],
             "limitations": [
-                "TikTok/X/Amazon/Google Trends/Reddit/BSS stores are attached as public reference links in this MVP; deeper APIs/login can be added later.",
-                "Rankings are directional retail intelligence, not guaranteed sales forecasts.",
-                "Historical movement becomes more meaningful after several scheduled runs with the expanded product universe.",
+                "Bing News RSS is used for concrete article URLs/dates; TikTok, Amazon, Reddit, Google Trends, and BSS-store layers still require deeper authenticated/API collection for post/listing-level evidence.",
+                "Items with no verified URL evidence are capped and labeled WATCHLIST, not treated as market trends.",
+                "Historical movement becomes stronger after several scheduled evidence-based runs.",
             ],
         },
         "categories": [{"id": c["id"], "name": c["name"], "description": c["description"]} for c in CATEGORIES],
@@ -429,10 +818,18 @@ def build_rankings() -> dict[str, Any]:
         prev_by_item = previous_lookup(prev, timeframe)
         ranked = []
         for row in rows:
-            news = relevant_news(row, days=cfg["days"])
-            refs = manual_references(row)
-            ranked.append(score_item(row, timeframe, news, refs, prev_by_item.get(row["id"])))
-        ranked.sort(key=lambda r: (r["score"], r["source_counts"]["news_magazine"], r["bss_fit"], r["item_name"]), reverse=True)
+            watchlist = watchlist_links(row)
+            ranked.append(score_item(row, timeframe, evidence_by_item.get(row["id"], []), watchlist, prev_by_item.get(row["id"])))
+        ranked.sort(
+            key=lambda r: (
+                r["source_counts"]["recent_evidence"],
+                r["source_counts"]["verified_evidence"],
+                r["score"],
+                r["bss_fit"],
+                r["item_name"],
+            ),
+            reverse=True,
+        )
         for idx, ranked_row in enumerate(ranked, start=1):
             ranked_row["rank"] = idx
             ranked_row["rank_change"] = None if ranked_row.get("previous_rank") is None else int(ranked_row["previous_rank"]) - idx
@@ -452,7 +849,15 @@ def build_rankings() -> dict[str, Any]:
         "date": output["date"],
         "rankings": {
             tf: [
-                {"item_id": r["item_id"], "item_name": r["item_name"], "rank": r["rank"], "score": r["score"], "category_id": r["category_id"]}
+                {
+                    "item_id": r["item_id"],
+                    "item_name": r["item_name"],
+                    "rank": r["rank"],
+                    "score": r["score"],
+                    "category_id": r["category_id"],
+                    "momentum": r.get("momentum"),
+                    "source_counts": r.get("source_counts", {}),
+                }
                 for r in ranked_rows
             ]
             for tf, ranked_rows in output["rankings"].items()

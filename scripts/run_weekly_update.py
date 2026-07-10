@@ -19,6 +19,7 @@ def run(cmd: list[str]) -> str:
 def main() -> None:
     collect_out = run(["python3", "scripts/collect_rankings.py"])
     build_out = run(["python3", "scripts/build_site.py"])
+    public_out = run(["python3", "scripts/build_public.py"])
     rankings = json.loads((ROOT / "data" / "rankings.json").read_text(encoding="utf-8"))
     weekly = rankings.get("rankings", {}).get("weekly", [])[:10]
     print("BSS Item Rankings update completed.")
