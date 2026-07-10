@@ -796,16 +796,18 @@ def build_rankings() -> dict[str, Any]:
         "date": CURRENT_DATE.isoformat(),
         "title": "BSS Beauty Product Trend Rankings",
         "methodology": {
-            "summary": "Item-only rankings across the broader BSS beauty market. Search/watchlist pages are separated from evidence; ranking score only counts captured article/source URLs with dates.",
-            "score_components": ["verified URL evidence", "recent evidence", "BSS fit", "seasonality", "item specificity", "historical movement"],
+            "summary": "Item-only rankings across the broader BSS beauty market. Search/watchlist pages are separated from evidence; published URLs drive trend movement, while live BSS/wholesale product URLs validate retail availability only.",
+            "score_components": ["published trend URL evidence", "recent published evidence", "BSS/wholesale product URLs", "BSS fit", "seasonality", "item specificity", "historical movement"],
             "quality_rules": [
                 "출처 없는 주장은 trend claim으로 표시하지 않는다.",
                 "TikTok/Pinterest/X/Reddit/Amazon/Google Trends/BSS search pages are watchlist links only unless a specific post/listing/article URL is captured.",
-                "Weekly movement is NEW SHIFT / ACCELERATING / STABLE / COOLING / WATCHLIST based on evidence recency and previous run comparison.",
+                "BSS/wholesale product pages are verified supply evidence, but they do not create a weekly trend shift without published/date-bearing evidence.",
+                "Weekly movement is NEW SHIFT / ACCELERATING / STABLE / COOLING / WATCHLIST based on published evidence recency and previous run comparison.",
             ],
             "limitations": [
-                "Bing News RSS is used for concrete article URLs/dates; TikTok, Amazon, Reddit, Google Trends, and BSS-store layers still require deeper authenticated/API collection for post/listing-level evidence.",
-                "Items with no verified URL evidence are capped and labeled WATCHLIST, not treated as market trends.",
+                "Bing News RSS is used for concrete article URLs/dates; BSS/wholesale stores are queried through public product suggest endpoints where available.",
+                "TikTok, Amazon, Reddit, Google Trends, and some store layers still require deeper authenticated/API collection for post/listing-level evidence.",
+                "Items with no published trend URL evidence are capped and labeled WATCHLIST, not treated as weekly market shifts.",
                 "Historical movement becomes stronger after several scheduled evidence-based runs.",
             ],
         },
@@ -822,8 +824,9 @@ def build_rankings() -> dict[str, Any]:
             ranked.append(score_item(row, timeframe, evidence_by_item.get(row["id"], []), watchlist, prev_by_item.get(row["id"])))
         ranked.sort(
             key=lambda r: (
-                r["source_counts"]["recent_evidence"],
-                r["source_counts"]["verified_evidence"],
+                r["source_counts"]["recent_trend_evidence"],
+                r["source_counts"]["trend_evidence"],
+                r["source_counts"]["retail_product_evidence"],
                 r["score"],
                 r["bss_fit"],
                 r["item_name"],

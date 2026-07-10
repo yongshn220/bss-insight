@@ -84,7 +84,7 @@ def shell(title: str, body: str, active: str = "weekly") -> str:
   {body}
   <footer class="footer wrap">
     <span>Generated {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
-    <span>Verified URL evidence counted · search links are watchlists only</span>
+    <span>Published URLs drive trend movement · product URLs validate supply · search links are watchlists only</span>
   </footer>
 </body>
 </html>"""
@@ -101,9 +101,9 @@ def score_bar(score: Any) -> str:
 def evidence_chips(row: dict[str, Any]) -> str:
     counts = row.get("source_counts", {})
     chips = [
-        ("Evidence", counts.get("verified_evidence", counts.get("news_magazine", 0))),
-        ("Recent", counts.get("recent_evidence", 0)),
-        ("Exact", counts.get("exact_evidence", 0)),
+        ("Trend URLs", counts.get("trend_evidence", counts.get("news_magazine", 0))),
+        ("14d", counts.get("recent_trend_evidence", counts.get("recent_evidence", 0))),
+        ("Store URLs", counts.get("retail_product_evidence", 0)),
         ("Domains", counts.get("unique_domains", 0)),
         ("BSS", f'{row.get("bss_fit")}/5'),
     ]
@@ -115,10 +115,11 @@ def evidence_chips(row: dict[str, Any]) -> str:
 def item_card(row: dict[str, Any], compact: bool = False) -> str:
     item_url = f"/items/{esc(row.get('item_id'))}.html"
     desc = row.get("reason_summary", "")
+    evidence_class = "has-trend" if (row.get("source_counts", {}).get("trend_evidence") or row.get("source_counts", {}).get("news_magazine")) else "watchlist-only"
     if compact and len(desc) > 150:
         desc = desc[:147] + "…"
     return f"""
-    <article class="rank-card">
+    <article class="rank-card {esc(evidence_class)}">
       <a class="rank-hit" href="{item_url}" aria-label="View {esc(row.get('item_name'))}"></a>
       <div class="rank-num">#{esc(row.get('rank'))}</div>
       <div class="rank-main">
@@ -146,9 +147,21 @@ def category_chips(categories: list[dict[str, Any]]) -> str:
     return '<nav class="category-strip">' + ''.join(chips) + '</nav>'
 
 
+def has_trend_evidence(row: dict[str, Any]) -> bool:
+    counts = row.get("source_counts", {})
+    return bool(counts.get("trend_evidence") or counts.get("news_magazine"))
+
+
 def top_three(rows: list[dict[str, Any]]) -> str:
+    trend_rows = [row for row in rows if has_trend_evidence(row)]
+    if not trend_rows:
+        return """
+        <section class="empty-state">
+          <strong>이번 기간 검증된 Top 3 없음</strong>
+          <p>발행일 있는 item-specific URL이 없어 Top 3를 trend로 표시하지 않습니다. 아래 전체 리스트는 live product URL과 BSS 적합도를 포함한 watchlist입니다.</p>
+        </section>"""
     cards = []
-    for row in rows[:3]:
+    for row in trend_rows[:3]:
         cards.append(f"""
         <a class="podium-card" href="/items/{esc(row.get('item_id'))}.html">
           <span class="podium-rank">#{esc(row.get('rank'))}</span>
@@ -171,7 +184,7 @@ def render_home(data: dict[str, Any]) -> str:
         <div class="hero-copy">
           <p class="eyebrow">BSS-wide · Specific product ranking</p>
           <h1>Beauty Supply 제품별 트렌드 순위</h1>
-          <p class="lead">검색 링크를 근거로 세지 않고, 실제 URL과 날짜가 잡힌 public evidence만 점수에 반영합니다. 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
+          <p class="lead">검색 링크는 근거로 세지 않습니다. 발행일 있는 실제 URL은 trend movement에, BSS/wholesale 실제 상품 URL은 supply validation에만 반영합니다. 발행 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
         </div>
         <div class="hero-panel">
           <span>Latest run</span>
@@ -219,7 +232,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         <div class="hero-copy">
           <p class="eyebrow">{esc(TIMEFRAME_LABELS.get(timeframe, timeframe.title()))} · {esc(cfg.get('days'))} days</p>
           <h1>{esc(TIMEFRAME_LABELS.get(timeframe, timeframe.title()))} ranking</h1>
-          <p class="lead">{esc(cfg.get('description'))}. 실제 URL 근거, 최근성, 이전 run 대비 변화를 기준으로 정렬하고, 근거 없는 항목은 watchlist로 낮춰 표시합니다.</p>
+          <p class="lead">{esc(cfg.get('description'))}. 발행일 있는 실제 URL, 최근성, 이전 run 대비 변화를 우선 정렬하고, live product URL은 trend claim이 아닌 검토용 supply 근거로 분리합니다.</p>
         </div>
         <div class="hero-panel">
           <span>Ranked items</span>
@@ -243,8 +256,15 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
 
 def grouped_sources(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for src in row.get("verified_evidence", row.get("news_evidence", [])):
-        groups["Verified evidence · actual URL/date"].append(src)
+    for src in row.get("trend_evidence", row.get("news_evidence", [])):
+        groups["Published trend evidence · URL/date counted"].append(src)
+    for src in row.get("retail_product_evidence", []):
+        label = "Verified BSS product URLs · supply only" if src.get("source_type") == "bss_online_store" else "Verified wholesale product URLs · supply only"
+        groups[label].append(src)
+    # Backward compatibility for older data where all verified evidence was in one list.
+    if not groups:
+        for src in row.get("verified_evidence", []):
+            groups["Verified evidence · actual URL/date"].append(src)
     for src in row.get("watchlist_links", row.get("manual_references", [])):
         label = {
             "sns": "Watchlist only · SNS / TikTok",
@@ -281,11 +301,14 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         source_cards = []
         for src in sources[:12]:
             title = src.get("title") or src.get("publisher") or src.get("source_kind") or src.get("source_type")
-            date = src.get("published_date") or src.get("seendate") or src.get("published") or ""
-            summary = src.get("summary") or src.get("snippet") or date or "Reference source"
+            date = src.get("published_date") or src.get("observed_date") or src.get("seendate") or src.get("published") or ""
+            date_kind = "Published" if src.get("date_kind") == "published" else ("Observed" if src.get("observed_date") else "")
+            date_label = f"{date_kind} {date}".strip() if date else ""
+            price = f" · ${esc(src.get('price'))}" if src.get("price") else ""
+            summary = src.get("summary") or src.get("snippet") or date_label or "Reference source"
             source_cards.append(f"""
             <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer">
-              <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date) if date else ''}</span>
+              <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date_label) if date_label else ''}{price}</span>
               <strong>{esc(title)}</strong>
               <p>{esc(summary)}</p>
             </a>""")
