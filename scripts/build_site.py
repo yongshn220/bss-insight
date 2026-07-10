@@ -98,6 +98,19 @@ def score_bar(score: Any) -> str:
     return f'<div class="scorebar"><span style="width:{width:.0f}%"></span></div>'
 
 
+def image_tag(row: dict[str, Any], class_name: str) -> str:
+    url = row.get("image_url") or f"/assets/category-{row.get('category_id', 'tools-accessories')}.svg"
+    alt = row.get("image_alt") or f"{row.get('item_name')} visual"
+    status = row.get("image_status") or "category_visual"
+    source = row.get("image_source") or "Category visual"
+    return (
+        f'<figure class="{esc(class_name)} {esc(status)}">'
+        f'<img src="{esc(url)}" alt="{esc(alt)}" loading="lazy">'
+        f'<figcaption>{esc(source)}</figcaption>'
+        '</figure>'
+    )
+
+
 def evidence_chips(row: dict[str, Any]) -> str:
     counts = row.get("source_counts", {})
     chips = [
@@ -122,6 +135,7 @@ def item_card(row: dict[str, Any], compact: bool = False) -> str:
     <article class="rank-card {esc(evidence_class)}">
       <a class="rank-hit" href="{item_url}" aria-label="View {esc(row.get('item_name'))}"></a>
       <div class="rank-num">#{esc(row.get('rank'))}</div>
+      {image_tag(row, 'rank-img')}
       <div class="rank-main">
         <div class="card-topline">
           <span class="category-label">{esc(row.get('category_name'))}</span>
@@ -164,6 +178,7 @@ def top_three(rows: list[dict[str, Any]]) -> str:
     for row in trend_rows[:3]:
         cards.append(f"""
         <a class="podium-card" href="/items/{esc(row.get('item_id'))}.html">
+          {image_tag(row, 'podium-img')}
           <span class="podium-rank">#{esc(row.get('rank'))}</span>
           <div>
             <p>{esc(row.get('category_name'))}</p>
@@ -323,6 +338,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
           <p class="lead">{esc(row.get('reason_summary'))}</p>
         </div>
         <div class="score-hero">
+          {image_tag(row, 'detail-img')}
           <span>Weekly score</span>
           <strong>{esc(row.get('score'))}</strong>
           {score_bar(row.get('score'))}

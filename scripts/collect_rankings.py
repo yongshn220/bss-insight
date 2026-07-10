@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import html
 import json
 import re
+import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -28,7 +29,7 @@ RANKINGS_PATH = DATA_DIR / "rankings.json"
 HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RUNS_DIR = DATA_DIR / "ranking_runs"
 
-USER_AGENT = "Mozilla/5.0 (compatible; BSS-Beauty-Trend-Rankings/0.2; +https://gns.local)"
+USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 CURRENT_DATE = dt.date.today()
 CURRENT_MONTH = CURRENT_DATE.month
 
@@ -387,6 +388,19 @@ def rss_child_text(node: ET.Element, suffix: str) -> str:
     return ""
 
 
+def product_image_url(product: dict[str, Any]) -> str:
+    image = product.get("image") or product.get("featured_image")
+    if isinstance(image, str):
+        return image
+    if isinstance(image, dict):
+        return str(image.get("url") or image.get("src") or "")
+    return ""
+
+
+def category_visual_url(row: dict[str, Any]) -> str:
+    return f"/assets/category-{row['category_id']}.svg"
+
+
 def bing_news_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> list[dict[str, Any]]:
     query = row["aliases"][0]
     url = "https://www.bing.com/news/search?" + urllib.parse.urlencode({"q": query, "format": "rss"})
@@ -405,6 +419,7 @@ def bing_news_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> 
         desc = strip_markup(node.findtext("description") or "")
         pub_date = parse_signal_date(pub)
         source = rss_child_text(node, "Source") or domain_from_url(link) or "Bing News"
+        image_url = rss_child_text(node, "Image")
         signal = {
             "source_type": "news_magazine",
             "source_kind": "bing_news",
@@ -418,6 +433,8 @@ def bing_news_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> 
             "published_date": pub_date.isoformat() if pub_date else "",
             "date_kind": "published",
             "snippet": desc[:320],
+            "image_url": image_url,
+            "image_source": source if image_url else "",
             "evidence_status": "verified_url",
         }
         if is_within_days(signal, days) and evidence_match(row, signal):
@@ -504,6 +521,7 @@ def shopify_product_search(row: dict[str, Any], store: dict[str, str], limit: in
         "resources[type]": "product",
         "resources[limit]": str(limit),
     })
+    time.sleep(0.2)
     status, text, error = fetch(url, timeout=8)
     if error or not text:
         return [{"source_type": store["source_type"], "source_kind": store["id"], "query": query, "url": url, "error": error or f"HTTP {status}"}]
@@ -516,6 +534,7 @@ def shopify_product_search(row: dict[str, Any], store: dict[str, str], limit: in
         product_url = urllib.parse.urljoin(store["base_url"], str(product.get("url") or ""))
         title = html.unescape(str(product.get("title") or "").strip())
         body = strip_markup(str(product.get("body") or ""))
+        image_url = product_image_url(product)
         signal = {
             "source_type": store["source_type"],
             "source_kind": store["id"],
@@ -531,6 +550,8 @@ def shopify_product_search(row: dict[str, Any], store: dict[str, str], limit: in
             "snippet": body[:320],
             "price": str(product.get("price") or product.get("price_min") or ""),
             "available": bool(product.get("available")),
+            "image_url": image_url,
+            "image_source": store["name"] if image_url else "",
             "evidence_status": "verified_url",
         }
         if product_url and title and evidence_match(row, signal):
@@ -584,7 +605,7 @@ def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
 
 def collect_all_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     evidence_by_item: dict[str, list[dict[str, Any]]] = {}
-    with ThreadPoolExecutor(max_workers=6) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:
         future_map = {executor.submit(collect_verified_evidence, row): row for row in rows}
         for future in as_completed(future_map):
             row = future_map[future]
@@ -670,6 +691,28 @@ def classify_momentum(score: float, trend_count: int, recent_trend_count: int, r
     return "stable", score_change, "발행 근거는 있으나 이전 run 대비 큰 변화는 없음"
 
 
+def choose_item_image(row: dict[str, Any], trend_evidence: list[dict[str, Any]], retail_evidence: list[dict[str, Any]]) -> dict[str, str]:
+    for src in retail_evidence:
+        if src.get("image_url"):
+            return {
+                "image_url": str(src["image_url"]),
+                "image_source": str(src.get("publisher") or src.get("domain") or "BSS product page"),
+                "image_status": "verified_product_image",
+            }
+    for src in trend_evidence:
+        if src.get("image_url"):
+            return {
+                "image_url": str(src["image_url"]),
+                "image_source": str(src.get("publisher") or src.get("domain") or "published source"),
+                "image_status": "published_source_image",
+            }
+    return {
+        "image_url": category_visual_url(row),
+        "image_source": "Category visual placeholder",
+        "image_status": "category_visual",
+    }
+
+
 def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str, Any]], watchlist: list[dict[str, Any]], prev_row: dict[str, Any] | None) -> dict[str, Any]:
     published_all = [src for src in all_evidence if not src.get("error") and is_published_evidence(src)]
     trend_evidence = [src for src in published_all if is_within_days(src, TIMEFRAMES[timeframe]["days"])]
@@ -731,6 +774,7 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
         evidence_summary.append("현재 시즌 적합")
 
     reason = retail_signal_sentence(row, trend_evidence, retail_evidence, timeframe)
+    image = choose_item_image(row, trend_evidence, retail_evidence)
 
     return {
         "item_id": row["id"],
@@ -749,6 +793,10 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
         "display_tip": row["display_tip"],
         "risk": row["risk"],
         "owner_message_en": row["owner_message_en"],
+        "image_url": image["image_url"],
+        "image_source": image["image_source"],
+        "image_status": image["image_status"],
+        "image_alt": f"{row['name']} visual",
         "verified_evidence": verified,
         "trend_evidence": trend_evidence,
         "retail_product_evidence": retail_evidence,
