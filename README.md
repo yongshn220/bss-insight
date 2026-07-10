@@ -17,9 +17,9 @@ Beauty Supply Store(BSS) retail 사장님이 바로 이해할 수 있도록 만�
   - Tools & Accessories
   - Jewelry & Fashion Accessories
 - 각 item은 rank, score, momentum, 근거 요약, source layer, retail display tip, risk/caution, owner message를 가집니다.
-- 공개 접근 가능한 source부터 사용합니다. Bing News RSS/Google News RSS에서 실제 URL과 발행일이 잡힌 source만 score에 반영합니다.
+- 공개 접근 가능한 source부터 사용합니다. Bing News RSS처럼 **발행일 있는 실제 URL**은 trend movement에 반영하고, Ebonyline/Glamourtress/HairToBeauty/WigTypes/Beauty of New York 등 **실제 BSS 상품 URL**은 supply/availability 근거로만 분리해 표시합니다.
 - TikTok/X/Amazon/Google Trends/Reddit/BSS stores 검색 URL은 **watchlist only**로 분리합니다. 특정 post/listing/article URL이 잡히기 전에는 evidence로 세지 않습니다.
-- 근거가 없는 항목은 trend claim으로 표시하지 않고 `WATCHLIST`로 낮춰 표시합니다.
+- 발행일 있는 trend URL이 없는 항목은 trend claim으로 표시하지 않고 `WATCHLIST`로 낮춰 표시합니다. Live product URL만으로는 “이번 주 변화”를 만들지 않습니다.
 
 ## 구조
 
@@ -70,13 +70,19 @@ Output Directory: public
 
 ## 데이터/점수 주의사항
 
-현재 score는 public-data MVP 기준의 방향성 점수입니다. 실제 판매 예측이 아니라, BSS retail owner가 볼 만한 item signal을 빠르게 정리하기 위한 ranking입니다. 단, 검색 링크 개수는 score에 반영하지 않고, 실제 URL/date evidence와 최근성, BSS 적합도, 시즌성만 반영합니다.
+현재 score는 public-data MVP 기준의 방향성 점수입니다. 실제 판매 예측이 아니라, BSS retail owner가 볼 만한 item signal을 빠르게 정리하기 위한 ranking입니다. 단, 검색 링크 개수는 score에 반영하지 않고, 발행일 있는 trend URL, 최근성, BSS/wholesale live product URL, BSS 적합도, 시즌성을 분리해 반영합니다.
+
+신뢰성 규칙:
+
+- `NEW SHIFT`, `ACCELERATING`, `STABLE`, `COOLING` 같은 movement는 발행일 있는 trend URL과 이전 run 비교가 있을 때만 붙입니다.
+- BSS/wholesale live product URL은 “실제 판매/공급 확인”으로 유용하지만, 그 자체로 “이번 주 뜬 trend”라고 표시하지 않습니다.
+- item-specific 발행 URL이 부족하면 score를 cap하고 `WATCHLIST`로 표시합니다.
 
 향후 강화 우선순위:
 
 1. Google Trends 실제 수치 연동
 2. Reddit API/search parsing
 3. Amazon search/ranking/review signal 강화
-4. TikTok/X source 강화
-5. BSS online store category scraping 강화
+4. TikTok/X source 강화 — 검색 URL이 아니라 개별 post/video URL + 날짜 저장
+5. BSS online store category/new-arrival scraping 강화
 6. 누적 ranking history 기반 momentum 개선
