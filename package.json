@@ -1,0 +1,11 @@
+{
+  "name": "gns-bss-trend-ranking",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static BSS item trend ranking dashboard for jewelry/accessory retail intelligence.",
+  "scripts": {
+    "build": "python3 scripts/collect_rankings.py && python3 scripts/build_site.py && python3 scripts/build_public.py",
+    "build:static": "python3 scripts/build_site.py && python3 scripts/build_public.py",
+    "start": "python3 -m http.server 8765"
+  }
+}

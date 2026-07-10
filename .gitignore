@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Local deploy/auth state
+.vercel/
+.env
+.env.*
+
+# Vercel build output
+public/
+
+# Generated static pages written for local preview
+/index.html
+/rankings/
+/items/
+
+# Obsolete previous report-style MVP artifacts kept locally but not committed/deployed
+/weekly/
+/posts/
+/feedback/
+/data/posts.json
+/data/feedback.json
+/data/next_focus.json
+/data/runs/
+/scripts/collect_weekly.py
+/scripts/feedback_review.py
+
+# Growing run snapshots
+/data/ranking_runs/
+
+# OS/editor
+.DS_Store
+*.swp
