@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime as dt
 import html
 import json
+import shutil
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -157,9 +158,9 @@ def render_home(data: dict[str, Any]) -> str:
     <main>
       <section class="hero wrap" id="all">
         <div class="hero-copy">
-          <p class="eyebrow">Item-only · Store category ranking</p>
-          <h1>Beauty Supply 아이템 트렌드 순위</h1>
-          <p class="lead">온라인 스토어처럼 카테고리별로 보고, 각 아이템의 순위·점수·근거·소매점 액션을 한 화면에서 확인합니다.</p>
+          <p class="eyebrow">BSS-wide · Specific product ranking</p>
+          <h1>Beauty Supply 제품별 트렌드 순위</h1>
+          <p class="lead">Jewelry만 보지 않고 wigs, braiding hair, hair care, lashes, nails, cosmetics, tools까지 BSS 시장의 구체적 제품 단위로 순위·점수·근거·소매점 액션을 봅니다.</p>
         </div>
         <div class="hero-panel">
           <span>Latest run</span>
@@ -304,6 +305,9 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
 
 
 def main() -> int:
+    for generated_dir in (RANKINGS_DIR, ITEMS_DIR):
+        if generated_dir.exists():
+            shutil.rmtree(generated_dir)
     RANKINGS_DIR.mkdir(exist_ok=True)
     ITEMS_DIR.mkdir(exist_ok=True)
     data = load_rankings()

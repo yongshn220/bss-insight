@@ -1,6 +1,1252 @@
 {
   "runs": [
     {
+      "generated_at": "2026-07-10T16:21:43.342953Z",
+      "date": "2026-07-10",
+      "rankings": {
+        "weekly": [
+          {
+            "item_id": "synthetic-lace-front-wig",
+            "item_name": "Synthetic Lace Front Wig",
+            "rank": 1,
+            "score": 70,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "lace-melting-spray",
+            "item_name": "Lace Melting Spray",
+            "rank": 2,
+            "score": 70,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "human-hair-boho-braiding-bundles",
+            "item_name": "Human Hair Boho Braiding Bundles",
+            "rank": 3,
+            "score": 70,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "glueless-pre-cut-hd-lace-wig",
+            "item_name": "Glueless Pre-Cut HD Lace Wig",
+            "rank": 4,
+            "score": 70,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "braid-foaming-mousse",
+            "item_name": "Foaming Mousse for Braids",
+            "rank": 5,
+            "score": 70,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "extra-large-satin-bonnet",
+            "item_name": "Extra Large Satin Bonnet",
+            "rank": 6,
+            "score": 70,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "elastic-melting-band",
+            "item_name": "Elastic Melting Band",
+            "rank": 7,
+            "score": 70,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "edge-brush-comb-set",
+            "item_name": "Edge Brush & Comb Set",
+            "rank": 8,
+            "score": 70,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "52-inch-pre-stretched-braiding-hair",
+            "item_name": "52 Inch Pre-Stretched Braiding Hair",
+            "rank": 9,
+            "score": 70,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "24-hour-edge-control-gel",
+            "item_name": "24 Hour Edge Control Gel",
+            "rank": 10,
+            "score": 70,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "13x4-hd-lace-frontal-wig",
+            "item_name": "13x4 HD Lace Frontal Wig",
+            "rank": 11,
+            "score": 70,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "gold-braid-cuffs-12-pack",
+            "item_name": "Gold Braid Cuffs 12-Pack",
+            "rank": 12,
+            "score": 66,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "50mm-gold-hoop-earrings",
+            "item_name": "50mm Gold Hoop Earrings",
+            "rank": 13,
+            "score": 66,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "wig-grip-band",
+            "item_name": "Wig Grip Band",
+            "rank": 14,
+            "score": 61,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "wig-adhesive-glue",
+            "item_name": "Wig Adhesive Glue",
+            "rank": 15,
+            "score": 61,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "water-wave-crochet-hair",
+            "item_name": "Water Wave Crochet Hair",
+            "rank": 16,
+            "score": 61,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "v-part-human-hair-wig",
+            "item_name": "V-Part Human Hair Wig",
+            "rank": 17,
+            "score": 61,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "rosemary-mint-scalp-oil",
+            "item_name": "Rosemary Mint Scalp Oil",
+            "rank": 18,
+            "score": 61,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "rat-tail-comb-metal-pintail",
+            "item_name": "Rat Tail Comb with Metal Pintail",
+            "rank": 19,
+            "score": 61,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "passion-twist-crochet-hair",
+            "item_name": "Passion Twist Crochet Hair",
+            "rank": 20,
+            "score": 61,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "marley-twist-hair",
+            "item_name": "Marley Twist Hair",
+            "rank": 21,
+            "score": 61,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "leave-in-conditioner-spray",
+            "item_name": "Leave-In Conditioner Spray",
+            "rank": 22,
+            "score": 61,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "durag-wave-cap",
+            "item_name": "Durag / Wave Cap",
+            "rank": 23,
+            "score": 61,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "drawstring-ponytail-extension",
+            "item_name": "Drawstring Ponytail Extension",
+            "rank": 24,
+            "score": 61,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "butterfly-locs-crochet-hair",
+            "item_name": "Butterfly Locs Crochet Hair",
+            "rank": 25,
+            "score": 61,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "waterproof-black-eyeliner-pencil",
+            "item_name": "Waterproof Black Eyeliner Pencil",
+            "rank": 26,
+            "score": 57,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "short-square-press-on-nails",
+            "item_name": "Short Square Press-On Nails",
+            "rank": 27,
+            "score": 57,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "lash-bond-and-seal",
+            "item_name": "Lash Bond and Seal",
+            "rank": 28,
+            "score": 57,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "individual-flare-lashes",
+            "item_name": "Individual Flare Lashes",
+            "rank": 29,
+            "score": 57,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "cluster-lash-extension-kit",
+            "item_name": "Cluster Lash Extension Kit",
+            "rank": 30,
+            "score": 57,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "clear-squeeze-tube-lip-gloss",
+            "item_name": "Clear Squeeze Tube Lip Gloss",
+            "rank": 31,
+            "score": 57,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "brown-lip-liner-pencil",
+            "item_name": "Brown Lip Liner Pencil",
+            "rank": 32,
+            "score": 57,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "a-z-initial-pendant-necklace",
+            "item_name": "A-Z Initial Pendant Necklace",
+            "rank": 33,
+            "score": 57,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "25mm-mink-strip-lashes",
+            "item_name": "25mm Mink Strip Lashes",
+            "rank": 34,
+            "score": 53,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "deep-shade-setting-powder",
+            "item_name": "Deep Shade Setting Powder",
+            "rank": 35,
+            "score": 48,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "cuticle-oil-pen",
+            "item_name": "Cuticle Oil Pen",
+            "rank": 36,
+            "score": 48,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "chrome-nail-powder",
+            "item_name": "Chrome Nail Powder",
+            "rank": 37,
+            "score": 48,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "butterfly-charm-anklet",
+            "item_name": "Butterfly Charm Anklet",
+            "rank": 38,
+            "score": 48,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "20g-surgical-steel-nose-stud",
+            "item_name": "20G Surgical Steel Nose Stud",
+            "rank": 39,
+            "score": 48,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "14g-belly-button-ring",
+            "item_name": "14G Belly Button Ring",
+            "rank": 40,
+            "score": 48,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "long-coffin-press-on-nails",
+            "item_name": "Long Coffin Press-On Nails",
+            "rank": 41,
+            "score": 44,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "rhinestone-stud-earrings-6mm",
+            "item_name": "6mm Rhinestone Stud Earrings",
+            "rank": 42,
+            "score": 44,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "rhinestone-nail-charms",
+            "item_name": "Rhinestone Nail Charms",
+            "rank": 43,
+            "score": 35,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "gold-stackable-ring-set",
+            "item_name": "Gold Stackable Ring Set",
+            "rank": 44,
+            "score": 35,
+            "category_id": "jewelry-fashion-accessories"
+          }
+        ],
+        "monthly": [
+          {
+            "item_id": "synthetic-lace-front-wig",
+            "item_name": "Synthetic Lace Front Wig",
+            "rank": 1,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "lace-melting-spray",
+            "item_name": "Lace Melting Spray",
+            "rank": 2,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "human-hair-boho-braiding-bundles",
+            "item_name": "Human Hair Boho Braiding Bundles",
+            "rank": 3,
+            "score": 67,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "glueless-pre-cut-hd-lace-wig",
+            "item_name": "Glueless Pre-Cut HD Lace Wig",
+            "rank": 4,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "braid-foaming-mousse",
+            "item_name": "Foaming Mousse for Braids",
+            "rank": 5,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "extra-large-satin-bonnet",
+            "item_name": "Extra Large Satin Bonnet",
+            "rank": 6,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "elastic-melting-band",
+            "item_name": "Elastic Melting Band",
+            "rank": 7,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "edge-brush-comb-set",
+            "item_name": "Edge Brush & Comb Set",
+            "rank": 8,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "52-inch-pre-stretched-braiding-hair",
+            "item_name": "52 Inch Pre-Stretched Braiding Hair",
+            "rank": 9,
+            "score": 67,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "24-hour-edge-control-gel",
+            "item_name": "24 Hour Edge Control Gel",
+            "rank": 10,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "13x4-hd-lace-frontal-wig",
+            "item_name": "13x4 HD Lace Frontal Wig",
+            "rank": 11,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "water-wave-crochet-hair",
+            "item_name": "Water Wave Crochet Hair",
+            "rank": 12,
+            "score": 65,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "gold-braid-cuffs-12-pack",
+            "item_name": "Gold Braid Cuffs 12-Pack",
+            "rank": 13,
+            "score": 63,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "50mm-gold-hoop-earrings",
+            "item_name": "50mm Gold Hoop Earrings",
+            "rank": 14,
+            "score": 63,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "wig-grip-band",
+            "item_name": "Wig Grip Band",
+            "rank": 15,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "wig-adhesive-glue",
+            "item_name": "Wig Adhesive Glue",
+            "rank": 16,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "v-part-human-hair-wig",
+            "item_name": "V-Part Human Hair Wig",
+            "rank": 17,
+            "score": 58,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "rosemary-mint-scalp-oil",
+            "item_name": "Rosemary Mint Scalp Oil",
+            "rank": 18,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "rat-tail-comb-metal-pintail",
+            "item_name": "Rat Tail Comb with Metal Pintail",
+            "rank": 19,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "passion-twist-crochet-hair",
+            "item_name": "Passion Twist Crochet Hair",
+            "rank": 20,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "marley-twist-hair",
+            "item_name": "Marley Twist Hair",
+            "rank": 21,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "leave-in-conditioner-spray",
+            "item_name": "Leave-In Conditioner Spray",
+            "rank": 22,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "durag-wave-cap",
+            "item_name": "Durag / Wave Cap",
+            "rank": 23,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "drawstring-ponytail-extension",
+            "item_name": "Drawstring Ponytail Extension",
+            "rank": 24,
+            "score": 58,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "butterfly-locs-crochet-hair",
+            "item_name": "Butterfly Locs Crochet Hair",
+            "rank": 25,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "waterproof-black-eyeliner-pencil",
+            "item_name": "Waterproof Black Eyeliner Pencil",
+            "rank": 26,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "short-square-press-on-nails",
+            "item_name": "Short Square Press-On Nails",
+            "rank": 27,
+            "score": 54,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "lash-bond-and-seal",
+            "item_name": "Lash Bond and Seal",
+            "rank": 28,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "individual-flare-lashes",
+            "item_name": "Individual Flare Lashes",
+            "rank": 29,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "cluster-lash-extension-kit",
+            "item_name": "Cluster Lash Extension Kit",
+            "rank": 30,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "clear-squeeze-tube-lip-gloss",
+            "item_name": "Clear Squeeze Tube Lip Gloss",
+            "rank": 31,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "brown-lip-liner-pencil",
+            "item_name": "Brown Lip Liner Pencil",
+            "rank": 32,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "a-z-initial-pendant-necklace",
+            "item_name": "A-Z Initial Pendant Necklace",
+            "rank": 33,
+            "score": 54,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "25mm-mink-strip-lashes",
+            "item_name": "25mm Mink Strip Lashes",
+            "rank": 34,
+            "score": 53,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "deep-shade-setting-powder",
+            "item_name": "Deep Shade Setting Powder",
+            "rank": 35,
+            "score": 45,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "cuticle-oil-pen",
+            "item_name": "Cuticle Oil Pen",
+            "rank": 36,
+            "score": 45,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "chrome-nail-powder",
+            "item_name": "Chrome Nail Powder",
+            "rank": 37,
+            "score": 45,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "butterfly-charm-anklet",
+            "item_name": "Butterfly Charm Anklet",
+            "rank": 38,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "20g-surgical-steel-nose-stud",
+            "item_name": "20G Surgical Steel Nose Stud",
+            "rank": 39,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "14g-belly-button-ring",
+            "item_name": "14G Belly Button Ring",
+            "rank": 40,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "long-coffin-press-on-nails",
+            "item_name": "Long Coffin Press-On Nails",
+            "rank": 41,
+            "score": 44,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "rhinestone-stud-earrings-6mm",
+            "item_name": "6mm Rhinestone Stud Earrings",
+            "rank": 42,
+            "score": 44,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "rhinestone-nail-charms",
+            "item_name": "Rhinestone Nail Charms",
+            "rank": 43,
+            "score": 35,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "gold-stackable-ring-set",
+            "item_name": "Gold Stackable Ring Set",
+            "rank": 44,
+            "score": 35,
+            "category_id": "jewelry-fashion-accessories"
+          }
+        ],
+        "quarterly": [
+          {
+            "item_id": "synthetic-lace-front-wig",
+            "item_name": "Synthetic Lace Front Wig",
+            "rank": 1,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "lace-melting-spray",
+            "item_name": "Lace Melting Spray",
+            "rank": 2,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "human-hair-boho-braiding-bundles",
+            "item_name": "Human Hair Boho Braiding Bundles",
+            "rank": 3,
+            "score": 67,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "glueless-pre-cut-hd-lace-wig",
+            "item_name": "Glueless Pre-Cut HD Lace Wig",
+            "rank": 4,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "braid-foaming-mousse",
+            "item_name": "Foaming Mousse for Braids",
+            "rank": 5,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "extra-large-satin-bonnet",
+            "item_name": "Extra Large Satin Bonnet",
+            "rank": 6,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "elastic-melting-band",
+            "item_name": "Elastic Melting Band",
+            "rank": 7,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "edge-brush-comb-set",
+            "item_name": "Edge Brush & Comb Set",
+            "rank": 8,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "52-inch-pre-stretched-braiding-hair",
+            "item_name": "52 Inch Pre-Stretched Braiding Hair",
+            "rank": 9,
+            "score": 67,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "24-hour-edge-control-gel",
+            "item_name": "24 Hour Edge Control Gel",
+            "rank": 10,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "13x4-hd-lace-frontal-wig",
+            "item_name": "13x4 HD Lace Frontal Wig",
+            "rank": 11,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "water-wave-crochet-hair",
+            "item_name": "Water Wave Crochet Hair",
+            "rank": 12,
+            "score": 65,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "brown-lip-liner-pencil",
+            "item_name": "Brown Lip Liner Pencil",
+            "rank": 13,
+            "score": 64,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "gold-braid-cuffs-12-pack",
+            "item_name": "Gold Braid Cuffs 12-Pack",
+            "rank": 14,
+            "score": 63,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "50mm-gold-hoop-earrings",
+            "item_name": "50mm Gold Hoop Earrings",
+            "rank": 15,
+            "score": 63,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "wig-grip-band",
+            "item_name": "Wig Grip Band",
+            "rank": 16,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "wig-adhesive-glue",
+            "item_name": "Wig Adhesive Glue",
+            "rank": 17,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "v-part-human-hair-wig",
+            "item_name": "V-Part Human Hair Wig",
+            "rank": 18,
+            "score": 58,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "rosemary-mint-scalp-oil",
+            "item_name": "Rosemary Mint Scalp Oil",
+            "rank": 19,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "rat-tail-comb-metal-pintail",
+            "item_name": "Rat Tail Comb with Metal Pintail",
+            "rank": 20,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "passion-twist-crochet-hair",
+            "item_name": "Passion Twist Crochet Hair",
+            "rank": 21,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "marley-twist-hair",
+            "item_name": "Marley Twist Hair",
+            "rank": 22,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "leave-in-conditioner-spray",
+            "item_name": "Leave-In Conditioner Spray",
+            "rank": 23,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "durag-wave-cap",
+            "item_name": "Durag / Wave Cap",
+            "rank": 24,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "drawstring-ponytail-extension",
+            "item_name": "Drawstring Ponytail Extension",
+            "rank": 25,
+            "score": 58,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "butterfly-locs-crochet-hair",
+            "item_name": "Butterfly Locs Crochet Hair",
+            "rank": 26,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "waterproof-black-eyeliner-pencil",
+            "item_name": "Waterproof Black Eyeliner Pencil",
+            "rank": 27,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "short-square-press-on-nails",
+            "item_name": "Short Square Press-On Nails",
+            "rank": 28,
+            "score": 54,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "lash-bond-and-seal",
+            "item_name": "Lash Bond and Seal",
+            "rank": 29,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "individual-flare-lashes",
+            "item_name": "Individual Flare Lashes",
+            "rank": 30,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "cluster-lash-extension-kit",
+            "item_name": "Cluster Lash Extension Kit",
+            "rank": 31,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "clear-squeeze-tube-lip-gloss",
+            "item_name": "Clear Squeeze Tube Lip Gloss",
+            "rank": 32,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "a-z-initial-pendant-necklace",
+            "item_name": "A-Z Initial Pendant Necklace",
+            "rank": 33,
+            "score": 54,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "25mm-mink-strip-lashes",
+            "item_name": "25mm Mink Strip Lashes",
+            "rank": 34,
+            "score": 53,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "deep-shade-setting-powder",
+            "item_name": "Deep Shade Setting Powder",
+            "rank": 35,
+            "score": 45,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "cuticle-oil-pen",
+            "item_name": "Cuticle Oil Pen",
+            "rank": 36,
+            "score": 45,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "chrome-nail-powder",
+            "item_name": "Chrome Nail Powder",
+            "rank": 37,
+            "score": 45,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "butterfly-charm-anklet",
+            "item_name": "Butterfly Charm Anklet",
+            "rank": 38,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "20g-surgical-steel-nose-stud",
+            "item_name": "20G Surgical Steel Nose Stud",
+            "rank": 39,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "14g-belly-button-ring",
+            "item_name": "14G Belly Button Ring",
+            "rank": 40,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "long-coffin-press-on-nails",
+            "item_name": "Long Coffin Press-On Nails",
+            "rank": 41,
+            "score": 44,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "rhinestone-stud-earrings-6mm",
+            "item_name": "6mm Rhinestone Stud Earrings",
+            "rank": 42,
+            "score": 44,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "rhinestone-nail-charms",
+            "item_name": "Rhinestone Nail Charms",
+            "rank": 43,
+            "score": 35,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "gold-stackable-ring-set",
+            "item_name": "Gold Stackable Ring Set",
+            "rank": 44,
+            "score": 35,
+            "category_id": "jewelry-fashion-accessories"
+          }
+        ],
+        "yearly": [
+          {
+            "item_id": "leave-in-conditioner-spray",
+            "item_name": "Leave-In Conditioner Spray",
+            "rank": 1,
+            "score": 89,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "brown-lip-liner-pencil",
+            "item_name": "Brown Lip Liner Pencil",
+            "rank": 2,
+            "score": 73,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "a-z-initial-pendant-necklace",
+            "item_name": "A-Z Initial Pendant Necklace",
+            "rank": 3,
+            "score": 67,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "synthetic-lace-front-wig",
+            "item_name": "Synthetic Lace Front Wig",
+            "rank": 4,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "lace-melting-spray",
+            "item_name": "Lace Melting Spray",
+            "rank": 5,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "human-hair-boho-braiding-bundles",
+            "item_name": "Human Hair Boho Braiding Bundles",
+            "rank": 6,
+            "score": 67,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "glueless-pre-cut-hd-lace-wig",
+            "item_name": "Glueless Pre-Cut HD Lace Wig",
+            "rank": 7,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "braid-foaming-mousse",
+            "item_name": "Foaming Mousse for Braids",
+            "rank": 8,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "extra-large-satin-bonnet",
+            "item_name": "Extra Large Satin Bonnet",
+            "rank": 9,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "elastic-melting-band",
+            "item_name": "Elastic Melting Band",
+            "rank": 10,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "edge-brush-comb-set",
+            "item_name": "Edge Brush & Comb Set",
+            "rank": 11,
+            "score": 67,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "52-inch-pre-stretched-braiding-hair",
+            "item_name": "52 Inch Pre-Stretched Braiding Hair",
+            "rank": 12,
+            "score": 67,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "24-hour-edge-control-gel",
+            "item_name": "24 Hour Edge Control Gel",
+            "rank": 13,
+            "score": 67,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "13x4-hd-lace-frontal-wig",
+            "item_name": "13x4 HD Lace Frontal Wig",
+            "rank": 14,
+            "score": 67,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "water-wave-crochet-hair",
+            "item_name": "Water Wave Crochet Hair",
+            "rank": 15,
+            "score": 65,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "gold-braid-cuffs-12-pack",
+            "item_name": "Gold Braid Cuffs 12-Pack",
+            "rank": 16,
+            "score": 63,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "50mm-gold-hoop-earrings",
+            "item_name": "50mm Gold Hoop Earrings",
+            "rank": 17,
+            "score": 63,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "wig-grip-band",
+            "item_name": "Wig Grip Band",
+            "rank": 18,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "wig-adhesive-glue",
+            "item_name": "Wig Adhesive Glue",
+            "rank": 19,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "v-part-human-hair-wig",
+            "item_name": "V-Part Human Hair Wig",
+            "rank": 20,
+            "score": 58,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "rosemary-mint-scalp-oil",
+            "item_name": "Rosemary Mint Scalp Oil",
+            "rank": 21,
+            "score": 58,
+            "category_id": "hair-care-styling"
+          },
+          {
+            "item_id": "rat-tail-comb-metal-pintail",
+            "item_name": "Rat Tail Comb with Metal Pintail",
+            "rank": 22,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "passion-twist-crochet-hair",
+            "item_name": "Passion Twist Crochet Hair",
+            "rank": 23,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "marley-twist-hair",
+            "item_name": "Marley Twist Hair",
+            "rank": 24,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "durag-wave-cap",
+            "item_name": "Durag / Wave Cap",
+            "rank": 25,
+            "score": 58,
+            "category_id": "tools-accessories"
+          },
+          {
+            "item_id": "drawstring-ponytail-extension",
+            "item_name": "Drawstring Ponytail Extension",
+            "rank": 26,
+            "score": 58,
+            "category_id": "wigs-hair-pieces"
+          },
+          {
+            "item_id": "butterfly-locs-crochet-hair",
+            "item_name": "Butterfly Locs Crochet Hair",
+            "rank": 27,
+            "score": 58,
+            "category_id": "braiding-crochet-hair"
+          },
+          {
+            "item_id": "waterproof-black-eyeliner-pencil",
+            "item_name": "Waterproof Black Eyeliner Pencil",
+            "rank": 28,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "short-square-press-on-nails",
+            "item_name": "Short Square Press-On Nails",
+            "rank": 29,
+            "score": 54,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "lash-bond-and-seal",
+            "item_name": "Lash Bond and Seal",
+            "rank": 30,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "individual-flare-lashes",
+            "item_name": "Individual Flare Lashes",
+            "rank": 31,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "cluster-lash-extension-kit",
+            "item_name": "Cluster Lash Extension Kit",
+            "rank": 32,
+            "score": 54,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "clear-squeeze-tube-lip-gloss",
+            "item_name": "Clear Squeeze Tube Lip Gloss",
+            "rank": 33,
+            "score": 54,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "25mm-mink-strip-lashes",
+            "item_name": "25mm Mink Strip Lashes",
+            "rank": 34,
+            "score": 53,
+            "category_id": "lashes-brows"
+          },
+          {
+            "item_id": "14g-belly-button-ring",
+            "item_name": "14G Belly Button Ring",
+            "rank": 35,
+            "score": 52,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "deep-shade-setting-powder",
+            "item_name": "Deep Shade Setting Powder",
+            "rank": 36,
+            "score": 45,
+            "category_id": "makeup-cosmetics"
+          },
+          {
+            "item_id": "cuticle-oil-pen",
+            "item_name": "Cuticle Oil Pen",
+            "rank": 37,
+            "score": 45,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "chrome-nail-powder",
+            "item_name": "Chrome Nail Powder",
+            "rank": 38,
+            "score": 45,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "butterfly-charm-anklet",
+            "item_name": "Butterfly Charm Anklet",
+            "rank": 39,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "20g-surgical-steel-nose-stud",
+            "item_name": "20G Surgical Steel Nose Stud",
+            "rank": 40,
+            "score": 45,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "long-coffin-press-on-nails",
+            "item_name": "Long Coffin Press-On Nails",
+            "rank": 41,
+            "score": 44,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "rhinestone-stud-earrings-6mm",
+            "item_name": "6mm Rhinestone Stud Earrings",
+            "rank": 42,
+            "score": 44,
+            "category_id": "jewelry-fashion-accessories"
+          },
+          {
+            "item_id": "rhinestone-nail-charms",
+            "item_name": "Rhinestone Nail Charms",
+            "rank": 43,
+            "score": 35,
+            "category_id": "nails"
+          },
+          {
+            "item_id": "gold-stackable-ring-set",
+            "item_name": "Gold Stackable Ring Set",
+            "rank": 44,
+            "score": 35,
+            "category_id": "jewelry-fashion-accessories"
+          }
+        ]
+      }
+    },
+    {
       "generated_at": "2026-07-10T13:42:31.410813Z",
       "date": "2026-07-10",
       "rankings": {

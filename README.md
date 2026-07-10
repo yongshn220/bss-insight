@@ -4,15 +4,18 @@ Beauty Supply Store(BSS) retail 사장님이 바로 이해할 수 있도록 만�
 
 ## 핵심 방향
 
-- Ranking 대상은 **item만** 사용합니다.
+- Ranking 대상은 **item만** 사용합니다. Jewelry만이 아니라 BSS 시장의 wigs, braiding hair, hair care, lashes, nails, cosmetics, tools/accessories, jewelry를 모두 포함합니다.
+- Rank에 올라오는 항목은 `piercing`, `hair care` 같은 broad category가 아니라 `20G Surgical Steel Nose Stud`, `Glueless Pre-Cut HD Lace Wig`, `52 Inch Pre-Stretched Braiding Hair`처럼 실제 매장에서 SKU/상품군으로 테스트할 수 있는 구체적 제품 단위여야 합니다.
 - 화면은 `Weekly`, `Monthly`, `Quarterly`, `Yearly` 탭으로 나눕니다.
 - 카테고리는 온라인 스토어처럼 분리합니다.
-  - Earrings
-  - Necklaces & Pendants
-  - Hair Jewelry
-  - Anklets & Body Jewelry
-  - Rings & Bracelets
-  - Sets & Occasion Jewelry
+  - Wigs & Hair Pieces
+  - Braiding & Crochet Hair
+  - Hair Care & Styling
+  - Lashes & Brows
+  - Nails
+  - Makeup & Cosmetics
+  - Tools & Accessories
+  - Jewelry & Fashion Accessories
 - 각 item은 rank, score, momentum, 근거 요약, source layer, retail display tip, risk/caution, owner message를 가집니다.
 - 공개 접근 가능한 source부터 사용합니다. TikTok/X/Amazon/Google Trends/Reddit/BSS stores는 MVP 단계에서 reference/watchlist 링크로 붙이고, Google News/RSS는 실제 fetch합니다.
 
