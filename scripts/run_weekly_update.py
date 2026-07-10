@@ -27,7 +27,13 @@ def main() -> None:
     print(f"Generated at: {rankings.get('generated_at')}")
     print("Top weekly items:")
     for row in weekly:
-        print(f"- #{row['rank']} {row['item_name']} | score={row['score']} | category={row['category_name']} | momentum={row['momentum']}")
+        counts = row.get("source_counts", {})
+        print(
+            f"- #{row['rank']} {row['item_name']} | score={row['score']} | "
+            f"category={row['category_name']} | momentum={row['momentum']} | "
+            f"trend_urls={counts.get('trend_evidence', 0)} | "
+            f"store_urls={counts.get('retail_product_evidence', 0)}"
+        )
     print("Generated pages:")
     print("- index.html")
     print("- rankings/weekly.html")
