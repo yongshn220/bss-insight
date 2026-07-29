@@ -33,6 +33,11 @@ public/
 # Local operation logs
 /logs/
 
+# Playwright local artifacts
+/.cache/
+/playwright-report/
+/test-results/
+
 # OS/editor
 .DS_Store
 *.swp

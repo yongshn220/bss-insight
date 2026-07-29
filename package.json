@@ -7,6 +7,13 @@
     "collect": "python3 scripts/collect_rankings.py",
     "build": "python3 scripts/build_site.py && python3 scripts/build_public.py",
     "refresh": "python3 scripts/collect_rankings.py && python3 scripts/build_site.py && python3 scripts/build_public.py",
-    "start": "python3 -m http.server 8765"
+    "start": "python3 -m http.server 8765",
+    "test": "npm run test:e2e",
+    "test:e2e": "npm run build && PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright playwright test",
+    "test:e2e:headed": "npm run build && PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright playwright test --headed",
+    "test:e2e:install": "PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.0"
   }
 }
