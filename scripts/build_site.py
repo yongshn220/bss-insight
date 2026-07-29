@@ -84,7 +84,7 @@ def shell(title: str, body: str, active: str = "weekly") -> str:
   {body}
   <footer class="footer wrap">
     <span>Generated {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
-    <span>Published URLs drive trend movement · product URLs validate supply · search links are watchlists only</span>
+    <span>Published URLs drive trend movement · BSS/wholesale/TikTok Shop URLs validate supply · search links are watchlists only</span>
   </footer>
 </body>
 </html>"""
@@ -117,6 +117,7 @@ def evidence_chips(row: dict[str, Any]) -> str:
         ("Trend URLs", counts.get("trend_evidence", counts.get("news_magazine", 0))),
         ("14d", counts.get("recent_trend_evidence", counts.get("recent_evidence", 0))),
         ("Store URLs", counts.get("retail_product_evidence", 0)),
+        ("TikTok Shop", counts.get("tiktok_shop_product_evidence", 0)),
         ("Domains", counts.get("unique_domains", 0)),
         ("BSS", f'{row.get("bss_fit")}/5'),
     ]
@@ -199,7 +200,7 @@ def render_home(data: dict[str, Any]) -> str:
         <div class="hero-copy">
           <p class="eyebrow">BSS-wide · Specific product ranking</p>
           <h1>Beauty Supply 제품별 트렌드 순위</h1>
-          <p class="lead">검색 링크는 근거로 세지 않습니다. 발행일 있는 실제 URL은 trend movement에, BSS/wholesale 실제 상품 URL은 supply validation에만 반영합니다. 발행 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
+          <p class="lead">검색 링크는 근거로 세지 않습니다. 발행일 있는 실제 URL은 trend movement에, BSS/wholesale/TikTok Shop 실제 상품 URL은 supply/social-commerce validation에만 반영합니다. 발행 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
         </div>
         <div class="hero-panel">
           <span>Latest run</span>
@@ -274,7 +275,14 @@ def grouped_sources(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     for src in row.get("trend_evidence", row.get("news_evidence", [])):
         groups["Published trend evidence · URL/date counted"].append(src)
     for src in row.get("retail_product_evidence", []):
-        label = "Verified BSS product URLs · supply only" if src.get("source_type") == "bss_online_store" else "Verified wholesale product URLs · supply only"
+        if src.get("source_type") == "bss_online_store":
+            label = "Verified BSS product URLs · supply only"
+        elif src.get("source_kind") == "tiktok_shop_apify":
+            label = "Verified TikTok Shop URLs · social commerce supply only"
+        elif src.get("source_type") == "marketplace_product":
+            label = "Verified marketplace product URLs · supply only"
+        else:
+            label = "Verified wholesale product URLs · supply only"
         groups[label].append(src)
     # Backward compatibility for older data where all verified evidence was in one list.
     if not groups:

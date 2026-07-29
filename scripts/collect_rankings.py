@@ -15,6 +15,7 @@ import email.utils
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import html
 import json
+import os
 import re
 import time
 import urllib.parse
@@ -32,6 +33,8 @@ RUNS_DIR = DATA_DIR / "ranking_runs"
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 CURRENT_DATE = dt.date.today()
 CURRENT_MONTH = CURRENT_DATE.month
+APIFY_TIKTOK_ACTOR = "coregent~tiktok-shop-product-scraper"
+SECRET_ENV_PATHS = [Path("/opt/data/.hermes/.env"), ROOT / ".env", ROOT / ".env.local"]
 
 TIMEFRAMES = {
     "weekly": {"label": "Weekly", "days": 14, "description": "최근 2주 중심의 빠른 신호"},
@@ -228,6 +231,34 @@ def fetch(url: str, timeout: int = 12) -> tuple[int | None, str, str | None]:
             return getattr(resp, "status", 200), raw.decode(charset, errors="replace"), None
     except Exception as exc:
         return None, "", f"{type(exc).__name__}: {exc}"
+
+
+def env_value(name: str) -> str:
+    """Read a secret/config value without printing it or requiring shell sourcing."""
+    if os.environ.get(name):
+        return str(os.environ[name]).strip()
+    for env_path in SECRET_ENV_PATHS:
+        if not env_path.exists():
+            continue
+        try:
+            for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#") or "=" not in stripped:
+                    continue
+                key, value = stripped.split("=", 1)
+                if key.strip() == name:
+                    return value.strip().strip('"').strip("'")
+        except OSError:
+            continue
+    return ""
+
+
+def int_env(name: str, default: int, lower: int, upper: int) -> int:
+    try:
+        value = int(env_value(name) or default)
+    except ValueError:
+        value = default
+    return max(lower, min(upper, value))
 
 
 def google_news_rss(query: str, days: int, limit: int = 8) -> list[dict[str, Any]]:
@@ -570,6 +601,140 @@ def retail_product_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     return evidence
 
 
+def apify_tiktok_source_keywords(product: dict[str, Any]) -> list[str]:
+    raw = product.get("sourceKeywords") or product.get("sourceKeyword") or product.get("keywords") or []
+    if isinstance(raw, str):
+        return [raw]
+    if isinstance(raw, list):
+        return [str(value) for value in raw if value]
+    return []
+
+
+def apify_tiktok_product_signal(product: dict[str, Any], row: dict[str, Any], query: str) -> dict[str, Any] | None:
+    product_url = str(product.get("productUrl") or product.get("url") or "")
+    title = html.unescape(str(product.get("productTitle") or product.get("title") or product.get("name") or "").strip())
+    if not product_url or not title:
+        return None
+    images = product.get("imageUrls") or product.get("images") or []
+    image_url = ""
+    if isinstance(images, list) and images:
+        image_url = str(images[0] or "")
+    elif isinstance(images, str):
+        image_url = images
+    sale_price = product.get("salePrice") or product.get("price") or product.get("priceRangeMin") or ""
+    currency = product.get("currency") or "USD"
+    sold_count = product.get("soldCount")
+    rating = product.get("ratingAverage") or product.get("rating")
+    summary_parts = []
+    if sold_count not in (None, ""):
+        summary_parts.append(f"sold_count={sold_count}")
+    if rating not in (None, ""):
+        summary_parts.append(f"rating={rating}")
+    if product.get("analysisReason"):
+        summary_parts.append(str(product.get("analysisReason")))
+    description = strip_markup(str(product.get("productDescription") or ""))
+    if description:
+        summary_parts.append(description[:180])
+    signal = {
+        "source_type": "marketplace_product",
+        "source_kind": "tiktok_shop_apify",
+        "source_layer": "social_commerce_product_url",
+        "query": query,
+        "title": title,
+        "publisher": product.get("sellerName") or product.get("storeName") or "TikTok Shop",
+        "domain": "shop.tiktok.com",
+        "vendor": product.get("sellerName") or product.get("storeName") or "",
+        "url": product_url,
+        "observed_date": CURRENT_DATE.isoformat(),
+        "scraped_at": product.get("scrapedAt") or "",
+        "date_kind": "observed_live_product",
+        "snippet": " · ".join(summary_parts)[:360],
+        "price": str(sale_price),
+        "currency": currency,
+        "sold_count": sold_count,
+        "rating": rating,
+        "rating_count": product.get("ratingCount"),
+        "review_count": product.get("reviewCount"),
+        "seller_id": product.get("sellerId") or "",
+        "seller_url": product.get("sellerUrl") or "",
+        "product_id": product.get("productId") or "",
+        "image_url": image_url,
+        "image_source": "TikTok Shop" if image_url else "",
+        "evidence_status": "verified_url",
+    }
+    if evidence_match(row, signal):
+        return signal
+    # A TikTok Shop keyword result is still useful social-commerce supply data,
+    # but keep the weaker relevance label visible in the data/score details.
+    signal["evidence_relevance"] = "keyword_search_result"
+    return signal
+
+
+def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    token = env_value("APIFY_TOKEN") or env_value("APIFY_API_TOKEN")
+    if not token or (env_value("APIFY_TIKTOK_ENABLED") or "1").lower() in {"0", "false", "no"}:
+        return {}
+    per_query = int_env("APIFY_TIKTOK_MAX_RESULTS_PER_QUERY", 1, 1, 5)
+    max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(rows) * per_query), 1, 250)
+    timeout = int_env("APIFY_TIKTOK_TIMEOUT_SECS", 300, 60, 900)
+    keywords: list[str] = []
+    rows_by_keyword: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        keyword = str((row.get("aliases") or [row["name"]])[0])
+        keywords.append(keyword)
+        rows_by_keyword[keyword.lower()] = row
+    payload = {
+        "keywords": keywords,
+        "countries": ["US"],
+        "maxResultsPerQuery": per_query,
+        "maxResultsTotal": max_total,
+        "deduplicateProducts": True,
+        "includeSummary": False,
+        "includeProductDetails": False,
+        "includeReviews": False,
+    }
+    url = f"https://api.apify.com/v2/acts/{APIFY_TIKTOK_ACTOR}/run-sync-get-dataset-items"
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "User-Agent": USER_AGENT,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            products = json.loads(resp.read().decode("utf-8"))
+    except Exception:
+        return {}
+    if not isinstance(products, list):
+        return {}
+    evidence_by_item: dict[str, list[dict[str, Any]]] = {}
+    seen: set[tuple[str, str]] = set()
+    for product in products:
+        if not isinstance(product, dict) or product.get("errorType"):
+            continue
+        matched_rows = []
+        for keyword in apify_tiktok_source_keywords(product):
+            row = rows_by_keyword.get(keyword.lower())
+            if row:
+                matched_rows.append((keyword, row))
+        if not matched_rows:
+            continue
+        for keyword, row in matched_rows:
+            signal = apify_tiktok_product_signal(product, row, keyword)
+            if not signal:
+                continue
+            dedupe_key = (row["id"], signal["url"])
+            if dedupe_key in seen:
+                continue
+            seen.add(dedupe_key)
+            evidence_by_item.setdefault(row["id"], []).append(signal)
+    return evidence_by_item
+
+
 def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     sources = []
     errors = []
@@ -613,6 +778,14 @@ def collect_all_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str,
                 evidence_by_item[row["id"]] = future.result()
             except Exception as exc:
                 evidence_by_item[row["id"]] = [{"source_type": "collection_error", "source_kind": "error", "error": f"{type(exc).__name__}: {exc}"}]
+    for item_id, sources in apify_tiktok_shop_evidence(rows).items():
+        existing = evidence_by_item.setdefault(item_id, [])
+        seen = {src.get("url") for src in existing if src.get("url")}
+        for src in sources:
+            if src.get("url") and src.get("url") not in seen:
+                existing.append(src)
+                seen.add(src.get("url"))
+        existing.sort(key=source_sort_date, reverse=True)
     return evidence_by_item
 
 
@@ -636,9 +809,9 @@ def retail_signal_sentence(row: dict[str, Any], trend_evidence: list[dict[str, A
         return f"{date} 발행된 {publisher}의 '{title}' 등 {len(trend_evidence)}개 발행 URL이 item 신호를 뒷받침합니다. {category_note}."
     if retail_evidence:
         lead = retail_evidence[0]
-        store = lead.get("publisher") or lead.get("domain") or "BSS/wholesale source"
+        store = lead.get("publisher") or lead.get("domain") or "BSS/wholesale/marketplace source"
         title = lead.get("title") or row["name"]
-        return f"발행일 있는 trend URL은 아직 없지만 {store}의 실제 상품 URL('{title}') 등 {len(retail_evidence)}개 live listing을 확인했습니다. 이는 trend claim이 아니라 매장 검토용 supply/availability 신호입니다. {category_note}."
+        return f"발행일 있는 trend URL은 아직 없지만 {store}의 실제 상품 URL('{title}') 등 {len(retail_evidence)}개 live listing을 확인했습니다. TikTok Shop/marketplace listing은 trend claim이 아니라 social-commerce supply/availability 신호로만 사용합니다. {category_note}."
     if timeframe == "weekly":
         return f"최근 14일 내 item-specific 발행 URL 또는 실제 상품 URL이 없어 이번 주 트렌드 주장으로 올리지 않고 watchlist로만 표시합니다. {category_note}."
     return f"이 기간에 item-specific 실제 URL 근거가 부족합니다. 순위는 BSS 적합도와 시즌성 기반의 watchlist 성격이며, 트렌드 주장으로 해석하면 안 됩니다."
@@ -720,6 +893,7 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
     retail_evidence = [src for src in all_evidence if not src.get("error") and is_retail_product_evidence(src)]
     verified = trend_evidence + retail_evidence
     article_count = len(trend_evidence)
+    tiktok_shop_count = sum(1 for src in retail_evidence if src.get("source_kind") == "tiktok_shop_apify")
     source_types = {src.get("source_type") for src in verified if src.get("source_type")}
     trend_domains = {src.get("domain") or src.get("publisher") for src in trend_evidence if src.get("domain") or src.get("publisher")}
     retail_domains = {src.get("domain") or src.get("publisher") for src in retail_evidence if src.get("domain") or src.get("publisher")}
@@ -768,7 +942,10 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
         evidence_summary.append("발행일 있는 trend URL 없음 — 주간 변화 claim 금지")
     if retail_evidence:
         stores = sorted({src.get("publisher") or src.get("domain") for src in retail_evidence if src.get("publisher") or src.get("domain")})
-        evidence_summary.append(f"BSS/wholesale 실제 상품 URL {len(retail_evidence)}개" + (f" ({', '.join(stores[:3])})" if stores else ""))
+        label = f"BSS/wholesale/marketplace 실제 상품 URL {len(retail_evidence)}개"
+        if tiktok_shop_count:
+            label += f" · TikTok Shop {tiktok_shop_count}개"
+        evidence_summary.append(label + (f" ({', '.join(stores[:3])})" if stores else ""))
     evidence_summary.append(f"BSS 적합도 {bss_fit}/5")
     if seasonal:
         evidence_summary.append("현재 시즌 적합")
@@ -818,6 +995,7 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
             "recent_trend_evidence": len(recent_trend),
             "recent_evidence": len(recent_trend),
             "retail_product_evidence": len(retail_evidence),
+            "tiktok_shop_product_evidence": tiktok_shop_count,
             "article_evidence": article_count,
             "unique_domains": len(trend_domains | retail_domains),
             "unique_trend_domains": len(trend_domains),
@@ -844,17 +1022,18 @@ def build_rankings() -> dict[str, Any]:
         "date": CURRENT_DATE.isoformat(),
         "title": "BSS Beauty Product Trend Rankings",
         "methodology": {
-            "summary": "Item-only rankings across the broader BSS beauty market. Search/watchlist pages are separated from evidence; published URLs drive trend movement, while live BSS/wholesale product URLs validate retail availability only.",
-            "score_components": ["published trend URL evidence", "recent published evidence", "BSS/wholesale product URLs", "BSS fit", "seasonality", "item specificity", "historical movement"],
+            "summary": "Item-only rankings across the broader BSS beauty market. Search/watchlist pages are separated from evidence; published URLs drive trend movement, while live BSS/wholesale/TikTok Shop product URLs validate retail availability and social-commerce supply only.",
+            "score_components": ["published trend URL evidence", "recent published evidence", "BSS/wholesale/TikTok Shop product URLs", "BSS fit", "seasonality", "item specificity", "historical movement"],
             "quality_rules": [
                 "출처 없는 주장은 trend claim으로 표시하지 않는다.",
                 "TikTok/Pinterest/X/Reddit/Amazon/Google Trends/BSS search pages are watchlist links only unless a specific post/listing/article URL is captured.",
+                "Apify TikTok Shop product URLs are concrete marketplace/listing evidence; sold counts and seller signals are useful, but they do not create a weekly trend shift without published/date-bearing evidence.",
                 "BSS/wholesale product pages are verified supply evidence, but they do not create a weekly trend shift without published/date-bearing evidence.",
                 "Weekly movement is NEW SHIFT / ACCELERATING / STABLE / COOLING / WATCHLIST based on published evidence recency and previous run comparison.",
             ],
             "limitations": [
                 "Bing News RSS is used for concrete article URLs/dates; BSS/wholesale stores are queried through public product suggest endpoints where available.",
-                "TikTok, Amazon, Reddit, Google Trends, and some store layers still require deeper authenticated/API collection for post/listing-level evidence.",
+                "TikTok Shop product listings are collected through the authenticated Apify actor when APIFY_TOKEN is configured; TikTok videos, Reddit, Google Trends, and some store layers still require deeper authenticated/API collection for post/thread/metric-level evidence.",
                 "Items with no published trend URL evidence are capped and labeled WATCHLIST, not treated as weekly market shifts.",
                 "Historical movement becomes stronger after several scheduled evidence-based runs.",
             ],
