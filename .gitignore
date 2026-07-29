@@ -30,6 +30,9 @@ public/
 # Growing run snapshots
 /data/ranking_runs/
 
+# Local operation logs
+/logs/
+
 # OS/editor
 .DS_Store
 *.swp
