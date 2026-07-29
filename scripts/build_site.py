@@ -155,10 +155,11 @@ def item_card(row: dict[str, Any], compact: bool = False) -> str:
     </article>"""
 
 
-def category_chips(categories: list[dict[str, Any]]) -> str:
-    chips = ['<a href="#all" class="cat-chip active">All</a>']
+def category_chips(categories: list[dict[str, Any]], base_path: str = "") -> str:
+    prefix = esc(base_path)
+    chips = [f'<a href="{prefix}#all" class="cat-chip active">All</a>']
     for cat in categories:
-        chips.append(f'<a href="#{esc(cat.get("id"))}" class="cat-chip">{esc(cat.get("name"))}</a>')
+        chips.append(f'<a href="{prefix}#{esc(cat.get("id"))}" class="cat-chip">{esc(cat.get("name"))}</a>')
     return '<nav class="category-strip">' + ''.join(chips) + '</nav>'
 
 
@@ -208,7 +209,7 @@ def render_home(data: dict[str, Any]) -> str:
           <small>{len(weekly)} items · {len(cats)} categories</small>
         </div>
       </section>
-      <div class="wrap">{category_chips(cats)}</div>
+      <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
       <section class="wrap block">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
         {top_three(weekly)}

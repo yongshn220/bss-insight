@@ -52,6 +52,27 @@ http://127.0.0.1:8765/index.html
 http://127.0.0.1:8765/rankings/weekly.html
 ```
 
+## Playwright 버그/작동 테스트
+
+첫 실행 또는 브라우저 캐시가 없을 때만 Chromium을 설치합니다.
+
+```bash
+npm install
+npm run test:e2e:install
+```
+
+실제 검증은 아래 명령으로 실행합니다. `npm run build`를 먼저 돌린 뒤 local static server를 띄우고, desktop/mobile Chromium에서 페이지 렌더링, 탭/카테고리 이동, item detail click-through/back navigation, internal link/hash anchor, client-side error/404를 함께 확인합니다.
+
+```bash
+npm run test:e2e
+```
+
+headed browser로 확인할 때:
+
+```bash
+npm run test:e2e:headed
+```
+
 ## Vercel 배포
 
 Vercel Git import 또는 Vercel CLI에서 이 repo를 사용합니다.
