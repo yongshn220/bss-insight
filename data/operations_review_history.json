@@ -1,11 +1,11 @@
 {
   "runs": [
     {
-      "reviewed_at": "2026-07-30T11:24:26.967405Z",
+      "reviewed_at": "2026-07-30T11:30:21.327036Z",
       "source_generated_at": "2026-07-30T11:17:17.688472Z",
       "date": "2026-07-30",
       "timeframe": "weekly",
-      "playwright_summary": "8 passed (14.7s)",
+      "playwright_summary": "8 passed (14.3s)",
       "metrics": {
         "items": 44,
         "categories": 8,
@@ -365,7 +365,7 @@
         }
       ],
       "good_points": [
-        "Playwright QA 완료: 8 passed (14.7s)",
+        "Playwright QA 완료: 8 passed (14.3s)",
         "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
         "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 Passion Twist Crochet Hair, #3 Leave-In Conditioner Spray",
         "Evidence separation 유지: published trend URL 보유 item 11개, BSS/marketplace live product URL 보유 item 44개.",

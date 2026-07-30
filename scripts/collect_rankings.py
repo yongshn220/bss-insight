@@ -276,7 +276,7 @@ def load_next_loop_focus() -> dict[str, Any]:
         return {}
     try:
         loaded = json.loads(NEXT_LOOP_FOCUS_PATH.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
         loaded = {}
     _NEXT_LOOP_FOCUS_CACHE = loaded if isinstance(loaded, dict) else {}
     return _NEXT_LOOP_FOCUS_CACHE
@@ -288,13 +288,19 @@ def next_loop_focus_queries(row: dict[str, Any]) -> list[str]:
     max_queries = int_env("NEXT_LOOP_FOCUS_QUERIES_PER_ITEM", 2, 0, 6)
     if max_queries <= 0:
         return []
+    focus_items = focus.get("focus_items", []) if isinstance(focus, dict) else []
+    if not isinstance(focus_items, list):
+        return []
     item_id = row.get("id")
     output: list[str] = []
     seen: set[str] = set()
-    for item in focus.get("focus_items", []):
-        if item.get("item_id") != item_id:
+    for item in focus_items:
+        if not isinstance(item, dict) or item.get("item_id") != item_id:
             continue
-        for query in item.get("queries", []):
+        queries = item.get("queries", [])
+        if not isinstance(queries, list):
+            continue
+        for query in queries:
             if isinstance(query, str) and query.strip() and query not in seen:
                 output.append(query.strip())
                 seen.add(query.strip())

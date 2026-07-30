@@ -18,10 +18,12 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
+PUBLIC_DATA_DIR = ROOT / "public" / "data"
 RANKINGS_PATH = DATA_DIR / "rankings.json"
 OPS_REVIEW_PATH = DATA_DIR / "operations_review.json"
 OPS_HISTORY_PATH = DATA_DIR / "operations_review_history.json"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
+PUBLIC_OPS_REVIEW_PATH = PUBLIC_DATA_DIR / "operations_review_public.json"
 
 TIMEFRAME = "weekly"
 MAX_FOCUS_ITEMS = 6
@@ -36,7 +38,7 @@ def load_json(path: Path, default: Any) -> Any:
         return default
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
         return default
 
 
@@ -94,12 +96,19 @@ def category_stats(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def previous_focus_follow_up(previous_focus: dict[str, Any], rows_by_id: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     follow_up = []
-    for item in previous_focus.get("focus_items", []):
+    focus_items = previous_focus.get("focus_items", []) if isinstance(previous_focus, dict) else []
+    if not isinstance(focus_items, list):
+        return []
+    for item in focus_items:
+        if not isinstance(item, dict):
+            continue
         item_id = item.get("item_id")
         row = rows_by_id.get(str(item_id))
         if not row:
             continue
         baseline = item.get("baseline_source_counts") or {}
+        if not isinstance(baseline, dict):
+            baseline = {}
         current = row.get("source_counts") or {}
         current_trend = count(row, "trend_evidence")
         baseline_trend = int(baseline.get("trend_evidence") or 0)
@@ -142,8 +151,6 @@ def query_variants(row: dict[str, Any]) -> list[str]:
         queries.extend([f'"{name}" nail inspo trend', f'"{name}" press on review'])
     elif "makeup" in category:
         queries.extend([f'"{name}" makeup review', f'"{name}" beauty supply haul'])
-    elif "tools" in category:
-        queries.extend([f'"{name}" beauty supply review', f'"{name}" hair tool TikTok'])
     seen = set()
     output = []
     for query in queries:
@@ -184,11 +191,16 @@ def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def build_review(playwright_summary: str) -> dict[str, Any]:
     data = load_json(RANKINGS_PATH, {})
-    rows = data.get("rankings", {}).get(TIMEFRAME, [])
+    if not isinstance(data, dict):
+        data = {}
+    rankings = data.get("rankings", {})
+    rows = rankings.get(TIMEFRAME, []) if isinstance(rankings, dict) else []
+    rows = [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else []
     if not rows:
         raise SystemExit(f"No {TIMEFRAME} rankings found at {RANKINGS_PATH}")
 
     cats = data.get("categories", [])
+    cats = cats if isinstance(cats, list) else []
     rows_by_id = {str(row.get("item_id")): row for row in rows if row.get("item_id")}
     previous_focus = load_json(NEXT_LOOP_FOCUS_PATH, {})
     cat_stats = category_stats(rows)
@@ -265,6 +277,10 @@ def persist_review(review: dict[str, Any]) -> dict[str, Any]:
     save_json(OPS_REVIEW_PATH, review)
 
     history = load_json(OPS_HISTORY_PATH, {"runs": []})
+    if not isinstance(history, dict):
+        history = {"runs": []}
+    if not isinstance(history.get("runs"), list):
+        history["runs"] = []
     history.setdefault("runs", []).insert(0, review)
     history["runs"] = history["runs"][:52]
     save_json(OPS_HISTORY_PATH, history)
@@ -280,6 +296,64 @@ def persist_review(review: dict[str, Any]) -> dict[str, Any]:
     return next_focus
 
 
+def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
+    """Return a sanitized review suitable for public live verification."""
+    payload = {
+        key: review.get(key)
+        for key in [
+            "reviewed_at",
+            "source_generated_at",
+            "date",
+            "timeframe",
+            "playwright_summary",
+            "metrics",
+            "good_points",
+            "improvement_points",
+            "qa_focus",
+        ]
+        if key in review
+    }
+    focus_items = review.get("next_loop_focus_items")
+    if isinstance(focus_items, list):
+        payload["next_loop_focus_items"] = [
+            {
+                "item_id": item.get("item_id"),
+                "item_name": item.get("item_name"),
+                "category": item.get("category"),
+                "rank": item.get("rank"),
+                "reason": item.get("reason"),
+            }
+            for item in focus_items
+            if isinstance(item, dict)
+        ]
+    follow_up = review.get("previous_loop_follow_up")
+    if isinstance(follow_up, list):
+        payload["previous_loop_follow_up"] = [
+            {
+                "item_id": item.get("item_id"),
+                "item_name": item.get("item_name"),
+                "status": item.get("status"),
+                "note": item.get("note"),
+            }
+            for item in follow_up
+            if isinstance(item, dict)
+        ]
+    return payload
+
+
+def refresh_public_review(review: dict[str, Any]) -> str:
+    """Keep public/data fresh when review runs after Playwright's initial build."""
+    PUBLIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    # Remove older full/internal public copies from earlier builds; public should
+    # only expose the sanitized review, never raw next-loop query strategy.
+    for stale_name in ("operations_review.json", "next_loop_focus.json"):
+        stale = PUBLIC_DATA_DIR / stale_name
+        if stale.exists() or stale.is_symlink():
+            stale.unlink()
+    save_json(PUBLIC_OPS_REVIEW_PATH, public_review_payload(review))
+    return str(PUBLIC_OPS_REVIEW_PATH)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--playwright-summary", default="", help="Human-readable Playwright result line from the just-completed QA run.")
@@ -287,11 +361,13 @@ def main() -> int:
 
     review = build_review(args.playwright_summary)
     next_focus = persist_review(review)
+    public_review_path = refresh_public_review(review)
     print(json.dumps({
         "status": "reviewed",
         "review_path": str(OPS_REVIEW_PATH),
         "history_path": str(OPS_HISTORY_PATH),
         "next_focus_path": str(NEXT_LOOP_FOCUS_PATH),
+        "public_review_path": public_review_path,
         "metrics": review["metrics"],
         "good_points": review["good_points"][:3],
         "improvement_points": review["improvement_points"][:3],

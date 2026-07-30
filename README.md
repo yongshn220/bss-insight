@@ -34,6 +34,7 @@ data/rankings.json              최신 ranking data
 data/ranking_history.json       ranking history snapshot
 data/operations_review.json     최신 post-QA review
 data/next_loop_focus.json       다음 collection loop에 적용할 focus queries
+public/data/operations_review_public.json  live verification용 sanitized review output
 package.json                    Vercel build command
 vercel.json                     Vercel output config
 ```
@@ -70,10 +71,16 @@ npm run test:e2e:install
 npm run test:e2e
 ```
 
-최종 QA가 통과하면 아래 review script를 실행해 이번 run의 좋은 부분, 개선해야 할 부분, 다음 loop에서 더 깊게 볼 item/query를 기록합니다. 다음 `collect_rankings.py` 실행은 `data/next_loop_focus.json`을 읽어 약한 item에 focus query를 추가 적용합니다.
+최종 QA가 통과하면 아래 review script를 실행해 이번 run의 좋은 부분, 개선해야 할 부분, 다음 loop에서 더 깊게 볼 item/query를 기록합니다. 다음 `collect_rankings.py` 실행은 `data/next_loop_focus.json`을 읽어 약한 item에 focus query를 추가 적용합니다. Review script는 QA 이후 stale public artifact가 생기지 않도록 `public/data/operations_review_public.json`도 즉시 갱신합니다.
 
 ```bash
 python3 scripts/review_rankings.py --playwright-summary "Playwright passed"
+```
+
+QA와 review를 한 번에 실행할 때:
+
+```bash
+npm run test:e2e:review
 ```
 
 headed browser로 확인할 때:

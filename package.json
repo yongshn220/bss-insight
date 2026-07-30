@@ -10,6 +10,7 @@
     "start": "python3 -m http.server 8765",
     "test": "npm run test:e2e",
     "test:e2e": "npm run build && PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright playwright test",
+    "test:e2e:review": "npm run test:e2e && python3 scripts/review_rankings.py --playwright-summary \"npm run test:e2e passed\"",
     "test:e2e:headed": "npm run build && PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright playwright test --headed",
     "test:e2e:install": "PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright playwright install chromium"
   },
