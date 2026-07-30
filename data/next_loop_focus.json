@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-30T18:18:00.896479Z",
+  "updated_at": "2026-07-30T19:17:52.319667Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -136,10 +136,44 @@
       }
     },
     {
+      "item_id": "13x4-hd-lace-frontal-wig",
+      "item_name": "13x4 HD Lace Frontal Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 13,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
+      "queries": [
+        "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
+        "\"13x4 HD Lace Frontal Wig\" TikTok review",
+        "\"13x4 HD Lace Frontal Wig\" Amazon reviews",
+        "\"13x4 HD Lace Frontal Wig\" black beauty supply",
+        "\"13x4 HD Lace Frontal Wig\" install review",
+        "\"13x4 HD Lace Frontal Wig\" lace wig customer review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 1,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 1,
+        "tiktok_shop_product_evidence": 1,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 1,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
       "item_id": "human-hair-boho-braiding-bundles",
       "item_name": "Human Hair Boho Braiding Bundles",
       "category": "Braiding & Crochet Hair",
-      "rank": 13,
+      "rank": 14,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Human Hair Boho Braiding Bundles\" beauty supply trend",
@@ -166,40 +200,6 @@
         "watchlist_links": 14,
         "source_layers": 1,
         "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "gold-braid-cuffs-12-pack",
-      "item_name": "Gold Braid Cuffs 12-Pack",
-      "category": "Jewelry & Fashion Accessories",
-      "rank": 14,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
-        "\"Gold Braid Cuffs 12-Pack\" TikTok review",
-        "\"Gold Braid Cuffs 12-Pack\" Amazon reviews",
-        "\"Gold Braid Cuffs 12-Pack\" black beauty supply",
-        "\"Gold Braid Cuffs 12-Pack\" black women outfit trend",
-        "\"Gold Braid Cuffs 12-Pack\" wholesale beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 1,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 1,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 1,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 16,
-        "source_layers": 1,
-        "manual_references": 16,
         "news_magazine": 0
       }
     }
