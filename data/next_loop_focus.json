@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-30T15:17:48.878066Z",
+  "updated_at": "2026-07-30T16:18:14.916292Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "gold-braid-cuffs-12-pack",
-      "item_name": "Gold Braid Cuffs 12-Pack",
-      "category": "Jewelry & Fashion Accessories",
+      "item_id": "extra-large-satin-bonnet",
+      "item_name": "Extra Large Satin Bonnet",
+      "category": "Tools & Accessories",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
-        "\"Gold Braid Cuffs 12-Pack\" TikTok review",
-        "\"Gold Braid Cuffs 12-Pack\" Amazon reviews",
-        "\"Gold Braid Cuffs 12-Pack\" black beauty supply",
-        "\"Gold Braid Cuffs 12-Pack\" black women outfit trend",
-        "\"Gold Braid Cuffs 12-Pack\" wholesale beauty supply"
+        "\"Extra Large Satin Bonnet\" beauty supply trend",
+        "\"Extra Large Satin Bonnet\" TikTok review",
+        "\"Extra Large Satin Bonnet\" Amazon reviews",
+        "\"Extra Large Satin Bonnet\" black beauty supply",
+        "\"Extra Large Satin Bonnet\" beauty supply review",
+        "\"Extra Large Satin Bonnet\" hair tool TikTok"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -31,9 +31,43 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
-        "watchlist_links": 16,
+        "watchlist_links": 14,
         "source_layers": 0,
-        "manual_references": 16,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "synthetic-lace-front-wig",
+      "item_name": "Synthetic Lace Front Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 10,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Synthetic Lace Front Wig\" beauty supply trend",
+        "\"Synthetic Lace Front Wig\" TikTok review",
+        "\"Synthetic Lace Front Wig\" Amazon reviews",
+        "\"Synthetic Lace Front Wig\" black beauty supply",
+        "\"Synthetic Lace Front Wig\" install review",
+        "\"Synthetic Lace Front Wig\" lace wig customer review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 1,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 1,
+        "tiktok_shop_product_evidence": 1,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 1,
+        "manual_references": 14,
         "news_magazine": 0
       }
     },
@@ -70,42 +104,10 @@
       }
     },
     {
-      "item_id": "braid-foaming-mousse",
-      "item_name": "Foaming Mousse for Braids",
-      "category": "Hair Care & Styling",
-      "rank": 12,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Foaming Mousse for Braids\" beauty supply trend",
-        "\"Foaming Mousse for Braids\" TikTok review",
-        "\"Foaming Mousse for Braids\" Amazon reviews",
-        "\"Foaming Mousse for Braids\" black beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 1,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 1,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 1,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
-        "watchlist_links": 14,
-        "source_layers": 1,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
       "item_id": "elastic-melting-band",
       "item_name": "Elastic Melting Band",
       "category": "Tools & Accessories",
-      "rank": 13,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Elastic Melting Band\" beauty supply trend",
@@ -136,18 +138,18 @@
       }
     },
     {
-      "item_id": "synthetic-lace-front-wig",
-      "item_name": "Synthetic Lace Front Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 14,
+      "item_id": "edge-brush-comb-set",
+      "item_name": "Edge Brush & Comb Set",
+      "category": "Tools & Accessories",
+      "rank": 13,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
-        "\"Synthetic Lace Front Wig\" beauty supply trend",
-        "\"Synthetic Lace Front Wig\" TikTok review",
-        "\"Synthetic Lace Front Wig\" Amazon reviews",
-        "\"Synthetic Lace Front Wig\" black beauty supply",
-        "\"Synthetic Lace Front Wig\" install review",
-        "\"Synthetic Lace Front Wig\" lace wig customer review"
+        "\"Edge Brush & Comb Set\" beauty supply trend",
+        "\"Edge Brush & Comb Set\" TikTok review",
+        "\"Edge Brush & Comb Set\" Amazon reviews",
+        "\"Edge Brush & Comb Set\" black beauty supply",
+        "\"Edge Brush & Comb Set\" beauty supply review",
+        "\"Edge Brush & Comb Set\" hair tool TikTok"
       ],
       "baseline_source_counts": {
         "verified_evidence": 1,
@@ -162,7 +164,7 @@
         "unique_retail_domains": 1,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 1,
         "manual_references": 14,
@@ -170,18 +172,18 @@
       }
     },
     {
-      "item_id": "human-hair-boho-braiding-bundles",
-      "item_name": "Human Hair Boho Braiding Bundles",
-      "category": "Braiding & Crochet Hair",
-      "rank": 15,
+      "item_id": "13x4-hd-lace-frontal-wig",
+      "item_name": "13x4 HD Lace Frontal Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 14,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
-        "\"Human Hair Boho Braiding Bundles\" beauty supply trend",
-        "\"Human Hair Boho Braiding Bundles\" TikTok review",
-        "\"Human Hair Boho Braiding Bundles\" Amazon reviews",
-        "\"Human Hair Boho Braiding Bundles\" black beauty supply",
-        "\"Human Hair Boho Braiding Bundles\" protective styles trend",
-        "\"Human Hair Boho Braiding Bundles\" knotless braids TikTok"
+        "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
+        "\"13x4 HD Lace Frontal Wig\" TikTok review",
+        "\"13x4 HD Lace Frontal Wig\" Amazon reviews",
+        "\"13x4 HD Lace Frontal Wig\" black beauty supply",
+        "\"13x4 HD Lace Frontal Wig\" install review",
+        "\"13x4 HD Lace Frontal Wig\" lace wig customer review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 1,
@@ -196,7 +198,7 @@
         "unique_retail_domains": 1,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 1,
         "manual_references": 14,
