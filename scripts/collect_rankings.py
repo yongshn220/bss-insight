@@ -29,6 +29,7 @@ DATA_DIR = ROOT / "data"
 RANKINGS_PATH = DATA_DIR / "rankings.json"
 HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RUNS_DIR = DATA_DIR / "ranking_runs"
+NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 CURRENT_DATE = dt.date.today()
@@ -261,6 +262,47 @@ def int_env(name: str, default: int, lower: int, upper: int) -> int:
     return max(lower, min(upper, value))
 
 
+_NEXT_LOOP_FOCUS_CACHE: dict[str, Any] | None = None
+
+
+def load_next_loop_focus() -> dict[str, Any]:
+    """Read post-QA review focus from the previous loop, if available."""
+    global _NEXT_LOOP_FOCUS_CACHE
+    cached = _NEXT_LOOP_FOCUS_CACHE
+    if cached is not None:
+        return cached
+    if not NEXT_LOOP_FOCUS_PATH.exists():
+        _NEXT_LOOP_FOCUS_CACHE = {}
+        return {}
+    try:
+        loaded = json.loads(NEXT_LOOP_FOCUS_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        loaded = {}
+    _NEXT_LOOP_FOCUS_CACHE = loaded if isinstance(loaded, dict) else {}
+    return _NEXT_LOOP_FOCUS_CACHE
+
+
+def next_loop_focus_queries(row: dict[str, Any]) -> list[str]:
+    """Return feedback queries generated after the previous Playwright QA review."""
+    focus = load_next_loop_focus()
+    max_queries = int_env("NEXT_LOOP_FOCUS_QUERIES_PER_ITEM", 2, 0, 6)
+    if max_queries <= 0:
+        return []
+    item_id = row.get("id")
+    output: list[str] = []
+    seen: set[str] = set()
+    for item in focus.get("focus_items", []):
+        if item.get("item_id") != item_id:
+            continue
+        for query in item.get("queries", []):
+            if isinstance(query, str) and query.strip() and query not in seen:
+                output.append(query.strip())
+                seen.add(query.strip())
+            if len(output) >= max_queries:
+                return output
+    return output
+
+
 def google_news_rss(query: str, days: int, limit: int = 8) -> list[dict[str, Any]]:
     q = f"{query} when:{days}d"
     url = "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": q, "hl": "en-US", "gl": "US", "ceid": "US:en"})
@@ -433,7 +475,7 @@ def category_visual_url(row: dict[str, Any]) -> str:
 
 
 def bing_news_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> list[dict[str, Any]]:
-    query = row["aliases"][0]
+    query = str(row.get("focus_query") or row["aliases"][0])
     url = "https://www.bing.com/news/search?" + urllib.parse.urlencode({"q": query, "format": "rss"})
     status, text, error = fetch(url, timeout=10)
     if error or not text:
@@ -520,7 +562,7 @@ def gdelt_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> list
 def google_news_articles(row: dict[str, Any], days: int = 365, limit: int = 5) -> list[dict[str, Any]]:
     # Secondary source; Google News can rate-limit, so errors are recorded but not fatal.
     primary = row["aliases"][0]
-    query = f'"{primary}" {row.get("search_context", "beauty supply")}'
+    query = str(row.get("focus_query") or f'"{primary}" {row.get("search_context", "beauty supply")}')
     results = google_news_rss(query, days=days, limit=limit)
     articles = []
     for result in results:
@@ -738,23 +780,38 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
 def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     sources = []
     errors = []
-    # Bing News RSS is the primary public source because it returns concrete article URLs and dates reliably.
-    # GDELT and Google News are secondary and can rate-limit; they are used only after Bing.
-    for fn in (bing_news_articles,):
-        results = fn(row, days=365)
-        for src in results:
-            if src.get("error"):
-                errors.append(src)
-            else:
-                sources.append(src)
-    if len(sources) < 2:
-        for fn in (google_news_articles,):
-            results = fn(row, days=365)
+
+    def add_news_results(query_row: dict[str, Any], *, feedback_query: str = "", always_secondary: bool = False) -> None:
+        local_sources: list[dict[str, Any]] = []
+        # Bing News RSS is the primary public source because it returns concrete article URLs and dates reliably.
+        # Google News is secondary and can rate-limit; it is used after weak Bing coverage, and always for
+        # feedback-focus queries because those are intentionally narrow next-loop probes.
+        for fn in (bing_news_articles,):
+            results = fn(query_row, days=365)
             for src in results:
                 if src.get("error"):
                     errors.append(src)
                 else:
-                    sources.append(src)
+                    if feedback_query:
+                        src["feedback_focus_query"] = feedback_query
+                    local_sources.append(src)
+        if len(local_sources) < 2 or always_secondary:
+            for fn in (google_news_articles,):
+                results = fn(query_row, days=365)
+                for src in results:
+                    if src.get("error"):
+                        errors.append(src)
+                    else:
+                        if feedback_query:
+                            src["feedback_focus_query"] = feedback_query
+                        local_sources.append(src)
+        sources.extend(local_sources)
+
+    add_news_results(row)
+    for query in next_loop_focus_queries(row):
+        focused_row = dict(row)
+        focused_row["focus_query"] = query
+        add_news_results(focused_row, feedback_query=query, always_secondary=True)
     sources.extend(retail_product_evidence(row))
     deduped = []
     seen = set()
