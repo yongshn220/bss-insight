@@ -1,21 +1,19 @@
 {
-  "updated_at": "2026-07-31T04:18:01.666153Z",
+  "updated_at": "2026-07-31T05:18:02.145299Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "synthetic-lace-front-wig",
-      "item_name": "Synthetic Lace Front Wig",
-      "category": "Wigs & Hair Pieces",
+      "item_id": "lace-melting-spray",
+      "item_name": "Lace Melting Spray",
+      "category": "Hair Care & Styling",
       "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
-        "\"Synthetic Lace Front Wig\" beauty supply trend",
-        "\"Synthetic Lace Front Wig\" TikTok review",
-        "\"Synthetic Lace Front Wig\" Amazon reviews",
-        "\"Synthetic Lace Front Wig\" black beauty supply",
-        "\"Synthetic Lace Front Wig\" install review",
-        "\"Synthetic Lace Front Wig\" lace wig customer review"
+        "\"Lace Melting Spray\" beauty supply trend",
+        "\"Lace Melting Spray\" TikTok review",
+        "\"Lace Melting Spray\" Amazon reviews",
+        "\"Lace Melting Spray\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 1,
@@ -38,16 +36,16 @@
       }
     },
     {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
+      "item_id": "braid-foaming-mousse",
+      "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
       "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
-        "\"Lace Melting Spray\" beauty supply trend",
-        "\"Lace Melting Spray\" TikTok review",
-        "\"Lace Melting Spray\" Amazon reviews",
-        "\"Lace Melting Spray\" black beauty supply"
+        "\"Foaming Mousse for Braids\" beauty supply trend",
+        "\"Foaming Mousse for Braids\" TikTok review",
+        "\"Foaming Mousse for Braids\" Amazon reviews",
+        "\"Foaming Mousse for Braids\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 1,
@@ -104,18 +102,18 @@
       }
     },
     {
-      "item_id": "edge-brush-comb-set",
-      "item_name": "Edge Brush & Comb Set",
-      "category": "Tools & Accessories",
+      "item_id": "synthetic-lace-front-wig",
+      "item_name": "Synthetic Lace Front Wig",
+      "category": "Wigs & Hair Pieces",
       "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
-        "\"Edge Brush & Comb Set\" beauty supply trend",
-        "\"Edge Brush & Comb Set\" TikTok review",
-        "\"Edge Brush & Comb Set\" Amazon reviews",
-        "\"Edge Brush & Comb Set\" black beauty supply",
-        "\"Edge Brush & Comb Set\" beauty supply review",
-        "\"Edge Brush & Comb Set\" hair tool TikTok"
+        "\"Synthetic Lace Front Wig\" beauty supply trend",
+        "\"Synthetic Lace Front Wig\" TikTok review",
+        "\"Synthetic Lace Front Wig\" Amazon reviews",
+        "\"Synthetic Lace Front Wig\" black beauty supply",
+        "\"Synthetic Lace Front Wig\" install review",
+        "\"Synthetic Lace Front Wig\" lace wig customer review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 1,
@@ -130,7 +128,7 @@
         "unique_retail_domains": 1,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 0,
         "watchlist_links": 14,
         "source_layers": 1,
         "manual_references": 14,
