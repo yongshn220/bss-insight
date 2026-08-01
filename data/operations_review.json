@@ -1,18 +1,18 @@
 {
-  "reviewed_at": "2026-08-01T01:18:33.039834Z",
-  "source_generated_at": "2026-08-01T01:18:17.621967Z",
+  "reviewed_at": "2026-08-01T02:18:22.876776Z",
+  "source_generated_at": "2026-08-01T02:18:07.773747Z",
   "date": "2026-08-01",
   "timeframe": "weekly",
-  "playwright_summary": "8 passed (14.1s)",
+  "playwright_summary": "8 passed (13.8s)",
   "metrics": {
     "items": 44,
     "categories": 8,
-    "trend_items": 4,
-    "recent_trend_items": 4,
+    "trend_items": 6,
+    "recent_trend_items": 6,
     "retail_product_items": 44,
     "tiktok_shop_items": 44,
     "product_image_items": 44,
-    "watchlist_items": 40
+    "watchlist_items": 38
   },
   "category_stats": [
     {
@@ -38,10 +38,10 @@
     {
       "category": "Jewelry & Fashion Accessories",
       "items": 8,
-      "trend_items": 0,
+      "trend_items": 1,
       "retail_items": 8,
       "product_image_items": 8,
-      "trend_ratio": 0.0,
+      "trend_ratio": 0.12,
       "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
@@ -58,10 +58,10 @@
     {
       "category": "Makeup & Cosmetics",
       "items": 4,
-      "trend_items": 1,
+      "trend_items": 2,
       "retail_items": 4,
       "product_image_items": 4,
-      "trend_ratio": 0.25,
+      "trend_ratio": 0.5,
       "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
@@ -114,7 +114,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -133,7 +133,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -221,7 +221,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -334,7 +334,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -363,24 +363,24 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 8 passed (14.1s)",
+    "Playwright QA 완료: 8 passed (13.8s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Leave-In Conditioner Spray, #3 Passion Twist Crochet Hair",
-    "Evidence separation 유지: published trend URL 보유 item 4개, BSS/marketplace live product URL 보유 item 44개.",
+    "Top 3가 item-level로 정렬되었습니다: #1 Leave-In Conditioner Spray, #2 Rosemary Mint Scalp Oil, #3 Brown Lip Liner Pencil",
+    "Evidence separation 유지: published trend URL 보유 item 6개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
   ],
   "improvement_points": [
-    "40개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-    "최근 14일 발행 근거 보유 item이 4개로 낮습니다. weekly view는 recency가 핵심이므로 신선한 article/post URL capture가 필요합니다.",
-    "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8)."
+    "38개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "최근 14일 발행 근거 보유 item이 6개로 낮습니다. weekly view는 recency가 핵심이므로 신선한 article/post URL capture가 필요합니다.",
+    "근거가 가장 약한 category: Lashes & Brows (trend 0/4, retail 4/4)."
   ],
   "next_loop_focus_items": [
     {
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 5,
+      "rank": 7,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -403,7 +403,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -414,7 +414,7 @@
       "item_id": "lace-melting-spray",
       "item_name": "Lace Melting Spray",
       "category": "Hair Care & Styling",
-      "rank": 6,
+      "rank": 8,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Lace Melting Spray\" beauty supply trend",
@@ -446,7 +446,7 @@
       "item_id": "glueless-pre-cut-hd-lace-wig",
       "item_name": "Glueless Pre-Cut HD Lace Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 7,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
@@ -469,7 +469,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -480,7 +480,7 @@
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 8,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -514,7 +514,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 9,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -548,7 +548,7 @@
       "item_id": "braid-foaming-mousse",
       "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 10,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Foaming Mousse for Braids\" beauty supply trend",
