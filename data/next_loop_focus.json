@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-01T08:18:10.033119Z",
+  "updated_at": "2026-08-01T09:18:13.353965Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,7 +7,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 7,
+      "rank": 6,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -30,7 +30,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -41,7 +41,7 @@
       "item_id": "lace-melting-spray",
       "item_name": "Lace Melting Spray",
       "category": "Hair Care & Styling",
-      "rank": 8,
+      "rank": 7,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Lace Melting Spray\" beauty supply trend",
@@ -73,7 +73,7 @@
       "item_id": "glueless-pre-cut-hd-lace-wig",
       "item_name": "Glueless Pre-Cut HD Lace Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 8,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
@@ -107,7 +107,7 @@
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -130,7 +130,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 11,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -141,7 +141,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -175,7 +175,7 @@
       "item_id": "braid-foaming-mousse",
       "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 12,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Foaming Mousse for Braids\" beauty supply trend",
@@ -196,7 +196,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
