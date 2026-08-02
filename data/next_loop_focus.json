@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-01T23:18:30.246354Z",
+  "updated_at": "2026-08-02T00:18:37.429926Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -96,41 +96,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "13x4-hd-lace-frontal-wig",
-      "item_name": "13x4 HD Lace Frontal Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 10,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
-        "\"13x4 HD Lace Frontal Wig\" TikTok review",
-        "\"13x4 HD Lace Frontal Wig\" Amazon reviews",
-        "\"13x4 HD Lace Frontal Wig\" black beauty supply",
-        "\"13x4 HD Lace Frontal Wig\" install review",
-        "\"13x4 HD Lace Frontal Wig\" lace wig customer review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 11,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -141,7 +107,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -175,7 +141,7 @@
       "item_id": "braid-foaming-mousse",
       "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 12,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Foaming Mousse for Braids\" beauty supply trend",
@@ -197,6 +163,40 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 3,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "edge-brush-comb-set",
+      "item_name": "Edge Brush & Comb Set",
+      "category": "Tools & Accessories",
+      "rank": 12,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Edge Brush & Comb Set\" beauty supply trend",
+        "\"Edge Brush & Comb Set\" TikTok review",
+        "\"Edge Brush & Comb Set\" Amazon reviews",
+        "\"Edge Brush & Comb Set\" black beauty supply",
+        "\"Edge Brush & Comb Set\" beauty supply review",
+        "\"Edge Brush & Comb Set\" hair tool TikTok"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 10,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 10,
+        "tiktok_shop_product_evidence": 1,
+        "article_evidence": 0,
+        "unique_domains": 4,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 4,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
