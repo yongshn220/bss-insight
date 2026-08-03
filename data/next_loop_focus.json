@@ -1,21 +1,19 @@
 {
-  "updated_at": "2026-08-03T04:18:29.348934Z",
+  "updated_at": "2026-08-03T05:18:22.662313Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "marley-twist-hair",
-      "item_name": "Marley Twist Hair",
-      "category": "Braiding & Crochet Hair",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "category": "Hair Care & Styling",
       "rank": 43,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Marley Twist Hair\" beauty supply trend",
-        "\"Marley Twist Hair\" TikTok review",
-        "\"Marley Twist Hair\" Amazon reviews",
-        "\"Marley Twist Hair\" black beauty supply",
-        "\"Marley Twist Hair\" protective styles trend",
-        "\"Marley Twist Hair\" knotless braids TikTok"
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "\"Wig Adhesive Glue\" TikTok review",
+        "\"Wig Adhesive Glue\" Amazon reviews",
+        "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -38,18 +36,18 @@
       }
     },
     {
-      "item_id": "cuticle-oil-pen",
-      "item_name": "Cuticle Oil Pen",
-      "category": "Nails",
+      "item_id": "14g-belly-button-ring",
+      "item_name": "14G Belly Button Ring",
+      "category": "Jewelry & Fashion Accessories",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Cuticle Oil Pen\" beauty supply trend",
-        "\"Cuticle Oil Pen\" TikTok review",
-        "\"Cuticle Oil Pen\" Amazon reviews",
-        "\"Cuticle Oil Pen\" black beauty supply",
-        "\"Cuticle Oil Pen\" nail inspo trend",
-        "\"Cuticle Oil Pen\" press on review"
+        "\"14G Belly Button Ring\" beauty supply trend",
+        "\"14G Belly Button Ring\" TikTok review",
+        "\"14G Belly Button Ring\" Amazon reviews",
+        "\"14G Belly Button Ring\" black beauty supply",
+        "\"14G Belly Button Ring\" black women outfit trend",
+        "\"14G Belly Button Ring\" wholesale beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -65,9 +63,9 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
-        "watchlist_links": 14,
+        "watchlist_links": 16,
         "source_layers": 0,
-        "manual_references": 14,
+        "manual_references": 16,
         "news_magazine": 0
       }
     },
@@ -98,7 +96,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -198,7 +196,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 11,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
