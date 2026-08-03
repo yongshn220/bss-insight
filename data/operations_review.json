@@ -1,29 +1,29 @@
 {
-  "reviewed_at": "2026-08-03T12:18:29.421071Z",
-  "source_generated_at": "2026-08-03T12:18:14.004542Z",
+  "reviewed_at": "2026-08-03T13:18:28.162018Z",
+  "source_generated_at": "2026-08-03T13:18:12.862300Z",
   "date": "2026-08-03",
   "timeframe": "weekly",
-  "playwright_summary": "8 passed (14.0s)",
+  "playwright_summary": "8 passed (13.9s)",
   "metrics": {
     "items": 44,
     "categories": 8,
-    "trend_items": 8,
-    "recent_trend_items": 8,
-    "retail_product_items": 44,
-    "tiktok_shop_items": 44,
-    "product_image_items": 44,
-    "watchlist_items": 36
+    "trend_items": 9,
+    "recent_trend_items": 9,
+    "retail_product_items": 43,
+    "tiktok_shop_items": 43,
+    "product_image_items": 43,
+    "watchlist_items": 35
   },
   "category_stats": [
     {
       "category": "Braiding & Crochet Hair",
       "items": 6,
       "trend_items": 1,
-      "retail_items": 6,
-      "product_image_items": 6,
+      "retail_items": 5,
+      "product_image_items": 5,
       "trend_ratio": 0.17,
-      "retail_ratio": 1.0,
-      "product_image_ratio": 1.0
+      "retail_ratio": 0.83,
+      "product_image_ratio": 0.83
     },
     {
       "category": "Hair Care & Styling",
@@ -38,10 +38,10 @@
     {
       "category": "Jewelry & Fashion Accessories",
       "items": 8,
-      "trend_items": 1,
+      "trend_items": 2,
       "retail_items": 8,
       "product_image_items": 8,
-      "trend_ratio": 0.12,
+      "trend_ratio": 0.25,
       "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
@@ -133,7 +133,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -309,7 +309,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -334,7 +334,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -353,7 +353,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -363,23 +363,59 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 8 passed (14.0s)",
+    "Playwright QA 완료: 8 passed (13.9s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Leave-In Conditioner Spray, #3 A-Z Initial Pendant Necklace",
-    "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
-    "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
-    "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
+    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Leave-In Conditioner Spray, #3 Brown Lip Liner Pencil",
+    "Evidence separation 유지: published trend URL 보유 item 9개, BSS/marketplace live product URL 보유 item 43개.",
+    "TikTok Shop/marketplace supply signal이 43개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
+    "상품/출처 이미지가 43개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
   ],
   "improvement_points": [
-    "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "35개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "live product URL이 없는 item이 1개 있습니다. BSS online store/marketplace listing 보강이 필요합니다.",
+    "1개 item은 category placeholder visual입니다. product/listing image 또는 더 구체적인 visual source가 필요합니다.",
     "근거가 가장 약한 category: Nails (trend 0/5, retail 5/5)."
   ],
   "next_loop_focus_items": [
     {
+      "item_id": "52-inch-pre-stretched-braiding-hair",
+      "item_name": "52 Inch Pre-Stretched Braiding Hair",
+      "category": "Braiding & Crochet Hair",
+      "rank": 44,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "queries": [
+        "\"52 Inch Pre-Stretched Braiding Hair\" beauty supply trend",
+        "\"52 Inch Pre-Stretched Braiding Hair\" TikTok review",
+        "\"52 Inch Pre-Stretched Braiding Hair\" Amazon reviews",
+        "\"52 Inch Pre-Stretched Braiding Hair\" black beauty supply",
+        "\"52 Inch Pre-Stretched Braiding Hair\" protective styles trend",
+        "\"52 Inch Pre-Stretched Braiding Hair\" knotless braids TikTok"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 0,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -402,7 +438,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -413,7 +449,7 @@
       "item_id": "lace-melting-spray",
       "item_name": "Lace Melting Spray",
       "category": "Hair Care & Styling",
-      "rank": 10,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Lace Melting Spray\" beauty supply trend",
@@ -445,7 +481,7 @@
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 11,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -479,7 +515,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 12,
+      "rank": 13,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -513,7 +549,7 @@
       "item_id": "braid-foaming-mousse",
       "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 13,
+      "rank": 14,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Foaming Mousse for Braids\" beauty supply trend",
@@ -534,41 +570,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "edge-brush-comb-set",
-      "item_name": "Edge Brush & Comb Set",
-      "category": "Tools & Accessories",
-      "rank": 14,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Edge Brush & Comb Set\" beauty supply trend",
-        "\"Edge Brush & Comb Set\" TikTok review",
-        "\"Edge Brush & Comb Set\" Amazon reviews",
-        "\"Edge Brush & Comb Set\" black beauty supply",
-        "\"Edge Brush & Comb Set\" beauty supply review",
-        "\"Edge Brush & Comb Set\" hair tool TikTok"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 10,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 10,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 4,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 4,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
