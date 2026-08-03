@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-08-03T18:18:37.477930Z",
+  "updated_at": "2026-08-03T19:18:41.324615Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "52-inch-pre-stretched-braiding-hair",
-      "item_name": "52 Inch Pre-Stretched Braiding Hair",
-      "category": "Braiding & Crochet Hair",
+      "item_id": "gold-braid-cuffs-12-pack",
+      "item_name": "Gold Braid Cuffs 12-Pack",
+      "category": "Jewelry & Fashion Accessories",
       "rank": 43,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"52 Inch Pre-Stretched Braiding Hair\" beauty supply trend",
-        "\"52 Inch Pre-Stretched Braiding Hair\" TikTok review",
-        "\"52 Inch Pre-Stretched Braiding Hair\" Amazon reviews",
-        "\"52 Inch Pre-Stretched Braiding Hair\" black beauty supply",
-        "\"52 Inch Pre-Stretched Braiding Hair\" protective styles trend",
-        "\"52 Inch Pre-Stretched Braiding Hair\" knotless braids TikTok"
+        "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
+        "\"Gold Braid Cuffs 12-Pack\" TikTok review",
+        "\"Gold Braid Cuffs 12-Pack\" Amazon reviews",
+        "\"Gold Braid Cuffs 12-Pack\" black beauty supply",
+        "\"Gold Braid Cuffs 12-Pack\" black women outfit trend",
+        "\"Gold Braid Cuffs 12-Pack\" wholesale beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -31,25 +31,25 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
-        "watchlist_links": 14,
+        "watchlist_links": 16,
         "source_layers": 0,
-        "manual_references": 14,
+        "manual_references": 16,
         "news_magazine": 0
       }
     },
     {
-      "item_id": "a-z-initial-pendant-necklace",
-      "item_name": "A-Z Initial Pendant Necklace",
+      "item_id": "butterfly-charm-anklet",
+      "item_name": "Butterfly Charm Anklet",
       "category": "Jewelry & Fashion Accessories",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"A-Z Initial Pendant Necklace\" beauty supply trend",
-        "\"A-Z Initial Pendant Necklace\" TikTok review",
-        "\"A-Z Initial Pendant Necklace\" Amazon reviews",
-        "\"A-Z Initial Pendant Necklace\" black beauty supply",
-        "\"A-Z Initial Pendant Necklace\" black women outfit trend",
-        "\"A-Z Initial Pendant Necklace\" wholesale beauty supply"
+        "\"Butterfly Charm Anklet\" beauty supply trend",
+        "\"Butterfly Charm Anklet\" TikTok review",
+        "\"Butterfly Charm Anklet\" Amazon reviews",
+        "\"Butterfly Charm Anklet\" black beauty supply",
+        "\"Butterfly Charm Anklet\" black women outfit trend",
+        "\"Butterfly Charm Anklet\" wholesale beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -75,7 +75,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 7,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -109,7 +109,7 @@
       "item_id": "lace-melting-spray",
       "item_name": "Lace Melting Spray",
       "category": "Hair Care & Styling",
-      "rank": 8,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Lace Melting Spray\" beauty supply trend",
@@ -141,7 +141,7 @@
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -164,7 +164,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 11,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -175,7 +175,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 10,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
