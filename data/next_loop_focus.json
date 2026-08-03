@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-03T06:18:16.260315Z",
+  "updated_at": "2026-08-03T07:18:21.099276Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
