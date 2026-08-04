@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-08-04T09:18:31.340665Z",
+  "updated_at": "2026-08-04T10:18:50.073690Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "rat-tail-comb-metal-pintail",
-      "item_name": "Rat Tail Comb with Metal Pintail",
-      "category": "Tools & Accessories",
+      "item_id": "cuticle-oil-pen",
+      "item_name": "Cuticle Oil Pen",
+      "category": "Nails",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Rat Tail Comb with Metal Pintail\" beauty supply trend",
-        "\"Rat Tail Comb with Metal Pintail\" TikTok review",
-        "\"Rat Tail Comb with Metal Pintail\" Amazon reviews",
-        "\"Rat Tail Comb with Metal Pintail\" black beauty supply",
-        "\"Rat Tail Comb with Metal Pintail\" beauty supply review",
-        "\"Rat Tail Comb with Metal Pintail\" hair tool TikTok"
+        "\"Cuticle Oil Pen\" beauty supply trend",
+        "\"Cuticle Oil Pen\" TikTok review",
+        "\"Cuticle Oil Pen\" Amazon reviews",
+        "\"Cuticle Oil Pen\" black beauty supply",
+        "\"Cuticle Oil Pen\" nail inspo trend",
+        "\"Cuticle Oil Pen\" press on review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -64,7 +64,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -104,10 +104,44 @@
       }
     },
     {
+      "item_id": "glueless-pre-cut-hd-lace-wig",
+      "item_name": "Glueless Pre-Cut HD Lace Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 11,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
+        "\"Glueless Pre-Cut HD Lace Wig\" TikTok review",
+        "\"Glueless Pre-Cut HD Lace Wig\" Amazon reviews",
+        "\"Glueless Pre-Cut HD Lace Wig\" black beauty supply",
+        "\"Glueless Pre-Cut HD Lace Wig\" install review",
+        "\"Glueless Pre-Cut HD Lace Wig\" lace wig customer review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 11,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 11,
+        "tiktok_shop_product_evidence": 1,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 7,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 11,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -130,7 +164,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 11,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -141,7 +175,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 12,
+      "rank": 13,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -167,40 +201,6 @@
         "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "glueless-pre-cut-hd-lace-wig",
-      "item_name": "Glueless Pre-Cut HD Lace Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 13,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
-        "\"Glueless Pre-Cut HD Lace Wig\" TikTok review",
-        "\"Glueless Pre-Cut HD Lace Wig\" Amazon reviews",
-        "\"Glueless Pre-Cut HD Lace Wig\" black beauty supply",
-        "\"Glueless Pre-Cut HD Lace Wig\" install review",
-        "\"Glueless Pre-Cut HD Lace Wig\" lace wig customer review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 10,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 10,
-        "tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 4,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 4,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
-        "watchlist_links": 14,
-        "source_layers": 1,
         "manual_references": 14,
         "news_magazine": 0
       }
