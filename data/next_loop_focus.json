@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-08-04T04:18:26.394452Z",
+  "updated_at": "2026-08-04T05:18:43.398599Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "rhinestone-nail-charms",
-      "item_name": "Rhinestone Nail Charms",
+      "item_id": "short-square-press-on-nails",
+      "item_name": "Short Square Press-On Nails",
       "category": "Nails",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Rhinestone Nail Charms\" beauty supply trend",
-        "\"Rhinestone Nail Charms\" TikTok review",
-        "\"Rhinestone Nail Charms\" Amazon reviews",
-        "\"Rhinestone Nail Charms\" black beauty supply",
-        "\"Rhinestone Nail Charms\" nail inspo trend",
-        "\"Rhinestone Nail Charms\" press on review"
+        "\"Short Square Press-On Nails\" beauty supply trend",
+        "\"Short Square Press-On Nails\" TikTok review",
+        "\"Short Square Press-On Nails\" Amazon reviews",
+        "\"Short Square Press-On Nails\" black beauty supply",
+        "\"Short Square Press-On Nails\" nail inspo trend",
+        "\"Short Square Press-On Nails\" press on review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -41,7 +41,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 8,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -75,7 +75,7 @@
       "item_id": "lace-melting-spray",
       "item_name": "Lace Melting Spray",
       "category": "Hair Care & Styling",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Lace Melting Spray\" beauty supply trend",
@@ -107,7 +107,7 @@
       "item_id": "glueless-pre-cut-hd-lace-wig",
       "item_name": "Glueless Pre-Cut HD Lace Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
@@ -141,7 +141,7 @@
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 12,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -175,7 +175,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 13,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
