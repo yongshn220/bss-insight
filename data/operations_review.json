@@ -1,15 +1,15 @@
 {
-  "reviewed_at": "2026-08-04T01:18:33.687728Z",
-  "source_generated_at": "2026-08-04T01:18:17.668602Z",
+  "reviewed_at": "2026-08-04T02:19:07.958105Z",
+  "source_generated_at": "2026-08-04T02:18:52.590289Z",
   "date": "2026-08-04",
   "timeframe": "weekly",
-  "playwright_summary": "8 passed (14.6s)",
+  "playwright_summary": "8 passed (14.0s)",
   "metrics": {
     "items": 44,
     "categories": 8,
     "trend_items": 8,
     "recent_trend_items": 8,
-    "retail_product_items": 42,
+    "retail_product_items": 44,
     "tiktok_shop_items": 42,
     "product_image_items": 44,
     "watchlist_items": 36
@@ -39,20 +39,20 @@
       "category": "Jewelry & Fashion Accessories",
       "items": 8,
       "trend_items": 2,
-      "retail_items": 7,
+      "retail_items": 8,
       "product_image_items": 8,
       "trend_ratio": 0.25,
-      "retail_ratio": 0.88,
+      "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
     {
       "category": "Lashes & Brows",
       "items": 4,
       "trend_items": 1,
-      "retail_items": 3,
+      "retail_items": 4,
       "product_image_items": 4,
       "trend_ratio": 0.25,
-      "retail_ratio": 0.75,
+      "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
     {
@@ -114,7 +114,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -133,7 +133,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -363,16 +363,15 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 8 passed (14.6s)",
+    "Playwright QA 완료: 8 passed (14.0s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Leave-In Conditioner Spray, #3 Brown Lip Liner Pencil",
-    "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 42개.",
+    "Top 3가 item-level로 정렬되었습니다: #1 Leave-In Conditioner Spray, #2 Rosemary Mint Scalp Oil, #3 Brown Lip Liner Pencil",
+    "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 42개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
   ],
   "improvement_points": [
     "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-    "live product URL이 없는 item이 2개 있습니다. BSS online store/marketplace listing 보강이 필요합니다.",
     "근거가 가장 약한 category: Nails (trend 0/5, retail 5/5)."
   ],
   "next_loop_focus_items": [
@@ -403,7 +402,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
