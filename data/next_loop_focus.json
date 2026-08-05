@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-05T09:19:01.356087Z",
+  "updated_at": "2026-08-05T10:17:31.104494Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,7 +7,7 @@
       "item_id": "gold-braid-cuffs-12-pack",
       "item_name": "Gold Braid Cuffs 12-Pack",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 40,
+      "rank": 25,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
@@ -38,10 +38,44 @@
       }
     },
     {
+      "item_id": "52-inch-pre-stretched-braiding-hair",
+      "item_name": "52 Inch Pre-Stretched Braiding Hair",
+      "category": "Braiding & Crochet Hair",
+      "rank": 26,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "queries": [
+        "\"52 Inch Pre-Stretched Braiding Hair\" beauty supply trend",
+        "\"52 Inch Pre-Stretched Braiding Hair\" TikTok review",
+        "\"52 Inch Pre-Stretched Braiding Hair\" Amazon reviews",
+        "\"52 Inch Pre-Stretched Braiding Hair\" black beauty supply",
+        "\"52 Inch Pre-Stretched Braiding Hair\" protective styles trend",
+        "\"52 Inch Pre-Stretched Braiding Hair\" knotless braids TikTok"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 0,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
       "item_id": "50mm-gold-hoop-earrings",
       "item_name": "50mm Gold Hoop Earrings",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 41,
+      "rank": 27,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"50mm Gold Hoop Earrings\" beauty supply trend",
@@ -72,18 +106,16 @@
       }
     },
     {
-      "item_id": "14g-belly-button-ring",
-      "item_name": "14G Belly Button Ring",
-      "category": "Jewelry & Fashion Accessories",
-      "rank": 42,
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "category": "Hair Care & Styling",
+      "rank": 28,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"14G Belly Button Ring\" beauty supply trend",
-        "\"14G Belly Button Ring\" TikTok review",
-        "\"14G Belly Button Ring\" Amazon reviews",
-        "\"14G Belly Button Ring\" black beauty supply",
-        "\"14G Belly Button Ring\" black women outfit trend",
-        "\"14G Belly Button Ring\" wholesale beauty supply"
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "\"Wig Adhesive Glue\" TikTok review",
+        "\"Wig Adhesive Glue\" Amazon reviews",
+        "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -99,110 +131,76 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
-        "watchlist_links": 16,
-        "source_layers": 0,
-        "manual_references": 16,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "rhinestone-stud-earrings-6mm",
-      "item_name": "6mm Rhinestone Stud Earrings",
-      "category": "Jewelry & Fashion Accessories",
-      "rank": 43,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
-      "queries": [
-        "\"6mm Rhinestone Stud Earrings\" beauty supply trend",
-        "\"6mm Rhinestone Stud Earrings\" TikTok review",
-        "\"6mm Rhinestone Stud Earrings\" Amazon reviews",
-        "\"6mm Rhinestone Stud Earrings\" black beauty supply",
-        "\"6mm Rhinestone Stud Earrings\" black women outfit trend",
-        "\"6mm Rhinestone Stud Earrings\" wholesale beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 0,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 0,
-        "tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 0,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 0,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 16,
-        "source_layers": 0,
-        "manual_references": 16,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "gold-stackable-ring-set",
-      "item_name": "Gold Stackable Ring Set",
-      "category": "Jewelry & Fashion Accessories",
-      "rank": 44,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
-      "queries": [
-        "\"Gold Stackable Ring Set\" beauty supply trend",
-        "\"Gold Stackable Ring Set\" TikTok review",
-        "\"Gold Stackable Ring Set\" Amazon reviews",
-        "\"Gold Stackable Ring Set\" black beauty supply",
-        "\"Gold Stackable Ring Set\" black women outfit trend",
-        "\"Gold Stackable Ring Set\" wholesale beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 0,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 0,
-        "tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 0,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 0,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 16,
-        "source_layers": 0,
-        "manual_references": 16,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "synthetic-lace-front-wig",
-      "item_name": "Synthetic Lace Front Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 7,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Synthetic Lace Front Wig\" beauty supply trend",
-        "\"Synthetic Lace Front Wig\" TikTok review",
-        "\"Synthetic Lace Front Wig\" Amazon reviews",
-        "\"Synthetic Lace Front Wig\" black beauty supply",
-        "\"Synthetic Lace Front Wig\" install review",
-        "\"Synthetic Lace Front Wig\" lace wig customer review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 11,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
         "watchlist_links": 14,
-        "source_layers": 2,
+        "source_layers": 0,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "short-square-press-on-nails",
+      "item_name": "Short Square Press-On Nails",
+      "category": "Nails",
+      "rank": 29,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "queries": [
+        "\"Short Square Press-On Nails\" beauty supply trend",
+        "\"Short Square Press-On Nails\" TikTok review",
+        "\"Short Square Press-On Nails\" Amazon reviews",
+        "\"Short Square Press-On Nails\" black beauty supply",
+        "\"Short Square Press-On Nails\" nail inspo trend",
+        "\"Short Square Press-On Nails\" press on review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 0,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "rat-tail-comb-metal-pintail",
+      "item_name": "Rat Tail Comb with Metal Pintail",
+      "category": "Tools & Accessories",
+      "rank": 30,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "queries": [
+        "\"Rat Tail Comb with Metal Pintail\" beauty supply trend",
+        "\"Rat Tail Comb with Metal Pintail\" TikTok review",
+        "\"Rat Tail Comb with Metal Pintail\" Amazon reviews",
+        "\"Rat Tail Comb with Metal Pintail\" black beauty supply",
+        "\"Rat Tail Comb with Metal Pintail\" beauty supply review",
+        "\"Rat Tail Comb with Metal Pintail\" hair tool TikTok"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 0,
         "manual_references": 14,
         "news_magazine": 0
       }
