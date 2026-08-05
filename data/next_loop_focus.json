@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-05T20:18:28.030827Z",
+  "updated_at": "2026-08-05T21:18:21.885718Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,7 +7,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 8,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -30,7 +30,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -41,7 +41,7 @@
       "item_id": "glueless-pre-cut-hd-lace-wig",
       "item_name": "Glueless Pre-Cut HD Lace Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
@@ -75,7 +75,7 @@
       "item_id": "13x4-hd-lace-frontal-wig",
       "item_name": "13x4 HD Lace Frontal Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 10,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
@@ -98,7 +98,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 11,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -109,7 +109,7 @@
       "item_id": "v-part-human-hair-wig",
       "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 11,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"V-Part Human Hair Wig\" beauty supply trend",
@@ -132,7 +132,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -143,7 +143,7 @@
       "item_id": "human-hair-boho-braiding-bundles",
       "item_name": "Human Hair Boho Braiding Bundles",
       "category": "Braiding & Crochet Hair",
-      "rank": 12,
+      "rank": 13,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Human Hair Boho Braiding Bundles\" beauty supply trend",
@@ -152,40 +152,6 @@
         "\"Human Hair Boho Braiding Bundles\" black beauty supply",
         "\"Human Hair Boho Braiding Bundles\" protective styles trend",
         "\"Human Hair Boho Braiding Bundles\" knotless braids TikTok"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 9,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 9,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "butterfly-locs-crochet-hair",
-      "item_name": "Butterfly Locs Crochet Hair",
-      "category": "Braiding & Crochet Hair",
-      "rank": 13,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Butterfly Locs Crochet Hair\" beauty supply trend",
-        "\"Butterfly Locs Crochet Hair\" TikTok review",
-        "\"Butterfly Locs Crochet Hair\" Amazon reviews",
-        "\"Butterfly Locs Crochet Hair\" black beauty supply",
-        "\"Butterfly Locs Crochet Hair\" protective styles trend",
-        "\"Butterfly Locs Crochet Hair\" knotless braids TikTok"
       ],
       "baseline_source_counts": {
         "verified_evidence": 4,
@@ -200,9 +166,41 @@
         "unique_retail_domains": 2,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 0,
         "watchlist_links": 14,
         "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "lace-melting-spray",
+      "item_name": "Lace Melting Spray",
+      "category": "Hair Care & Styling",
+      "rank": 14,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Lace Melting Spray\" beauty supply trend",
+        "\"Lace Melting Spray\" TikTok review",
+        "\"Lace Melting Spray\" Amazon reviews",
+        "\"Lace Melting Spray\" black beauty supply"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 1,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 1,
+        "tiktok_shop_product_evidence": 1,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 1,
         "manual_references": 14,
         "news_magazine": 0
       }
