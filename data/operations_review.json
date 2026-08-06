@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-06T14:18:44.120988Z",
-  "source_generated_at": "2026-08-06T14:18:28.660681Z",
+  "reviewed_at": "2026-08-06T15:18:46.728571Z",
+  "source_generated_at": "2026-08-06T15:18:30.898807Z",
   "date": "2026-08-06",
   "timeframe": "weekly",
-  "playwright_summary": "8 passed (14.0s)",
+  "playwright_summary": "8 passed (14.4s)",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -246,7 +246,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 11,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -363,9 +363,9 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 8 passed (14.0s)",
+    "Playwright QA 완료: 8 passed (14.4s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Leave-In Conditioner Spray, #3 Waterproof Black Eyeliner Pencil",
+    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Waterproof Black Eyeliner Pencil, #3 Lash Bond and Seal",
     "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
