@@ -1,8 +1,42 @@
 {
-  "updated_at": "2026-08-06T05:18:30.883245Z",
+  "updated_at": "2026-08-06T06:18:55.754119Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
+    {
+      "item_id": "gold-stackable-ring-set",
+      "item_name": "Gold Stackable Ring Set",
+      "category": "Jewelry & Fashion Accessories",
+      "rank": 44,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "queries": [
+        "\"Gold Stackable Ring Set\" beauty supply trend",
+        "\"Gold Stackable Ring Set\" TikTok review",
+        "\"Gold Stackable Ring Set\" Amazon reviews",
+        "\"Gold Stackable Ring Set\" black beauty supply",
+        "\"Gold Stackable Ring Set\" black women outfit trend",
+        "\"Gold Stackable Ring Set\" wholesale beauty supply"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 16,
+        "source_layers": 0,
+        "manual_references": 16,
+        "news_magazine": 0
+      }
+    },
     {
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
@@ -138,59 +172,25 @@
       }
     },
     {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
-      "category": "Wigs & Hair Pieces",
+      "item_id": "wig-grip-band",
+      "item_name": "Wig Grip Band",
+      "category": "Tools & Accessories",
       "rank": 13,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"V-Part Human Hair Wig\" beauty supply trend",
-        "\"V-Part Human Hair Wig\" TikTok review",
-        "\"V-Part Human Hair Wig\" Amazon reviews",
-        "\"V-Part Human Hair Wig\" black beauty supply",
-        "\"V-Part Human Hair Wig\" install review",
-        "\"V-Part Human Hair Wig\" lace wig customer review"
+        "\"Wig Grip Band\" beauty supply trend",
+        "\"Wig Grip Band\" TikTok review",
+        "\"Wig Grip Band\" Amazon reviews",
+        "\"Wig Grip Band\" black beauty supply",
+        "\"Wig Grip Band\" beauty supply review",
+        "\"Wig Grip Band\" hair tool TikTok"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 10,
+        "verified_evidence": 11,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 10,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 4,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 4,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "human-hair-boho-braiding-bundles",
-      "item_name": "Human Hair Boho Braiding Bundles",
-      "category": "Braiding & Crochet Hair",
-      "rank": 14,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Human Hair Boho Braiding Bundles\" beauty supply trend",
-        "\"Human Hair Boho Braiding Bundles\" TikTok review",
-        "\"Human Hair Boho Braiding Bundles\" Amazon reviews",
-        "\"Human Hair Boho Braiding Bundles\" black beauty supply",
-        "\"Human Hair Boho Braiding Bundles\" protective styles trend",
-        "\"Human Hair Boho Braiding Bundles\" knotless braids TikTok"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 9,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 9,
+        "retail_product_evidence": 11,
         "tiktok_shop_product_evidence": 1,
         "article_evidence": 0,
         "unique_domains": 5,
@@ -198,7 +198,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
