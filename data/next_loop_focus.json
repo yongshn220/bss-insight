@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-08-06T06:18:55.754119Z",
+  "updated_at": "2026-08-06T07:18:35.196820Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
     {
-      "item_id": "gold-stackable-ring-set",
-      "item_name": "Gold Stackable Ring Set",
-      "category": "Jewelry & Fashion Accessories",
+      "item_id": "deep-shade-setting-powder",
+      "item_name": "Deep Shade Setting Powder",
+      "category": "Makeup & Cosmetics",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Gold Stackable Ring Set\" beauty supply trend",
-        "\"Gold Stackable Ring Set\" TikTok review",
-        "\"Gold Stackable Ring Set\" Amazon reviews",
-        "\"Gold Stackable Ring Set\" black beauty supply",
-        "\"Gold Stackable Ring Set\" black women outfit trend",
-        "\"Gold Stackable Ring Set\" wholesale beauty supply"
+        "\"Deep Shade Setting Powder\" beauty supply trend",
+        "\"Deep Shade Setting Powder\" TikTok review",
+        "\"Deep Shade Setting Powder\" Amazon reviews",
+        "\"Deep Shade Setting Powder\" black beauty supply",
+        "\"Deep Shade Setting Powder\" makeup review",
+        "\"Deep Shade Setting Powder\" beauty supply haul"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -31,9 +31,9 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
-        "watchlist_links": 16,
+        "watchlist_links": 14,
         "source_layers": 0,
-        "manual_references": 16,
+        "manual_references": 14,
         "news_magazine": 0
       }
     },
@@ -64,7 +64,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
