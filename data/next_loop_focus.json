@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-06T01:18:12.681795Z",
+  "updated_at": "2026-08-06T02:17:32.339905Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,7 +7,7 @@
       "item_id": "gold-braid-cuffs-12-pack",
       "item_name": "Gold Braid Cuffs 12-Pack",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 24,
+      "rank": 25,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
@@ -41,7 +41,7 @@
       "item_id": "52-inch-pre-stretched-braiding-hair",
       "item_name": "52 Inch Pre-Stretched Braiding Hair",
       "category": "Braiding & Crochet Hair",
-      "rank": 25,
+      "rank": 26,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"52 Inch Pre-Stretched Braiding Hair\" beauty supply trend",
@@ -75,7 +75,7 @@
       "item_id": "50mm-gold-hoop-earrings",
       "item_name": "50mm Gold Hoop Earrings",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 26,
+      "rank": 27,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"50mm Gold Hoop Earrings\" beauty supply trend",
@@ -109,7 +109,7 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 27,
+      "rank": 28,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
@@ -141,7 +141,7 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 28,
+      "rank": 29,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
@@ -175,7 +175,7 @@
       "item_id": "rat-tail-comb-metal-pintail",
       "item_name": "Rat Tail Comb with Metal Pintail",
       "category": "Tools & Accessories",
-      "rank": 29,
+      "rank": 30,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
         "\"Rat Tail Comb with Metal Pintail\" beauty supply trend",
