@@ -40,6 +40,20 @@ PUBLIC_COLLECTION_FIELDS = [
     "next_actions",
 ]
 
+PUBLIC_GROWTH_GOAL_FIELDS = [
+    "goal_id",
+    "created_at",
+    "updated_at",
+    "primary_goal",
+    "north_star",
+    "growth_channels",
+    "guardrails",
+    "current_permissions",
+    "needs_user_permission_or_credentials",
+    "initial_experiments",
+    "reporting",
+]
+
 
 def copy_path(name: str) -> None:
     src = ROOT / name
@@ -95,6 +109,10 @@ def public_collection_notes_payload(notes: dict[str, Any]) -> dict[str, Any]:
     return {field: notes.get(field) for field in PUBLIC_COLLECTION_FIELDS if field in notes}
 
 
+def public_growth_goal_payload(goal: dict[str, Any]) -> dict[str, Any]:
+    return {field: goal.get(field) for field in PUBLIC_GROWTH_GOAL_FIELDS if field in goal}
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -116,6 +134,10 @@ def copy_public_data() -> None:
     collection_notes = load_json(DATA_DIR / "collection_notes.json")
     if collection_notes:
         write_json(data_dst / "collection_notes_public.json", public_collection_notes_payload(collection_notes))
+
+    growth_goal = load_json(DATA_DIR / "growth_goal.json")
+    if growth_goal:
+        write_json(data_dst / "growth_goal_public.json", public_growth_goal_payload(growth_goal))
 
 
 def main() -> int:

@@ -1,0 +1,72 @@
+{
+  "goal_id": "daily-visits-500",
+  "created_at": "2026-08-07T01:08:59Z",
+  "updated_at": "2026-08-07T01:08:59Z",
+  "owner": "GNS Research Hub",
+  "primary_goal": {
+    "metric": "average_daily_visits",
+    "target": 500,
+    "window": "rolling_30_days",
+    "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
+  },
+  "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
+  "growth_channels": [
+    "organic SEO",
+    "shareable BSS owner trend pages",
+    "SNS monitoring and approved posting",
+    "sales-rep/customer sharing links with UTM",
+    "weekly marketing briefs",
+    "A/B testing of landing and CTA copy"
+  ],
+  "guardrails": {
+    "no_fabricated_claims": true,
+    "no_paid_ads_without_explicit_budget_approval": true,
+    "no_external_account_posting_without_connected_credentials_and_approval_rule": true,
+    "no_secret_values_in_repo_or_reports": true,
+    "trend_claims_require_dated_captured_source_urls": true
+  },
+  "current_permissions": {
+    "can_modify_site_code": true,
+    "can_commit_push_deploy": true,
+    "can_create_tracking_and_experiment_code": true,
+    "can_create_marketing_drafts": true,
+    "can_monitor_public_web_sources": true,
+    "can_publish_sns_posts": false,
+    "can_spend_ad_budget": false
+  },
+  "needs_user_permission_or_credentials": [
+    {
+      "need": "analytics_provider",
+      "why": "Centralized visit measurement is required to prove progress toward 500 average daily visits. Suggested: Vercel Web Analytics, Google Analytics 4, Plausible, or PostHog."
+    },
+    {
+      "need": "custom_domain_optional",
+      "why": "A memorable domain improves trust, repeat visits, and shareability versus a vercel.app URL."
+    },
+    {
+      "need": "sns_credentials",
+      "why": "Actual posting/account management requires credentials for X/Twitter, Instagram/Facebook, TikTok, LinkedIn, Buffer, or another approved social scheduler."
+    },
+    {
+      "need": "posting_approval_rule",
+      "why": "Define whether SNS posts are draft-only, approval-first, or auto-post within a safe scope."
+    },
+    {
+      "need": "paid_marketing_budget_optional",
+      "why": "Paid tests require explicit budget, platform, and stop-loss rules before execution."
+    }
+  ],
+  "initial_experiments": [
+    {
+      "experiment_id": "hero-growth-cta-v1",
+      "status": "active-client-side",
+      "variants": ["A_evidence_first", "B_retail_action_first"],
+      "success_metric": "ranking CTA clicks and item card clicks per visit",
+      "hypothesis": "Retail-owner action language will produce more clicks than evidence-first language for busy BSS owners."
+    }
+  ],
+  "reporting": {
+    "daily_growth_director": "Report current measured traffic if credentials exist; otherwise report tracking readiness, marketing actions, blockers, and next permission needed.",
+    "hourly_ai_operator": "Keep improving product insight quality, SEO/shareability, tracking, experiments, and conversion paths while preserving source/evidence discipline."
+  }
+}

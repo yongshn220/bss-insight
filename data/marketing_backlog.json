@@ -1,0 +1,43 @@
+{
+  "updated_at": "2026-08-07T01:08:59Z",
+  "goal_id": "daily-visits-500",
+  "status": "active",
+  "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
+  "active_campaigns": [
+    {
+      "campaign_id": "weekly-stock-this-test-v1",
+      "status": "draft-ready",
+      "objective": "Turn weekly ranking into a shareable BSS owner message.",
+      "utm_campaign": "daily-visits-500-weekly-stock-test",
+      "primary_url": "https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=sns&utm_medium=organic&utm_campaign=daily-visits-500-weekly-stock-test",
+      "drafts": {
+        "short_sms_or_kakao": "이번 주 Beauty Supply 매장에서 테스트할 만한 제품 순위를 정리했습니다. Trend evidence와 실제 supply URL을 분리해서 볼 수 있습니다: https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=message&utm_medium=direct&utm_campaign=daily-visits-500-weekly-stock-test",
+        "x_twitter": "Beauty Supply owners: this week’s item ranking is built to answer one question — what should I test on the floor now? Evidence links, supply validation, and watchlist items are separated clearly. https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-stock-test",
+        "instagram_caption": "이번 주 BSS 매장에서 바로 테스트할 수 있는 item ranking을 업데이트했습니다. Trend claim과 supply validation을 분리해서, owner가 과장 없이 display/reorder test를 판단할 수 있게 정리했습니다. Link in bio / weekly ranking.",
+        "sales_rep_note": "Owner님, 이번 주 손님들이 반응할 만한 item을 product-level로 정리했습니다. 단순 trend가 아니라 실제 source/evidence와 display tip까지 같이 보실 수 있습니다."
+      },
+      "approval_needed_for_external_posting": true
+    }
+  ],
+  "experiment_backlog": [
+    {
+      "experiment_id": "hero-growth-cta-v1",
+      "status": "active-client-side",
+      "hypothesis": "Retail action language will increase ranking CTA and item-card clicks versus evidence-first language.",
+      "next_measurement_need": "Central analytics provider to compare variant exposure and click events across sessions."
+    },
+    {
+      "experiment_id": "share-copy-owner-v1",
+      "status": "backlog",
+      "hypothesis": "Owner-facing copy that says 'what to test this week' will generate more repeat visits than generic trend wording.",
+      "next_step": "Create social/email/share snippets per top weekly item once SNS/email credentials and approval rules are defined."
+    }
+  ],
+  "permission_requests": [
+    "Enable/connect a central analytics provider: Vercel Web Analytics, GA4, Plausible, or PostHog.",
+    "Provide SNS channel decision and credentials for approved posting: X/Twitter via xurl, Instagram/Facebook via Meta/Buffer, TikTok/LinkedIn if desired.",
+    "Define posting rule: draft-only, approval-first, or auto-post within strict limits.",
+    "Optional: choose/register a custom domain for better trust and repeat visits.",
+    "Optional: define paid marketing budget cap and stop-loss rule before any ad spend."
+  ]
+}

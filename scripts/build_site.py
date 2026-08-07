@@ -65,16 +65,28 @@ def nav(active: str = "weekly") -> str:
     )
 
 
-def shell(title: str, body: str, active: str = "weekly") -> str:
+def shell(title: str, body: str, active: str = "weekly", page_type: str = "ranking", page_path: str = "/index.html") -> str:
+    description = (
+        "BSS retail-owner product ranking with separated trend evidence, supply validation, "
+        "watchlist links, and weekly growth experiments."
+    )
+    canonical_path = page_path
     return f"""<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{esc(description)}">
+  <meta property="og:title" content="{esc(title)} · BSS Trend Ranking">
+  <meta property="og:description" content="{esc(description)}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gnsresearchhub.vercel.app{esc(canonical_path)}">
+  <meta name="twitter:card" content="summary_large_image">
   <title>{esc(title)} · BSS Trend Ranking</title>
   <link rel="stylesheet" href="/assets/style.css">
+  <script defer src="/assets/growth.js"></script>
 </head>
-<body>
+<body data-page-type="{esc(page_type)}">
   <header class="topbar">
     <div class="wrap navline">
       <a class="brand" href="/index.html"><span class="brand-dot"></span>BSS Trend Ranking</a>
@@ -84,7 +96,7 @@ def shell(title: str, body: str, active: str = "weekly") -> str:
   {body}
   <footer class="footer wrap">
     <span>Generated {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
-    <span>Published URLs drive trend movement · BSS/wholesale/TikTok Shop URLs validate supply · search links are watchlists only</span>
+    <span>Growth goal: 500 average daily visits · Published URLs drive trend movement · BSS/wholesale/TikTok Shop URLs validate supply · search links are watchlists only</span>
   </footer>
 </body>
 </html>"""
@@ -220,13 +232,22 @@ def render_home(data: dict[str, Any]) -> str:
       <section class="hero wrap" id="all">
         <div class="hero-copy">
           <p class="eyebrow">BSS-wide · Specific product ranking</p>
-          <h1>Beauty Supply 제품별 트렌드 순위</h1>
-          <p class="lead">검색 링크는 근거로 세지 않습니다. 발행일 있는 실제 URL은 trend movement에, BSS/wholesale/TikTok Shop 실제 상품 URL은 supply/social-commerce validation에만 반영합니다. 발행 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
+          <h1 data-growth-hero-title>Beauty Supply 제품별 트렌드 순위</h1>
+          <p class="lead" data-growth-hero-lead>검색 링크는 근거로 세지 않습니다. 발행일 있는 실제 URL은 trend movement에, BSS/wholesale/TikTok Shop 실제 상품 URL은 supply/social-commerce validation에만 반영합니다. 발행 근거가 부족한 항목은 trend가 아니라 WATCHLIST로 표시합니다.</p>
+          <div class="hero-actions" aria-label="Growth actions">
+            <a class="primary-action" data-growth-cta="primary" href="/rankings/weekly.html?utm_source=site&utm_medium=hero&utm_campaign=daily-visits-500">Weekly ranking 보기</a>
+            <a class="secondary-action" data-growth-cta="secondary" href="/rankings/weekly.html#all-items">Evidence / watchlist 보기</a>
+          </div>
         </div>
         <div class="hero-panel">
           <span>Latest run</span>
           <strong>{esc(data.get('date'))}</strong>
           <small>{len(weekly)} items · {len(cats)} categories</small>
+          <div class="growth-goal" aria-label="Growth goal">
+            <span>Growth goal</span>
+            <strong>500/day</strong>
+            <small>rolling 30-day visits</small>
+          </div>
           <span class="health-label">Data health</span>
           {data_health_panel(weekly)}
         </div>
@@ -245,7 +266,7 @@ def render_home(data: dict[str, Any]) -> str:
         <div class="rank-grid">{''.join(item_card(row, compact=True) for row in monthly[:6])}</div>
       </section>
     </main>"""
-    return shell("Home", body, active="weekly")
+    return shell("Home", body, active="weekly", page_type="home")
 
 
 def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
@@ -290,7 +311,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       </section>
       <section class="wrap category-stack">{''.join(cat_sections)}</section>
     </main>"""
-    return shell(f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} Ranking", body, active=timeframe)
+    return shell(f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} Ranking", body, active=timeframe, page_type="ranking", page_path=f"/rankings/{timeframe}.html")
 
 
 def grouped_sources(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
@@ -330,7 +351,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
     rows_by_tf = {tf: next((r for r in data.get("rankings", {}).get(tf, []) if r.get("item_id") == item_id), None) for tf in TIMEFRAME_ORDER}
     row = rows_by_tf.get("weekly") or next((r for r in rows_by_tf.values() if r), None)
     if not row:
-        return shell("Item not found", '<main class="wrap"><h1>Item not found</h1></main>')
+        return shell("Item not found", '<main class="wrap"><h1>Item not found</h1></main>', page_type="item_detail", page_path="/items/not-found.html")
     rank_cards = []
     for tf in TIMEFRAME_ORDER:
         r = rows_by_tf.get(tf)
@@ -390,7 +411,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         {''.join(source_sections)}
       </section>
     </main>"""
-    return shell(row.get("item_name", "Item"), body, active="weekly")
+    return shell(row.get("item_name", "Item"), body, active="weekly", page_type="item_detail", page_path=f"/items/{item_id}.html")
 
 
 def main() -> int:

@@ -55,13 +55,16 @@ test.afterEach(async ({ page }) => {
 
 test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
   test('home page renders the ranking dashboard with product visuals', async ({ page }) => {
-    await page.goto('/index.html');
+    await page.goto('/index.html?variant=A');
 
     await expect(page).toHaveTitle(/Home · BSS Trend Ranking/);
     await expect(page.getByRole('heading', { name: 'Beauty Supply 제품별 트렌드 순위' })).toBeVisible();
     await expect(page.getByText(/\d+ items · 8 categories/)).toBeVisible();
     await expect(page.getByText('Data health')).toBeVisible();
     await expect(page.locator('.data-health div')).toHaveCount(4);
+    await expect(page.getByText('500/day')).toBeVisible();
+    await expect(page.locator('script[src="/assets/growth.js"]')).toHaveCount(1);
+    await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
     await expect(page.locator('.podium-card')).toHaveCount(3);
 
     const rankCards = page.locator('.rank-card');
@@ -74,6 +77,38 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
         .filter((image) => image.src.trim().length === 0 || image.alt.trim().length === 0),
     );
     expect(missingImageMetadata).toEqual([]);
+  });
+
+  test('growth goal tracking and A/B variant are wired', async ({ page, request }) => {
+    await page.goto('/index.html?variant=B&utm_source=e2e&utm_medium=playwright&utm_campaign=daily-visits-500');
+
+    await expect(page.locator('body')).toHaveAttribute('data-experiment-id', 'hero-growth-cta-v1');
+    await expect(page.locator('body')).toHaveAttribute('data-experiment-variant', 'B_retail_action_first');
+    await expect(page.getByRole('heading', { name: '이번 주 BSS 매장에서 바로 테스트할 제품 순위' })).toBeVisible();
+    await expect(page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' })).toBeVisible();
+
+    const exposure = await page.evaluate(() => {
+      const growth = (window as any).__GNS_GROWTH__;
+      return {
+        goalId: growth?.goalId,
+        target: growth?.targetAverageDailyVisits,
+        events: growth?.events?.() ?? [],
+      };
+    });
+    expect(exposure.goalId).toBe('daily-visits-500');
+    expect(exposure.target).toBe(500);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
+
+    await page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' }).click();
+    await expect(page).toHaveURL(/\/rankings\/weekly\.html/);
+    const clickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(clickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_primary')).toBe(true);
+
+    const goalResponse = await request.get('/public/data/growth_goal_public.json');
+    expect(goalResponse.status()).toBeLessThan(400);
+    const goal = await goalResponse.json();
+    expect(goal.primary_goal?.target).toBe(500);
+    expect(goal.initial_experiments?.[0]?.experiment_id).toBe('hero-growth-cta-v1');
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {

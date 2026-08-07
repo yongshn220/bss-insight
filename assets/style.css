@@ -42,11 +42,20 @@ a { color: inherit; text-decoration: none; }
 .eyebrow { margin:0 0 12px; color:var(--blue); font-family:'Geist Mono', ui-monospace, monospace; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
 h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.94; letter-spacing:-.075em; font-weight:700; }
 .lead { margin:18px 0 0; max-width:760px; color:#4d4d4d; font-size:18px; line-height:1.65; }
+.hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+.primary-action, .secondary-action { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 16px; border-radius:999px; font-weight:700; font-size:14px; transition:transform .16s ease, box-shadow .16s ease, background .16s ease; }
+.primary-action { background:#171717; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.16); }
+.secondary-action { background:#fff; color:#171717; box-shadow:rgba(0,0,0,.1) 0 0 0 1px; }
+.primary-action:hover, .secondary-action:hover { transform:translateY(-1px); box-shadow:rgba(0,0,0,.16) 0 8px 28px -12px, rgba(0,0,0,.1) 0 0 0 1px; }
 .hero-panel, .score-hero { padding:20px; border-radius:18px; background:linear-gradient(#fff,#fafafa); box-shadow:var(--ring); }
 .hero-panel span, .score-hero span, .metric-card span, .detail-grid article span, .section-title span { display:block; color:var(--soft); font-family:'Geist Mono', ui-monospace, monospace; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
 .hero-panel strong, .score-hero strong { display:block; margin-top:8px; font-size:30px; letter-spacing:-.06em; }
 .hero-panel small, .score-hero small { color:var(--muted); }
 .health-label { margin-top:18px; }
+.growth-goal { margin-top:16px; padding:12px; border-radius:16px; background:#171717; color:#fff; }
+.growth-goal span { color:rgba(255,255,255,.68); }
+.growth-goal strong { margin-top:4px; font-size:28px; color:#fff; }
+.growth-goal small { color:rgba(255,255,255,.72); }
 .data-health { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; margin-top:10px; }
 .data-health div { padding:10px; border-radius:14px; background:#fff; box-shadow:rgba(0,0,0,.08) 0 0 0 1px; }
 .data-health b { display:block; font-size:22px; line-height:1; letter-spacing:-.05em; }
