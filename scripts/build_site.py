@@ -1038,8 +1038,13 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
                     f"Cached fallback after current TikTok Shop actor failure; originally observed {src.get('observed_date') or 'date n/a'}. "
                     + str(summary)
                 )
+            source_layer = src.get("source_layer") or src.get("source_type") or "unknown"
+            source_kind = src.get("source_kind") or src.get("publisher") or src.get("domain") or "unknown"
+            source_type = src.get("source_type") or "unknown"
+            source_status = src.get("evidence_status") or ("cached_verified_url" if src.get("cache_status") else "unknown")
+            source_date_kind = src.get("date_kind") or "unknown"
             source_cards.append(f"""
-            <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer">
+            <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer" data-growth-source-layer="{esc(source_layer)}" data-growth-source-kind="{esc(source_kind)}" data-growth-source-type="{esc(source_type)}" data-growth-source-status="{esc(source_status)}" data-growth-source-date-kind="{esc(source_date_kind)}">
               <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date_label) if date_label else ''}{price}</span>
               <strong>{esc(title)}</strong>
               <p>{esc(summary)}</p>
@@ -1072,7 +1077,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         <article><span>Score breakdown</span><ul>{breakdown_items}</ul></article>
         <article><span>Movement rule</span><p>{esc(row.get('change_note'))}</p></article>
       </section>
-      <section class="wrap sources">
+      <section class="wrap sources" data-growth-section="source-evidence-clicks-v1" data-growth-experiment="source-evidence-clicks-v1">
         <div class="section-title"><div><span>Evidence vs watchlist</span><h2>실제 근거와 참고 링크 분리</h2></div></div>
         {''.join(source_sections)}
       </section>

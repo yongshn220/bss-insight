@@ -246,6 +246,7 @@
     const section = target.closest?.('[data-growth-section]');
     const experiment = target.closest?.('[data-growth-experiment]');
     const item = target.closest?.('[data-item-id]');
+    const source = target.closest?.('[data-growth-source-layer]');
     const sectionId = section?.getAttribute('data-growth-section') || '';
     const componentExperimentId = experiment?.getAttribute('data-growth-experiment') || sectionId;
     return {
@@ -255,6 +256,11 @@
       item_id: item?.getAttribute('data-item-id') || '',
       item_rank: item?.getAttribute('data-item-rank') || '',
       item_category: item?.getAttribute('data-item-category') || '',
+      source_layer: source?.getAttribute('data-growth-source-layer') || '',
+      source_kind: source?.getAttribute('data-growth-source-kind') || '',
+      source_type: source?.getAttribute('data-growth-source-type') || '',
+      source_status: source?.getAttribute('data-growth-source-status') || '',
+      source_date_kind: source?.getAttribute('data-growth-source-date-kind') || '',
     };
   }
 

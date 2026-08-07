@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T17:08:39.239135Z",
+  "updated_at": "2026-08-07T18:21:47.998717Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -246,6 +246,20 @@
       ],
       "owner_value": "Busy BSS owners receive one concise brief with floor test, add-on angle, WATCHLIST caution, display/risk copy, and a full ranking link; this lowers friction for repeat visits and forwarding.",
       "measurement_need": "GA4_PROPERTY_ID plus service credentials or Vercel Analytics export/API access are needed to connect owner brief copy events to visits and repeat sessions."
+    },
+    {
+      "campaign_id": "source-evidence-clicks-v1",
+      "status": "live-on-item-detail-pages-after-build",
+      "objective": "Measure whether BSS owners use evidence/source links on item detail pages, not only share buttons or ranking cards.",
+      "live_location_pattern": "https://gnsresearchhub.vercel.app/items/{item_id}.html",
+      "tracked_events": [
+        "growth_click type=source_link",
+        "source_layer/source_kind/source_type/source_status/source_date_kind fields on source_link clicks",
+        "component_experiment_id=source-evidence-clicks-v1 and section=source-evidence-clicks-v1",
+        "downstream item_detail share/copy events after evidence interaction once analytics export is available"
+      ],
+      "owner_value": "Owners can still see sources as before; the growth loop now learns which proof types build trust: published trend URLs, BSS/wholesale/TikTok Shop supply URLs, cached fallback labels, or watchlist-only search links.",
+      "measurement_need": "GA4_PROPERTY_ID plus service credentials or Vercel Analytics export/API access are required to segment source_link clicks and relate them to repeat visits."
     }
   ],
   "experiment_backlog": [
@@ -344,6 +358,7 @@
     "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS file path or GA4_SERVICE_ACCOUNT_JSON mounted in env.",
     "Complete xurl CLI installation and OAuth setup on the Hermes HOME used by tool subprocesses; do not paste secrets into chat.",
     "Optional: choose/register a custom domain for better trust and repeat visits.",
-    "Optional: define paid marketing budget cap and stop-loss rule before any ad spend."
+    "Optional: define paid marketing budget cap and stop-loss rule before any ad spend.",
+    "Provide ga4_data_api_property_or_service_credentials: Needed to compute rolling 30-day visits and segment source-evidence-clicks-v1 source_link events by source_layer/source_status."
   ]
 }

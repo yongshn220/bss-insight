@@ -1,52 +1,52 @@
 {
-  "reviewed_at": "2026-08-07T17:09:30.941459Z",
-  "source_generated_at": "2026-08-07T17:03:23.893187Z",
+  "reviewed_at": "2026-08-07T18:22:55.473636Z",
+  "source_generated_at": "2026-08-07T18:19:38.340439Z",
   "date": "2026-08-07",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (23.9s); owner-brief-copy-v1 added and verified across desktop/mobile",
+  "playwright_summary": "12 passed (24.1s); source-evidence-clicks-v1 source metadata tracking verified across desktop/mobile",
   "metrics": {
     "items": 44,
     "categories": 8,
-    "trend_items": 8,
-    "recent_trend_items": 8,
+    "trend_items": 9,
+    "recent_trend_items": 9,
     "retail_product_items": 43,
-    "tiktok_shop_items": 43,
+    "tiktok_shop_items": 42,
     "product_image_items": 43,
-    "watchlist_items": 36
+    "watchlist_items": 35
   },
   "collection_health": {
-    "generated_at": "2026-08-07T17:03:23.892948Z",
+    "generated_at": "2026-08-07T18:19:38.340219Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-07T17:03:23.892152Z",
+        "observed_at": "2026-08-07T18:19:38.339513Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
-        "keywords_requested": 70,
-        "expanded_keyword_items": 13,
-        "products_returned": 69,
-        "items_with_evidence": 43,
-        "evidence_urls": 66,
-        "max_results_total": 70
+        "keywords_requested": 72,
+        "expanded_keyword_items": 14,
+        "products_returned": 70,
+        "items_with_evidence": 42,
+        "evidence_urls": 68,
+        "max_results_total": 72
       }
     },
     "evidence_totals": {
       "items_requested": 44,
-      "items_with_any_verified_url": 44,
-      "items_with_published_trend_url": 22,
+      "items_with_any_verified_url": 43,
+      "items_with_published_trend_url": 23,
       "items_with_retail_product_url": 43,
-      "items_with_tiktok_shop_url": 43,
+      "items_with_tiktok_shop_url": 42,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 277,
-      "published_trend_urls_total": 47,
-      "retail_product_urls_total": 230,
+      "verified_urls_total": 288,
+      "published_trend_urls_total": 56,
+      "retail_product_urls_total": 232,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
     "next_actions": [
-      "published trend URL gap 22개 item 유지: Tools & Accessories, Wigs & Hair Pieces, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
-      "TikTok Shop social-commerce coverage gap 1개: Deep Shade Setting Powder. strict alias/query 보강은 supply validation용이며 trend claim으로 승격하지 않습니다.",
+      "published trend URL gap 21개 item 유지: Tools & Accessories, Wigs & Hair Pieces, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
+      "TikTok Shop social-commerce coverage gap 2개: Foaming Mousse for Braids, Rhinestone Nail Charms. strict alias/query 보강은 supply validation용이며 trend claim으로 승격하지 않습니다.",
       "BSS/wholesale product URL coverage 보강: jewelry/nails/tools처럼 Shopify suggest가 약한 category에 vendor-specific collector 필요."
     ]
   },
@@ -95,21 +95,21 @@
       "category": "Makeup & Cosmetics",
       "items": 4,
       "trend_items": 2,
-      "retail_items": 3,
-      "product_image_items": 3,
+      "retail_items": 4,
+      "product_image_items": 4,
       "trend_ratio": 0.5,
-      "retail_ratio": 0.75,
-      "product_image_ratio": 0.75
+      "retail_ratio": 1.0,
+      "product_image_ratio": 1.0
     },
     {
       "category": "Nails",
       "items": 5,
-      "trend_items": 0,
-      "retail_items": 5,
-      "product_image_items": 5,
-      "trend_ratio": 0.0,
-      "retail_ratio": 1.0,
-      "product_image_ratio": 1.0
+      "trend_items": 1,
+      "retail_items": 4,
+      "product_image_items": 4,
+      "trend_ratio": 0.2,
+      "retail_ratio": 0.8,
+      "product_image_ratio": 0.8
     },
     {
       "category": "Tools & Accessories",
@@ -134,14 +134,14 @@
   ],
   "coverage_deltas": {
     "trend_items": {
-      "previous": 9,
-      "current": 8,
-      "delta": -1
+      "previous": 8,
+      "current": 9,
+      "delta": 1
     },
     "recent_trend_items": {
-      "previous": 9,
-      "current": 8,
-      "delta": -1
+      "previous": 8,
+      "current": 9,
+      "delta": 1
     },
     "retail_product_items": {
       "previous": 43,
@@ -149,9 +149,9 @@
       "delta": 0
     },
     "tiktok_shop_items": {
-      "previous": 42,
-      "current": 43,
-      "delta": 1
+      "previous": 43,
+      "current": 42,
+      "delta": -1
     },
     "product_image_items": {
       "previous": 43,
@@ -159,33 +159,33 @@
       "delta": 0
     },
     "watchlist_items": {
-      "previous": 35,
-      "current": 36,
-      "delta": 1
+      "previous": 36,
+      "current": 35,
+      "delta": -1
     }
   },
   "previous_loop_follow_up": [
     {
       "item_id": "50mm-gold-hoop-earrings",
       "item_name": "50mm Gold Hoop Earrings",
-      "status": "improved",
+      "status": "still_needs_focus",
       "baseline": {
-        "verified_evidence": 0,
+        "verified_evidence": 4,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 0,
-        "tiktok_shop_product_evidence": 0,
+        "retail_product_evidence": 4,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
-        "unique_domains": 0,
+        "unique_domains": 2,
         "unique_trend_domains": 0,
-        "unique_retail_domains": 0,
+        "unique_retail_domains": 2,
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
         "watchlist_links": 16,
-        "source_layers": 0,
+        "source_layers": 2,
         "manual_references": 16,
         "news_magazine": 0
       },
@@ -209,7 +209,7 @@
         "manual_references": 16,
         "news_magazine": 0
       },
-      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
+      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
       "item_id": "wig-grip-band",
@@ -249,13 +249,105 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
         "news_magazine": 0
       },
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+    },
+    {
+      "item_id": "short-square-press-on-nails",
+      "item_name": "Short Square Press-On Nails",
+      "status": "improved",
+      "baseline": {
+        "verified_evidence": 1,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 1,
+        "tiktok_shop_product_evidence": 1,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 1,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "current": {
+        "verified_evidence": 4,
+        "trend_evidence": 1,
+        "recent_trend_evidence": 1,
+        "recent_evidence": 1,
+        "retail_product_evidence": 3,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 1,
+        "unique_domains": 2,
+        "unique_trend_domains": 1,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 1,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 1
+      },
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
+    },
+    {
+      "item_id": "deep-shade-setting-powder",
+      "item_name": "Deep Shade Setting Powder",
+      "status": "improved",
+      "baseline": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 0,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "current": {
+        "verified_evidence": 3,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 3,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 1,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "synthetic-lace-front-wig",
@@ -295,53 +387,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-    },
-    {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
-      "status": "still_needs_focus",
-      "baseline": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "current": {
-        "verified_evidence": 12,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 12,
-        "tiktok_shop_product_evidence": 2,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -394,67 +440,20 @@
         "news_magazine": 0
       },
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-    },
-    {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
-      "status": "still_needs_focus",
-      "baseline": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "current": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (23.9s); owner-brief-copy-v1 added and verified across desktop/mobile",
+    "Playwright QA 완료: 12 passed (24.1s); source-evidence-clicks-v1 source metadata tracking verified across desktop/mobile",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Brown Lip Liner Pencil",
-    "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 43개.",
-    "TikTok Shop/marketplace supply signal이 43개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
+    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Lash Bond and Seal",
+    "Evidence separation 유지: published trend URL 보유 item 9개, BSS/marketplace live product URL 보유 item 43개.",
+    "TikTok Shop/marketplace supply signal이 42개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 43개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 66."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 68."
   ],
   "improvement_points": [
-    "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-    "이전 run 대비 coverage regression 감지: published trend item 9→8 (-1); recent trend item 9→8 (-1). 다음 loop에서는 source outage/collector query/retail suggest coverage를 우선 확인해야 합니다.",
-    "WATCHLIST item이 이전 run 대비 증가했습니다: 35→36 (+1). trend claim 확대보다 근거 보강이 우선입니다.",
+    "35개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "이전 run 대비 coverage regression 감지: TikTok Shop item 43→42 (-1). 다음 loop에서는 source outage/collector query/retail suggest coverage를 우선 확인해야 합니다.",
     "live product URL이 없는 item이 1개 있습니다. BSS online store/marketplace listing 보강이 필요합니다.",
     "1개 item은 category placeholder visual입니다. product/listing image 또는 더 구체적인 visual source가 필요합니다.",
     "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8)."
@@ -464,7 +463,7 @@
       "item_id": "50mm-gold-hoop-earrings",
       "item_name": "50mm Gold Hoop Earrings",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 22,
+      "rank": 23,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"50mm Gold Hoop Earrings\" beauty supply trend",
@@ -499,7 +498,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 10,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -523,7 +522,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -531,53 +530,18 @@
       }
     },
     {
-      "item_id": "short-square-press-on-nails",
-      "item_name": "Short Square Press-On Nails",
+      "item_id": "rhinestone-nail-charms",
+      "item_name": "Rhinestone Nail Charms",
       "category": "Nails",
-      "rank": 33,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Short Square Press-On Nails\" beauty supply trend",
-        "Short Square Press-On Nails 2026 trend",
-        "Short Square Press-On Nails customer review 2026",
-        "\"Short Square Press-On Nails\" black beauty supply",
-        "Short Square Press-On Nails press-on nail trend",
-        "Short Square Press-On Nails nail design review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 1,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 1,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 1,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 14,
-        "source_layers": 1,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "deep-shade-setting-powder",
-      "item_name": "Deep Shade Setting Powder",
-      "category": "Makeup & Cosmetics",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Deep Shade Setting Powder\" beauty supply trend",
-        "Deep Shade Setting Powder 2026 trend",
-        "Deep Shade Setting Powder customer review 2026",
-        "\"Deep Shade Setting Powder\" black beauty supply",
-        "Deep Shade Setting Powder makeup review",
-        "Deep Shade Setting Powder beauty supply haul"
+        "\"Rhinestone Nail Charms\" beauty supply trend",
+        "Rhinestone Nail Charms 2026 trend",
+        "Rhinestone Nail Charms customer review 2026",
+        "\"Rhinestone Nail Charms\" black beauty supply",
+        "Rhinestone Nail Charms press-on nail trend",
+        "Rhinestone Nail Charms nail design review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -604,7 +568,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -628,7 +592,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -639,7 +603,7 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 11,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
@@ -667,6 +631,41 @@
         "manual_references": 14,
         "news_magazine": 0
       }
+    },
+    {
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 13,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"V-Part Human Hair Wig\" beauty supply trend",
+        "V-Part Human Hair Wig 2026 trend",
+        "V-Part Human Hair Wig customer review 2026",
+        "\"V-Part Human Hair Wig\" black beauty supply",
+        "V-Part Human Hair Wig wig install trend",
+        "V-Part Human Hair Wig natural hair review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
     }
   ],
   "qa_focus": [
@@ -675,100 +674,27 @@
     "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
   ],
   "independent_ai_review": {
-    "reviewed_at": "2026-08-07T17:10:23.515221Z",
-    "operator": "Hermes autonomous AI review after refresh/build/e2e baseline",
-    "what_changed_this_run": [
-      "Added owner-brief-copy-v1 UI module on homepage and every timeframe page: one-minute, 3-line BSS owner brief with floor test, add-on angle, WATCHLIST caution, and UTM ranking link.",
-      "Extended assets/growth.js copy tracking to support data-copy-text while preserving URL copy behavior; growth_share_copy_result now records copy_mode=brief_text and copy_text_length.",
-      "Updated Playwright e2e coverage for owner-brief-copy-v1 on desktop/mobile, timeframe pages, public growth goal, and marketing public JSON.",
-      "Updated growth_goal and marketing_backlog artifacts so the next loop can treat owner brief copy/share as a measurable growth experiment once analytics export is connected."
+    "reviewed_at": "2026-08-07T18:23:35.086655Z",
+    "operator_assessment": "이번 run의 실제 병목은 UI 부족보다 measurement/export 부재와 weekly trend evidence coverage입니다. 사이트는 owner share/quick-pick/brief CTA가 이미 풍부하므로 이번에는 item detail의 source/evidence click을 계층별로 측정 가능하게 만들어 다음 growth loop가 어떤 proof type이 owner trust와 repeat visit을 만드는지 구분하도록 했습니다.",
+    "material_changes_this_run": [
+      "source-evidence-clicks-v1 추가: item detail source-card에 source_layer/source_kind/source_type/source_status/source_date_kind metadata를 생성합니다.",
+      "assets/growth.js가 source_link click에 위 source metadata와 component_experiment_id=source-evidence-clicks-v1를 함께 전송합니다.",
+      "data/growth_goal.json과 data/marketing_backlog.json에 source-evidence-clicks-v1 experiment/campaign을 등록해 다음 loop와 public artifact에서 추적 가능하게 했습니다.",
+      "refresh 결과 weekly trend_items 8→9, recent_trend_items 8→9, WATCHLIST 36→35로 개선되었습니다. 단, TikTok Shop item coverage는 43→42로 1개 하락했습니다."
     ],
-    "growth_assessment": {
-      "standing_goal": "500 average daily visits over rolling 30 days",
-      "measured_current_value": null,
-      "measurement_status": "blocked_without_GA4_property_or_Vercel_Analytics_export",
-      "growth_progress_interpretation": "No measured traffic improvement can be claimed this run. The concrete progress is lower-friction owner/reps forwarding plus event context readiness for future measurement.",
-      "new_growth_lever": "copy-ready owner brief links with utm_medium=brief_copy and component_experiment_id=owner-brief-copy-v1"
-    },
-    "research_quality_assessment": {
-      "trend_items": 8,
-      "watchlist_items": 36,
-      "retail_product_items": 43,
-      "tiktok_shop_items": 43,
-      "key_blocker": "Published/date-bearing trend evidence is still the limiting factor; weekly trend-backed items regressed while WATCHLIST count increased.",
-      "zero_trend_categories": [
-        "Jewelry & Fashion Accessories",
-        "Nails",
-        "Tools & Accessories"
-      ],
-      "notable_positive": "50mm Gold Hoop Earrings recovered supply validation from 0 to 4 verified URLs / 3 TikTok Shop product signals, but remains WATCHLIST because no dated trend URL was captured."
-    },
-    "good_points": [
-      "Refresh and build completed; Apify TikTok Shop returned success with 69 products and 43/44 items with TikTok Shop coverage.",
-      "Owner-facing UX now has ranking, quick picks, share links, top-3 share strip, and copy-ready owner brief without hiding evidence gaps.",
-      "Evidence discipline preserved: new owner brief uses evidence_status_label and explicitly labels WATCHLIST rather than turning supply URLs into trend claims."
+    "standing_goal_blocker": "500 average daily visits는 아직 중앙 analytics export가 없어 측정 불가입니다. GA4 tag와 Vercel Web Analytics script는 live/provider-ready지만 GA4_PROPERTY_ID + service-account reporting access 또는 Vercel Analytics export/API access가 필요합니다.",
+    "insight_quality_blockers": [
+      "weekly WATCHLIST 35개: trend claim보다 dated post/article/thread URL capture가 우선입니다.",
+      "Tools & Accessories와 Jewelry & Fashion Accessories는 weekly published trend evidence가 0개라 owner-facing trend 표현을 계속 보수적으로 유지해야 합니다.",
+      "Rhinestone Nail Charms는 current focus에서 retail/TikTok/live product URL도 0이라 product image/actionability 보강이 필요합니다.",
+      "TikTok Shop coverage regression 1개: Foaming Mousse for Braids/Rhinestone Nail Charms gap을 다음 collector query에서 확인해야 합니다."
     ],
-    "remaining_issues": [
-      "Central traffic measurement remains unavailable: GA4 measurement tag exists, but GA4_PROPERTY_ID/API access or Vercel Analytics export is still needed for rolling 30-day average daily visits.",
-      "Weekly quality regressed: trend_items 9→8 and watchlist_items 35→36; Jewelry, Nails, and Tools still have zero weekly trend-backed items in operations_review category stats.",
-      "Deep Shade Setting Powder still lacks retail/TikTok product evidence in this run; it needs supply alias/query recovery but must remain WATCHLIST until dated trend evidence is captured.",
-      "No external SNS posting was performed because xurl CLI/OAuth and first-post approval are still pending."
-    ],
+    "growth_interpretation": "새 tracking은 트래픽 자체를 늘렸다고 주장하지 않습니다. 대신 source proof 클릭→share/copy→repeat visit funnel을 측정할 수 있게 만들어, evidence transparency가 owner retention에 도움이 되는지 검증할 준비를 했습니다.",
     "next_direction": [
-      "Next loop should prioritize dated source capture for Jewelry/Nails/Tools zero-trend categories, especially 50mm Gold Hoop Earrings, Short Square Press-On Nails, Wig Grip Band, and body jewelry item types.",
-      "Add collector alias recovery for Deep Shade Setting Powder supply URLs without treating search pages as evidence.",
-      "After analytics export access exists, compare owner-brief-copy-v1 events against owner-quick-picks-v1 and top3-owner-share-strip-v1 by component_experiment_id and UTM campaign.",
-      "Create/publish only draft-safe SNS copy from the owner brief until xurl is installed/authenticated and first live post is manually approved."
+      "다음 loop는 next_loop_focus의 50mm Gold Hoop Earrings, Wig Grip Band, Rhinestone Nail Charms, Synthetic Lace Front Wig, Wig Adhesive Glue, V-Part Human Hair Wig를 우선 수집합니다.",
+      "특히 Rhinestone Nail Charms는 supply URL/product image 회복부터 하고, Tools/Jewelry는 broad category가 아니라 item-level dated URL capture만 trend evidence로 인정합니다.",
+      "analytics access가 생기면 source_layer별 source_link click rate, item detail share/copy after source click, UTM-attributed return visits를 first report metric으로 산출합니다."
     ],
-    "scores": {
-      "ui_ux": {
-        "score": 8.7,
-        "reason": "Store-like ranking remains clean and now has a concise copy-ready owner brief; risk is page length from multiple growth modules."
-      },
-      "structure_architecture": {
-        "score": 8.3,
-        "reason": "Small reusable builder function and shared growth copy handler; static-site architecture remains simple, though build_site.py is getting long."
-      },
-      "stability_security": {
-        "score": 8.8,
-        "reason": "E2E passed on desktop/mobile and no secrets were printed; external posting/spend guardrails remain intact."
-      },
-      "goal_fit_growth": {
-        "score": 7.6,
-        "reason": "Shareability and instrumentation improved, but traffic impact is unmeasured and analytics export is still blocked."
-      }
-    },
-    "coverage_delta_summary": {
-      "trend_items": {
-        "previous": 9,
-        "current": 8,
-        "delta": -1
-      },
-      "recent_trend_items": {
-        "previous": 9,
-        "current": 8,
-        "delta": -1
-      },
-      "retail_product_items": {
-        "previous": 43,
-        "current": 43,
-        "delta": 0
-      },
-      "tiktok_shop_items": {
-        "previous": 42,
-        "current": 43,
-        "delta": 1
-      },
-      "product_image_items": {
-        "previous": 43,
-        "current": 43,
-        "delta": 0
-      },
-      "watchlist_items": {
-        "previous": 35,
-        "current": 36,
-        "delta": 1
-      }
-    }
+    "source_discipline": "Generated search/watchlist URLs remain non-scoring. This run did not fabricate sources and did not turn supply URLs or watchlist links into trend claims."
   }
 }

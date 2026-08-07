@@ -213,6 +213,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'hero-growth-cta-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'utm-attribution-persistence-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-brief-copy-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'source-evidence-clicks-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -268,6 +269,18 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(JSON.parse(detailJsonLd ?? '{}')['@type']).toBe('Product');
     expect(await page.locator('.metrics-grid .metric-card').count()).toBeGreaterThan(0);
     await expect(page.getByRole('heading', { name: '실제 근거와 참고 링크 분리' })).toBeVisible();
+    await expect(page.locator('[data-growth-section="source-evidence-clicks-v1"]')).toBeVisible();
+    const firstSourceCard = page.locator('.source-card').first();
+    await expect(firstSourceCard).toHaveAttribute('data-growth-source-layer', /.+/);
+    await expect(firstSourceCard).toHaveAttribute('data-growth-source-kind', /.+/);
+    await expect(firstSourceCard).toHaveAttribute('data-growth-source-type', /.+/);
+    await expect(firstSourceCard).toHaveAttribute('data-growth-source-status', /.+/);
+    await firstSourceCard.evaluate((element) => {
+      element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      (element as HTMLAnchorElement).click();
+    });
+    const sourceClickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(sourceClickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'source_link' && event.section === 'source-evidence-clicks-v1' && event.component_experiment_id === 'source-evidence-clicks-v1' && event.source_layer && event.source_kind && event.source_status)).toBe(true);
     await expect(page.locator('.item-share-kit')).toBeVisible();
     const itemCopyButton = page.locator('[data-growth-share="item_copy_link"]').first();
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-item-detail-share/);
@@ -339,6 +352,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-share-kit-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'top3-owner-share-strip-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-brief-copy-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'source-evidence-clicks-v1')).toBe(true);
 
     const snsRulesResponse = await request.get('/data/sns_posting_rules_public.json');
     expect(snsRulesResponse.status()).toBeLessThan(400);

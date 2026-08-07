@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T17:09:30.941459Z",
+  "updated_at": "2026-08-07T18:22:55.473636Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,7 +7,7 @@
       "item_id": "50mm-gold-hoop-earrings",
       "item_name": "50mm Gold Hoop Earrings",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 22,
+      "rank": 23,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"50mm Gold Hoop Earrings\" beauty supply trend",
@@ -42,7 +42,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 10,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -66,7 +66,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -74,53 +74,18 @@
       }
     },
     {
-      "item_id": "short-square-press-on-nails",
-      "item_name": "Short Square Press-On Nails",
+      "item_id": "rhinestone-nail-charms",
+      "item_name": "Rhinestone Nail Charms",
       "category": "Nails",
-      "rank": 33,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Short Square Press-On Nails\" beauty supply trend",
-        "Short Square Press-On Nails 2026 trend",
-        "Short Square Press-On Nails customer review 2026",
-        "\"Short Square Press-On Nails\" black beauty supply",
-        "Short Square Press-On Nails press-on nail trend",
-        "Short Square Press-On Nails nail design review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 1,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 1,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 1,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 14,
-        "source_layers": 1,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "deep-shade-setting-powder",
-      "item_name": "Deep Shade Setting Powder",
-      "category": "Makeup & Cosmetics",
       "rank": 44,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
       "queries": [
-        "\"Deep Shade Setting Powder\" beauty supply trend",
-        "Deep Shade Setting Powder 2026 trend",
-        "Deep Shade Setting Powder customer review 2026",
-        "\"Deep Shade Setting Powder\" black beauty supply",
-        "Deep Shade Setting Powder makeup review",
-        "Deep Shade Setting Powder beauty supply haul"
+        "\"Rhinestone Nail Charms\" beauty supply trend",
+        "Rhinestone Nail Charms 2026 trend",
+        "Rhinestone Nail Charms customer review 2026",
+        "\"Rhinestone Nail Charms\" black beauty supply",
+        "Rhinestone Nail Charms press-on nail trend",
+        "Rhinestone Nail Charms nail design review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 0,
@@ -147,7 +112,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -171,7 +136,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -182,7 +147,7 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 11,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
@@ -210,27 +175,46 @@
         "manual_references": 14,
         "news_magazine": 0
       }
+    },
+    {
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 13,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"V-Part Human Hair Wig\" beauty supply trend",
+        "V-Part Human Hair Wig 2026 trend",
+        "V-Part Human Hair Wig customer review 2026",
+        "\"V-Part Human Hair Wig\" black beauty supply",
+        "V-Part Human Hair Wig wig install trend",
+        "V-Part Human Hair Wig natural hair review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
     }
   ],
   "qa_focus": [
     "다음 Playwright QA에서 operations_review.json/next_loop_focus.json 생성 여부를 smoke check에 포함합니다.",
     "ranking card click-through뿐 아니라 top focus item detail page의 source groups와 image metadata를 확인합니다.",
     "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
-  ],
-  "ai_operator_note": {
-    "updated_at": "2026-08-07T17:10:23.515221Z",
-    "primary_growth_gap": "central visit analytics unavailable; owner-brief-copy-v1 is live/provider-ready but not measurable centrally yet",
-    "primary_research_gap": "weekly WATCHLIST increased to 36/44 and published trend coverage regressed to 8/44; zero-trend categories need dated URL capture",
-    "new_experiment_to_verify_next_run": "owner-brief-copy-v1",
-    "next_growth_check": "verify live owner brief copy buttons and public marketing/growth JSON, then compare component_experiment_id events if GA4/Vercel export access becomes available",
-    "next_research_check": "prioritize Deep Shade Setting Powder supply recovery and dated sources for Jewelry/Nails/Tools focus items without scoring generated search URLs"
-  },
-  "growth_focus": {
-    "experiment_id": "owner-brief-copy-v1",
-    "queries_or_actions": [
-      "Live-check /rankings/weekly.html contains data-growth-section=owner-brief-copy-v1 after deploy.",
-      "If analytics access is added, pull growth_share_copy_result where share_action ends with _owner_brief_copy and compare by UTM campaign.",
-      "Use the generated owner brief as draft-only SNS/sales-rep copy; do not auto-post until xurl auth + first-post approval are present."
-    ]
-  }
+  ]
 }
