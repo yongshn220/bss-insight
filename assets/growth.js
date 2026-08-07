@@ -306,15 +306,19 @@
       if (!button) return;
       event.preventDefault();
       const url = button.getAttribute('data-copy-url') || '';
+      const copyText = button.getAttribute('data-copy-text') || url;
       const context = elementContext(button);
-      const copied = await safeWriteClipboard(url);
+      const copied = await safeWriteClipboard(copyText);
+      const fallbackLabel = button.hasAttribute('data-copy-text') ? 'Text ready' : 'Link ready';
       button.setAttribute('data-copy-state', copied ? 'copied' : 'manual-copy');
-      button.textContent = copied ? 'Copied' : 'Link ready';
+      button.textContent = copied ? 'Copied' : fallbackLabel;
       track('growth_share_copy_result', {
         type: 'share_copy_result',
         share_action: button.getAttribute('data-growth-share') || 'unknown',
         href: url,
         copied,
+        copy_mode: button.hasAttribute('data-copy-text') ? 'brief_text' : 'url',
+        copy_text_length: copyText.length,
         ...context,
       });
     });

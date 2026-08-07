@@ -88,6 +88,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(quickPickCards.first()).toHaveAttribute('href', /utm_medium=quick_pick/);
     await expect(quickPickCards.first()).toHaveAttribute('data-growth-cta', 'owner_quick_pick');
     await expect(quickPickCards.first()).toHaveAttribute('data-item-id', /.+/);
+    await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Weekly owner에게 바로 보낼 3줄 요약' })).toBeVisible();
+    await expect(page.locator('.owner-brief-steps li')).toHaveCount(3);
+    const ownerBriefCopy = page.locator('[data-growth-share="weekly_owner_brief_copy"]');
+    await expect(ownerBriefCopy).toHaveAttribute('data-copy-url', /daily-visits-500-weekly-owner-brief/);
+    await expect(ownerBriefCopy).toHaveAttribute('data-copy-url', /utm_medium=brief_copy/);
+    await expect(ownerBriefCopy).toHaveAttribute('data-copy-text', /BSS owner brief/);
+    await expect(ownerBriefCopy).toHaveAttribute('data-copy-text', /Display test/);
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_copy_link"]')).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-weekly-owner-share/);
@@ -139,9 +147,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.attribution.first.utm_source).toBe('e2e');
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
 
     const top3CopyButton = page.locator('[data-growth-share="weekly_top3_copy_link"]').first();
     await top3CopyButton.click();
@@ -165,6 +175,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const quickPickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(quickPickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_quick_pick' && event.component_experiment_id === 'owner-quick-picks-v1' && event.item_id && String(event.href).includes('utm_medium=quick_pick'))).toBe(true);
+
+    const ownerBriefButton = page.locator('[data-growth-share="weekly_owner_brief_copy"]').first();
+    await ownerBriefButton.click();
+    await expect(ownerBriefButton).toHaveText(/Copied|Text ready/);
+    const ownerBriefEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(ownerBriefEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_owner_brief_copy' && event.component_experiment_id === 'owner-brief-copy-v1' && String(event.href).includes('daily-visits-500-weekly-owner-brief'))).toBe(true);
+    expect(ownerBriefEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_owner_brief_copy' && event.copy_mode === 'brief_text' && event.copy_text_length > 120 && event.section === 'owner-brief-copy-v1')).toBe(true);
 
     await page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html/);
@@ -195,6 +212,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.sns_strategy?.tool).toBe('xurl');
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'hero-growth-cta-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'utm-attribution-persistence-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-brief-copy-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -205,6 +223,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-share$="_owner_brief_copy"]')).toHaveAttribute('data-copy-text', /BSS owner brief/);
       await expect(page.locator('.quick-pick-card').first()).toHaveAttribute('href', new RegExp(`daily-visits-500-${label.toLowerCase()}-owner-quick-picks`));
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
       await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
@@ -318,6 +338,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const marketing = await marketingResponse.json();
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-share-kit-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'top3-owner-share-strip-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-brief-copy-v1')).toBe(true);
 
     const snsRulesResponse = await request.get('/data/sns_posting_rules_public.json');
     expect(snsRulesResponse.status()).toBeLessThan(400);

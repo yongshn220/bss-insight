@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T15:46:17.468577Z",
+  "updated_at": "2026-08-07T17:08:39.239135Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -225,6 +225,27 @@
       ],
       "owner_value": "Owners get a concise store-zone action card with item, display tip, evidence status, and risk before reading the whole ranking.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare component_experiment_id=owner-quick-picks-v1 against hero CTA, top3 share strip, and item-card clicks."
+    },
+    {
+      "campaign_id": "owner-brief-copy-v1",
+      "status": "live-on-site-after-build",
+      "objective": "Convert each timeframe ranking into a copy-ready one-minute BSS owner brief that reps/owners can forward without composing new copy.",
+      "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-brief",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_click type=share_{timeframe}_owner_brief_copy",
+        "growth_share_copy_result share_action={timeframe}_owner_brief_copy",
+        "copy_mode=brief_text and copy_text_length for message-quality checks",
+        "component_experiment_id=owner-brief-copy-v1 with UTM source/medium/campaign context"
+      ],
+      "owner_value": "Busy BSS owners receive one concise brief with floor test, add-on angle, WATCHLIST caution, display/risk copy, and a full ranking link; this lowers friction for repeat visits and forwarding.",
+      "measurement_need": "GA4_PROPERTY_ID plus service credentials or Vercel Analytics export/API access are needed to connect owner brief copy events to visits and repeat sessions."
     }
   ],
   "experiment_backlog": [
@@ -311,6 +332,12 @@
       "status": "promoted-to-live-growth-js-after-build",
       "hypothesis": "Adding component_experiment_id/section_position to events will make it possible to compare quick picks, top3 share strip, evidence transparency, item cards, and hero CTA once analytics export is available.",
       "next_step": "After GA4/Vercel export access is connected, report clicks/share-copy events by component_experiment_id and remove or reposition modules that do not drive item-detail entrances or repeat visits."
+    },
+    {
+      "experiment_id": "owner-brief-copy-v1",
+      "status": "promoted-to-live-site-after-build",
+      "hypothesis": "Copy-ready owner briefs will create more forward/revisit behavior than URL-only share cards for BSS owners and GNS reps.",
+      "next_step": "Measure owner_brief_copy growth_share_copy_result events and UTM-attributed ranking returns once analytics export access is available; if clicks are low, shorten to two lines or move the brief above quick picks."
     }
   ],
   "permission_requests": [

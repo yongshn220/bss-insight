@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T15:54:59.893697Z",
+  "updated_at": "2026-08-07T17:09:30.941459Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,8 +7,8 @@
       "item_id": "50mm-gold-hoop-earrings",
       "item_name": "50mm Gold Hoop Earrings",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 44,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "rank": 22,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"50mm Gold Hoop Earrings\" beauty supply trend",
         "50mm Gold Hoop Earrings 2026 trend",
@@ -18,22 +18,22 @@
         "50mm Gold Hoop Earrings body jewelry trend"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 0,
+        "verified_evidence": 4,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 0,
-        "tiktok_shop_product_evidence": 0,
+        "retail_product_evidence": 4,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
-        "unique_domains": 0,
+        "unique_domains": 2,
         "unique_trend_domains": 0,
-        "unique_retail_domains": 0,
+        "unique_retail_domains": 2,
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
         "watchlist_links": 16,
-        "source_layers": 0,
+        "source_layers": 2,
         "manual_references": 16,
         "news_magazine": 0
       }
@@ -42,7 +42,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 12,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -74,10 +74,80 @@
       }
     },
     {
+      "item_id": "short-square-press-on-nails",
+      "item_name": "Short Square Press-On Nails",
+      "category": "Nails",
+      "rank": 33,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Short Square Press-On Nails\" beauty supply trend",
+        "Short Square Press-On Nails 2026 trend",
+        "Short Square Press-On Nails customer review 2026",
+        "\"Short Square Press-On Nails\" black beauty supply",
+        "Short Square Press-On Nails press-on nail trend",
+        "Short Square Press-On Nails nail design review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 1,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 1,
+        "tiktok_shop_product_evidence": 1,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 1,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "deep-shade-setting-powder",
+      "item_name": "Deep Shade Setting Powder",
+      "category": "Makeup & Cosmetics",
+      "rank": 44,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, BSS/marketplace live product URL 부족, source/domain 다양성 낮음",
+      "queries": [
+        "\"Deep Shade Setting Powder\" beauty supply trend",
+        "Deep Shade Setting Powder 2026 trend",
+        "Deep Shade Setting Powder customer review 2026",
+        "\"Deep Shade Setting Powder\" black beauty supply",
+        "Deep Shade Setting Powder makeup review",
+        "Deep Shade Setting Powder beauty supply haul"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 0,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 0,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 0,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 0,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
@@ -109,43 +179,10 @@
       }
     },
     {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
-      "category": "Hair Care & Styling",
-      "rank": 11,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Lace Melting Spray\" beauty supply trend",
-        "Lace Melting Spray 2026 trend",
-        "Lace Melting Spray customer review 2026",
-        "\"Lace Melting Spray\" black beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 13,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
@@ -173,41 +210,6 @@
         "manual_references": 14,
         "news_magazine": 0
       }
-    },
-    {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 14,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"V-Part Human Hair Wig\" beauty supply trend",
-        "V-Part Human Hair Wig 2026 trend",
-        "V-Part Human Hair Wig customer review 2026",
-        "\"V-Part Human Hair Wig\" black beauty supply",
-        "V-Part Human Hair Wig wig install trend",
-        "V-Part Human Hair Wig natural hair review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
     }
   ],
   "qa_focus": [
@@ -216,10 +218,19 @@
     "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
   ],
   "ai_operator_note": {
-    "updated_at": "2026-08-07T15:55:27.631094Z",
-    "primary_growth_gap": "central visit analytics unavailable; component-level tracking is now provider-ready but not measured yet",
-    "primary_research_gap": "weekly WATCHLIST still 35/44 and current supply/image coverage regressed on a small number of items",
-    "new_experiment_to_verify_next_run": "component-experiment-context-v1",
-    "coverage_gap_source": "data/collection_notes.json coverage_gaps"
+    "updated_at": "2026-08-07T17:10:23.515221Z",
+    "primary_growth_gap": "central visit analytics unavailable; owner-brief-copy-v1 is live/provider-ready but not measurable centrally yet",
+    "primary_research_gap": "weekly WATCHLIST increased to 36/44 and published trend coverage regressed to 8/44; zero-trend categories need dated URL capture",
+    "new_experiment_to_verify_next_run": "owner-brief-copy-v1",
+    "next_growth_check": "verify live owner brief copy buttons and public marketing/growth JSON, then compare component_experiment_id events if GA4/Vercel export access becomes available",
+    "next_research_check": "prioritize Deep Shade Setting Powder supply recovery and dated sources for Jewelry/Nails/Tools focus items without scoring generated search URLs"
+  },
+  "growth_focus": {
+    "experiment_id": "owner-brief-copy-v1",
+    "queries_or_actions": [
+      "Live-check /rankings/weekly.html contains data-growth-section=owner-brief-copy-v1 after deploy.",
+      "If analytics access is added, pull growth_share_copy_result where share_action ends with _owner_brief_copy and compare by UTM campaign.",
+      "Use the generated owner brief as draft-only SNS/sales-rep copy; do not auto-post until xurl auth + first-post approval are present."
+    ]
   }
 }

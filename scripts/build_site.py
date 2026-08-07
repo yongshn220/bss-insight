@@ -478,6 +478,94 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def owner_brief_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """One-copy owner brief for reps/owners to forward without writing copy by hand."""
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-owner-brief"
+    ranking_path = f"/rankings/{timeframe}.html"
+    owner_url = growth_campaign_url(
+        ranking_path,
+        source="owner_share",
+        medium="brief_copy",
+        campaign=campaign,
+        utm_content="one_minute_owner_brief",
+    )
+    email_url = growth_campaign_url(
+        ranking_path,
+        source="email",
+        medium="owner_forward",
+        campaign=campaign,
+        utm_content="one_minute_owner_brief",
+    )
+
+    trend_rows = [row for row in rows if has_trend_evidence(row)]
+    lead = trend_rows[0] if trend_rows else rows[0]
+    add_on = next(
+        (
+            row
+            for row in trend_rows[1:]
+            if row.get("category_id") != lead.get("category_id")
+        ),
+        trend_rows[1] if len(trend_rows) > 1 else None,
+    )
+    watch = next((row for row in rows if not has_trend_evidence(row)), None)
+    steps = [
+        {
+            "label": "Floor test",
+            "row": lead,
+            "note": "가장 먼저 보여줄 evidence-backed item",
+        }
+    ]
+    if add_on:
+        steps.append({"label": "Add-on angle", "row": add_on, "note": "같이 팔기 쉬운 adjacent item"})
+    if watch:
+        steps.append({"label": "Small test only", "row": watch, "note": "WATCHLIST · trend evidence insufficient"})
+
+    step_cards = []
+    brief_lines = [f"{label} BSS owner brief:"]
+    for index, step in enumerate(steps, start=1):
+        row = step["row"]
+        item_name = row.get("item_name") or "BSS item"
+        display = row.get("display_tip") or "front-area display test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        evidence_label = evidence_status_label(row)
+        brief_lines.append(
+            f"{index}) {step['label']}: #{row.get('rank')} {item_name}. "
+            f"Display test: {display}. Evidence: {evidence_label}. Risk: {risk}."
+        )
+        step_cards.append(f"""
+          <li>
+            <span>{esc(step['label'])}</span>
+            <strong>#{esc(row.get('rank'))} {esc(item_name)}</strong>
+            <p>{esc(clamp_text(display, 126))}</p>
+            <small>{esc(step['note'])} · {esc(evidence_label)}</small>
+          </li>""")
+    brief_lines.append(f"Full ranking: {owner_url}")
+    brief_text = "\n".join(brief_lines)
+    mailto = "mailto:?" + urllib.parse.urlencode({
+        "subject": f"{label} BSS owner brief",
+        "body": brief_text.replace(owner_url, email_url),
+    })
+
+    return f"""
+      <section class="wrap owner-brief" data-growth-section="owner-brief-copy-v1" data-growth-experiment="owner-brief-copy-v1" aria-labelledby="owner-brief-{esc(timeframe)}">
+        <div class="section-title owner-brief-title">
+          <div><span>One-minute owner brief · copy-ready</span><h2 id="owner-brief-{esc(timeframe)}">{esc(label)} owner에게 바로 보낼 3줄 요약</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <ol class="owner-brief-steps">{''.join(step_cards)}</ol>
+        <div class="owner-brief-copybox">
+          <code>{esc(brief_text)}</code>
+          <div class="share-actions">
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_owner_brief_copy" data-copy-url="{esc(owner_url)}" data-copy-text="{esc(brief_text)}">Copy owner brief</button>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_owner_brief_email" href="{esc(mailto)}">Email brief</a>
+          </div>
+        </div>
+      </section>"""
+
+
 def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
     """Item-specific top share starters for reps/owners, with UTM and item-level tracking."""
     share_rows = [row for row in rows if has_trend_evidence(row)][:3]
@@ -795,6 +883,7 @@ def render_home(data: dict[str, Any]) -> str:
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
       {evidence_gap_snapshot(weekly, 'weekly')}
       {owner_quick_picks('weekly', weekly)}
+      {owner_brief_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
       <section class="wrap block">
@@ -856,6 +945,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       <div class="wrap">{category_chips(cats)}</div>
       {evidence_gap_snapshot(rows, timeframe)}
       {owner_quick_picks(timeframe, rows)}
+      {owner_brief_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
       <section class="wrap block">

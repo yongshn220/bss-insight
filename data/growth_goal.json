@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T15:46:17.468577Z",
+  "updated_at": "2026-08-07T17:08:39.239135Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T15:46:17.468577Z",
-    "provider_checked": "Live Web Analytics script/GA4 tag remain provider-ready; central visit export is still unavailable in this runtime. This run added component_experiment_id, section_position, and visible_growth_sections to growth.js events so quick-picks/share/evidence components can be compared once GA4/Vercel event export is connected.",
+    "last_checked_at": "2026-08-07T17:08:39.239135Z",
+    "provider_checked": "Live Web Analytics script/GA4 tag remain provider-ready; central visit export is still unavailable in this runtime. This run added owner-brief-copy-v1: copy-ready one-minute BSS owner briefs with UTM, component_experiment_id, copy_mode, and copy_text_length tracking so forwarded rep/owner messages can be compared once GA4/Vercel export access is connected.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: live instrumentation can emit growth_exposure/growth_click/growth_share_copy_result with UTM plus component_experiment_id context, but GA4 Data API credentials/property or Vercel Analytics export/API access are still needed to calculate rolling 30-day visits and compare experiments centrally.",
-    "interpretation": "Measurement remains blocked, but attribution readiness improved: events now identify which on-page growth component caused a click/share, instead of grouping all actions under only the hero A/B experiment."
+    "raw_result": "measurement pending: live instrumentation can emit growth_exposure/growth_click/growth_share_copy_result with UTM, component_experiment_id, and owner brief copy context, but GA4 Data API property/access or Vercel Analytics export/API access is still needed to calculate rolling 30-day visits.",
+    "interpretation": "Measurement remains blocked; this run improves distribution readiness, not measured traffic yet. Owner brief copy/share events should be compared against hero CTA, quick-pick, and top3 share modules after analytics export is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -226,6 +226,16 @@
       ],
       "success_metric": "growth_click and growth_share_copy_result by component_experiment_id, section_position, item_id, UTM, and repeat item-detail entrances once analytics export is available",
       "hypothesis": "Component-level event context will show which dashboard modules actually drive BSS owner repeat visits toward 500/day, instead of treating every click as one generic hero experiment."
+    },
+    {
+      "experiment_id": "owner-brief-copy-v1",
+      "status": "active-site-cta-after-build",
+      "variants": [
+        "copy_ready_three_line_brief",
+        "older_url_only_share_cards"
+      ],
+      "success_metric": "weekly/monthly/quarterly/yearly owner brief copy events, UTM-attributed ranking returns, item-detail entrances, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners and sales reps will share/reopen a concise copy-ready 3-line owner brief more often than generic URL-only share cards because it includes floor test, add-on angle, WATCHLIST caution, and an attributed ranking link."
     }
   ],
   "reporting": {
