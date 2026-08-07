@@ -96,6 +96,11 @@
       return;
     }
     if (document.querySelector('script[data-gns-vercel-analytics]')) return;
+    if (typeof window.va !== 'function') {
+      window.va = function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+    }
     const script = document.createElement('script');
     script.defer = true;
     script.src = '/_vercel/insights/script.js';

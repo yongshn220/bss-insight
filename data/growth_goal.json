@@ -1,13 +1,20 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T01:58:16Z",
+  "updated_at": "2026-08-07T02:07:41.821246Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
     "target": 500,
     "window": "rolling_30_days",
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
+  },
+  "measurement_status": {
+    "last_checked_at": "2026-08-07T02:06:34Z",
+    "provider_checked": "Vercel CLI metrics: vercel.analytics_pageview.count",
+    "rolling_30d_average_daily_visits": null,
+    "raw_result": "Metrics API was reachable but returned empty data arrays for 30d unique visitors, 30d pageviews, and 1h pageviews.",
+    "interpretation": "Central visit measurement is not yet usable for proving progress; confirm Vercel Web Analytics collection in the dashboard or connect GA4/Plausible/PostHog."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -32,24 +39,22 @@
     "can_create_marketing_drafts": true,
     "can_monitor_public_web_sources": true,
     "can_publish_sns_posts": false,
-    "can_spend_ad_budget": false
+    "can_spend_ad_budget": false,
+    "can_use_vercel_web_analytics": true,
+    "can_use_ga4": true,
+    "can_use_internal_growth_events": true,
+    "can_monitor_public_sns": true,
+    "can_generate_sns_drafts": true,
+    "can_auto_publish_sns_posts_after_xurl_auth": true
   },
   "needs_user_permission_or_credentials": [
-    {
-      "need": "analytics_provider",
-      "why": "Centralized visit measurement is required to prove progress toward 500 average daily visits. Suggested: Vercel Web Analytics, Google Analytics 4, Plausible, or PostHog."
-    },
     {
       "need": "custom_domain_optional",
       "why": "A memorable domain improves trust, repeat visits, and shareability versus a vercel.app URL."
     },
     {
-      "need": "sns_credentials",
-      "why": "Actual posting/account management requires credentials for X/Twitter, Instagram/Facebook, TikTok, LinkedIn, Buffer, or another approved social scheduler."
-    },
-    {
-      "need": "posting_approval_rule",
-      "why": "Define whether SNS posts are draft-only, approval-first, or auto-post within a safe scope."
+      "need": "xurl_cli_install_and_oauth_credentials",
+      "why": "Actual X/Twitter posting requires xurl CLI availability and OAuth credentials configured outside the agent session; never paste secrets into chat."
     },
     {
       "need": "paid_marketing_budget_optional",
@@ -60,20 +65,61 @@
     {
       "experiment_id": "hero-growth-cta-v1",
       "status": "active-client-side",
-      "variants": ["A_evidence_first", "B_retail_action_first"],
+      "variants": [
+        "A_evidence_first",
+        "B_retail_action_first"
+      ],
       "success_metric": "ranking CTA clicks and item card clicks per visit",
       "hypothesis": "Retail-owner action language will produce more clicks than evidence-first language for busy BSS owners."
     },
     {
       "experiment_id": "owner-share-kit-v1",
       "status": "active-client-side",
-      "variants": ["weekly_owner_link", "timeframe_owner_link"],
+      "variants": [
+        "weekly_owner_link",
+        "timeframe_owner_link"
+      ],
       "success_metric": "share intent clicks, copy-link events, and UTM-attributed return visits",
       "hypothesis": "Owner-ready share links with item-specific display tips will increase repeat visits and make SNS/sales-rep distribution measurable once analytics is connected."
+    },
+    {
+      "experiment_id": "analytics-provider-bridge-v1",
+      "status": "active-provider-bridge",
+      "variants": [
+        "vercel_web_analytics",
+        "ga4",
+        "internal_growth_events"
+      ],
+      "success_metric": "measured visits, ranking CTA clicks, item card clicks, and share/copy events by UTM channel",
+      "hypothesis": "Provider-backed measurement will distinguish real growth from routine refresh/deploy activity."
     }
   ],
   "reporting": {
     "daily_growth_director": "Report current measured traffic if credentials exist; otherwise report tracking readiness, marketing actions, blockers, and next permission needed.",
     "hourly_ai_operator": "Keep improving product insight quality, SEO/shareability, tracking, experiments, and conversion paths while preserving source/evidence discipline."
+  },
+  "analytics_providers": {
+    "vercel_web_analytics": {
+      "status": "enabled",
+      "project": "gns_research_hub",
+      "live_script_path": "/_vercel/insights/script.js",
+      "measurement_note": "Vercel dashboard measures visitors, page views, referrers, geography, devices, and custom events without cookies."
+    },
+    "ga4": {
+      "status": "enabled-in-site-head",
+      "measurement_id": "G-SW7HBY6WRE",
+      "event_bridge": "assets/growth.js sends growth_exposure, growth_click, and growth_share_copy_result through gtag when available."
+    },
+    "internal_growth_events": {
+      "status": "enabled-client-side",
+      "purpose": "A/B variant, UTM persistence, share/copy/click events, and provider fan-out to Vercel Analytics and GA4."
+    }
+  },
+  "sns_strategy": {
+    "primary_channel": "X/Twitter",
+    "tool": "xurl",
+    "status": "approved_strategy_pending_cli_auth",
+    "role": "Drive BSS-owner repeat visits with concise, evidence-backed weekly item insights and UTM-tagged links.",
+    "posting_rule_summary": "After xurl is installed/authenticated, auto-post only safe evidence-backed ranking links within limits; keep replies/DMs/paid ads approval-only."
   }
 }

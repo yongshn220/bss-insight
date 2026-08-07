@@ -34,7 +34,12 @@ data/rankings.json              최신 ranking data
 data/ranking_history.json       ranking history snapshot
 data/operations_review.json     최신 post-QA review
 data/next_loop_focus.json       다음 collection loop에 적용할 focus queries
+data/growth_goal.json           500 average daily visits goal, analytics providers, growth guardrails
+data/marketing_backlog.json     owner-share/SNS campaign drafts and experiments
+data/sns_posting_rules.json     X/xurl posting rule, frequency limits, guardrails, UTM template
 public/data/operations_review_public.json  live verification용 sanitized review output
+public/data/growth_goal_public.json        sanitized growth/analytics status
+public/data/sns_posting_rules_public.json  sanitized SNS posting rule
 package.json                    Vercel build command
 vercel.json                     Vercel output config
 ```
@@ -104,6 +109,13 @@ Vercel 설정:
 Build Command: npm run build
 Output Directory: public
 ```
+
+## Growth / analytics / SNS 운영
+
+- Vercel Web Analytics는 project `gns_research_hub`에서 활성화하고, live에서는 `/_vercel/insights/script.js`를 통해 `growth.js` custom event를 받을 수 있게 합니다.
+- GA4는 `G-SW7HBY6WRE` measurement ID를 모든 generated page `<head>`에 삽입합니다.
+- `assets/growth.js`는 `growth_exposure`, `growth_click`, `growth_share_copy_result`를 local event buffer, Vercel Analytics(`window.va`), GA4(`gtag`)로 fan-out합니다.
+- SNS 기본 채널은 X/Twitter이며, posting rule은 `data/sns_posting_rules.json`에 기록합니다. 실제 external posting은 xurl CLI 설치와 OAuth auth가 완료된 뒤 rule 범위 안에서만 진행합니다.
 
 ## 데이터/점수 주의사항
 

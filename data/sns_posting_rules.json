@@ -1,0 +1,64 @@
+{
+  "updated_at": "2026-08-07T02:07:41.821246Z",
+  "goal_id": "daily-visits-500",
+  "status": "active_pending_xurl_install_and_oauth",
+  "primary_channel": {
+    "name": "X/Twitter",
+    "tool": "xurl",
+    "purpose": "Reach BSS owners/operators, beauty supply buyers, braiders/stylists, and wholesale/retail observers with practical item-level insights."
+  },
+  "posting_rule": {
+    "mode": "safe_auto_post_after_xurl_auth",
+    "frequency_limits": {
+      "standard_post": "max_1_per_day",
+      "weekly_thread": "max_1_per_week",
+      "repost_or_like": "disabled_until_manual_review",
+      "reply_or_dm": "manual_approval_required"
+    },
+    "allowed_autonomous_content": [
+      "Evidence-backed ranking link with UTM parameters",
+      "One practical retail-owner display/reorder tip from the live page",
+      "Clear label when an item is WATCHLIST or evidence is insufficient",
+      "Short English post copy targeting Beauty Supply Store owners"
+    ],
+    "manual_approval_required_for": [
+      "First live post after account connection",
+      "Replies, quotes, DMs, follows, likes, reposts, or user-targeted engagement",
+      "Paid ads, boosted posts, budget spend, or promotional claims",
+      "Medical/growth efficacy claims, price guarantees, supplier accusations, or unverifiable trend claims",
+      "Any post that mentions a person/account directly or uses third-party images/media uploads"
+    ],
+    "hard_guardrails": [
+      "No fabricated source claims",
+      "No trend claim unless there is a dated captured source URL",
+      "Do not expose secrets, internal tokens, private review notes, or raw strategy files",
+      "Every post URL must include utm_source=x&utm_medium=organic and a campaign id",
+      "If analytics or xurl is unavailable, create drafts only and report the blocker"
+    ]
+  },
+  "recommended_post_template": {
+    "name": "daily_owner_item_insight",
+    "text": "Beauty Supply owners: this week’s ranking highlights {item_name}. Display test: {display_tip}. Evidence and supply links are separated so you can judge what is trend vs. watchlist. {url}",
+    "utm_pattern": "https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-x-daily-owner-insight"
+  },
+  "weekly_thread_template": [
+    "1/ This week’s BSS item ranking: what to test on the floor now — with trend evidence separated from supply/watchlist links.",
+    "2/ Top evidence-backed item: {item_name}. Why it matters: {reason_summary}",
+    "3/ Retail-owner test: {display_tip}. Caution: {risk}",
+    "4/ Full ranking: {url}"
+  ],
+  "measurement": {
+    "analytics_providers": [
+      "Vercel Web Analytics",
+      "GA4 G-SW7HBY6WRE",
+      "internal growth.js event bridge"
+    ],
+    "events": [
+      "growth_exposure",
+      "growth_click",
+      "growth_share_copy_result"
+    ],
+    "utm_source": "x",
+    "utm_medium": "organic"
+  }
+}

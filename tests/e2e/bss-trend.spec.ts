@@ -64,6 +64,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('.data-health div')).toHaveCount(4);
     await expect(page.getByText('500/day')).toBeVisible();
     await expect(page.locator('script[src="/assets/growth.js"]')).toHaveCount(1);
+    await expect(page.locator('script[src="https://www.googletagmanager.com/gtag/js?id=G-SW7HBY6WRE"]')).toHaveCount(1);
+    const hasGa4InlineConfig = await page.locator('script:not([src])').evaluateAll((scripts) =>
+      scripts.some((script) => (script.textContent ?? '').includes('G-SW7HBY6WRE')),
+    );
+    expect(hasGa4InlineConfig).toBe(true);
     await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
@@ -118,7 +123,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goalResponse.status()).toBeLessThan(400);
     const goal = await goalResponse.json();
     expect(goal.primary_goal?.target).toBe(500);
-    expect(goal.initial_experiments?.[0]?.experiment_id).toBe('hero-growth-cta-v1');
+    expect(goal.analytics_providers?.ga4?.measurement_id).toBe('G-SW7HBY6WRE');
+    expect(goal.analytics_providers?.vercel_web_analytics?.status).toBe('enabled');
+    expect(goal.sns_strategy?.tool).toBe('xurl');
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'hero-growth-cta-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -224,5 +232,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketingResponse.status()).toBeLessThan(400);
     const marketing = await marketingResponse.json();
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-share-kit-v1')).toBe(true);
+
+    const snsRulesResponse = await request.get('/public/data/sns_posting_rules_public.json');
+    expect(snsRulesResponse.status()).toBeLessThan(400);
+    const snsRules = await snsRulesResponse.json();
+    expect(snsRules.primary_channel?.tool).toBe('xurl');
+    expect(snsRules.posting_rule?.frequency_limits?.standard_post).toBe('max_1_per_day');
   });
 });

@@ -45,13 +45,27 @@ PUBLIC_GROWTH_GOAL_FIELDS = [
     "created_at",
     "updated_at",
     "primary_goal",
+    "measurement_status",
     "north_star",
     "growth_channels",
     "guardrails",
     "current_permissions",
+    "analytics_providers",
+    "sns_strategy",
     "needs_user_permission_or_credentials",
     "initial_experiments",
     "reporting",
+]
+
+PUBLIC_SNS_POSTING_RULE_FIELDS = [
+    "updated_at",
+    "goal_id",
+    "status",
+    "primary_channel",
+    "posting_rule",
+    "recommended_post_template",
+    "weekly_thread_template",
+    "measurement",
 ]
 
 PUBLIC_MARKETING_FIELDS = [
@@ -127,6 +141,10 @@ def public_marketing_payload(marketing: dict[str, Any]) -> dict[str, Any]:
     return {field: marketing.get(field) for field in PUBLIC_MARKETING_FIELDS if field in marketing}
 
 
+def public_sns_posting_rules_payload(rules: dict[str, Any]) -> dict[str, Any]:
+    return {field: rules.get(field) for field in PUBLIC_SNS_POSTING_RULE_FIELDS if field in rules}
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -156,6 +174,10 @@ def copy_public_data() -> None:
     marketing = load_json(DATA_DIR / "marketing_backlog.json")
     if marketing:
         write_json(data_dst / "marketing_backlog_public.json", public_marketing_payload(marketing))
+
+    sns_rules = load_json(DATA_DIR / "sns_posting_rules.json")
+    if sns_rules:
+        write_json(data_dst / "sns_posting_rules_public.json", public_sns_posting_rules_payload(sns_rules))
 
 
 def main() -> int:

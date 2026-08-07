@@ -20,10 +20,23 @@ ITEMS_DIR = ROOT / "items"
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
 SITE_BASE = "https://gnsresearchhub.vercel.app"
+GA4_MEASUREMENT_ID = "G-SW7HBY6WRE"
 
 
 def esc(value: object) -> str:
     return html.escape(str(value or ""), quote=True)
+
+
+def analytics_head() -> str:
+    """Return production analytics tags shared by every generated page."""
+    return f"""  <script async src=\"https://www.googletagmanager.com/gtag/js?id={GA4_MEASUREMENT_ID}\"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', '{GA4_MEASUREMENT_ID}');
+  </script>
+"""
 
 
 def load_rankings() -> dict[str, Any]:
@@ -85,7 +98,7 @@ def shell(title: str, body: str, active: str = "weekly", page_type: str = "ranki
   <meta property="og:url" content="https://gnsresearchhub.vercel.app{esc(canonical_path)}">
   <meta name="twitter:card" content="summary_large_image">
   <title>{esc(title)} · BSS Trend Ranking</title>
-  <link rel="stylesheet" href="/assets/style.css">
+{analytics_head()}  <link rel="stylesheet" href="/assets/style.css">
   <script defer src="/assets/growth.js"></script>
 </head>
 <body data-page-type="{esc(page_type)}">
