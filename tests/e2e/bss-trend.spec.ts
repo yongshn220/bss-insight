@@ -65,6 +65,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.getByText('500/day')).toBeVisible();
     await expect(page.locator('script[src="/assets/growth.js"]')).toHaveCount(1);
     await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
+    await expect(page.locator('.share-kit')).toBeVisible();
+    await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
+    await expect(page.locator('[data-growth-share="weekly_copy_link"]')).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-weekly-owner-share/);
     await expect(page.locator('.podium-card')).toHaveCount(3);
 
     const rankCards = page.locator('.rank-card');
@@ -98,6 +101,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.goalId).toBe('daily-visits-500');
     expect(exposure.target).toBe(500);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
+
+    const copyButton = page.locator('[data-growth-share="weekly_copy_link"]').first();
+    await copyButton.click();
+    await expect(copyButton).toHaveText(/Copied|Link ready/);
+    const shareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(shareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_copy_link')).toBe(true);
+    expect(shareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_copy_link')).toBe(true);
 
     await page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html/);
@@ -209,5 +219,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const collection = await collectionResponse.json();
     expect(collection.evidence_totals?.items_requested).toBeGreaterThan(0);
     expect(collection.source_health?.apify_tiktok_shop?.status).toBeTruthy();
+
+    const marketingResponse = await request.get('/public/data/marketing_backlog_public.json');
+    expect(marketingResponse.status()).toBeLessThan(400);
+    const marketing = await marketingResponse.json();
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-share-kit-v1')).toBe(true);
   });
 });

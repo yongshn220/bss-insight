@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T01:08:59Z",
+  "updated_at": "2026-08-07T01:58:16Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -63,6 +63,13 @@
       "variants": ["A_evidence_first", "B_retail_action_first"],
       "success_metric": "ranking CTA clicks and item card clicks per visit",
       "hypothesis": "Retail-owner action language will produce more clicks than evidence-first language for busy BSS owners."
+    },
+    {
+      "experiment_id": "owner-share-kit-v1",
+      "status": "active-client-side",
+      "variants": ["weekly_owner_link", "timeframe_owner_link"],
+      "success_metric": "share intent clicks, copy-link events, and UTM-attributed return visits",
+      "hypothesis": "Owner-ready share links with item-specific display tips will increase repeat visits and make SNS/sales-rep distribution measurable once analytics is connected."
     }
   ],
   "reporting": {

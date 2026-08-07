@@ -124,6 +124,14 @@
   }
 
   function labelForClick(target) {
+    const share = target.closest('[data-growth-share]');
+    if (share) {
+      const href = share.getAttribute('href') || share.getAttribute('data-copy-url') || '';
+      const text = trimText(share.textContent || share.getAttribute('aria-label') || href);
+      const shareAction = share.getAttribute('data-growth-share') || 'unknown';
+      return { type: `share_${shareAction}`, share_action: shareAction, href, text };
+    }
+
     const link = target.closest('a');
     if (!link) return null;
     const href = link.getAttribute('href') || '';
@@ -146,6 +154,34 @@
     }, { capture: true });
   }
 
+  async function safeWriteClipboard(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_error) {}
+    return false;
+  }
+
+  function installCopyButtons() {
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-copy-url]');
+      if (!button) return;
+      event.preventDefault();
+      const url = button.getAttribute('data-copy-url') || '';
+      const copied = await safeWriteClipboard(url);
+      button.setAttribute('data-copy-state', copied ? 'copied' : 'manual-copy');
+      button.textContent = copied ? 'Copied' : 'Link ready';
+      track('growth_share_copy_result', {
+        type: 'share_copy_result',
+        share_action: button.getAttribute('data-growth-share') || 'unknown',
+        href: url,
+        copied,
+      });
+    });
+  }
+
   function init() {
     const variant = getVariant();
     window.__GNS_GROWTH__ = {
@@ -159,6 +195,7 @@
     loadVercelAnalyticsIfHosted();
     applyExperiment(variant);
     installClickTracking();
+    installCopyButtons();
     track('growth_exposure', {
       title: trimText(document.title),
       page_type: document.body.dataset.pageType || 'unknown',

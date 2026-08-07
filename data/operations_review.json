@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-07T00:42:02.635971Z",
-  "source_generated_at": "2026-08-07T00:39:57.988900Z",
+  "reviewed_at": "2026-08-07T02:02:56.429690Z",
+  "source_generated_at": "2026-08-07T01:54:24.176684Z",
   "date": "2026-08-07",
   "timeframe": "weekly",
-  "playwright_summary": "10 passed (14.6s)",
+  "playwright_summary": "12 passed (16.8s)",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,11 +15,11 @@
     "watchlist_items": 36
   },
   "collection_health": {
-    "generated_at": "2026-08-07T00:39:57.988666Z",
+    "generated_at": "2026-08-07T01:54:24.176373Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-07T00:39:57.988242Z",
+        "observed_at": "2026-08-07T01:54:24.175945Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
@@ -33,11 +33,11 @@
     "evidence_totals": {
       "items_requested": 44,
       "items_with_any_verified_url": 44,
-      "items_with_published_trend_url": 22,
+      "items_with_published_trend_url": 21,
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
-      "verified_urls_total": 231,
-      "published_trend_urls_total": 48,
+      "verified_urls_total": 228,
+      "published_trend_urls_total": 45,
       "retail_product_urls_total": 183,
       "collection_error_records": 0
     },
@@ -394,7 +394,7 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 10 passed (14.6s)",
+    "Playwright QA 완료: 12 passed (16.8s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Waterproof Black Eyeliner Pencil",
     "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
@@ -479,7 +479,7 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 29,
+      "rank": 30,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",

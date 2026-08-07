@@ -54,6 +54,16 @@ PUBLIC_GROWTH_GOAL_FIELDS = [
     "reporting",
 ]
 
+PUBLIC_MARKETING_FIELDS = [
+    "updated_at",
+    "goal_id",
+    "status",
+    "principle",
+    "active_campaigns",
+    "experiment_backlog",
+    "permission_requests",
+]
+
 
 def copy_path(name: str) -> None:
     src = ROOT / name
@@ -113,6 +123,10 @@ def public_growth_goal_payload(goal: dict[str, Any]) -> dict[str, Any]:
     return {field: goal.get(field) for field in PUBLIC_GROWTH_GOAL_FIELDS if field in goal}
 
 
+def public_marketing_payload(marketing: dict[str, Any]) -> dict[str, Any]:
+    return {field: marketing.get(field) for field in PUBLIC_MARKETING_FIELDS if field in marketing}
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -138,6 +152,10 @@ def copy_public_data() -> None:
     growth_goal = load_json(DATA_DIR / "growth_goal.json")
     if growth_goal:
         write_json(data_dst / "growth_goal_public.json", public_growth_goal_payload(growth_goal))
+
+    marketing = load_json(DATA_DIR / "marketing_backlog.json")
+    if marketing:
+        write_json(data_dst / "marketing_backlog_public.json", public_marketing_payload(marketing))
 
 
 def main() -> int:

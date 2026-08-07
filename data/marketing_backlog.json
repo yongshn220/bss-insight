@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T01:08:59Z",
+  "updated_at": "2026-08-07T01:58:16Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -17,6 +17,24 @@
         "sales_rep_note": "Owner님, 이번 주 손님들이 반응할 만한 item을 product-level로 정리했습니다. 단순 trend가 아니라 실제 source/evidence와 display tip까지 같이 보실 수 있습니다."
       },
       "approval_needed_for_external_posting": true
+    },
+    {
+      "campaign_id": "owner-share-kit-v1",
+      "status": "live-on-site",
+      "objective": "Make every timeframe ranking directly shareable by GNS reps or BSS owners with UTM-tagged links and item-specific display/risk copy.",
+      "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-share",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_click share_*",
+        "growth_share_copy_result"
+      ],
+      "approval_needed_for_external_posting": true
     }
   ],
   "experiment_backlog": [
@@ -28,9 +46,9 @@
     },
     {
       "experiment_id": "share-copy-owner-v1",
-      "status": "backlog",
+      "status": "promoted-to-live-site-via-owner-share-kit-v1",
       "hypothesis": "Owner-facing copy that says 'what to test this week' will generate more repeat visits than generic trend wording.",
-      "next_step": "Create social/email/share snippets per top weekly item once SNS/email credentials and approval rules are defined."
+      "next_step": "Measure share intent clicks and UTM-attributed returns after central analytics is connected."
     }
   ],
   "permission_requests": [

@@ -6,6 +6,7 @@ import datetime as dt
 import html
 import json
 import shutil
+import urllib.parse
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,7 @@ ITEMS_DIR = ROOT / "items"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
+SITE_BASE = "https://gnsresearchhub.vercel.app"
 
 
 def esc(value: object) -> str:
@@ -195,9 +197,69 @@ def data_health_panel(rows: list[dict[str, Any]]) -> str:
     ) + '</div>'
 
 
+def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str) -> str:
+    query = urllib.parse.urlencode({
+        "utm_source": source,
+        "utm_medium": medium,
+        "utm_campaign": campaign,
+    })
+    return f"{SITE_BASE}{path}?{query}"
+
+
 def has_trend_evidence(row: dict[str, Any]) -> bool:
     counts = row.get("source_counts", {})
     return bool(counts.get("trend_evidence") or counts.get("news_magazine"))
+
+
+def choose_share_row(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Prefer evidence-backed leaders, then fall back to the top ranked item."""
+    return next((row for row in rows if has_trend_evidence(row)), rows[0] if rows else None)
+
+
+def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    row = choose_share_row(rows)
+    if not row:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-owner-share"
+    ranking_path = f"/rankings/{timeframe}.html"
+    owner_url = growth_campaign_url(ranking_path, source="owner_share", medium="organic", campaign=campaign)
+    x_url = growth_campaign_url(ranking_path, source="x", medium="organic", campaign=campaign)
+    email_url = growth_campaign_url(ranking_path, source="email", medium="owner_forward", campaign=campaign)
+    item_name = row.get("item_name") or "top item"
+    category = row.get("category_name") or "BSS item"
+    score = row.get("score") or ""
+    display = row.get("display_tip") or "front-area test"
+    risk = row.get("risk") or "track sell-through and shrink"
+    text = (
+        f"Beauty Supply Store owners: {label} ranking에서 #{row.get('rank')} {item_name} "
+        f"({category})를 확인하세요. Score {score}. Display test: {display}."
+    )
+    x_intent = "https://twitter.com/intent/tweet?" + urllib.parse.urlencode({"text": text, "url": x_url})
+    mailto = "mailto:?" + urllib.parse.urlencode({
+        "subject": f"{label} BSS item ranking: {item_name}",
+        "body": f"이번 {label} BSS item ranking 공유드립니다.\n\nTop item: {item_name}\nDisplay tip: {display}\nRisk/caution: {risk}\n\nOwner link: {email_url}",
+    })
+    return f"""
+      <section class="wrap share-kit" aria-labelledby="share-kit-{esc(timeframe)}">
+        <div>
+          <span>Growth loop · owner share kit</span>
+          <h2 id="share-kit-{esc(timeframe)}">바로 공유할 수 있는 {esc(label)} owner link</h2>
+          <p>500 average daily visits 목표를 위해 owner가 다시 열어볼 이유를 강화합니다. 이 링크는 UTM이 붙어 있어 analytics provider 연결 후 channel별 방문/클릭을 분리 측정할 수 있습니다.</p>
+        </div>
+        <article class="share-card">
+          <p class="share-eyebrow">Featured item</p>
+          <h3>#{esc(row.get('rank'))} {esc(item_name)}</h3>
+          <p>{esc(display)}</p>
+          <small>Risk/caution: {esc(risk)}</small>
+          <code>{esc(owner_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-share="{esc(timeframe)}_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_email_forward" href="{esc(mailto)}">Email draft</a>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_copy_link" data-copy-url="{esc(owner_url)}">Copy owner link</button>
+          </div>
+        </article>
+      </section>"""
 
 
 def top_three(rows: list[dict[str, Any]]) -> str:
@@ -253,6 +315,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
+      {share_panel('weekly', weekly)}
       <section class="wrap block">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
         {top_three(weekly)}
@@ -301,6 +364,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats)}</div>
+      {share_panel(timeframe, rows)}
       <section class="wrap block">
         <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
         {top_three(rows)}
