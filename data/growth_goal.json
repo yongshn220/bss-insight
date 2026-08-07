@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T06:55:40Z",
+  "updated_at": "2026-08-07T08:17:57.689804Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T06:55:40Z",
-    "provider_checked": "Live Vercel Web Analytics script + GA4 tag + Vercel project/API discovery from cron; client-side first/current UTM persistence added",
+    "last_checked_at": "2026-08-07T08:17:57.689804Z",
+    "provider_checked": "Live Vercel Web Analytics script + GA4 tag + env credential discovery from cron; source coverage alias fallback deployed in collector",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "Live /_vercel/insights/script.js and GA4 tag are present, and growth.js now preserves first-touch/current-touch UTM plus session_id across internal ranking/item navigation. VERCEL_TOKEN can discover the gns_research_hub project, but direct Vercel analytics/web-insights endpoint probes returned HTTP 404 in recent cron checks, and no GA4 Data API property/service-account credential is configured in env. Central 30d visits remain unavailable to the agent.",
-    "interpretation": "Measurement blocker remains: provide GA4 Data API access (GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS path or GA4_SERVICE_ACCOUNT_JSON) or an approved Vercel Analytics export/API method so rolling 30-day visits can be reported numerically toward 500/day. Until then, provider-ready events carry first/current UTM attribution for future analysis."
+    "raw_result": "Live /_vercel/insights/script.js and GA4 tag are present, but GA4_PROPERTY_ID is not configured and the GOOGLE_APPLICATION_CREDENTIALS path visible to cron is not usable; direct 30-day visit measurement remains unavailable. This run improved ranking data reliability by adding strict alias fallback for focus/body-jewelry/textured-braiding product listing collectors, restoring 44/44 retail and TikTok Shop supply coverage without scoring search URLs as evidence.",
+    "interpretation": "Measurement blocker remains: provide GA4_PROPERTY_ID plus a valid GOOGLE_APPLICATION_CREDENTIALS file path or GA4_SERVICE_ACCOUNT_JSON, or an approved Vercel Analytics export/API method. Until then, the hub is provider-ready but rolling 30-day visits cannot be reported numerically toward 500/day."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -139,6 +139,16 @@
       ],
       "success_metric": "pre-deploy Playwright catches public data/SEO/growth marker regressions before Vercel production",
       "hypothesis": "Serving e2e QA from the same public output directory and /data/* URLs used by Vercel will prevent silent live 404/tracking regressions and make growth instrumentation more trustworthy."
+    },
+    {
+      "experiment_id": "source-coverage-alias-fallback-v1",
+      "status": "active-collection-quality",
+      "variants": [
+        "primary_query_only",
+        "strict_alias_fallback_for_focus_body_jewelry_textured_braiding"
+      ],
+      "success_metric": "items_with_retail_product_url, items_with_tiktok_shop_url, product_image_items, and lower avoidable supply-coverage regressions without increasing unsupported trend claims",
+      "hypothesis": "Strict fallback aliases for item-level listing collectors will keep BSS-owner dashboard cards actionable when exact word order misses live product pages, while preserving watchlist/trend-evidence separation."
     }
   ],
   "reporting": {

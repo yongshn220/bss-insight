@@ -341,6 +341,62 @@ def next_loop_focus_queries(row: dict[str, Any]) -> list[str]:
     return output
 
 
+def focus_item_ids() -> set[str]:
+    """Item ids that the previous QA/review loop explicitly asked us to probe."""
+    focus = load_next_loop_focus()
+    focus_items = focus.get("focus_items", []) if isinstance(focus, dict) else []
+    if not isinstance(focus_items, list):
+        return set()
+    return {
+        str(item.get("item_id"))
+        for item in focus_items
+        if isinstance(item, dict) and item.get("item_id")
+    }
+
+
+def needs_alias_product_probe(row: dict[str, Any]) -> bool:
+    """Decide when product/supply collectors should try fallback aliases.
+
+    Most items keep a single keyword to avoid noisy marketplace matches and API
+    cost. Feedback-focus items and body-jewelry SKUs are the exception: the first
+    exact phrase can be too narrow (for example, gauge/material/body-piercing
+    word order), so alternate item aliases are safer than broad search pages.
+    """
+    item_id = str(row.get("id") or "")
+    if item_id in focus_item_ids():
+        return True
+    blob = " ".join(str(row.get(key, "")) for key in ("id", "name", "search_context")).lower()
+    if row.get("category_id") == "braiding-crochet-hair":
+        return any(token in blob for token in ("marley", "kinky", "boho", "crochet", "twist", "loc"))
+    if row.get("category_id") != "jewelry-fashion-accessories":
+        return False
+    return any(token in blob for token in ("nose", "belly", "navel", "piercing", "gauge", "14g", "20g"))
+
+
+def product_search_queries(row: dict[str, Any], max_queries: int = 3) -> list[str]:
+    """Concrete product search terms for live listing collectors.
+
+    Generated search URLs remain watchlist-only. These queries are used only by
+    collectors that must return concrete product/listing URLs; matches still pass
+    evidence_relevance before they count as supply validation.
+    """
+    aliases = [str(alias).strip() for alias in row.get("aliases", []) if str(alias).strip()]
+    primary = aliases[0] if aliases else str(row.get("name") or "").strip()
+    candidates = [primary]
+    if needs_alias_product_probe(row):
+        candidates.extend([str(row.get("name") or "").strip(), *aliases[1:]])
+    output: list[str] = []
+    seen: set[str] = set()
+    for query in candidates:
+        key = query.lower()
+        if query and key not in seen:
+            output.append(query)
+            seen.add(key)
+        if len(output) >= max_queries:
+            break
+    return output
+
+
 def google_news_rss(query: str, days: int, limit: int = 8) -> list[dict[str, Any]]:
     q = f"{query} when:{days}d"
     url = "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": q, "hl": "en-US", "gl": "US", "ceid": "US:en"})
@@ -625,8 +681,8 @@ def is_retail_product_evidence(source: dict[str, Any]) -> bool:
     return source.get("source_type") in {"bss_online_store", "wholesale", "marketplace_product"}
 
 
-def shopify_product_search(row: dict[str, Any], store: dict[str, str], limit: int = 3) -> list[dict[str, Any]]:
-    query = row["aliases"][0]
+def shopify_product_search(row: dict[str, Any], store: dict[str, str], query: str | None = None, limit: int = 3) -> list[dict[str, Any]]:
+    query = query or row["aliases"][0]
     url = store["base_url"].rstrip("/") + "/search/suggest.json?" + urllib.parse.urlencode({
         "q": query,
         "resources[type]": "product",
@@ -672,12 +728,21 @@ def shopify_product_search(row: dict[str, Any], store: dict[str, str], limit: in
 
 def retail_product_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     evidence: list[dict[str, Any]] = []
+    queries = product_search_queries(row, max_queries=3)
     for store in SHOPIFY_STORES:
         if store["source_type"] == "wholesale" and row.get("category_id") not in {"jewelry-fashion-accessories", "tools-accessories", "nails"}:
             continue
-        for src in shopify_product_search(row, store, limit=3):
-            if not src.get("error"):
-                evidence.append(src)
+        for query in queries:
+            found_for_store = False
+            for src in shopify_product_search(row, store, query=query, limit=3):
+                if not src.get("error"):
+                    evidence.append(src)
+                    found_for_store = True
+            # Alias fallback is only needed when a store returns no relevant
+            # concrete product URL for the primary phrase; once we have a store
+            # match, stop probing that store to keep collection cheap/noise-light.
+            if found_for_store:
+                break
     return evidence
 
 
@@ -690,7 +755,7 @@ def apify_tiktok_source_keywords(product: dict[str, Any]) -> list[str]:
     return []
 
 
-def apify_tiktok_product_signal(product: dict[str, Any], row: dict[str, Any], query: str) -> dict[str, Any] | None:
+def apify_tiktok_product_signal(product: dict[str, Any], row: dict[str, Any], query: str, *, allow_keyword_fallback: bool = True) -> dict[str, Any] | None:
     product_url = str(product.get("productUrl") or product.get("url") or "")
     title = html.unescape(str(product.get("productTitle") or product.get("title") or product.get("name") or "").strip())
     if not product_url or not title:
@@ -744,8 +809,11 @@ def apify_tiktok_product_signal(product: dict[str, Any], row: dict[str, Any], qu
     }
     if evidence_match(row, signal):
         return signal
-    # A TikTok Shop keyword result is still useful social-commerce supply data,
-    # but keep the weaker relevance label visible in the data/score details.
+    if not allow_keyword_fallback:
+        return None
+    # A TikTok Shop primary-keyword result is still useful social-commerce supply
+    # data, but keep the weaker relevance label visible in the data/score details.
+    # Fallback alias probes stay strict so broader aliases do not inflate coverage.
     signal["evidence_relevance"] = "keyword_search_result"
     return signal
 
@@ -763,15 +831,24 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         )
         return {}
     per_query = int_env("APIFY_TIKTOK_MAX_RESULTS_PER_QUERY", 1, 1, 5)
-    max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(rows) * per_query), 1, 250)
     timeout = int_env("APIFY_TIKTOK_TIMEOUT_SECS", 300, 60, 900)
     max_attempts = int_env("APIFY_TIKTOK_MAX_ATTEMPTS", 2, 1, 4)
     keywords: list[str] = []
-    rows_by_keyword: dict[str, dict[str, Any]] = {}
+    rows_by_keyword: dict[str, tuple[dict[str, Any], bool]] = {}
+    expanded_keyword_items = 0
     for row in rows:
-        keyword = str((row.get("aliases") or [row["name"]])[0])
-        keywords.append(keyword)
-        rows_by_keyword[keyword.lower()] = row
+        row_keywords = product_search_queries(row, max_queries=3)
+        if len(row_keywords) > 1:
+            expanded_keyword_items += 1
+        for idx, keyword in enumerate(row_keywords):
+            key = keyword.lower()
+            if key in rows_by_keyword:
+                continue
+            keywords.append(keyword)
+            # Only the primary query keeps the historical keyword-search fallback.
+            # Alias probes must relevance-match the listing title/snippet/vendor.
+            rows_by_keyword[key] = (row, idx == 0)
+    max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(keywords) * per_query), 1, 250)
     payload = {
         "keywords": keywords,
         "countries": ["US"],
@@ -821,6 +898,7 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             enabled=True,
             attempts=attempts_used,
             keywords_requested=len(keywords),
+            expanded_keyword_items=expanded_keyword_items,
             max_results_total=max_total,
             error_summary=clean_error_summary(last_error),
             retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
@@ -833,13 +911,14 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             continue
         matched_rows = []
         for keyword in apify_tiktok_source_keywords(product):
-            row = rows_by_keyword.get(keyword.lower())
-            if row:
-                matched_rows.append((keyword, row))
+            match = rows_by_keyword.get(keyword.lower())
+            if match:
+                row, is_primary_query = match
+                matched_rows.append((keyword, row, is_primary_query))
         if not matched_rows:
             continue
-        for keyword, row in matched_rows:
-            signal = apify_tiktok_product_signal(product, row, keyword)
+        for keyword, row, is_primary_query in matched_rows:
+            signal = apify_tiktok_product_signal(product, row, keyword, allow_keyword_fallback=is_primary_query)
             if not signal:
                 continue
             dedupe_key = (row["id"], signal["url"])
@@ -855,6 +934,7 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         enabled=True,
         attempts=attempts_used,
         keywords_requested=len(keywords),
+        expanded_keyword_items=expanded_keyword_items,
         products_returned=len(products),
         items_with_evidence=len(evidence_by_item),
         evidence_urls=evidence_urls,

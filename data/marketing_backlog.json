@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T06:55:40Z",
+  "updated_at": "2026-08-07T08:17:57.689804Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -81,6 +81,20 @@
         "sales_rep_note": "Owner님, 이 item detail link는 display tip과 risk/caution까지 같이 있어 매장에서 바로 테스트 여부를 판단하기 쉽습니다."
       },
       "measurement_need": "GA4/Vercel event export access is needed to compare item-detail share clicks against timeframe share clicks."
+    },
+    {
+      "campaign_id": "source-coverage-credibility-v1",
+      "status": "live-in-collector-after-build",
+      "objective": "Make shared ranking pages more credible for BSS owners by preventing avoidable missing product/listing coverage on concrete item cards.",
+      "live_location_pattern": "https://gnsresearchhub.vercel.app/items/{item_id}.html",
+      "tracked_quality_metrics": [
+        "items_with_retail_product_url",
+        "items_with_tiktok_shop_url",
+        "product_image_items",
+        "collection_error_records"
+      ],
+      "owner_value": "Cards remain more actionable because display/risk recommendations are paired with concrete product/listing availability when public sources return it.",
+      "measurement_need": "Analytics access is still needed to compare repeat visits/clicks before and after source-quality improvements."
     }
   ],
   "experiment_backlog": [
@@ -125,6 +139,12 @@
       "status": "active-qa-hardening",
       "hypothesis": "A Playwright server rooted at Vercel's public output plus /data/* artifact checks will catch production-only 404/tracking regressions before they hurt growth measurement.",
       "next_step": "Keep live verification and e2e artifact URLs aligned; measure whether fewer deployment regressions occur once analytics export is available."
+    },
+    {
+      "experiment_id": "source-coverage-alias-fallback-v1",
+      "status": "promoted-to-collector",
+      "hypothesis": "Strict fallback aliases for item-level listing collectors will keep BSS-owner dashboard cards actionable when exact word order misses live product pages, while preserving watchlist/trend-evidence separation.",
+      "next_step": "Monitor operations_review coverage_deltas and live item-card clicks after GA4/Vercel export access is available."
     }
   ],
   "permission_requests": [

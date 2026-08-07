@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-07T06:57:27.139153Z",
-  "source_generated_at": "2026-08-07T06:53:09.322843Z",
+  "reviewed_at": "2026-08-07T08:18:32.108890Z",
+  "source_generated_at": "2026-08-07T08:17:04.358762Z",
   "date": "2026-08-07",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (20.7s)",
+  "playwright_summary": "12 passed (19.8s)",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,19 +15,20 @@
     "watchlist_items": 36
   },
   "collection_health": {
-    "generated_at": "2026-08-07T06:53:09.322540Z",
+    "generated_at": "2026-08-07T08:17:04.358367Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-07T06:53:09.322143Z",
+        "observed_at": "2026-08-07T08:17:04.357607Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
-        "keywords_requested": 44,
-        "products_returned": 44,
+        "keywords_requested": 68,
+        "expanded_keyword_items": 12,
+        "products_returned": 68,
         "items_with_evidence": 44,
-        "evidence_urls": 44,
-        "max_results_total": 44
+        "evidence_urls": 66,
+        "max_results_total": 68
       }
     },
     "evidence_totals": {
@@ -36,9 +37,9 @@
       "items_with_published_trend_url": 22,
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
-      "verified_urls_total": 230,
+      "verified_urls_total": 266,
       "published_trend_urls_total": 47,
-      "retail_product_urls_total": 183,
+      "retail_product_urls_total": 219,
       "collection_error_records": 0
     },
     "next_actions": [
@@ -139,19 +140,19 @@
       "delta": 0
     },
     "retail_product_items": {
-      "previous": 44,
+      "previous": 43,
       "current": 44,
-      "delta": 0
+      "delta": 1
     },
     "tiktok_shop_items": {
-      "previous": 44,
+      "previous": 43,
       "current": 44,
-      "delta": 0
+      "delta": 1
     },
     "product_image_items": {
-      "previous": 44,
+      "previous": 43,
       "current": 44,
-      "delta": 0
+      "delta": 1
     },
     "watchlist_items": {
       "previous": 36,
@@ -161,35 +162,35 @@
   },
   "previous_loop_follow_up": [
     {
-      "item_id": "gold-braid-cuffs-12-pack",
-      "item_name": "Gold Braid Cuffs 12-Pack",
-      "status": "still_needs_focus",
+      "item_id": "20g-surgical-steel-nose-stud",
+      "item_name": "20G Surgical Steel Nose Stud",
+      "status": "improved",
       "baseline": {
-        "verified_evidence": 1,
+        "verified_evidence": 0,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 0,
+        "tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
-        "unique_domains": 1,
+        "unique_domains": 0,
         "unique_trend_domains": 0,
-        "unique_retail_domains": 1,
+        "unique_retail_domains": 0,
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 0,
         "watchlist_links": 16,
-        "source_layers": 1,
+        "source_layers": 0,
         "manual_references": 16,
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 1,
+        "verified_evidence": 3,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 3,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 1,
         "unique_trend_domains": 0,
@@ -202,32 +203,13 @@
         "manual_references": 16,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
-        "verified_evidence": 11,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "current": {
         "verified_evidence": 11,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
@@ -246,12 +228,31 @@
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "current": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 6,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
         "verified_evidence": 1,
         "trend_evidence": 0,
@@ -272,12 +273,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 1,
+        "verified_evidence": 3,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 3,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 1,
         "unique_trend_domains": 0,
@@ -290,12 +291,12 @@
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
         "verified_evidence": 11,
         "trend_evidence": 0,
@@ -316,30 +317,30 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 11,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "lace-melting-spray",
       "item_name": "Lace Melting Spray",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
         "verified_evidence": 11,
         "trend_evidence": 0,
@@ -360,30 +361,30 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 11,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "glueless-pre-cut-hd-lace-wig",
       "item_name": "Glueless Pre-Cut HD Lace Wig",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
         "verified_evidence": 11,
         "trend_evidence": 0,
@@ -404,12 +405,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 11,
+        "verified_evidence": 12,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 2,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
@@ -422,17 +423,17 @@
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (20.7s)",
+    "Playwright QA 완료: 12 passed (19.8s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Waterproof Black Eyeliner Pencil",
     "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 44."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 66."
   ],
   "improvement_points": [
     "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
@@ -440,26 +441,26 @@
   ],
   "next_loop_focus_items": [
     {
-      "item_id": "gold-braid-cuffs-12-pack",
-      "item_name": "Gold Braid Cuffs 12-Pack",
+      "item_id": "20g-surgical-steel-nose-stud",
+      "item_name": "20G Surgical Steel Nose Stud",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 24,
+      "rank": 25,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
-        "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
-        "\"Gold Braid Cuffs 12-Pack\" TikTok review",
-        "\"Gold Braid Cuffs 12-Pack\" Amazon reviews",
-        "\"Gold Braid Cuffs 12-Pack\" black beauty supply",
-        "\"Gold Braid Cuffs 12-Pack\" black women outfit trend",
-        "\"Gold Braid Cuffs 12-Pack\" wholesale beauty supply"
+        "\"20G Surgical Steel Nose Stud\" beauty supply trend",
+        "\"20G Surgical Steel Nose Stud\" TikTok review",
+        "\"20G Surgical Steel Nose Stud\" Amazon reviews",
+        "\"20G Surgical Steel Nose Stud\" black beauty supply",
+        "\"20G Surgical Steel Nose Stud\" black women outfit trend",
+        "\"20G Surgical Steel Nose Stud\" wholesale beauty supply"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 1,
+        "verified_evidence": 3,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 3,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 1,
         "unique_trend_domains": 0,
@@ -477,7 +478,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 13,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -488,19 +489,19 @@
         "\"Wig Grip Band\" hair tool TikTok"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 11,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -511,7 +512,7 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 29,
+      "rank": 24,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
@@ -522,12 +523,12 @@
         "\"Short Square Press-On Nails\" press on review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 1,
+        "verified_evidence": 3,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 3,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 1,
         "unique_trend_domains": 0,
@@ -556,19 +557,19 @@
         "\"Synthetic Lace Front Wig\" lace wig customer review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 11,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -588,19 +589,19 @@
         "\"Lace Melting Spray\" black beauty supply"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 11,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -611,7 +612,7 @@
       "item_id": "glueless-pre-cut-hd-lace-wig",
       "item_name": "Glueless Pre-Cut HD Lace Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 11,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
@@ -622,12 +623,12 @@
         "\"Glueless Pre-Cut HD Lace Wig\" lace wig customer review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 11,
+        "verified_evidence": 12,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 1,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 2,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
