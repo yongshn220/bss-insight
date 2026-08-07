@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T14:06:40.838741Z",
+  "updated_at": "2026-08-07T14:33:20.904633Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T14:06:40.838741Z",
-    "provider_checked": "Live endpoint check + env credential discovery; Vercel Web Analytics script and GA4 tag are present, but this cron env still lacks Vercel/GA4 reporting credentials. top3-owner-share-strip-v1 prepared for measurable item-level sharing.",
+    "last_checked_at": "2026-08-07T14:33:20.904633Z",
+    "provider_checked": "Live Web Analytics script/GA4 tag verified; Vercel project API reachable with VERCEL_TOKEN, but tested web-insights/reporting endpoints returned 404/not_found in this runtime. GA4 Data API reporting credentials/property are still not mounted. owner-quick-picks-v1 added to create attributable quick-pick item-detail entrances.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: live Web Analytics/GA4 tags are present, but Vercel CLI/API and GA4 Data API credentials are unavailable in this runtime. Current local growth lever adds top-3 item-specific owner share links with UTM content and item_id tracking; no traffic number is inferred.",
-    "interpretation": "Measurement remains pending; growth system readiness improved by making item-level share/copy events attributable once provider export access is connected."
+    "raw_result": "measurement pending: live /_vercel/insights/script.js and GA4 G-SW7HBY6WRE are present, but no usable analytics export/API response is available to calculate rolling 30-day visits. Need GA4_PROPERTY_ID + service-account credentials or Vercel Analytics export/API access. This run adds utm_medium=quick_pick and owner_quick_pick growth_click events instead of inferring traffic.",
+    "interpretation": "Measurement remains blocked, but attribution readiness improved: owner quick-pick cards now create item-level UTM entrances that can be measured once provider data access is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -51,6 +51,10 @@
     {
       "need": "ga4_data_api_property_or_service_credentials",
       "why": "The GA4 tag is live, but this cron run cannot read GA4 reporting data without a GA4 property ID plus a service-account JSON/key mounted in env or another approved server-side access method. Needed to report rolling 30-day visits centrally."
+    },
+    {
+      "need": "vercel_analytics_export_or_api_access",
+      "why": "VERCEL_TOKEN can deploy and read project metadata, but this runtime could not retrieve Web Analytics reporting; tested web-insights endpoints returned 404/not_found. Need an approved Vercel Analytics export/API method or dashboard export to measure rolling 30-day visits and custom growth events."
     },
     {
       "need": "custom_domain_optional",
@@ -199,6 +203,16 @@
       ],
       "success_metric": "weekly_top3 share/copy clicks with item_id context, item detail entrances by UTM content, and repeat visits once analytics export is available",
       "hypothesis": "BSS owners and reps will share/reopen item-specific links more often than a generic ranking link when each link includes display tip, risk/caution, evidence status, and product detail context."
+    },
+    {
+      "experiment_id": "owner-quick-picks-v1",
+      "status": "active-site-ux-after-build",
+      "variants": [
+        "full_ranking_first",
+        "store_zone_quick_pick_cards"
+      ],
+      "success_metric": "owner_quick_pick clicks, item detail entrances with utm_medium=quick_pick, share/copy events, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners will click and revisit more often when the dashboard surfaces store-zone action picks before the full ranking, with WATCHLIST status visible instead of hidden."
     }
   ],
   "reporting": {

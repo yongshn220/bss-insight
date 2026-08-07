@@ -24,6 +24,17 @@ TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quar
 SITE_BASE = "https://gnsresearchhub.vercel.app"
 GA4_MEASUREMENT_ID = "G-SW7HBY6WRE"
 
+STORE_ZONE_LABELS = {
+    "wigs-hair-pieces": "Wig wall",
+    "braiding-crochet-hair": "Braid aisle",
+    "hair-care-styling": "Hair care / install shelf",
+    "lashes-brows": "Lash front-end",
+    "nails": "Nail impulse tray",
+    "makeup-cosmetics": "Lip / eye cosmetics bay",
+    "tools-accessories": "Install tools clip strip",
+    "jewelry-fashion-accessories": "Checkout jewelry wall",
+}
+
 
 def esc(value: object) -> str:
     return html.escape(str(value or ""), quote=True)
@@ -553,6 +564,110 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def quick_pick_rows(rows: list[dict[str, Any]], max_cards: int = 6) -> list[dict[str, Any]]:
+    """Return store-zone picks that help owners act before reading the full ranking.
+
+    Trend-backed categories are prioritized, then zero-trend categories are added
+    as clearly labeled WATCHLIST picks so weak evidence lanes stay visible without
+    being upgraded into trend claims.
+    """
+    selected: list[dict[str, Any]] = []
+    selected_categories: set[str] = set()
+    by_category: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        by_category[str(row.get("category_id") or "")].append(row)
+
+    for row in rows:
+        category_id = str(row.get("category_id") or "")
+        if not has_trend_evidence(row) or category_id in selected_categories:
+            continue
+        selected.append(row)
+        selected_categories.add(category_id)
+        if len(selected) >= max_cards - 2:
+            break
+
+    zero_trend_picks = []
+    for category_id, cat_rows in by_category.items():
+        if category_id in selected_categories:
+            continue
+        if any(has_trend_evidence(row) for row in cat_rows):
+            continue
+        if cat_rows:
+            zero_trend_picks.append(cat_rows[0])
+    zero_trend_picks.sort(key=lambda row: int(row.get("rank") or 999))
+    for row in zero_trend_picks:
+        category_id = str(row.get("category_id") or "")
+        if category_id in selected_categories:
+            continue
+        selected.append(row)
+        selected_categories.add(category_id)
+        if len(selected) >= max_cards:
+            break
+
+    for row in rows:
+        category_id = str(row.get("category_id") or "")
+        if category_id in selected_categories:
+            continue
+        selected.append(row)
+        selected_categories.add(category_id)
+        if len(selected) >= max_cards:
+            break
+
+    if len(selected) < max_cards:
+        selected_ids = {str(row.get("item_id") or "") for row in selected}
+        for row in rows:
+            item_id = str(row.get("item_id") or "")
+            if item_id in selected_ids:
+                continue
+            selected.append(row)
+            selected_ids.add(item_id)
+            if len(selected) >= max_cards:
+                break
+    return selected[:max_cards]
+
+
+def owner_quick_picks(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Store-zone action cards with UTM links for growth and owner usefulness."""
+    picks = quick_pick_rows(rows)
+    if not picks:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-owner-quick-picks"
+    cards = []
+    for row in picks:
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        zone = STORE_ZONE_LABELS.get(str(row.get("category_id") or ""), row.get("category_name") or "Store zone")
+        evidence_label = evidence_status_label(row)
+        detail_url = growth_campaign_url(
+            f"/items/{item_id}.html",
+            source="site",
+            medium="quick_pick",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
+        cards.append(f"""
+        <a class="quick-pick-card" data-growth-cta="owner_quick_pick" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="{esc(detail_url)}">
+          <span>{esc(zone)} · #{esc(row.get('rank'))}</span>
+          <strong>{esc(row.get('item_name'))}</strong>
+          <p>{esc(clamp_text(row.get('display_tip'), 118))}</p>
+          <small>{esc(evidence_label)} · Risk: {esc(clamp_text(row.get('risk'), 72))}</small>
+        </a>""")
+    if not cards:
+        return ""
+    return f"""
+      <section class="wrap quick-picks" data-growth-section="owner-quick-picks-v1" aria-labelledby="quick-picks-{esc(timeframe)}">
+        <div class="section-title quick-picks-title">
+          <div><span>Owner quick picks · store-zone action</span><h2 id="quick-picks-{esc(timeframe)}">{esc(label)} 매장 테스트 빠른 선택</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <p class="quick-picks-note">바쁜 BSS owner가 full ranking을 읽기 전에 store zone별로 바로 눌러볼 item을 고르게 만든 growth/UX 실험입니다. WATCHLIST item은 evidence insufficient로 표시해 trend claim으로 과장하지 않습니다.</p>
+        <div class="quick-pick-grid">{''.join(cards)}</div>
+      </section>"""
+
+
 def item_share_panel(row: dict[str, Any]) -> str:
     """Owner-ready share CTA for detail pages with item-specific UTM tracking."""
     item_id = str(row.get("item_id") or "").strip()
@@ -679,6 +794,7 @@ def render_home(data: dict[str, Any]) -> str:
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
       {evidence_gap_snapshot(weekly, 'weekly')}
+      {owner_quick_picks('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
       <section class="wrap block">
@@ -739,6 +855,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       </section>
       <div class="wrap">{category_chips(cats)}</div>
       {evidence_gap_snapshot(rows, timeframe)}
+      {owner_quick_picks(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
       <section class="wrap block">

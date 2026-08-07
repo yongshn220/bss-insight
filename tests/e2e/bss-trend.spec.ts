@@ -80,6 +80,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
     await expect(page.getByText('Evidence quality snapshot')).toBeVisible();
     await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
+    await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Weekly 매장 테스트 빠른 선택' })).toBeVisible();
+    const quickPickCards = page.locator('.quick-pick-card');
+    expect(await quickPickCards.count()).toBeGreaterThanOrEqual(4);
+    await expect(quickPickCards.first()).toHaveAttribute('href', /daily-visits-500-weekly-owner-quick-picks/);
+    await expect(quickPickCards.first()).toHaveAttribute('href', /utm_medium=quick_pick/);
+    await expect(quickPickCards.first()).toHaveAttribute('data-growth-cta', 'owner_quick_pick');
+    await expect(quickPickCards.first()).toHaveAttribute('data-item-id', /.+/);
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_copy_link"]')).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-weekly-owner-share/);
@@ -184,6 +192,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('.tabs a.active')).toHaveText(label);
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
+      await expect(page.locator('.quick-pick-card').first()).toHaveAttribute('href', new RegExp(`daily-visits-500-${label.toLowerCase()}-owner-quick-picks`));
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
       await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
 

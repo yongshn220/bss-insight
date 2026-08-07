@@ -117,6 +117,7 @@ Output Directory: public
 - GA4는 `G-SW7HBY6WRE` measurement ID를 모든 generated page `<head>`에 삽입합니다.
 - `assets/growth.js`는 `growth_exposure`, `growth_click`, `growth_share_copy_result`를 local event buffer, Vercel Analytics(`window.va`), GA4(`gtag`)로 fan-out합니다.
 - Ranking page의 owner share kit뿐 아니라 각 item detail page에도 `daily-visits-500-item-detail-share` UTM이 붙은 X draft / Email draft / Copy item link를 생성합니다. 이 detail-level CTA는 특정 item을 논의하는 store owner·sales rep 공유 흐름을 측정하기 위한 growth experiment입니다.
+- `owner-quick-picks-v1`은 home/timeframe page 상단에 store-zone별 quick-pick card를 보여주고 `utm_medium=quick_pick`으로 item detail 진입을 측정합니다. WATCHLIST card는 evidence insufficient를 명시해 trend claim으로 과장하지 않습니다.
 - SNS 기본 채널은 X/Twitter이며, posting rule은 `data/sns_posting_rules.json`에 기록합니다. 실제 external posting은 xurl CLI 설치와 OAuth auth가 완료된 뒤 rule 범위 안에서만 진행합니다.
 
 ## 데이터/점수 주의사항

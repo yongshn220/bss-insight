@@ -1,27 +1,19 @@
 {
-  "generated_at": "2026-08-07T13:18:22.318323Z",
+  "generated_at": "2026-08-07T14:30:05.781989Z",
   "date": "2026-08-07",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "failed_using_cache",
-      "observed_at": "2026-08-07T13:18:22.317720Z",
+      "status": "success",
+      "observed_at": "2026-08-07T14:30:05.781490Z",
       "configured": true,
       "enabled": true,
-      "attempts": 2,
+      "attempts": 1,
       "keywords_requested": 68,
       "expanded_keyword_items": 12,
-      "max_results_total": 68,
-      "current_actor_status": "failed",
-      "error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 5bcVrcshNFIxraW4o, status: FAILED).\" } }",
-      "retry_rule": "APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
-      "cache_policy": "cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
-      "cache_status": "usable",
-      "cache_path": "data/tiktok_shop_cache.json",
-      "cache_updated_at": "2026-08-07T12:00:37.203596Z",
-      "cache_age_days": 0,
-      "cache_max_age_days": 7,
-      "cached_items": 44,
-      "cached_evidence_urls": 68
+      "products_returned": 68,
+      "items_with_evidence": 44,
+      "evidence_urls": 67,
+      "max_results_total": 68
     }
   },
   "evidence_totals": {
@@ -30,11 +22,11 @@
     "items_with_published_trend_url": 22,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "items_with_cached_tiktok_shop_url": 44,
-    "verified_urls_total": 278,
-    "published_trend_urls_total": 47,
-    "retail_product_urls_total": 231,
-    "cached_tiktok_shop_urls_total": 68,
+    "items_with_cached_tiktok_shop_url": 0,
+    "verified_urls_total": 274,
+    "published_trend_urls_total": 44,
+    "retail_product_urls_total": 230,
+    "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },
   "limitations": [
@@ -43,6 +35,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "TikTok Shop actor는 실패했지만 최근 성공 cache를 supply fallback으로 사용했습니다. 다음 run에서 actor/upstream 재시도 후 cache freshness를 갱신해야 합니다."
+    "현재 collection health에 즉시 조치가 필요한 source outage는 없습니다."
   ]
 }

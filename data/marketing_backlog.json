@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T14:06:40.838741Z",
+  "updated_at": "2026-08-07T14:33:20.904633Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -201,6 +201,26 @@
       ],
       "owner_value": "BSS owners do not lose product images/listing context during a temporary source outage, and the UI explicitly says cached supply-only so owners do not confuse it with a trend claim.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare card clicks/share events before and after this resilience layer."
+    },
+    {
+      "campaign_id": "owner-quick-picks-v1",
+      "status": "live-on-site-after-build",
+      "objective": "Convert the ranking dashboard from a scroll-only leaderboard into store-zone quick choices that busy BSS owners can click, share, and revisit.",
+      "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-quick-picks",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_click type=cta_owner_quick_pick",
+        "item detail entrances with utm_source=site&utm_medium=quick_pick",
+        "growth_exposure on item_detail preserving first/current UTM"
+      ],
+      "owner_value": "Owners get a concise store-zone action card with item, display tip, evidence status, and risk before reading the whole ranking.",
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare quick-pick clicks against hero CTA and normal item-card clicks."
     }
   ],
   "experiment_backlog": [
