@@ -32,6 +32,7 @@ HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RUNS_DIR = DATA_DIR / "ranking_runs"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
 COLLECTION_NOTES_PATH = DATA_DIR / "collection_notes.json"
+TIKTOK_SHOP_CACHE_PATH = DATA_DIR / "tiktok_shop_cache.json"
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 CURRENT_DATE = dt.date.today()
@@ -265,8 +266,32 @@ def int_env(name: str, default: int, lower: int, upper: int) -> int:
     return max(lower, min(upper, value))
 
 
+def load_json_file(path: Path, default: Any) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return default
+
+
 def utc_now() -> str:
     return dt.datetime.now(dt.UTC).isoformat().replace("+00:00", "Z")
+
+
+def parse_iso_datetime(value: object) -> dt.datetime | None:
+    if not value:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        parsed = dt.datetime.fromisoformat(text)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=dt.UTC)
+        return parsed.astimezone(dt.UTC)
+    except ValueError:
+        return None
 
 
 def clean_error_summary(value: object, limit: int = 700) -> str:
@@ -856,6 +881,105 @@ def apify_tiktok_product_signal(product: dict[str, Any], row: dict[str, Any], qu
     return signal
 
 
+def tiktok_shop_cache_max_age_days() -> int:
+    return int_env("TIKTOK_SHOP_CACHE_MAX_AGE_DAYS", 7, 1, 45)
+
+
+def count_tiktok_sources(evidence_by_item: dict[str, list[dict[str, Any]]]) -> int:
+    return sum(len(sources) for sources in evidence_by_item.values())
+
+
+def write_tiktok_shop_cache(evidence_by_item: dict[str, list[dict[str, Any]]]) -> None:
+    """Persist last successful TikTok Shop listing URLs for transparent fallback.
+
+    The cache contains only public product/listing fields already safe for the
+    dashboard. It is used when the upstream Apify actor fails so the UI can keep
+    showing previously captured supply signals while clearly labeling them as
+    cached, never as fresh trend evidence.
+    """
+    evidence_by_item = {
+        item_id: [dict(src) for src in sources if isinstance(src, dict) and src.get("url")]
+        for item_id, sources in evidence_by_item.items()
+        if sources
+    }
+    evidence_by_item = {item_id: sources for item_id, sources in evidence_by_item.items() if sources}
+    if not evidence_by_item:
+        return
+    payload = {
+        "updated_at": utc_now(),
+        "date": CURRENT_DATE.isoformat(),
+        "source_kind": "tiktok_shop_apify",
+        "cache_policy": {
+            "max_age_days": tiktok_shop_cache_max_age_days(),
+            "purpose": "Use only as labeled social-commerce supply fallback after an Apify actor failure; never use as published trend evidence.",
+        },
+        "totals": {
+            "items": len(evidence_by_item),
+            "urls": count_tiktok_sources(evidence_by_item),
+        },
+        "evidence_by_item": evidence_by_item,
+    }
+    TIKTOK_SHOP_CACHE_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def load_tiktok_shop_cache() -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    payload = load_json_file(TIKTOK_SHOP_CACHE_PATH, {})
+    if not isinstance(payload, dict):
+        return {}, {"cache_status": "missing"}
+    updated_at = parse_iso_datetime(payload.get("updated_at"))
+    cache_age_days = None
+    if updated_at:
+        cache_age_days = max(0, (dt.datetime.now(dt.UTC) - updated_at).days)
+    else:
+        cache_date = parse_signal_date(str(payload.get("date") or ""))
+        if cache_date:
+            cache_age_days = max(0, (CURRENT_DATE - cache_date).days)
+    max_age = tiktok_shop_cache_max_age_days()
+    if cache_age_days is None:
+        return {}, {"cache_status": "invalid_date", "cache_path": str(TIKTOK_SHOP_CACHE_PATH)}
+    if cache_age_days > max_age:
+        return {}, {
+            "cache_status": "expired",
+            "cache_path": str(TIKTOK_SHOP_CACHE_PATH),
+            "cache_updated_at": payload.get("updated_at"),
+            "cache_age_days": cache_age_days,
+            "cache_max_age_days": max_age,
+        }
+    raw_items = payload.get("evidence_by_item", {})
+    if not isinstance(raw_items, dict):
+        return {}, {"cache_status": "invalid_payload", "cache_path": str(TIKTOK_SHOP_CACHE_PATH)}
+    evidence_by_item: dict[str, list[dict[str, Any]]] = {}
+    for item_id, sources in raw_items.items():
+        if not isinstance(sources, list):
+            continue
+        cached_sources = []
+        for source in sources:
+            if not isinstance(source, dict) or not source.get("url"):
+                continue
+            cached = dict(source)
+            cached.setdefault("source_type", "marketplace_product")
+            cached.setdefault("source_kind", "tiktok_shop_apify")
+            cached["source_layer"] = "social_commerce_product_url_cached"
+            cached["date_kind"] = "observed_cached_product"
+            cached["evidence_status"] = "cached_verified_url"
+            cached["cache_status"] = "reused_after_apify_failure"
+            cached["cache_updated_at"] = payload.get("updated_at")
+            cached["cache_age_days"] = cache_age_days
+            cached["cache_source"] = str(TIKTOK_SHOP_CACHE_PATH.relative_to(ROOT))
+            cached_sources.append(cached)
+        if cached_sources:
+            evidence_by_item[str(item_id)] = cached_sources
+    return evidence_by_item, {
+        "cache_status": "usable" if evidence_by_item else "empty",
+        "cache_path": str(TIKTOK_SHOP_CACHE_PATH.relative_to(ROOT)),
+        "cache_updated_at": payload.get("updated_at"),
+        "cache_age_days": cache_age_days,
+        "cache_max_age_days": max_age,
+        "cached_items": len(evidence_by_item),
+        "cached_evidence_urls": count_tiktok_sources(evidence_by_item),
+    }
+
+
 def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     token = env_value("APIFY_TOKEN") or env_value("APIFY_API_TOKEN")
     enabled = (env_value("APIFY_TIKTOK_ENABLED") or "1").lower() not in {"0", "false", "no"}
@@ -929,6 +1053,24 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         if attempt < max_attempts:
             time.sleep(min(18, 4 * attempt))
     if products is None:
+        cached_evidence, cache_meta = load_tiktok_shop_cache()
+        if cached_evidence:
+            set_source_health(
+                "apify_tiktok_shop",
+                "failed_using_cache",
+                configured=True,
+                enabled=True,
+                attempts=attempts_used,
+                keywords_requested=len(keywords),
+                expanded_keyword_items=expanded_keyword_items,
+                max_results_total=max_total,
+                current_actor_status="failed",
+                error_summary=clean_error_summary(last_error),
+                retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
+                cache_policy="cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
+                **cache_meta,
+            )
+            return cached_evidence
         set_source_health(
             "apify_tiktok_shop",
             "failed",
@@ -940,6 +1082,7 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             max_results_total=max_total,
             error_summary=clean_error_summary(last_error),
             retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
+            **cache_meta,
         )
         return {}
     evidence_by_item: dict[str, list[dict[str, Any]]] = {}
@@ -965,6 +1108,8 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             seen.add(dedupe_key)
             evidence_by_item.setdefault(row["id"], []).append(signal)
     evidence_urls = sum(len(sources) for sources in evidence_by_item.values())
+    if evidence_urls:
+        write_tiktok_shop_cache(evidence_by_item)
     set_source_health(
         "apify_tiktok_shop",
         "success" if evidence_urls else "success_empty",
@@ -1053,15 +1198,22 @@ def collect_all_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str,
 def evidence_collection_totals(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     rows = list(evidence_by_item.values())
     all_sources = [src for sources in rows for src in sources if isinstance(src, dict)]
+    cached_tiktok_sources = [
+        src
+        for src in all_sources
+        if src.get("source_kind") == "tiktok_shop_apify" and src.get("cache_status")
+    ]
     return {
         "items_requested": sum(len(c["items"]) for c in CATEGORIES),
         "items_with_any_verified_url": sum(1 for sources in rows if any(src.get("url") and not src.get("error") for src in sources)),
         "items_with_published_trend_url": sum(1 for sources in rows if any(is_published_evidence(src) and not src.get("error") for src in sources)),
         "items_with_retail_product_url": sum(1 for sources in rows if any(is_retail_product_evidence(src) and not src.get("error") for src in sources)),
         "items_with_tiktok_shop_url": sum(1 for sources in rows if any(src.get("source_kind") == "tiktok_shop_apify" for src in sources)),
+        "items_with_cached_tiktok_shop_url": sum(1 for sources in rows if any(src.get("source_kind") == "tiktok_shop_apify" and src.get("cache_status") for src in sources)),
         "verified_urls_total": sum(1 for src in all_sources if src.get("url") and not src.get("error")),
         "published_trend_urls_total": sum(1 for src in all_sources if is_published_evidence(src) and not src.get("error")),
         "retail_product_urls_total": sum(1 for src in all_sources if is_retail_product_evidence(src) and not src.get("error")),
+        "cached_tiktok_shop_urls_total": len(cached_tiktok_sources),
         "collection_error_records": sum(1 for src in all_sources if src.get("error")),
     }
 
@@ -1069,7 +1221,10 @@ def evidence_collection_totals(evidence_by_item: dict[str, list[dict[str, Any]]]
 def collection_next_actions(totals: dict[str, Any]) -> list[str]:
     actions = []
     apify = source_health("apify_tiktok_shop")
-    if apify.get("status") in {"failed", "success_empty", "skipped"}:
+    apify_status = apify.get("status")
+    if apify_status == "failed_using_cache":
+        actions.append("TikTok Shop actor는 실패했지만 최근 성공 cache를 supply fallback으로 사용했습니다. 다음 run에서 actor/upstream 재시도 후 cache freshness를 갱신해야 합니다.")
+    elif apify_status in {"failed", "success_empty", "skipped"}:
         actions.append("TikTok Shop 수집 상태를 다음 run에서 먼저 확인: actor/upstream throttle이면 재시도, token/enablement 문제면 env 복구.")
     if int(totals.get("items_with_published_trend_url") or 0) < 12:
         actions.append("published/date-bearing source 보강: weak category별 item-specific article/post/thread/listing URL capture 우선.")
@@ -1118,7 +1273,11 @@ def retail_signal_sentence(row: dict[str, Any], trend_evidence: list[dict[str, A
         lead = retail_evidence[0]
         store = lead.get("publisher") or lead.get("domain") or "BSS/wholesale/marketplace source"
         title = lead.get("title") or row["name"]
-        return f"발행일 있는 trend URL은 아직 없지만 {store}의 실제 상품 URL('{title}') 등 {len(retail_evidence)}개 live listing을 확인했습니다. TikTok Shop/marketplace listing은 trend claim이 아니라 social-commerce supply/availability 신호로만 사용합니다. {category_note}."
+        cached_count = sum(1 for src in retail_evidence if src.get("cache_status"))
+        cache_note = ""
+        if cached_count:
+            cache_note = f" 이 중 {cached_count}개 TikTok Shop URL은 current actor failure 때문에 이전 성공 capture cache로 라벨링했습니다."
+        return f"발행일 있는 trend URL은 아직 없지만 {store}의 상품 URL('{title}') 등 {len(retail_evidence)}개 listing을 확인했습니다.{cache_note} TikTok Shop/marketplace listing은 trend claim이 아니라 social-commerce supply/availability 신호로만 사용합니다. {category_note}."
     if timeframe == "weekly":
         return f"최근 14일 내 item-specific 발행 URL 또는 실제 상품 URL이 없어 이번 주 트렌드 주장으로 올리지 않고 watchlist로만 표시합니다. {category_note}."
     return f"이 기간에 item-specific 실제 URL 근거가 부족합니다. 순위는 BSS 적합도와 시즌성 기반의 watchlist 성격이며, 트렌드 주장으로 해석하면 안 됩니다."
@@ -1201,6 +1360,11 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
     verified = trend_evidence + retail_evidence
     article_count = len(trend_evidence)
     tiktok_shop_count = sum(1 for src in retail_evidence if src.get("source_kind") == "tiktok_shop_apify")
+    cached_tiktok_shop_count = sum(
+        1
+        for src in retail_evidence
+        if src.get("source_kind") == "tiktok_shop_apify" and src.get("cache_status")
+    )
     source_types = {src.get("source_type") for src in verified if src.get("source_type")}
     trend_domains = {src.get("domain") or src.get("publisher") for src in trend_evidence if src.get("domain") or src.get("publisher")}
     retail_domains = {src.get("domain") or src.get("publisher") for src in retail_evidence if src.get("domain") or src.get("publisher")}
@@ -1252,6 +1416,8 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
         label = f"BSS/wholesale/marketplace 실제 상품 URL {len(retail_evidence)}개"
         if tiktok_shop_count:
             label += f" · TikTok Shop {tiktok_shop_count}개"
+            if cached_tiktok_shop_count:
+                label += f" (cached fallback {cached_tiktok_shop_count}개)"
         evidence_summary.append(label + (f" ({', '.join(stores[:3])})" if stores else ""))
     evidence_summary.append(f"BSS 적합도 {bss_fit}/5")
     if seasonal:
@@ -1303,6 +1469,7 @@ def score_item(row: dict[str, Any], timeframe: str, all_evidence: list[dict[str,
             "recent_evidence": len(recent_trend),
             "retail_product_evidence": len(retail_evidence),
             "tiktok_shop_product_evidence": tiktok_shop_count,
+            "cached_tiktok_shop_product_evidence": cached_tiktok_shop_count,
             "article_evidence": article_count,
             "unique_domains": len(trend_domains | retail_domains),
             "unique_trend_domains": len(trend_domains),

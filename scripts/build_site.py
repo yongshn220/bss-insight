@@ -186,9 +186,13 @@ def evidence_chips(row: dict[str, Any]) -> str:
         ("14d", counts.get("recent_trend_evidence", counts.get("recent_evidence", 0))),
         ("Store URLs", counts.get("retail_product_evidence", 0)),
         ("TikTok Shop", counts.get("tiktok_shop_product_evidence", 0)),
+    ]
+    if counts.get("cached_tiktok_shop_product_evidence"):
+        chips.append(("TikTok cache", counts.get("cached_tiktok_shop_product_evidence")))
+    chips.extend([
         ("Domains", counts.get("unique_domains", 0)),
         ("BSS", f'{row.get("bss_fit")}/5'),
-    ]
+    ])
     if row.get("seasonal_now"):
         chips.append(("Season", "Now"))
     return "".join(f'<span class="chip"><b>{esc(label)}</b>{esc(value)}</span>' for label, value in chips)
@@ -281,6 +285,7 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
         return ""
     by_category: dict[str, dict[str, int]] = defaultdict(lambda: {"items": 0, "trend": 0})
     missing_tiktok: list[str] = []
+    cached_tiktok = 0
     for row in rows:
         counts = row.get("source_counts", {}) or {}
         category = str(row.get("category_name") or row.get("category_id") or "Uncategorized")
@@ -289,6 +294,7 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
             by_category[category]["trend"] += 1
         if int(counts.get("tiktok_shop_product_evidence") or 0) == 0:
             missing_tiktok.append(str(row.get("item_name") or "Unknown item"))
+        cached_tiktok += int(counts.get("cached_tiktok_shop_product_evidence") or 0)
 
     trend_items = count_items_with_source(rows, "trend_evidence")
     watchlist_items = sum(
@@ -309,6 +315,12 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
         tiktok_summary += f" +{len(missing_tiktok) - 3} more"
 
     label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    cache_cell = ""
+    if cached_tiktok:
+        cache_cell = (
+            f"<div><b>{esc(cached_tiktok)}</b><span>Cached TikTok Shop</span>"
+            "<small>Current actor failed; previous capture is labeled supply-only</small></div>"
+        )
     return f"""
       <section class="wrap evidence-snapshot" data-growth-section="evidence-gap-transparency-v1" aria-label="Evidence quality snapshot">
         <div class="evidence-snapshot-copy">
@@ -321,6 +333,7 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
           <div><b>{esc(watchlist_items)}</b><span>WATCHLIST items</span></div>
           <div><b>{esc(len(zero_trend_categories))}</b><span>Zero-trend categories</span><small>{esc(zero_summary)}</small></div>
           <div><b>{esc(len(missing_tiktok))}</b><span>Missing TikTok Shop</span><small>{esc(tiktok_summary)}</small></div>
+          {cache_cell}
         </div>
         <a class="snapshot-review-link" data-growth-cta="evidence_snapshot_review" href="/data/operations_review_public.json">Public review JSON 보기</a>
       </section>"""
@@ -664,7 +677,10 @@ def grouped_sources(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
         if src.get("source_type") == "bss_online_store":
             label = "Verified BSS product URLs · supply only"
         elif src.get("source_kind") == "tiktok_shop_apify":
-            label = "Verified TikTok Shop URLs · social commerce supply only"
+            if src.get("cache_status"):
+                label = "Cached TikTok Shop URLs · previous capture supply only"
+            else:
+                label = "Verified TikTok Shop URLs · social commerce supply only"
         elif src.get("source_type") == "marketplace_product":
             label = "Verified marketplace product URLs · supply only"
         else:
@@ -715,6 +731,11 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
             date_label = f"{date_kind} {date}".strip() if date else ""
             price = f" · ${esc(src.get('price'))}" if src.get("price") else ""
             summary = src.get("summary") or src.get("snippet") or date_label or "Reference source"
+            if src.get("cache_status"):
+                summary = (
+                    f"Cached fallback after current TikTok Shop actor failure; originally observed {src.get('observed_date') or 'date n/a'}. "
+                    + str(summary)
+                )
             source_cards.append(f"""
             <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer">
               <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date_label) if date_label else ''}{price}</span>

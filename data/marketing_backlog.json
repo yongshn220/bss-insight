@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T12:03:32.079009Z",
+  "updated_at": "2026-08-07T13:21:09.068297Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -141,6 +141,21 @@
       ],
       "owner_value": "Owners can see which categories are still watchlist-only and avoid treating supply/listing coverage as a trend claim.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to measure CTA clicks and repeat visits."
+    },
+    {
+      "campaign_id": "tiktok-shop-cache-resilience-v1",
+      "status": "live-in-collector-and-ui-after-build",
+      "objective": "Keep owner-facing ranking cards credible during TikTok Shop actor outages by showing cached supply URLs as labeled fallback, never as fresh trend evidence.",
+      "live_location_pattern": "https://gnsresearchhub.vercel.app/rankings/{timeframe}.html and https://gnsresearchhub.vercel.app/items/{item_id}.html",
+      "tracked_quality_metrics": [
+        "apify_tiktok_shop.status=failed_using_cache",
+        "items_with_cached_tiktok_shop_url=44",
+        "cached_tiktok_shop_urls_total=68",
+        "weekly_trend_items=9/44",
+        "watchlist_items=35/44"
+      ],
+      "owner_value": "BSS owners do not lose product images/listing context during a temporary source outage, and the UI explicitly says cached supply-only so owners do not confuse it with a trend claim.",
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare card clicks/share events before and after this resilience layer."
     }
   ],
   "experiment_backlog": [
@@ -209,6 +224,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "BSS owners will trust and share the dashboard more when trend-backed counts, WATCHLIST counts, zero-trend categories, and missing social-commerce coverage are visible before the share CTA.",
       "next_step": "Measure evidence_snapshot_review CTA and share/copy behavior after analytics export is connected; if clicks are low, shorten copy or convert to a collapsible trust badge."
+    },
+    {
+      "experiment_id": "tiktok-shop-cache-resilience-v1",
+      "status": "promoted-to-collector-and-ui-after-build",
+      "hypothesis": "A clearly labeled cache fallback will preserve trust and shareability during source outages without inflating trend scores.",
+      "next_step": "Watch next run for live Apify recovery; if cache_age_days rises, reduce reliance and surface stronger outage warning."
     }
   ],
   "permission_requests": [
