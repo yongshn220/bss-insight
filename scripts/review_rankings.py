@@ -161,6 +161,44 @@ def query_variants(row: dict[str, Any]) -> list[str]:
     return output[:6]
 
 
+def previous_history_run(current_generated_at: object) -> dict[str, Any]:
+    """Return the most recent prior review with a different ranking snapshot."""
+    history = load_json(OPS_HISTORY_PATH, {"runs": []})
+    runs = history.get("runs", []) if isinstance(history, dict) else []
+    if not isinstance(runs, list):
+        return {}
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        if run.get("source_generated_at") != current_generated_at:
+            return run
+    return {}
+
+
+def metric_deltas(current: dict[str, int], previous: dict[str, Any]) -> dict[str, dict[str, int]]:
+    """Compare coverage metrics to the previous loop so regressions are visible."""
+    deltas: dict[str, dict[str, int]] = {}
+    for key in [
+        "trend_items",
+        "recent_trend_items",
+        "retail_product_items",
+        "tiktok_shop_items",
+        "product_image_items",
+        "watchlist_items",
+    ]:
+        try:
+            prev_value = int(previous.get(key) or 0)
+        except Exception:
+            continue
+        current_value = int(current.get(key) or 0)
+        deltas[key] = {
+            "previous": prev_value,
+            "current": current_value,
+            "delta": current_value - prev_value,
+        }
+    return deltas
+
+
 def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     scored: list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]] = []
     for row in rows:
@@ -267,6 +305,19 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
     tiktok_items = sum(1 for row in rows if count(row, "tiktok_shop_product_evidence") > 0)
     product_image_items = sum(1 for row in rows if row.get("image_status") != "category_visual")
     watchlist_items = sum(1 for row in rows if row.get("momentum") == "watchlist" or count(row, "trend_evidence") == 0)
+    current_metrics = {
+        "items": len(rows),
+        "categories": len(cats),
+        "trend_items": trend_items,
+        "recent_trend_items": recent_items,
+        "retail_product_items": retail_items,
+        "tiktok_shop_items": tiktok_items,
+        "product_image_items": product_image_items,
+        "watchlist_items": watchlist_items,
+    }
+    previous_run = previous_history_run(data.get("generated_at"))
+    previous_metrics = previous_run.get("metrics", {}) if isinstance(previous_run, dict) else {}
+    coverage_deltas = metric_deltas(current_metrics, previous_metrics if isinstance(previous_metrics, dict) else {})
     top3 = rows[:3]
     weakest_category = min(cat_stats, key=lambda item: (item["trend_ratio"], item["retail_ratio"], item["product_image_ratio"]))
 
@@ -296,6 +347,25 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
             f"status={apify_health.get('status')} attempts={apify_health.get('attempts', 0)}. "
             f"다음 run에서 source outage/actor upstream 상태를 먼저 확인해야 합니다. ({error_summary})"
         )
+    regression_labels = {
+        "trend_items": "published trend item",
+        "recent_trend_items": "recent trend item",
+        "retail_product_items": "live product item",
+        "tiktok_shop_items": "TikTok Shop item",
+        "product_image_items": "product image item",
+    }
+    regressions = []
+    for key, label in regression_labels.items():
+        delta = coverage_deltas.get(key, {}).get("delta", 0)
+        if delta < 0:
+            values = coverage_deltas.get(key, {})
+            regressions.append(f"{label} {values.get('previous')}→{values.get('current')} ({delta})")
+    watchlist_delta = coverage_deltas.get("watchlist_items", {}).get("delta", 0)
+    if regressions:
+        improvement_points.append("이전 run 대비 coverage regression 감지: " + "; ".join(regressions) + ". 다음 loop에서는 source outage/collector query/retail suggest coverage를 우선 확인해야 합니다.")
+    if watchlist_delta > 0:
+        values = coverage_deltas.get("watchlist_items", {})
+        improvement_points.append(f"WATCHLIST item이 이전 run 대비 증가했습니다: {values.get('previous')}→{values.get('current')} (+{watchlist_delta}). trend claim 확대보다 근거 보강이 우선입니다.")
     if recent_items < max(3, len(rows) // 5):
         improvement_points.append(f"최근 14일 발행 근거 보유 item이 {recent_items}개로 낮습니다. weekly view는 recency가 핵심이므로 신선한 article/post URL capture가 필요합니다.")
     if retail_items < len(rows):
@@ -321,16 +391,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
         "date": data.get("date"),
         "timeframe": TIMEFRAME,
         "playwright_summary": playwright_summary,
-        "metrics": {
-            "items": len(rows),
-            "categories": len(cats),
-            "trend_items": trend_items,
-            "recent_trend_items": recent_items,
-            "retail_product_items": retail_items,
-            "tiktok_shop_items": tiktok_items,
-            "product_image_items": product_image_items,
-            "watchlist_items": watchlist_items,
-        },
+        "metrics": current_metrics,
         "collection_health": {
             "generated_at": collection_notes.get("generated_at"),
             "source_health": source_health,
@@ -338,6 +399,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
             "next_actions": collection_notes.get("next_actions", []),
         },
         "category_stats": cat_stats,
+        "coverage_deltas": coverage_deltas,
         "previous_loop_follow_up": previous_focus_follow_up(previous_focus, rows_by_id),
         "good_points": good_points,
         "improvement_points": improvement_points,
@@ -382,6 +444,7 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
             "playwright_summary",
             "metrics",
             "collection_health",
+            "coverage_deltas",
             "good_points",
             "improvement_points",
             "qa_focus",

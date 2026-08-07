@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-08-07T03:19:49.144447Z",
+  "generated_at": "2026-08-07T04:31:15.936658Z",
   "date": "2026-08-07",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-07T03:19:49.144061Z",
+      "observed_at": "2026-08-07T04:31:15.936250Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 44,
-      "products_returned": 43,
-      "items_with_evidence": 43,
-      "evidence_urls": 43,
+      "products_returned": 5,
+      "items_with_evidence": 5,
+      "evidence_urls": 5,
       "max_results_total": 44
     }
   },
   "evidence_totals": {
     "items_requested": 44,
-    "items_with_any_verified_url": 44,
+    "items_with_any_verified_url": 34,
     "items_with_published_trend_url": 22,
-    "items_with_retail_product_url": 44,
-    "items_with_tiktok_shop_url": 43,
-    "verified_urls_total": 229,
-    "published_trend_urls_total": 47,
-    "retail_product_urls_total": 182,
+    "items_with_retail_product_url": 23,
+    "items_with_tiktok_shop_url": 5,
+    "verified_urls_total": 192,
+    "published_trend_urls_total": 48,
+    "retail_product_urls_total": 144,
     "collection_error_records": 0
   },
   "limitations": [
@@ -32,6 +32,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "현재 collection health에 즉시 조치가 필요한 source outage는 없습니다."
+    "BSS/wholesale product URL coverage 보강: jewelry/nails/tools처럼 Shopify suggest가 약한 category에 vendor-specific collector 필요."
   ]
 }

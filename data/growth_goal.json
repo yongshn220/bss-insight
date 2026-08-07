@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T03:21:18.386255Z",
+  "updated_at": "2026-08-07T04:28:47.182256Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T03:21:18.386255Z",
-    "provider_checked": "Live Vercel Web Analytics script + GA4 tag; attempted Vercel CLI metrics and direct API discovery from cron",
+    "last_checked_at": "2026-08-07T04:28:47.182256Z",
+    "provider_checked": "Live Vercel Web Analytics script + GA4 tag + direct Vercel API discovery from cron",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "Live /_vercel/insights/script.js and GA4 tag are present, but central 30d visitor/pageview export is still not usable in this cron run. npx vercel metrics required non-interactive security approval; direct guessed Vercel API metric endpoints returned 404. Previous CLI metric attempts returned empty arrays.",
-    "interpretation": "Measurement blocker remains: use Vercel dashboard/approved CLI metrics export or provide GA4 Data API property/service credentials so 500/day progress can be reported numerically."
+    "raw_result": "Live /_vercel/insights/script.js and GA4 tag are present. VERCEL_TOKEN exists, but direct Vercel analytics/web-insights endpoints tested in this cron run returned HTTP 404, and no GA4 Data API property/service-account credential is configured in env. Central 30d visits remain unavailable to the agent.",
+    "interpretation": "Measurement blocker remains: provide GA4 Data API access (GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS path or GA4_SERVICE_ACCOUNT_JSON) or an approved Vercel Analytics export/API method so rolling 30-day visits can be reported numerically toward 500/day."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -106,6 +106,17 @@
       ],
       "success_metric": "organic landing visits to ranking and item detail pages; indexed URL count; item-card clicks from organic sessions",
       "hypothesis": "Canonical URLs, OG/Twitter images, schema.org ItemList/Product JSON-LD, robots.txt, and sitemap.xml make item-ranking pages easier to index and share, increasing repeatable organic visits toward 500/day."
+    },
+    {
+      "experiment_id": "item-detail-share-card-v1",
+      "status": "active-site-cta",
+      "variants": [
+        "detail_copy_link",
+        "detail_x_draft",
+        "detail_email_forward"
+      ],
+      "success_metric": "item detail share/copy clicks and UTM-attributed return visits",
+      "hypothesis": "Specific item-detail pages with owner-ready display/risk copy create more repeat visits than timeframe-only sharing links."
     }
   ],
   "reporting": {

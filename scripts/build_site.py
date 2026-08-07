@@ -248,12 +248,16 @@ def data_health_panel(rows: list[dict[str, Any]]) -> str:
     ) + '</div>'
 
 
-def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str) -> str:
-    query = urllib.parse.urlencode({
+def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str, **extra: object) -> str:
+    params = {
         "utm_source": source,
         "utm_medium": medium,
         "utm_campaign": campaign,
-    })
+    }
+    for key, value in extra.items():
+        if value not in (None, ""):
+            params[key] = str(value)
+    query = urllib.parse.urlencode(params)
     return f"{SITE_BASE}{path}?{query}"
 
 
@@ -358,6 +362,80 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
             <a class="share-action" data-growth-share="{esc(timeframe)}_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_email_forward" href="{esc(mailto)}">Email draft</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_copy_link" data-copy-url="{esc(owner_url)}">Copy owner link</button>
+          </div>
+        </article>
+      </section>"""
+
+
+def item_share_panel(row: dict[str, Any]) -> str:
+    """Owner-ready share CTA for detail pages with item-specific UTM tracking."""
+    item_id = str(row.get("item_id") or "").strip()
+    if not item_id:
+        return ""
+    item_name = row.get("item_name") or "BSS item"
+    display = row.get("display_tip") or "front-area test"
+    risk = row.get("risk") or "track sell-through and shrink"
+    category = row.get("category_name") or "BSS item"
+    counts = row.get("source_counts", {}) or {}
+    trend_count = int(counts.get("trend_evidence") or counts.get("news_magazine") or 0)
+    evidence_label = f"{trend_count} published trend URL(s)" if trend_count else "WATCHLIST · evidence insufficient"
+    campaign = "daily-visits-500-item-detail-share"
+    item_path = f"/items/{item_id}.html"
+    owner_url = growth_campaign_url(
+        item_path,
+        source="owner_share",
+        medium="organic",
+        campaign=campaign,
+        utm_content=item_id,
+    )
+    x_url = growth_campaign_url(
+        item_path,
+        source="x",
+        medium="organic",
+        campaign=campaign,
+        utm_content=item_id,
+    )
+    email_url = growth_campaign_url(
+        item_path,
+        source="email",
+        medium="owner_forward",
+        campaign=campaign,
+        utm_content=item_id,
+    )
+    text = (
+        f"Beauty Supply Store owners: {item_name} detail page shows display tip, risk, "
+        f"and evidence status ({evidence_label}). Display test: {display}."
+    )
+    x_intent = "https://twitter.com/intent/tweet?" + urllib.parse.urlencode({"text": text, "url": x_url})
+    mailto = "mailto:?" + urllib.parse.urlencode({
+        "subject": f"BSS item detail: {item_name}",
+        "body": (
+            f"BSS owner용 item detail 공유드립니다.\n\n"
+            f"Item: {item_name}\n"
+            f"Category: {category}\n"
+            f"Evidence status: {evidence_label}\n"
+            f"Display tip: {display}\n"
+            f"Risk/caution: {risk}\n\n"
+            f"Detail link: {email_url}"
+        ),
+    })
+    return f"""
+      <section class="wrap share-kit item-share-kit" aria-labelledby="item-share-{esc(item_id)}">
+        <div>
+          <span>Growth loop · item detail share</span>
+          <h2 id="item-share-{esc(item_id)}">이 item detail을 owner에게 바로 공유</h2>
+          <p>개별 상품 페이지도 repeat visit 진입점으로 만들기 위해 UTM이 붙은 item-specific link를 제공합니다. Evidence status를 함께 보여 과장된 trend claim 없이 공유할 수 있습니다.</p>
+        </div>
+        <article class="share-card">
+          <p class="share-eyebrow">Item share</p>
+          <h3>{esc(item_name)}</h3>
+          <p>{esc(display)}</p>
+          <small>{esc(evidence_label)} · Risk/caution: {esc(risk)}</small>
+          <code>{esc(owner_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-share="item_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
+            <a class="share-action" data-growth-share="item_email_forward" href="{esc(mailto)}">Email draft</a>
+            <button class="share-action" type="button" data-growth-share="item_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
           </div>
         </article>
       </section>"""
@@ -582,6 +660,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         </div>
       </section>
       <section class="wrap metrics-grid">{''.join(rank_cards)}</section>
+      {item_share_panel(row)}
       <section class="wrap detail-grid">
         <article><span>Display</span><p>{esc(row.get('display_tip'))}</p></article>
         <article><span>Risk</span><p>{esc(row.get('risk'))}</p></article>

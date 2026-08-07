@@ -28,6 +28,7 @@ PUBLIC_REVIEW_FIELDS = [
     "playwright_summary",
     "metrics",
     "collection_health",
+    "coverage_deltas",
     "good_points",
     "improvement_points",
     "qa_focus",

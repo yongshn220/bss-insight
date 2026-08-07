@@ -174,13 +174,21 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const itemName = (await firstCard.locator('h3').innerText()).trim();
     await firstCard.locator('.rank-hit').click();
 
-    await expect(page.getByRole('heading', { name: itemName })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: itemName })).toBeVisible();
     await expect(page.locator('.detail-img img')).toHaveAttribute('src', /.+/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/items\/.+\.html$/);
     const detailJsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
     expect(JSON.parse(detailJsonLd ?? '{}')['@type']).toBe('Product');
     expect(await page.locator('.metrics-grid .metric-card').count()).toBeGreaterThan(0);
     await expect(page.getByRole('heading', { name: '실제 근거와 참고 링크 분리' })).toBeVisible();
+    await expect(page.locator('.item-share-kit')).toBeVisible();
+    const itemCopyButton = page.locator('[data-growth-share="item_copy_link"]').first();
+    await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-item-detail-share/);
+    await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_content=/);
+    await itemCopyButton.click();
+    await expect(itemCopyButton).toHaveText(/Copied|Link ready/);
+    const itemShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(itemShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_copy_link')).toBe(true);
 
     await page.getByRole('link', { name: /Ranking으로 돌아가기/ }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html$/);
