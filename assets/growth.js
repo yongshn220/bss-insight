@@ -226,20 +226,32 @@
     if (secondaryCta) secondaryCta.textContent = '근거와 watchlist 확인';
   }
 
+  function elementContext(target) {
+    const section = target.closest?.('[data-growth-section]');
+    const item = target.closest?.('[data-item-id]');
+    return {
+      section: section?.getAttribute('data-growth-section') || '',
+      item_id: item?.getAttribute('data-item-id') || '',
+      item_rank: item?.getAttribute('data-item-rank') || '',
+      item_category: item?.getAttribute('data-item-category') || '',
+    };
+  }
+
   function labelForClick(target) {
+    const context = elementContext(target);
     const share = target.closest('[data-growth-share]');
     if (share) {
       const href = share.getAttribute('href') || share.getAttribute('data-copy-url') || '';
       const text = trimText(share.textContent || share.getAttribute('aria-label') || href);
       const shareAction = share.getAttribute('data-growth-share') || 'unknown';
-      return { type: `share_${shareAction}`, share_action: shareAction, href, text };
+      return { type: `share_${shareAction}`, share_action: shareAction, href, text, ...context };
     }
 
     const link = target.closest('a');
     if (!link) return null;
     const href = link.getAttribute('href') || '';
     const text = trimText(link.textContent || link.getAttribute('aria-label') || href);
-    const label = { href, text };
+    const label = { href, text, ...context };
     if (link.matches('[data-growth-cta]')) return { type: `cta_${link.dataset.growthCta}`, ...label };
     if (link.matches('.rank-hit')) return { type: 'item_card', ...label, item: trimText(link.getAttribute('aria-label')) };
     if (link.matches('.podium-card')) return { type: 'podium_card', ...label };
@@ -273,6 +285,7 @@
       if (!button) return;
       event.preventDefault();
       const url = button.getAttribute('data-copy-url') || '';
+      const context = elementContext(button);
       const copied = await safeWriteClipboard(url);
       button.setAttribute('data-copy-state', copied ? 'copied' : 'manual-copy');
       button.textContent = copied ? 'Copied' : 'Link ready';
@@ -281,6 +294,7 @@
         share_action: button.getAttribute('data-growth-share') || 'unknown',
         href: url,
         copied,
+        ...context,
       });
     });
   }

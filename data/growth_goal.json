@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T13:21:09.068297Z",
+  "updated_at": "2026-08-07T14:06:40.838741Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T13:21:09.068297Z",
-    "provider_checked": "Live Vercel Web Analytics script + GA4 tag + env credential discovery; tiktok-shop-cache-resilience-v1 shipped after Apify actor failure.",
+    "last_checked_at": "2026-08-07T14:06:40.838741Z",
+    "provider_checked": "Live endpoint check + env credential discovery; Vercel Web Analytics script and GA4 tag are present, but this cron env still lacks Vercel/GA4 reporting credentials. top3-owner-share-strip-v1 prepared for measurable item-level sharing.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "Current run: weekly trend-backed items 9/44, WATCHLIST 35/44, retail product URLs 44/44. Apify TikTok Shop actor failed after 2 attempts, but a same-day last-success cache supplied 44/44 labeled TikTok Shop coverage with 68 cached URLs; cached supply URLs do not create trend movement. GA4 tag and Vercel Web Analytics script are live, but cron env still lacks GA4_PROPERTY_ID / analytics reporting access for rolling 30-day visits.",
-    "interpretation": "Research/source resilience improved and owner-facing transparency improved; traffic measurement remains pending until GA4 Data API property access or Vercel Analytics export/API access is provided."
+    "raw_result": "measurement pending: live Web Analytics/GA4 tags are present, but Vercel CLI/API and GA4 Data API credentials are unavailable in this runtime. Current local growth lever adds top-3 item-specific owner share links with UTM content and item_id tracking; no traffic number is inferred.",
+    "interpretation": "Measurement remains pending; growth system readiness improved by making item-level share/copy events attributable once provider export access is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -189,6 +189,16 @@
       ],
       "success_metric": "fewer avoidable TikTok Shop coverage outages, stable product images/source cards, and no increase in unsupported trend claims",
       "hypothesis": "Transparent cached supply fallback preserves owner trust during upstream actor failures while keeping trend claims evidence-based."
+    },
+    {
+      "experiment_id": "top3-owner-share-strip-v1",
+      "status": "active-site-cta-after-build",
+      "variants": [
+        "single_featured_owner_link",
+        "top3_item_specific_owner_links"
+      ],
+      "success_metric": "weekly_top3 share/copy clicks with item_id context, item detail entrances by UTM content, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners and reps will share/reopen item-specific links more often than a generic ranking link when each link includes display tip, risk/caution, evidence status, and product detail context."
     }
   ],
   "reporting": {

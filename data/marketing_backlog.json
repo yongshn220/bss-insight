@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T13:21:09.068297Z",
+  "updated_at": "2026-08-07T14:06:40.838741Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -36,6 +36,51 @@
         "growth_share_copy_result"
       ],
       "approval_needed_for_external_posting": "covered_by_data/sns_posting_rules.json"
+    },
+    {
+      "campaign_id": "top3-owner-share-strip-v1",
+      "status": "live-on-site-after-build",
+      "objective": "Turn the top evidence-backed ranking items into item-specific owner/reps share starters instead of relying on one generic ranking link.",
+      "utm_campaign_pattern": "daily-visits-500-{timeframe}-top3-owner-share",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_click share_{timeframe}_top3_x_intent",
+        "growth_click share_{timeframe}_top3_copy_link",
+        "growth_share_copy_result with item_id/item_rank/item_category context"
+      ],
+      "drafts": {
+        "x_twitter_top3_weekly": [
+          {
+            "item_id": "rosemary-mint-scalp-oil",
+            "item_name": "Rosemary Mint Scalp Oil",
+            "rank": 1,
+            "url": "https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly",
+            "x_twitter": "Beauty Supply owners: Weekly share starter — Rosemary Mint Scalp Oil. Display test: scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly"
+          },
+          {
+            "item_id": "cluster-lash-extension-kit",
+            "item_name": "Cluster Lash Extension Kit",
+            "rank": 2,
+            "url": "https://gnsresearchhub.vercel.app/items/cluster-lash-extension-kit.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=cluster-lash-extension-kit&utm_term=weekly",
+            "x_twitter": "Beauty Supply owners: Weekly share starter — Cluster Lash Extension Kit. Display test: DIY lash sign과 bond/seal을 같이 묶어 basket 구성. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/cluster-lash-extension-kit.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=cluster-lash-extension-kit&utm_term=weekly"
+          },
+          {
+            "item_id": "lash-bond-and-seal",
+            "item_name": "Lash Bond and Seal",
+            "rank": 3,
+            "url": "https://gnsresearchhub.vercel.app/items/lash-bond-and-seal.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=lash-bond-and-seal&utm_term=weekly",
+            "x_twitter": "Beauty Supply owners: Weekly share starter — Lash Bond and Seal. Display test: cluster lash kit 바로 옆에 필수 add-on으로 배치. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/lash-bond-and-seal.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=lash-bond-and-seal&utm_term=weekly"
+          }
+        ]
+      },
+      "owner_value": "Busy BSS owners can receive one item-level link with display/risk/evidence status, making it easier to forward or revisit a specific product test.",
+      "measurement_need": "GA4/Vercel event export access is needed to compare top3 item-share copy/click events against the older single featured share card."
     },
     {
       "campaign_id": "x-daily-owner-insight-v1",
@@ -230,6 +275,12 @@
       "status": "promoted-to-collector-and-ui-after-build",
       "hypothesis": "A clearly labeled cache fallback will preserve trust and shareability during source outages without inflating trend scores.",
       "next_step": "Watch next run for live Apify recovery; if cache_age_days rises, reduce reliance and surface stronger outage warning."
+    },
+    {
+      "experiment_id": "top3-owner-share-strip-v1",
+      "status": "promoted-to-live-site-after-build",
+      "hypothesis": "Item-specific top-3 share starters will create more useful repeat visits than a single timeframe-level share card because each owner link contains one product, display test, risk note, evidence status, and UTM content.",
+      "next_step": "Measure weekly_top3 share/copy events, item_id mix, and UTM-attributed returns once GA4/Vercel analytics export access is available."
     }
   ],
   "permission_requests": [

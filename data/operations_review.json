@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-07T13:21:09.002384Z",
+  "reviewed_at": "2026-08-07T14:07:30.776299Z",
   "source_generated_at": "2026-08-07T13:18:22.318558Z",
   "date": "2026-08-07",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (21.7s)",
+  "playwright_summary": "12 passed (22.6s); top3-owner-share-strip-v1 checked",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -449,7 +449,7 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (21.7s)",
+    "Playwright QA 완료: 12 passed (22.6s); top3-owner-share-strip-v1 checked",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Lash Bond and Seal",
     "Evidence separation 유지: published trend URL 보유 item 9개, BSS/marketplace live product URL 보유 item 44개.",
@@ -675,29 +675,29 @@
     "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
   ],
   "independent_ai_review": {
-    "reviewed_at": "2026-08-07T13:21:09.068297Z",
-    "improvement_id": "tiktok-shop-cache-resilience-v1",
-    "assessment": "Apify TikTok Shop actor failed during this run, which would have dropped social-commerce supply coverage to 0/44 without a recovery layer. I added a transparent last-success cache fallback and seeded it from the previous committed successful capture, so BSS owners still see product/listing signals while every cached URL is labeled as supply-only and never counted as trend evidence.",
+    "reviewed_at": "2026-08-07T14:07:49.284951Z",
+    "improvement_id": "top3-owner-share-strip-v1",
+    "assessment": "Added a visible Top 3 item-specific owner share strip and enriched growth.js click/copy events with item_id, item_rank, item_category, and section context. This is a structural growth lever, not a cosmetic refresh: it creates measurable owner/reps share paths for individual item-detail pages.",
     "actual_outcomes": [
-      "weekly trend-backed items: 9/44; WATCHLIST: 35/44",
-      "retail product coverage: 44/44; TikTok Shop coverage shown via labeled cache: 44/44",
-      "Apify current_actor_status=failed; cache_age_days=0; cached_evidence_urls=68",
-      "Ranking/detail UI now exposes Cached TikTok Shop chips/snapshot/source-group labels so the fallback cannot be mistaken for fresh trend movement."
+      "npm run build completed and generated 44 item pages plus timeframe pages.",
+      "npm run test:e2e passed: 12 passed (22.6s), including desktop/mobile checks for top3-owner-share-strip-v1 and item-level copy tracking.",
+      "Weekly top share starters are Rosemary Mint Scalp Oil, Cluster Lash Extension Kit, and Lash Bond and Seal; each has utm_source=x&utm_medium=organic campaign drafts plus item-specific owner_share/email links.",
+      "Traffic measurement remains pending because Vercel/GA4 reporting credentials are unavailable in this cron runtime."
     ],
     "good_points": [
-      "Evidence discipline improved under source outage: search URLs remain watchlist-only; cached TikTok Shop product URLs are marked cached_verified_url / observed_cached_product.",
-      "Source resilience improved: a transient Apify failure no longer removes every TikTok Shop image/listing from owner-facing cards.",
-      "Weekly published trend coverage improved versus previous review (+2 trend items, -2 WATCHLIST), but this is from dated public URLs, not from cached supply links."
+      "Owner-facing growth path is more practical: owners can share/reopen one product test instead of a whole ranking page.",
+      "Event instrumentation is less black-box: share/copy events now carry item_id and section context for later analytics export.",
+      "Evidence discipline is unchanged: only items with published trend URLs are used in the share strip; WATCHLIST/search links are not promoted as trend claims."
     ],
     "remaining_issues": [
-      "Jewelry & Fashion Accessories and Tools & Accessories still have 0 weekly published trend items; they need item/post/thread-level dated evidence, not broader search pages.",
-      "TikTok Shop actor must succeed again to refresh cache; current fallback is safe only while cache freshness is within policy.",
-      "Rolling 30-day visit measurement remains blocked without GA4_PROPERTY_ID or Vercel Analytics export/API access."
+      "Analytics export/API access is still required before claiming traffic lift or 30-day average visits.",
+      "xurl CLI is missing or unauthenticated, so no live X post was made; drafts only.",
+      "Jewelry & Fashion Accessories and Tools & Accessories still have zero weekly published trend items."
     ],
     "next_direction": [
-      "Retry/monitor Apify actor and refresh tiktok_shop_cache.json on the next successful run.",
-      "Prioritize next_loop_focus items with zero trend evidence: 20G Surgical Steel Nose Stud, Wig Grip Band, Synthetic Lace Front Wig, Wig Adhesive Glue, V-Part Human Hair Wig, Lace Melting Spray.",
-      "Use analytics provider access to compare whether source transparency/cached labeling affects item-card clicks, share-copy events, and repeat visits."
+      "After GA4/Vercel export access is connected, compare weekly_top3 copy/share events to the older single featured share card.",
+      "Keep the next collection loop focused on zero-trend item evidence: 20G Surgical Steel Nose Stud, Wig Grip Band, Synthetic Lace Front Wig, Wig Adhesive Glue, V-Part Human Hair Wig, Lace Melting Spray.",
+      "When xurl is installed/authenticated and first post is manually approved, use the prepared top3 weekly X drafts with UTM campaign daily-visits-500-weekly-top3-owner-share."
     ]
   }
 }

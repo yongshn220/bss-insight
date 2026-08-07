@@ -228,7 +228,7 @@ def item_card(row: dict[str, Any], compact: bool = False) -> str:
     if compact and len(desc) > 150:
         desc = desc[:147] + "…"
     return f"""
-    <article class="rank-card {esc(evidence_class)}">
+    <article class="rank-card {esc(evidence_class)}" data-item-id="{esc(row.get('item_id'))}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}">
       <a class="rank-hit" href="{item_url}" aria-label="View {esc(row.get('item_name'))}"></a>
       <div class="rank-num">#{esc(row.get('rank'))}</div>
       {image_tag(row, 'rank-img')}
@@ -357,6 +357,15 @@ def has_trend_evidence(row: dict[str, Any]) -> bool:
     return bool(counts.get("trend_evidence") or counts.get("news_magazine"))
 
 
+def evidence_status_label(row: dict[str, Any]) -> str:
+    """Human-readable evidence status for share copy without inflating watchlist items."""
+    counts = row.get("source_counts", {}) or {}
+    trend_count = int(counts.get("trend_evidence") or counts.get("news_magazine") or 0)
+    if trend_count:
+        return f"{trend_count} published trend URL(s)"
+    return "WATCHLIST · evidence insufficient"
+
+
 def page_description(prefix: str, rows: list[dict[str, Any]] | None = None) -> str:
     """Short page-specific description for SEO/social previews."""
     if rows:
@@ -458,6 +467,92 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Item-specific top share starters for reps/owners, with UTM and item-level tracking."""
+    share_rows = [row for row in rows if has_trend_evidence(row)][:3]
+    if not share_rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-top3-owner-share"
+    cards = []
+    for row in share_rows:
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        item_name = row.get("item_name") or "BSS item"
+        display = row.get("display_tip") or "front-area test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        category = row.get("category_name") or "BSS item"
+        evidence_label = evidence_status_label(row)
+        item_path = f"/items/{item_id}.html"
+        owner_url = growth_campaign_url(
+            item_path,
+            source="owner_share",
+            medium="organic",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
+        x_url = growth_campaign_url(
+            item_path,
+            source="x",
+            medium="organic",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
+        email_url = growth_campaign_url(
+            item_path,
+            source="email",
+            medium="owner_forward",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
+        text = (
+            f"Beauty Supply owners: {label} share starter — {item_name}. "
+            f"Display test: {display}. Evidence status: {evidence_label}."
+        )
+        x_intent = "https://twitter.com/intent/tweet?" + urllib.parse.urlencode({"text": text, "url": x_url})
+        mailto = "mailto:?" + urllib.parse.urlencode({
+            "subject": f"{label} BSS share starter: {item_name}",
+            "body": (
+                f"Owner님, {label} ranking에서 바로 테스트 검토할 item입니다.\n\n"
+                f"Item: {item_name}\n"
+                f"Category: {category}\n"
+                f"Evidence status: {evidence_label}\n"
+                f"Display test: {display}\n"
+                f"Risk/caution: {risk}\n\n"
+                f"Item link: {email_url}"
+            ),
+        })
+        cards.append(f"""
+        <article class="top-share-card" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}">
+          <span>{esc(label)} share starter · #{esc(row.get('rank'))}</span>
+          <h3>{esc(item_name)}</h3>
+          <p><b>Display</b>{esc(display)}</p>
+          <small><b>Risk</b>{esc(risk)}</small>
+          <em>{esc(evidence_label)}</em>
+          <code>{esc(owner_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-share="{esc(timeframe)}_top3_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_top3_email_forward" href="{esc(mailto)}">Email draft</a>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
+          </div>
+        </article>""")
+    if not cards:
+        return ""
+    return f"""
+      <section class="wrap top-share-strip" data-growth-section="top3-owner-share-strip-v1" aria-labelledby="top-share-{esc(timeframe)}">
+        <div class="section-title top-share-title">
+          <div><span>Share starters · measurable growth path</span><h2 id="top-share-{esc(timeframe)}">Top 3 item-specific owner links</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <p class="top-share-note">Single featured link만으로 끝내지 않고, evidence-backed 상위 item 3개를 owner/reps가 바로 복사·공유할 수 있게 분리했습니다. 모든 링크는 item_id가 붙은 UTM과 growth event context를 남깁니다.</p>
+        <div class="top-share-grid">{''.join(cards)}</div>
+      </section>"""
+
+
 def item_share_panel(row: dict[str, Any]) -> str:
     """Owner-ready share CTA for detail pages with item-specific UTM tracking."""
     item_id = str(row.get("item_id") or "").strip()
@@ -467,9 +562,7 @@ def item_share_panel(row: dict[str, Any]) -> str:
     display = row.get("display_tip") or "front-area test"
     risk = row.get("risk") or "track sell-through and shrink"
     category = row.get("category_name") or "BSS item"
-    counts = row.get("source_counts", {}) or {}
-    trend_count = int(counts.get("trend_evidence") or counts.get("news_magazine") or 0)
-    evidence_label = f"{trend_count} published trend URL(s)" if trend_count else "WATCHLIST · evidence insufficient"
+    evidence_label = evidence_status_label(row)
     campaign = "daily-visits-500-item-detail-share"
     item_path = f"/items/{item_id}.html"
     owner_url = growth_campaign_url(
@@ -587,6 +680,7 @@ def render_home(data: dict[str, Any]) -> str:
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
       {evidence_gap_snapshot(weekly, 'weekly')}
       {share_panel('weekly', weekly)}
+      {owner_share_strip('weekly', weekly)}
       <section class="wrap block">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
         {top_three(weekly)}
@@ -646,6 +740,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       <div class="wrap">{category_chips(cats)}</div>
       {evidence_gap_snapshot(rows, timeframe)}
       {share_panel(timeframe, rows)}
+      {owner_share_strip(timeframe, rows)}
       <section class="wrap block">
         <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
         {top_three(rows)}
