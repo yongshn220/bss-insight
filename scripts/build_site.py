@@ -194,6 +194,29 @@ def evidence_chips(row: dict[str, Any]) -> str:
     return "".join(f'<span class="chip"><b>{esc(label)}</b>{esc(value)}</span>' for label, value in chips)
 
 
+def clamp_text(value: object, limit: int) -> str:
+    """Keep ranking cards scannable while still showing owner-useful details."""
+    text = " ".join(str(value or "").split())
+    if len(text) <= limit:
+        return text
+    return text[: max(0, limit - 1)].rstrip() + "…"
+
+
+def owner_action_panel(row: dict[str, Any], compact: bool = False) -> str:
+    """Show retail-owner display/risk/message on the card, not only detail pages."""
+    limit = 88 if compact else 122
+    notes = [
+        ("Display", row.get("display_tip")),
+        ("Risk", row.get("risk")),
+        ("Owner phrase", row.get("owner_message_en")),
+    ]
+    return '<div class="owner-actions" aria-label="Retail owner action summary">' + "".join(
+        f'<div class="owner-action-note"><b>{esc(label)}</b><span>{esc(clamp_text(value, limit))}</span></div>'
+        for label, value in notes
+        if value
+    ) + '</div>'
+
+
 def item_card(row: dict[str, Any], compact: bool = False) -> str:
     item_url = f"/items/{esc(row.get('item_id'))}.html"
     desc = row.get("reason_summary", "")
@@ -213,6 +236,7 @@ def item_card(row: dict[str, Any], compact: bool = False) -> str:
         <h3>{esc(row.get('item_name'))}</h3>
         <p>{esc(desc)}</p>
         <p class="change-note">{esc(row.get('change_note'))}</p>
+        {owner_action_panel(row, compact=compact)}
         <div class="chips">{evidence_chips(row)}</div>
       </div>
       <div class="score-box">

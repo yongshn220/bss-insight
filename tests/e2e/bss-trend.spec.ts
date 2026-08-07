@@ -85,6 +85,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const rankCards = page.locator('.rank-card');
     await expect(rankCards.first()).toBeVisible();
     expect(await rankCards.count()).toBeGreaterThanOrEqual(8);
+    await expect(rankCards.first().locator('.owner-actions')).toBeVisible();
+    await expect(rankCards.first().locator('.owner-action-note')).toHaveCount(3);
+    await expect(rankCards.first().getByText('Display')).toBeVisible();
+    await expect(rankCards.first().getByText('Risk')).toBeVisible();
+    await expect(rankCards.first().getByText('Owner phrase')).toBeVisible();
 
     const missingImageMetadata = await page.locator('img').evaluateAll((images) =>
       images
@@ -165,6 +170,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('.tabs a.active')).toHaveText(label);
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
+      await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
 
       const categoryChips = page.locator('.category-strip a');
       expect(await categoryChips.count()).toBeGreaterThan(1);
