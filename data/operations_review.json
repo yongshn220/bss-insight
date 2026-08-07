@@ -1,45 +1,45 @@
 {
-  "reviewed_at": "2026-08-07T09:30:30.281335Z",
-  "source_generated_at": "2026-08-07T09:26:50.103198Z",
+  "reviewed_at": "2026-08-07T10:48:21.826858Z",
+  "source_generated_at": "2026-08-07T10:45:45.689744Z",
   "date": "2026-08-07",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (22.0s)",
+  "playwright_summary": "12 passed (21.5s)",
   "metrics": {
     "items": 44,
     "categories": 8,
     "trend_items": 8,
     "recent_trend_items": 8,
     "retail_product_items": 44,
-    "tiktok_shop_items": 44,
+    "tiktok_shop_items": 43,
     "product_image_items": 44,
     "watchlist_items": 36
   },
   "collection_health": {
-    "generated_at": "2026-08-07T09:26:50.102922Z",
+    "generated_at": "2026-08-07T10:45:45.689431Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-07T09:26:50.102349Z",
+        "observed_at": "2026-08-07T10:45:45.688853Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 68,
         "expanded_keyword_items": 12,
-        "products_returned": 68,
-        "items_with_evidence": 44,
-        "evidence_urls": 65,
+        "products_returned": 66,
+        "items_with_evidence": 43,
+        "evidence_urls": 63,
         "max_results_total": 68
       }
     },
     "evidence_totals": {
       "items_requested": 44,
       "items_with_any_verified_url": 44,
-      "items_with_published_trend_url": 22,
+      "items_with_published_trend_url": 21,
       "items_with_retail_product_url": 44,
-      "items_with_tiktok_shop_url": 44,
-      "verified_urls_total": 266,
-      "published_trend_urls_total": 48,
-      "retail_product_urls_total": 218,
+      "items_with_tiktok_shop_url": 43,
+      "verified_urls_total": 270,
+      "published_trend_urls_total": 44,
+      "retail_product_urls_total": 226,
       "collection_error_records": 0
     },
     "next_actions": [
@@ -140,19 +140,19 @@
       "delta": 0
     },
     "retail_product_items": {
-      "previous": 44,
+      "previous": 43,
       "current": 44,
-      "delta": 0
+      "delta": 1
     },
     "tiktok_shop_items": {
-      "previous": 44,
-      "current": 44,
+      "previous": 43,
+      "current": 43,
       "delta": 0
     },
     "product_image_items": {
-      "previous": 44,
+      "previous": 43,
       "current": 44,
-      "delta": 0
+      "delta": 1
     },
     "watchlist_items": {
       "previous": 36,
@@ -222,7 +222,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -266,7 +266,7 @@
         "unique_retail_domains": 1,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 1,
         "manual_references": 14,
@@ -310,7 +310,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -329,7 +329,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -338,8 +338,8 @@
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
       "status": "still_needs_focus",
       "baseline": {
         "verified_evidence": 13,
@@ -354,7 +354,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -373,7 +373,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -427,17 +427,21 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (22.0s)",
+    "Playwright QA 완료: 12 passed (21.5s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Waterproof Black Eyeliner Pencil",
+    "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Lash Bond and Seal",
     "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
-    "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
+    "TikTok Shop/marketplace supply signal이 43개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 65."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 63.",
+    "AI action: strict supply relevance recovery shipped — Wig Adhesive Glue regained 13 live product URLs and a verified product image while staying WATCHLIST because trend evidence remains 0.",
+    "Growth instrumentation remains provider-ready: Vercel analytics script and GA4 tag are live; central traffic number still needs GA4_PROPERTY_ID/reporting access."
   ],
   "improvement_points": [
     "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-    "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8)."
+    "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8).",
+    "Growth measurement blocker: GA4_PROPERTY_ID/reporting credential is still missing, so rolling 30-day average daily visits cannot be reported numerically.",
+    "TikTok Shop coverage is 43/44; V-Part Human Hair Wig needs alias fallback or deeper marketplace collection next."
   ],
   "next_loop_focus_items": [
     {
@@ -478,7 +482,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -512,7 +516,7 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 23,
+      "rank": 24,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
@@ -569,7 +573,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -577,16 +581,16 @@
       }
     },
     {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 10,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"Lace Melting Spray\" beauty supply trend",
-        "\"Lace Melting Spray\" TikTok review",
-        "\"Lace Melting Spray\" Amazon reviews",
-        "\"Lace Melting Spray\" black beauty supply"
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "\"Wig Adhesive Glue\" TikTok review",
+        "\"Wig Adhesive Glue\" Amazon reviews",
+        "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -601,7 +605,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -647,5 +651,12 @@
     "다음 Playwright QA에서 operations_review.json/next_loop_focus.json 생성 여부를 smoke check에 포함합니다.",
     "ranking card click-through뿐 아니라 top focus item detail page의 source groups와 image metadata를 확인합니다.",
     "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
-  ]
+  ],
+  "independent_ai_review": {
+    "reviewed_at": "2026-08-07T10:48:42.960599Z",
+    "primary_growth_blocker": "Traffic cannot be tied to the 500 average daily visits goal because GA4_PROPERTY_ID/reporting access is missing, despite live GA4 tag and Vercel analytics script.",
+    "primary_insight_quality_blocker": "36/44 weekly items remain WATCHLIST and Jewelry/Nails/Tools/Wigs have zero weekly published trend URLs; generated search links are kept as watchlist only.",
+    "action_taken": "Added whole-token evidence relevance and targeted Wig Adhesive Glue alias probes; recovered live product URL/image coverage from 43/44 to 44/44 without converting the item into a trend claim.",
+    "next_direction": "Add V-Part Human Hair Wig TikTok Shop alias fallback and prioritize dated post/article/thread capture for Jewelry, Nails, Tools, and Wigs."
+  }
 }

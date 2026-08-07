@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T09:29:28.191851Z",
+  "updated_at": "2026-08-07T10:47:45.085378Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -108,6 +108,20 @@
       ],
       "owner_value": "Busy BSS owners can screen item tests from the leaderboard without opening every detail page, while detail pages still hold full evidence/source separation.",
       "measurement_need": "GA4/Vercel event export access is needed to compare item-card click-through and repeat visits before/after this UX change."
+    },
+    {
+      "campaign_id": "strict-supply-relevance-recovery-v1",
+      "status": "live-in-collector-after-build",
+      "objective": "Increase dashboard credibility and owner trust by recovering missing live product coverage without counting search/watchlist links or glueless wig false positives as wig-adhesive evidence.",
+      "live_location_pattern": "https://gnsresearchhub.vercel.app/items/wig-adhesive-glue.html",
+      "tracked_quality_metrics": [
+        "weekly_retail_product_items=44/44",
+        "weekly_product_image_items=44/44",
+        "Wig Adhesive Glue retail_product_evidence=13",
+        "weekly_trend_items unchanged at 8/44"
+      ],
+      "owner_value": "BSS owners can now see real Wig Adhesive Glue / lace adhesive listings and product image support, while the card stays WATCHLIST because no dated trend URL was captured.",
+      "measurement_need": "GA4_PROPERTY_ID plus service credentials or Vercel Analytics export/API access are needed to connect this credibility fix to visits/clicks/repeats."
     }
   ],
   "experiment_backlog": [
@@ -164,6 +178,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "BSS owners are more likely to use and share the ranking when each card shows the immediate display test, shrink/risk caution, and short owner-facing phrase before the detail-page click.",
       "next_step": "Measure card click-through, share-copy events, and return visits once GA4/Vercel export access is available; if positive, test shorter Korean/English card copy by category."
+    },
+    {
+      "experiment_id": "strict-supply-relevance-recovery-v1",
+      "status": "promoted-to-collector-after-build",
+      "hypothesis": "Whole-token matching and targeted item aliases protect evidence quality while recovering actionable supply cards.",
+      "next_step": "Next loop should test V-Part Human Hair Wig alias/TikTok Shop fallback and continue zero-trend category evidence capture for Jewelry, Nails, Tools, and Wigs."
     }
   ],
   "permission_requests": [

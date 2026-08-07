@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T09:30:30.281335Z",
+  "updated_at": "2026-08-07T10:48:21.826858Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -41,7 +41,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -75,7 +75,7 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 23,
+      "rank": 24,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
@@ -132,7 +132,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -140,16 +140,16 @@
       }
     },
     {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 10,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"Lace Melting Spray\" beauty supply trend",
-        "\"Lace Melting Spray\" TikTok review",
-        "\"Lace Melting Spray\" Amazon reviews",
-        "\"Lace Melting Spray\" black beauty supply"
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "\"Wig Adhesive Glue\" TikTok review",
+        "\"Wig Adhesive Glue\" Amazon reviews",
+        "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -164,7 +164,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,

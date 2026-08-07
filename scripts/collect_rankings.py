@@ -144,7 +144,7 @@ CATEGORIES: list[dict[str, Any]] = [
         "items": [
             item("24-hour-edge-control-gel", "24 Hour Edge Control Gel", ["24 hour edge control", "edge control gel", "strong hold edge control"], 5, ALL_MONTHS, "계산대/gel aisle 양쪽에 travel size와 regular size를 함께 진열", "흰 잔여물/flake claim이 구매 반품 이유가 될 수 있음", "A strong edge control gel is a repeat add-on for wigs, braids, ponytails, and everyday styling.", "edge control gel black hair"),
             item("lace-melting-spray", "Lace Melting Spray", ["lace melting spray", "wig melting spray", "lace melt spray"], 5, ALL_MONTHS, "lace wig 구매 동선 옆에 melting band, wig cap과 bundle 제안", "접착력/피부 민감도 claim 과장 금지", "Lace melting spray is an install add-on that helps customers finish glueless and lace wig looks.", "lace melting spray wig install"),
-            item("wig-adhesive-glue", "Wig Adhesive Glue", ["wig adhesive glue", "lace wig glue", "waterproof wig glue"], 4, ALL_MONTHS, "잠금 또는 직원 시야 안 진열, remover와 함께 배치", "피부 반응/반품/사용법 설명 중요", "Wig adhesive glue is a high-intent purchase for longer-wear lace installs.", "wig adhesive glue lace install"),
+            item("wig-adhesive-glue", "Wig Adhesive Glue", ["wig adhesive", "lace adhesive", "lace bond adhesive", "wig adhesive glue", "lace wig glue", "waterproof wig glue"], 4, ALL_MONTHS, "잠금 또는 직원 시야 안 진열, remover와 함께 배치", "피부 반응/반품/사용법 설명 중요", "Wig adhesive glue is a high-intent purchase for longer-wear lace installs.", "wig adhesive glue lace install"),
             item("braid-foaming-mousse", "Foaming Mousse for Braids", ["braid mousse", "foaming mousse for braids", "wrap mousse braids"], 5, SUMMER_BACK_TO_SCHOOL, "braiding hair aisle 끝cap에 edge control, oil sheen과 함께 묶음", "끈적임/flake claim 관리", "Braid mousse helps customers maintain knotless braids, box braids, twists, and loc styles.", "braid mousse knotless braids maintenance"),
             item("rosemary-mint-scalp-oil", "Rosemary Mint Scalp Oil", ["rosemary mint scalp oil", "rosemary hair oil", "mint scalp oil"], 4, ALL_MONTHS, "scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치", "성장 효능 과장 금지, scalp comfort 중심 설명", "Rosemary mint scalp oil taps into scalp-care and hair-growth interest while remaining a low-ticket repeat item.", "rosemary mint scalp oil hair growth"),
             item("leave-in-conditioner-spray", "Leave-In Conditioner Spray", ["leave in conditioner spray", "moisturizing leave in spray", "detangling leave in conditioner"], 4, ALL_MONTHS, "natural hair/moisture aisle에서 detangling brush와 함께 노출", "브랜드별 성분/향 선호 차이", "Leave-in spray is a practical repeat product for moisture, detangling, and protective-style prep.", "leave in conditioner spray natural hair"),
@@ -361,11 +361,16 @@ def needs_alias_product_probe(row: dict[str, Any]) -> bool:
     cost. Feedback-focus items and body-jewelry SKUs are the exception: the first
     exact phrase can be too narrow (for example, gauge/material/body-piercing
     word order), so alternate item aliases are safer than broad search pages.
+    Wig adhesive is another strict exception: BSS stores often title the shelf as
+    "lace adhesive", "wig adhesive", or "lace bond adhesive" rather than
+    the full item name, and the primary phrase alone created a live-product gap.
     """
     item_id = str(row.get("id") or "")
     if item_id in focus_item_ids():
         return True
     blob = " ".join(str(row.get(key, "")) for key in ("id", "name", "search_context")).lower()
+    if row.get("category_id") == "hair-care-styling" and any(token in blob for token in ("adhesive", "glue", "lace bond")):
+        return True
     if row.get("category_id") == "braiding-crochet-hair":
         return any(token in blob for token in ("marley", "kinky", "boho", "crochet", "twist", "loc"))
     if row.get("category_id") != "jewelry-fashion-accessories":
@@ -479,6 +484,32 @@ def important_tokens(row: dict[str, Any]) -> list[str]:
     return sorted(tokens)
 
 
+def normalized_word_tokens(value: str) -> set[str]:
+    """Tokenize source text for relevance checks without substring false positives.
+
+    The earlier substring check allowed glue -> glueless, which could make a wig
+    listing look like wig-adhesive evidence. Whole-token matching preserves broad
+    item-type matching while keeping supply validation honest.
+    """
+    return set(re.findall(r"[a-z0-9]+", value.lower()))
+
+
+def token_forms(token: str) -> set[str]:
+    token = token.lower().strip()
+    forms = {token}
+    if token.endswith("ies") and len(token) > 4:
+        forms.add(token[:-3] + "y")
+    if token.endswith("s") and len(token) > 4:
+        forms.add(token[:-1])
+    else:
+        forms.add(token + "s")
+    return {form for form in forms if form}
+
+
+def token_matches_word(token: str, hay_tokens: set[str]) -> bool:
+    return any(form in hay_tokens for form in token_forms(token))
+
+
 def parse_signal_date(value: str | None) -> dt.date | None:
     if not value:
         return None
@@ -515,12 +546,15 @@ def evidence_relevance(row: dict[str, Any], source: dict[str, Any]) -> str | Non
     tokens = important_tokens(row)
     if not tokens:
         return None
-    token_match_count = sum(1 for tok in tokens if tok in hay or (tok.endswith("s") and tok[:-1] in hay))
-    anchor_match = any(anchor in hay for anchor in CATEGORY_ANCHORS.get(row.get("category_id"), set()))
+    hay_tokens = normalized_word_tokens(hay)
+    token_match_count = sum(1 for tok in tokens if token_matches_word(tok, hay_tokens))
+    category_id = str(row.get("category_id") or "")
+    anchor_match = any(anchor in hay_tokens for anchor in CATEGORY_ANCHORS.get(category_id, set()))
     # Many BSS item names contain generic category words that were stripped from
     # important_tokens. One distinctive token plus a category anchor is enough
     # for live product/listing evidence; published trend claims still keep the
-    # relevance label visible in score_breakdown.
+    # relevance label visible in score_breakdown. Use whole-token matching so
+    # "glue" does not match "glueless" and accidentally count wigs as adhesive.
     if token_match_count >= 2 or (token_match_count >= 1 and anchor_match):
         return "item_type"
     return None
