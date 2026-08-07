@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T05:44:04Z",
+  "updated_at": "2026-08-07T06:55:40Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -113,6 +113,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "Item-specific detail links are easier for reps/owners to forward than a full ranking page when discussing one product test.",
       "next_step": "Measure growth_share_copy_result and UTM visits once GA4/Vercel analytics export is available."
+    },
+    {
+      "experiment_id": "utm-attribution-persistence-v1",
+      "status": "promoted-to-live-growth-js-after-build",
+      "hypothesis": "First-touch/current-touch UTM persistence keeps owner_share, X, email, and sales-rep attribution attached when visitors move from ranking pages into item detail pages without query strings.",
+      "next_step": "Use GA4/Vercel custom event export to compare first_utm_source/current_utm_source on growth_exposure, growth_click, and growth_share_copy_result after reporting access is available."
     },
     {
       "experiment_id": "production-parity-public-data-qa-v1",

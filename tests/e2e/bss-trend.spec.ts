@@ -107,12 +107,18 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       return {
         goalId: growth?.goalId,
         target: growth?.targetAverageDailyVisits,
+        sessionId: growth?.sessionId,
+        attribution: growth?.attribution?.(),
         events: growth?.events?.() ?? [],
       };
     });
     expect(exposure.goalId).toBe('daily-visits-500');
     expect(exposure.target).toBe(500);
+    expect(exposure.sessionId).toMatch(/^gns_/);
+    expect(exposure.attribution.first.utm_source).toBe('e2e');
+    expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
 
     const copyButton = page.locator('[data-growth-share="weekly_copy_link"]').first();
     await copyButton.click();
@@ -125,6 +131,21 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page).toHaveURL(/\/rankings\/weekly\.html/);
     const clickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(clickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_primary')).toBe(true);
+    const postCtaAttribution = await page.evaluate(() => (window as any).__GNS_GROWTH__?.attribution?.());
+    expect(postCtaAttribution.first.utm_source).toBe('e2e');
+    expect(postCtaAttribution.current.utm_source).toBe('site');
+    expect(clickEvents.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'ranking' && event.first_utm_source === 'e2e' && event.current_utm_source === 'site')).toBe(true);
+
+    await page.locator('#all-items .rank-card .rank-hit').first().click();
+    await expect(page).toHaveURL(/\/items\/.+\.html$/);
+    const itemExposure = await page.evaluate(() => {
+      const events = (window as any).__GNS_GROWTH__?.events?.() ?? [];
+      const exposures = events.filter((event: any) => event.event === 'growth_exposure' && event.page_type === 'item_detail');
+      return exposures[exposures.length - 1];
+    });
+    expect(itemExposure.utm_source).toBe('site');
+    expect(itemExposure.first_utm_source).toBe('e2e');
+    expect(itemExposure.session_id).toMatch(/^gns_/);
 
     const goalResponse = await request.get('/data/growth_goal_public.json');
     expect(goalResponse.status()).toBeLessThan(400);
@@ -134,6 +155,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.analytics_providers?.vercel_web_analytics?.status).toBe('enabled');
     expect(goal.sns_strategy?.tool).toBe('xurl');
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'hero-growth-cta-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'utm-attribution-persistence-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {

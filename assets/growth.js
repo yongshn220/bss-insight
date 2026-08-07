@@ -6,7 +6,10 @@
   const STORAGE_PREFIX = 'gns_growth';
   const EVENT_KEY = `${STORAGE_PREFIX}:events`;
   const VARIANT_KEY = `${STORAGE_PREFIX}:${EXPERIMENT_ID}:variant`;
+  const ATTRIBUTION_KEY = `${STORAGE_PREFIX}:attribution`;
+  const SESSION_KEY = `${STORAGE_PREFIX}:session_id`;
   const MAX_LOCAL_EVENTS = 80;
+  const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 
   function safeNow() {
     return new Date().toISOString();
@@ -31,6 +34,89 @@
 
   function trimText(value, max = 96) {
     return String(value || '').replace(/\s+/g, ' ').trim().slice(0, max);
+  }
+
+  function storageGet(area, key) {
+    try {
+      return window[area]?.getItem(key) || '';
+    } catch (_error) {
+      return '';
+    }
+  }
+
+  function storageSet(area, key, value) {
+    try {
+      window[area]?.setItem(key, value);
+    } catch (_error) {
+      // Tracking storage should never block the dashboard.
+    }
+  }
+
+  function parseStoredJson(key, fallback) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (_error) {
+      return fallback;
+    }
+  }
+
+  function getSessionId() {
+    let sessionId = storageGet('sessionStorage', SESSION_KEY) || storageGet('localStorage', SESSION_KEY);
+    if (!sessionId) {
+      sessionId = `gns_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    }
+    storageSet('sessionStorage', SESSION_KEY, sessionId);
+    storageSet('localStorage', SESSION_KEY, sessionId);
+    return sessionId;
+  }
+
+  function currentUtm() {
+    const params = new URLSearchParams(window.location.search);
+    return UTM_KEYS.reduce((memo, key) => {
+      memo[key] = params.get(key) || '';
+      return memo;
+    }, {});
+  }
+
+  function hasAnyUtm(utm) {
+    return UTM_KEYS.some((key) => Boolean(utm[key]));
+  }
+
+  function attributionRecord(utm, path, referrer, ts) {
+    const record = {
+      landing_path: path,
+      referrer: referrer || '',
+      captured_at: ts,
+    };
+    UTM_KEYS.forEach((key) => {
+      record[key] = utm[key] || '';
+    });
+    return record;
+  }
+
+  function getAttribution() {
+    const now = safeNow();
+    const path = window.location.pathname;
+    const utm = currentUtm();
+    const hasUtm = hasAnyUtm(utm);
+    const stored = parseStoredJson(ATTRIBUTION_KEY, {});
+    const first = stored.first || attributionRecord(utm, path, document.referrer, now);
+    const current = hasUtm ? attributionRecord(utm, path, document.referrer, now) : (stored.current || first);
+    const attribution = {
+      first,
+      current,
+      landing_path: stored.landing_path || first.landing_path || path,
+      last_path: path,
+      updated_at: now,
+    };
+    storageSet('localStorage', ATTRIBUTION_KEY, JSON.stringify(attribution));
+    return attribution;
+  }
+
+  function attributionUtm(attribution, key) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key) || attribution.current?.[key] || '';
   }
 
   function localEvents() {
@@ -74,17 +160,29 @@
   }
 
   function track(eventName, payload = {}) {
+    const attribution = getAttribution();
     const event = {
       event: eventName,
       ts: safeNow(),
       goal_id: GOAL_ID,
       experiment_id: EXPERIMENT_ID,
       variant: window.__GNS_GROWTH__?.variant || 'unknown',
+      session_id: getSessionId(),
       path: window.location.pathname,
       referrer: document.referrer || '',
-      utm_source: new URLSearchParams(window.location.search).get('utm_source') || '',
-      utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || '',
-      utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',
+      landing_path: attribution.landing_path || '',
+      first_referrer: attribution.first?.referrer || '',
+      first_utm_source: attribution.first?.utm_source || '',
+      first_utm_medium: attribution.first?.utm_medium || '',
+      first_utm_campaign: attribution.first?.utm_campaign || '',
+      current_utm_source: attribution.current?.utm_source || '',
+      current_utm_medium: attribution.current?.utm_medium || '',
+      current_utm_campaign: attribution.current?.utm_campaign || '',
+      utm_source: attributionUtm(attribution, 'utm_source'),
+      utm_medium: attributionUtm(attribution, 'utm_medium'),
+      utm_campaign: attributionUtm(attribution, 'utm_campaign'),
+      utm_content: attributionUtm(attribution, 'utm_content'),
+      utm_term: attributionUtm(attribution, 'utm_term'),
       ...payload,
     };
     persistLocalEvent(event);
@@ -189,11 +287,16 @@
 
   function init() {
     const variant = getVariant();
+    const sessionId = getSessionId();
+    const attribution = getAttribution();
     window.__GNS_GROWTH__ = {
       goalId: GOAL_ID,
       targetAverageDailyVisits: 500,
       experimentId: EXPERIMENT_ID,
       variant,
+      sessionId,
+      attribution: () => getAttribution(),
+      initialAttribution: attribution,
       events: localEvents,
       track,
     };

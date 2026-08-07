@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-07T05:40:25.216167Z",
+  "generated_at": "2026-08-07T06:53:09.322540Z",
   "date": "2026-08-07",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-07T05:40:25.215776Z",
+      "observed_at": "2026-08-07T06:53:09.322143Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
@@ -21,8 +21,8 @@
     "items_with_published_trend_url": 22,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "verified_urls_total": 231,
-    "published_trend_urls_total": 48,
+    "verified_urls_total": 230,
+    "published_trend_urls_total": 47,
     "retail_product_urls_total": 183,
     "collection_error_records": 0
   },
