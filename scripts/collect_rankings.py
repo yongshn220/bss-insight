@@ -1218,8 +1218,87 @@ def evidence_collection_totals(evidence_by_item: dict[str, list[dict[str, Any]]]
     }
 
 
-def collection_next_actions(totals: dict[str, Any]) -> list[str]:
+def coverage_gap_summary(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    """Summarize item/category evidence gaps for the next operator loop.
+
+    This is diagnostic only: missing-gap records do not change scores and do not
+    turn generated search probes into evidence. The goal is to make avoidable
+    blind spots (for example one missing TikTok Shop listing, or a zero-trend
+    category) visible in both internal and sanitized public collection notes so
+    the next autonomous run can target a concrete fix instead of repeating a
+    vague "improve evidence" reminder.
+    """
+    rows = flatten_items()
+    categories: dict[str, dict[str, Any]] = {}
+    missing_trend_items: list[dict[str, Any]] = []
+    missing_tiktok_items: list[dict[str, Any]] = []
+    missing_retail_items: list[dict[str, Any]] = []
+
+    for row in rows:
+        item_id = str(row.get("id") or "")
+        category_id = str(row.get("category_id") or "")
+        category_name = str(row.get("category_name") or category_id or "Uncategorized")
+        sources = [src for src in evidence_by_item.get(item_id, []) if isinstance(src, dict)]
+        has_trend = any(is_published_evidence(src) and not src.get("error") for src in sources)
+        has_retail = any(is_retail_product_evidence(src) and not src.get("error") for src in sources)
+        has_tiktok = any(src.get("source_kind") == "tiktok_shop_apify" and not src.get("error") for src in sources)
+
+        cat = categories.setdefault(category_id, {
+            "category_id": category_id,
+            "category_name": category_name,
+            "items": 0,
+            "trend_items": 0,
+            "retail_product_items": 0,
+            "tiktok_shop_items": 0,
+        })
+        cat["items"] += 1
+        cat["trend_items"] += 1 if has_trend else 0
+        cat["retail_product_items"] += 1 if has_retail else 0
+        cat["tiktok_shop_items"] += 1 if has_tiktok else 0
+
+        item_gap = {
+            "item_id": item_id,
+            "item_name": row.get("name"),
+            "category_id": category_id,
+            "category_name": category_name,
+        }
+        if not has_trend:
+            missing_trend_items.append(item_gap)
+        if not has_tiktok:
+            missing_tiktok_items.append(item_gap)
+        if not has_retail:
+            missing_retail_items.append(item_gap)
+
+    weak_categories = []
+    for cat in categories.values():
+        total = max(1, int(cat.get("items") or 0))
+        weak_categories.append({
+            **cat,
+            "trend_ratio": round(int(cat.get("trend_items") or 0) / total, 2),
+            "tiktok_shop_ratio": round(int(cat.get("tiktok_shop_items") or 0) / total, 2),
+            "retail_product_ratio": round(int(cat.get("retail_product_items") or 0) / total, 2),
+        })
+    weak_categories.sort(key=lambda cat: (cat["trend_ratio"], cat["tiktok_shop_ratio"], cat["category_name"]))
+
+    return {
+        "summary": {
+            "published_trend_missing_items": len(missing_trend_items),
+            "tiktok_shop_missing_items": len(missing_tiktok_items),
+            "retail_product_missing_items": len(missing_retail_items),
+            "zero_trend_categories": sum(1 for cat in weak_categories if int(cat.get("trend_items") or 0) == 0),
+        },
+        "weak_categories": weak_categories,
+        "missing_published_trend_items": missing_trend_items[:24],
+        "missing_tiktok_shop_items": missing_tiktok_items[:12],
+        "missing_retail_product_items": missing_retail_items[:12],
+        "discipline_note": "Gap records are diagnostics only; search/watchlist URLs remain non-scoring and trend claims still require dated captured URLs.",
+    }
+
+
+def collection_next_actions(totals: dict[str, Any], gaps: dict[str, Any] | None = None) -> list[str]:
     actions = []
+    gaps = gaps or {}
+    gap_summary = gaps.get("summary", {}) if isinstance(gaps, dict) else {}
     apify = source_health("apify_tiktok_shop")
     apify_status = apify.get("status")
     if apify_status == "failed_using_cache":
@@ -1228,6 +1307,40 @@ def collection_next_actions(totals: dict[str, Any]) -> list[str]:
         actions.append("TikTok Shop 수집 상태를 다음 run에서 먼저 확인: actor/upstream throttle이면 재시도, token/enablement 문제면 env 복구.")
     if int(totals.get("items_with_published_trend_url") or 0) < 12:
         actions.append("published/date-bearing source 보강: weak category별 item-specific article/post/thread/listing URL capture 우선.")
+    missing_trend_count = int(gap_summary.get("published_trend_missing_items") or 0)
+    if missing_trend_count:
+        weakest = [
+            str(cat.get("category_name"))
+            for cat in gaps.get("weak_categories", [])[:3]
+            if isinstance(cat, dict)
+        ] if isinstance(gaps, dict) else []
+        actions.append(
+            f"published trend URL gap {missing_trend_count}개 item 유지: "
+            + (", ".join(weakest) if weakest else "weakest categories")
+            + "부터 item-level dated source capture를 보강합니다."
+        )
+    zero_trend_categories = [
+        str(cat.get("category_name"))
+        for cat in gaps.get("weak_categories", [])[:4]
+        if isinstance(cat, dict) and int(cat.get("trend_items") or 0) == 0
+    ] if isinstance(gaps, dict) else []
+    if zero_trend_categories:
+        actions.append(
+            "zero-trend category 유지: "
+            + ", ".join(zero_trend_categories)
+            + ". 다음 run은 broad category가 아니라 item-level dated URL capture를 우선합니다."
+        )
+    missing_tiktok = gaps.get("missing_tiktok_shop_items", []) if isinstance(gaps, dict) else []
+    if missing_tiktok:
+        names = ", ".join(
+            str(item.get("item_name") or item.get("item_id"))
+            for item in missing_tiktok[:3]
+            if isinstance(item, dict)
+        )
+        actions.append(
+            f"TikTok Shop social-commerce coverage gap {gap_summary.get('tiktok_shop_missing_items', len(missing_tiktok))}개: "
+            f"{names}. strict alias/query 보강은 supply validation용이며 trend claim으로 승격하지 않습니다."
+        )
     if int(totals.get("items_with_retail_product_url") or 0) < int(totals.get("items_requested") or 0):
         actions.append("BSS/wholesale product URL coverage 보강: jewelry/nails/tools처럼 Shopify suggest가 약한 category에 vendor-specific collector 필요.")
     return actions or ["현재 collection health에 즉시 조치가 필요한 source outage는 없습니다."]
@@ -1235,17 +1348,19 @@ def collection_next_actions(totals: dict[str, Any]) -> list[str]:
 
 def write_collection_notes(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     totals = evidence_collection_totals(evidence_by_item)
+    gaps = coverage_gap_summary(evidence_by_item)
     notes = {
         "generated_at": utc_now(),
         "date": CURRENT_DATE.isoformat(),
         "source_health": COLLECTION_HEALTH,
         "evidence_totals": totals,
+        "coverage_gaps": gaps,
         "limitations": [
             "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
             "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",
             "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다.",
         ],
-        "next_actions": collection_next_actions(totals),
+        "next_actions": collection_next_actions(totals, gaps),
     }
     COLLECTION_NOTES_PATH.write_text(json.dumps(notes, ensure_ascii=False, indent=2), encoding="utf-8")
     return notes

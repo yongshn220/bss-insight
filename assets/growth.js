@@ -226,11 +226,32 @@
     if (secondaryCta) secondaryCta.textContent = '근거와 watchlist 확인';
   }
 
+  function growthSections() {
+    return Array.from(document.querySelectorAll('[data-growth-section]'))
+      .map((section, index) => ({
+        id: section.getAttribute('data-growth-section') || '',
+        position: index + 1,
+      }))
+      .filter((section) => section.id);
+  }
+
+  function sectionPosition(section) {
+    if (!section) return '';
+    const sections = Array.from(document.querySelectorAll('[data-growth-section]'));
+    const index = sections.indexOf(section);
+    return index >= 0 ? String(index + 1) : '';
+  }
+
   function elementContext(target) {
     const section = target.closest?.('[data-growth-section]');
+    const experiment = target.closest?.('[data-growth-experiment]');
     const item = target.closest?.('[data-item-id]');
+    const sectionId = section?.getAttribute('data-growth-section') || '';
+    const componentExperimentId = experiment?.getAttribute('data-growth-experiment') || sectionId;
     return {
-      section: section?.getAttribute('data-growth-section') || '',
+      section: sectionId,
+      component_experiment_id: componentExperimentId,
+      section_position: sectionPosition(section),
       item_id: item?.getAttribute('data-item-id') || '',
       item_rank: item?.getAttribute('data-item-rank') || '',
       item_category: item?.getAttribute('data-item-category') || '',
@@ -312,15 +333,19 @@
       attribution: () => getAttribution(),
       initialAttribution: attribution,
       events: localEvents,
+      growthSections,
       track,
     };
     loadVercelAnalyticsIfHosted();
     applyExperiment(variant);
     installClickTracking();
     installCopyButtons();
+    const sections = growthSections();
     track('growth_exposure', {
       title: trimText(document.title),
       page_type: document.body.dataset.pageType || 'unknown',
+      visible_growth_sections: sections.map((section) => section.id).join(','),
+      visible_growth_section_count: sections.length,
     });
   }
 

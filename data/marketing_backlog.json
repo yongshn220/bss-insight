@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T14:33:20.904633Z",
+  "updated_at": "2026-08-07T15:46:17.468577Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -52,7 +52,8 @@
       "tracked_events": [
         "growth_click share_{timeframe}_top3_x_intent",
         "growth_click share_{timeframe}_top3_copy_link",
-        "growth_share_copy_result with item_id/item_rank/item_category context"
+        "growth_share_copy_result with item_id/item_rank/item_category context",
+        "growth_share_copy_result with component_experiment_id=top3-owner-share-strip-v1 and section_position context"
       ],
       "drafts": {
         "x_twitter_top3_weekly": [
@@ -217,10 +218,13 @@
       "tracked_events": [
         "growth_click type=cta_owner_quick_pick",
         "item detail entrances with utm_source=site&utm_medium=quick_pick",
-        "growth_exposure on item_detail preserving first/current UTM"
+        "growth_exposure on item_detail preserving first/current UTM",
+        "growth_click type=cta_owner_quick_pick with component_experiment_id=owner-quick-picks-v1",
+        "growth_exposure visible_growth_sections includes owner-quick-picks-v1",
+        "section_position allows quick-pick placement testing before/after share kits"
       ],
       "owner_value": "Owners get a concise store-zone action card with item, display tip, evidence status, and risk before reading the whole ranking.",
-      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare quick-pick clicks against hero CTA and normal item-card clicks."
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare component_experiment_id=owner-quick-picks-v1 against hero CTA, top3 share strip, and item-card clicks."
     }
   ],
   "experiment_backlog": [
@@ -301,6 +305,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "Item-specific top-3 share starters will create more useful repeat visits than a single timeframe-level share card because each owner link contains one product, display test, risk note, evidence status, and UTM content.",
       "next_step": "Measure weekly_top3 share/copy events, item_id mix, and UTM-attributed returns once GA4/Vercel analytics export access is available."
+    },
+    {
+      "experiment_id": "component-experiment-context-v1",
+      "status": "promoted-to-live-growth-js-after-build",
+      "hypothesis": "Adding component_experiment_id/section_position to events will make it possible to compare quick picks, top3 share strip, evidence transparency, item cards, and hero CTA once analytics export is available.",
+      "next_step": "After GA4/Vercel export access is connected, report clicks/share-copy events by component_experiment_id and remove or reposition modules that do not drive item-detail entrances or repeat visits."
     }
   ],
   "permission_requests": [

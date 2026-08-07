@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T14:33:20.904633Z",
+  "updated_at": "2026-08-07T15:46:17.468577Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T14:33:20.904633Z",
-    "provider_checked": "Live Web Analytics script/GA4 tag verified; Vercel project API reachable with VERCEL_TOKEN, but tested web-insights/reporting endpoints returned 404/not_found in this runtime. GA4 Data API reporting credentials/property are still not mounted. owner-quick-picks-v1 added to create attributable quick-pick item-detail entrances.",
+    "last_checked_at": "2026-08-07T15:46:17.468577Z",
+    "provider_checked": "Live Web Analytics script/GA4 tag remain provider-ready; central visit export is still unavailable in this runtime. This run added component_experiment_id, section_position, and visible_growth_sections to growth.js events so quick-picks/share/evidence components can be compared once GA4/Vercel event export is connected.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: live /_vercel/insights/script.js and GA4 G-SW7HBY6WRE are present, but no usable analytics export/API response is available to calculate rolling 30-day visits. Need GA4_PROPERTY_ID + service-account credentials or Vercel Analytics export/API access. This run adds utm_medium=quick_pick and owner_quick_pick growth_click events instead of inferring traffic.",
-    "interpretation": "Measurement remains blocked, but attribution readiness improved: owner quick-pick cards now create item-level UTM entrances that can be measured once provider data access is connected."
+    "raw_result": "measurement pending: live instrumentation can emit growth_exposure/growth_click/growth_share_copy_result with UTM plus component_experiment_id context, but GA4 Data API credentials/property or Vercel Analytics export/API access are still needed to calculate rolling 30-day visits and compare experiments centrally.",
+    "interpretation": "Measurement remains blocked, but attribution readiness improved: events now identify which on-page growth component caused a click/share, instead of grouping all actions under only the hero A/B experiment."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -213,6 +213,19 @@
       ],
       "success_metric": "owner_quick_pick clicks, item detail entrances with utm_medium=quick_pick, share/copy events, and repeat visits once analytics export is available",
       "hypothesis": "BSS owners will click and revisit more often when the dashboard surfaces store-zone action picks before the full ranking, with WATCHLIST status visible instead of hidden."
+    },
+    {
+      "experiment_id": "component-experiment-context-v1",
+      "status": "active-client-side-provider-ready-after-build",
+      "variants": [
+        "hero_cta",
+        "owner_quick_picks",
+        "top3_owner_share_strip",
+        "evidence_gap_snapshot",
+        "item_detail_share"
+      ],
+      "success_metric": "growth_click and growth_share_copy_result by component_experiment_id, section_position, item_id, UTM, and repeat item-detail entrances once analytics export is available",
+      "hypothesis": "Component-level event context will show which dashboard modules actually drive BSS owner repeat visits toward 500/day, instead of treating every click as one generic hero experiment."
     }
   ],
   "reporting": {

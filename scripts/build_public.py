@@ -40,6 +40,7 @@ PUBLIC_COLLECTION_FIELDS = [
     "date",
     "source_health",
     "evidence_totals",
+    "coverage_gaps",
     "limitations",
     "next_actions",
 ]

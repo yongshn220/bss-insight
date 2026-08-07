@@ -129,6 +129,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
         target: growth?.targetAverageDailyVisits,
         sessionId: growth?.sessionId,
         attribution: growth?.attribution?.(),
+        growthSections: growth?.growthSections?.() ?? [],
         events: growth?.events?.() ?? [],
       };
     });
@@ -137,15 +138,17 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.sessionId).toMatch(/^gns_/);
     expect(exposure.attribution.first.utm_source).toBe('e2e');
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
+    expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
 
     const top3CopyButton = page.locator('[data-growth-share="weekly_top3_copy_link"]').first();
     await top3CopyButton.click();
     await expect(top3CopyButton).toHaveText(/Copied|Link ready/);
     const top3ShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(top3ShareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_top3_copy_link' && event.item_id)).toBe(true);
-    expect(top3ShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_top3_copy_link' && event.section === 'top3-owner-share-strip-v1' && event.item_id)).toBe(true);
+    expect(top3ShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_top3_copy_link' && event.section === 'top3-owner-share-strip-v1' && event.component_experiment_id === 'top3-owner-share-strip-v1' && event.section_position && event.item_id)).toBe(true);
 
     const copyButton = page.locator('[data-growth-share="weekly_copy_link"]').first();
     await copyButton.click();
@@ -153,6 +156,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const shareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(shareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_copy_link')).toBe(true);
     expect(shareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_copy_link')).toBe(true);
+
+    await page.evaluate(() => {
+      const link = document.querySelector('.quick-pick-card') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing quick-pick card');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const quickPickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(quickPickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_quick_pick' && event.component_experiment_id === 'owner-quick-picks-v1' && event.item_id && String(event.href).includes('utm_medium=quick_pick'))).toBe(true);
 
     await page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html/);
@@ -298,6 +310,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const collection = await collectionResponse.json();
     expect(collection.evidence_totals?.items_requested).toBeGreaterThan(0);
     expect(collection.source_health?.apify_tiktok_shop?.status).toBeTruthy();
+    expect(collection.coverage_gaps?.summary?.published_trend_missing_items).toBeGreaterThanOrEqual(0);
+    expect(collection.coverage_gaps?.weak_categories?.length).toBeGreaterThan(0);
 
     const marketingResponse = await request.get('/data/marketing_backlog_public.json');
     expect(marketingResponse.status()).toBeLessThan(400);
