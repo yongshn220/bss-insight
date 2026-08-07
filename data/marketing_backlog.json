@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T02:07:41.821246Z",
+  "updated_at": "2026-08-07T03:21:18.386255Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -46,6 +46,23 @@
       "posting_rule_file": "data/sns_posting_rules.json",
       "sample_post": "Beauty Supply owners: this week’s ranking highlights the item to test now, with trend evidence separated from supply/watchlist links. https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-x-daily-owner-insight",
       "approval_needed_for_external_posting": "first_live_post_requires_manual_approval_then_safe_auto_post_rule"
+    },
+    {
+      "campaign_id": "seo-discovery-artifacts-v1",
+      "status": "live-on-site",
+      "objective": "Improve organic discovery and share previews for ranking and item detail pages without making unsupported trend claims.",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/robots.txt",
+        "https://gnsresearchhub.vercel.app/sitemap.xml",
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html"
+      ],
+      "tracked_events": [
+        "growth_exposure",
+        "growth_click item_card",
+        "organic UTM/referrer sessions once provider reporting is accessible"
+      ],
+      "next_measurement_need": "Check indexed URL/referrer/pageview performance after Vercel or GA4 reporting access is usable."
     }
   ],
   "experiment_backlog": [
@@ -66,6 +83,12 @@
       "status": "active-provider-bridge",
       "hypothesis": "GA4 + Vercel Analytics + internal event bridge will make growth reports evidence-based instead of refresh-report based.",
       "next_step": "After 24-72 hours, compare measured visits, top pages, referrers, and UTM campaign clicks."
+    },
+    {
+      "experiment_id": "seo-discovery-artifacts-v1",
+      "status": "promoted-to-live-site",
+      "hypothesis": "Search/social previews with canonical, OG image, JSON-LD, sitemap, and robots will improve organic/share landing quality.",
+      "next_step": "Measure organic/referrer traffic and item detail entrances once analytics export is available."
     }
   ],
   "permission_requests": [

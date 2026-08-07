@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T02:07:41.821246Z",
+  "updated_at": "2026-08-07T03:21:18.386255Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T02:06:34Z",
-    "provider_checked": "Vercel CLI metrics: vercel.analytics_pageview.count",
+    "last_checked_at": "2026-08-07T03:21:18.386255Z",
+    "provider_checked": "Live Vercel Web Analytics script + GA4 tag; attempted Vercel CLI metrics and direct API discovery from cron",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "Metrics API was reachable but returned empty data arrays for 30d unique visitors, 30d pageviews, and 1h pageviews.",
-    "interpretation": "Central visit measurement is not yet usable for proving progress; confirm Vercel Web Analytics collection in the dashboard or connect GA4/Plausible/PostHog."
+    "raw_result": "Live /_vercel/insights/script.js and GA4 tag are present, but central 30d visitor/pageview export is still not usable in this cron run. npx vercel metrics required non-interactive security approval; direct guessed Vercel API metric endpoints returned 404. Previous CLI metric attempts returned empty arrays.",
+    "interpretation": "Measurement blocker remains: use Vercel dashboard/approved CLI metrics export or provide GA4 Data API property/service credentials so 500/day progress can be reported numerically."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -48,6 +48,10 @@
     "can_auto_publish_sns_posts_after_xurl_auth": true
   },
   "needs_user_permission_or_credentials": [
+    {
+      "need": "ga4_data_api_property_or_service_credentials",
+      "why": "The GA4 tag is live, but this cron run cannot read GA4 reporting data without a GA4 property ID plus a service-account JSON/key mounted in env or another approved server-side access method. Needed to report rolling 30-day visits centrally."
+    },
     {
       "need": "custom_domain_optional",
       "why": "A memorable domain improves trust, repeat visits, and shareability versus a vercel.app URL."
@@ -92,6 +96,16 @@
       ],
       "success_metric": "measured visits, ranking CTA clicks, item card clicks, and share/copy events by UTM channel",
       "hypothesis": "Provider-backed measurement will distinguish real growth from routine refresh/deploy activity."
+    },
+    {
+      "experiment_id": "seo-discovery-artifacts-v1",
+      "status": "live-static-seo",
+      "variants": [
+        "canonical_meta_jsonld",
+        "robots_sitemap_discovery"
+      ],
+      "success_metric": "organic landing visits to ranking and item detail pages; indexed URL count; item-card clicks from organic sessions",
+      "hypothesis": "Canonical URLs, OG/Twitter images, schema.org ItemList/Product JSON-LD, robots.txt, and sitemap.xml make item-ranking pages easier to index and share, increasing repeatable organic visits toward 500/day."
     }
   ],
   "reporting": {

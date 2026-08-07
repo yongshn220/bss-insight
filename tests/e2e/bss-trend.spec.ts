@@ -64,6 +64,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('.data-health div')).toHaveCount(4);
     await expect(page.getByText('500/day')).toBeVisible();
     await expect(page.locator('script[src="/assets/growth.js"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\//);
+    await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+    const homeJsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
+    expect(JSON.parse(homeJsonLd ?? '{}')['@type']).toBe('ItemList');
     await expect(page.locator('script[src="https://www.googletagmanager.com/gtag/js?id=G-SW7HBY6WRE"]')).toHaveCount(1);
     const hasGa4InlineConfig = await page.locator('script:not([src])').evaluateAll((scripts) =>
       scripts.some((script) => (script.textContent ?? '').includes('G-SW7HBY6WRE')),
@@ -171,6 +176,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
 
     await expect(page.getByRole('heading', { name: itemName })).toBeVisible();
     await expect(page.locator('.detail-img img')).toHaveAttribute('src', /.+/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/items\/.+\.html$/);
+    const detailJsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
+    expect(JSON.parse(detailJsonLd ?? '{}')['@type']).toBe('Product');
     expect(await page.locator('.metrics-grid .metric-card').count()).toBeGreaterThan(0);
     await expect(page.getByRole('heading', { name: '실제 근거와 참고 링크 분리' })).toBeVisible();
 
@@ -238,5 +246,16 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const snsRules = await snsRulesResponse.json();
     expect(snsRules.primary_channel?.tool).toBe('xurl');
     expect(snsRules.posting_rule?.frequency_limits?.standard_post).toBe('max_1_per_day');
+
+    const robotsResponse = await request.get('/robots.txt');
+    expect(robotsResponse.status()).toBeLessThan(400);
+    expect(await robotsResponse.text()).toContain('Sitemap: https://gnsresearchhub.vercel.app/sitemap.xml');
+
+    const sitemapResponse = await request.get('/sitemap.xml');
+    expect(sitemapResponse.status()).toBeLessThan(400);
+    const sitemap = await sitemapResponse.text();
+    expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/index.html</loc>');
+    expect(sitemap).toContain('/rankings/weekly.html</loc>');
+    expect(sitemap).toContain('/items/');
   });
 });

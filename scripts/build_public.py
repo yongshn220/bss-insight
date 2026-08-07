@@ -13,6 +13,8 @@ PUBLIC = ROOT / "public"
 
 COPY_PATHS = [
     "index.html",
+    "robots.txt",
+    "sitemap.xml",
     "assets",
     "rankings",
     "items",

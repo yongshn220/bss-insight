@@ -16,6 +16,8 @@ DATA_DIR = ROOT / "data"
 RANKINGS_PATH = DATA_DIR / "rankings.json"
 RANKINGS_DIR = ROOT / "rankings"
 ITEMS_DIR = ROOT / "items"
+ROBOTS_PATH = ROOT / "robots.txt"
+SITEMAP_PATH = ROOT / "sitemap.xml"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
@@ -25,6 +27,26 @@ GA4_MEASUREMENT_ID = "G-SW7HBY6WRE"
 
 def esc(value: object) -> str:
     return html.escape(str(value or ""), quote=True)
+
+
+def absolute_url(path_or_url: object) -> str:
+    """Return an absolute URL suitable for canonical/OG/JSON-LD metadata."""
+    value = str(path_or_url or "").strip()
+    if not value:
+        return f"{SITE_BASE}/index.html"
+    if value.startswith(("http://", "https://")):
+        return value
+    if not value.startswith("/"):
+        value = "/" + value
+    return f"{SITE_BASE}{value}"
+
+
+def json_ld_script(payload: dict[str, Any] | list[dict[str, Any]] | None) -> str:
+    """Serialize JSON-LD without allowing a literal closing script tag."""
+    if not payload:
+        return ""
+    text = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return f'  <script type="application/ld+json">{text}</script>\n'
 
 
 def analytics_head() -> str:
@@ -80,25 +102,41 @@ def nav(active: str = "weekly") -> str:
     )
 
 
-def shell(title: str, body: str, active: str = "weekly", page_type: str = "ranking", page_path: str = "/index.html") -> str:
-    description = (
+def shell(
+    title: str,
+    body: str,
+    active: str = "weekly",
+    page_type: str = "ranking",
+    page_path: str = "/index.html",
+    description: str | None = None,
+    image_url: str | None = None,
+    json_ld: dict[str, Any] | list[dict[str, Any]] | None = None,
+) -> str:
+    description = description or (
         "BSS retail-owner product ranking with separated trend evidence, supply validation, "
         "watchlist links, and weekly growth experiments."
     )
     canonical_path = page_path
+    canonical_url = absolute_url(canonical_path)
+    og_image = absolute_url(image_url or "/assets/category-tools-accessories.svg")
     return f"""<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{esc(description)}">
+  <link rel="canonical" href="{esc(canonical_url)}">
   <meta property="og:title" content="{esc(title)} · BSS Trend Ranking">
   <meta property="og:description" content="{esc(description)}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://gnsresearchhub.vercel.app{esc(canonical_path)}">
+  <meta property="og:url" content="{esc(canonical_url)}">
+  <meta property="og:image" content="{esc(og_image)}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{esc(title)} · BSS Trend Ranking">
+  <meta name="twitter:description" content="{esc(description)}">
+  <meta name="twitter:image" content="{esc(og_image)}">
   <title>{esc(title)} · BSS Trend Ranking</title>
-{analytics_head()}  <link rel="stylesheet" href="/assets/style.css">
+{analytics_head()}{json_ld_script(json_ld)}  <link rel="stylesheet" href="/assets/style.css">
   <script defer src="/assets/growth.js"></script>
 </head>
 <body data-page-type="{esc(page_type)}">
@@ -224,6 +262,56 @@ def has_trend_evidence(row: dict[str, Any]) -> bool:
     return bool(counts.get("trend_evidence") or counts.get("news_magazine"))
 
 
+def page_description(prefix: str, rows: list[dict[str, Any]] | None = None) -> str:
+    """Short page-specific description for SEO/social previews."""
+    if rows:
+        top_names = ", ".join(str(row.get("item_name")) for row in rows[:3] if row.get("item_name"))
+        if top_names:
+            return f"{prefix}: {top_names}. Evidence-backed BSS item ranking with display tips, risk notes, supply URLs, and watchlist separation."
+    return f"{prefix}. Evidence-backed BSS item ranking with display tips, risk notes, supply URLs, and watchlist separation."
+
+
+def item_list_json_ld(rows: list[dict[str, Any]], timeframe: str, path: str) -> dict[str, Any]:
+    """Schema.org ItemList so search engines understand the ranking page."""
+    return {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} BSS Item Ranking",
+        "url": absolute_url(path),
+        "itemListOrder": "https://schema.org/ItemListOrderDescending",
+        "numberOfItems": len(rows),
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": row.get("rank") or idx,
+                "url": absolute_url(f"/items/{row.get('item_id')}.html"),
+                "name": row.get("item_name"),
+            }
+            for idx, row in enumerate(rows[:24], start=1)
+        ],
+    }
+
+
+def product_json_ld(row: dict[str, Any]) -> dict[str, Any]:
+    """Lightweight product-style metadata; no price/availability claims are invented."""
+    counts = row.get("source_counts", {}) or {}
+    return {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": row.get("item_name"),
+        "category": row.get("category_name"),
+        "image": absolute_url(row.get("image_url") or f"/assets/category-{row.get('category_id', 'tools-accessories')}.svg"),
+        "description": row.get("reason_summary"),
+        "url": absolute_url(f"/items/{row.get('item_id')}.html"),
+        "additionalProperty": [
+            {"@type": "PropertyValue", "name": "BSS weekly score", "value": row.get("score")},
+            {"@type": "PropertyValue", "name": "Momentum", "value": momentum_label(row)},
+            {"@type": "PropertyValue", "name": "Published trend URLs", "value": counts.get("trend_evidence", 0)},
+            {"@type": "PropertyValue", "name": "Supply/listing URLs", "value": counts.get("retail_product_evidence", 0)},
+        ],
+    }
+
+
 def choose_share_row(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Prefer evidence-backed leaders, then fall back to the top ranked item."""
     return next((row for row in rows if has_trend_evidence(row)), rows[0] if rows else None)
@@ -342,7 +430,16 @@ def render_home(data: dict[str, Any]) -> str:
         <div class="rank-grid">{''.join(item_card(row, compact=True) for row in monthly[:6])}</div>
       </section>
     </main>"""
-    return shell("Home", body, active="weekly", page_type="home")
+    return shell(
+        "Home",
+        body,
+        active="weekly",
+        page_type="home",
+        page_path="/index.html",
+        description=page_description("Weekly BSS retail-owner product ranking", weekly),
+        image_url=(choose_share_row(weekly) or {}).get("image_url") if weekly else None,
+        json_ld=item_list_json_ld(weekly, "weekly", "/index.html"),
+    )
 
 
 def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
@@ -388,7 +485,17 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       </section>
       <section class="wrap category-stack">{''.join(cat_sections)}</section>
     </main>"""
-    return shell(f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} Ranking", body, active=timeframe, page_type="ranking", page_path=f"/rankings/{timeframe}.html")
+    ranking_path = f"/rankings/{timeframe}.html"
+    return shell(
+        f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} Ranking",
+        body,
+        active=timeframe,
+        page_type="ranking",
+        page_path=ranking_path,
+        description=page_description(f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} BSS product ranking", rows),
+        image_url=(choose_share_row(rows) or {}).get("image_url") if rows else None,
+        json_ld=item_list_json_ld(rows, timeframe, ranking_path),
+    )
 
 
 def grouped_sources(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
@@ -488,7 +595,49 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         {''.join(source_sections)}
       </section>
     </main>"""
-    return shell(row.get("item_name", "Item"), body, active="weekly", page_type="item_detail", page_path=f"/items/{item_id}.html")
+    return shell(
+        row.get("item_name", "Item"),
+        body,
+        active="weekly",
+        page_type="item_detail",
+        page_path=f"/items/{item_id}.html",
+        description=page_description(str(row.get("item_name") or "BSS item detail"), [row]),
+        image_url=row.get("image_url"),
+        json_ld=product_json_ld(row),
+    )
+
+
+def sitemap_entry(path: str, lastmod: str, priority: str, changefreq: str = "daily") -> str:
+    return (
+        "  <url>"
+        f"<loc>{esc(absolute_url(path))}</loc>"
+        f"<lastmod>{esc(lastmod)}</lastmod>"
+        f"<changefreq>{esc(changefreq)}</changefreq>"
+        f"<priority>{esc(priority)}</priority>"
+        "</url>"
+    )
+
+
+def write_seo_files(data: dict[str, Any], item_ids: set[str]) -> None:
+    """Generate crawl/share discovery artifacts for the deployed static site."""
+    lastmod = str(data.get("date") or dt.date.today().isoformat())
+    paths: list[tuple[str, str, str]] = [
+        ("/index.html", "1.0", "daily"),
+        *[(f"/rankings/{tf}.html", "0.9", "daily") for tf in TIMEFRAME_ORDER],
+        *[(f"/items/{item_id}.html", "0.72", "weekly") for item_id in sorted(item_ids) if item_id],
+    ]
+    sitemap = "\n".join(
+        ["<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"]
+        + [sitemap_entry(path, lastmod, priority, changefreq) for path, priority, changefreq in paths]
+        + ["</urlset>"]
+    )
+    SITEMAP_PATH.write_text(sitemap + "\n", encoding="utf-8")
+    ROBOTS_PATH.write_text(
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {SITE_BASE}/sitemap.xml\n",
+        encoding="utf-8",
+    )
 
 
 def main() -> int:
@@ -505,7 +654,8 @@ def main() -> int:
     for item_id in item_ids:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
-    generated = ["index.html"] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
+    write_seo_files(data, {str(item_id) for item_id in item_ids if item_id})
+    generated = ["index.html", "robots.txt", "sitemap.xml"] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids)}, ensure_ascii=False, indent=2))
     return 0
 

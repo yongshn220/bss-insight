@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T02:09:07.702189Z",
+  "updated_at": "2026-08-07T03:21:47.533997Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -75,7 +75,7 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 30,
+      "rank": 28,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
@@ -132,7 +132,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,

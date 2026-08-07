@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-08-07T01:54:24.176373Z",
+  "generated_at": "2026-08-07T03:19:49.144447Z",
   "date": "2026-08-07",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-07T01:54:24.175945Z",
+      "observed_at": "2026-08-07T03:19:49.144061Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 44,
-      "products_returned": 44,
-      "items_with_evidence": 44,
-      "evidence_urls": 44,
+      "products_returned": 43,
+      "items_with_evidence": 43,
+      "evidence_urls": 43,
       "max_results_total": 44
     }
   },
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 21,
+    "items_with_published_trend_url": 22,
     "items_with_retail_product_url": 44,
-    "items_with_tiktok_shop_url": 44,
-    "verified_urls_total": 228,
-    "published_trend_urls_total": 45,
-    "retail_product_urls_total": 183,
+    "items_with_tiktok_shop_url": 43,
+    "verified_urls_total": 229,
+    "published_trend_urls_total": 47,
+    "retail_product_urls_total": 182,
     "collection_error_records": 0
   },
   "limitations": [
