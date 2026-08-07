@@ -163,6 +163,26 @@ def category_chips(categories: list[dict[str, Any]], base_path: str = "") -> str
     return '<nav class="category-strip">' + ''.join(chips) + '</nav>'
 
 
+def count_items_with_source(rows: list[dict[str, Any]], key: str) -> int:
+    return sum(1 for row in rows if int((row.get("source_counts") or {}).get(key) or 0) > 0)
+
+
+def data_health_panel(rows: list[dict[str, Any]]) -> str:
+    trend_items = count_items_with_source(rows, "trend_evidence")
+    store_items = count_items_with_source(rows, "retail_product_evidence")
+    tiktok_items = count_items_with_source(rows, "tiktok_shop_product_evidence")
+    watchlist_items = sum(1 for row in rows if row.get("momentum") == "watchlist" or int((row.get("source_counts") or {}).get("trend_evidence") or 0) == 0)
+    metrics = [
+        ("Trend items", trend_items),
+        ("Store URLs", store_items),
+        ("TikTok Shop", tiktok_items),
+        ("Watchlist", watchlist_items),
+    ]
+    return '<div class="data-health" aria-label="Data health">' + ''.join(
+        f'<div><b>{esc(value)}</b><span>{esc(label)}</span></div>' for label, value in metrics
+    ) + '</div>'
+
+
 def has_trend_evidence(row: dict[str, Any]) -> bool:
     counts = row.get("source_counts", {})
     return bool(counts.get("trend_evidence") or counts.get("news_magazine"))
@@ -207,6 +227,8 @@ def render_home(data: dict[str, Any]) -> str:
           <span>Latest run</span>
           <strong>{esc(data.get('date'))}</strong>
           <small>{len(weekly)} items · {len(cats)} categories</small>
+          <span class="health-label">Data health</span>
+          {data_health_panel(weekly)}
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>

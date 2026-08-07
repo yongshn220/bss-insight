@@ -25,9 +25,19 @@ PUBLIC_REVIEW_FIELDS = [
     "timeframe",
     "playwright_summary",
     "metrics",
+    "collection_health",
     "good_points",
     "improvement_points",
     "qa_focus",
+]
+
+PUBLIC_COLLECTION_FIELDS = [
+    "generated_at",
+    "date",
+    "source_health",
+    "evidence_totals",
+    "limitations",
+    "next_actions",
 ]
 
 
@@ -81,6 +91,10 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
     return payload
 
 
+def public_collection_notes_payload(notes: dict[str, Any]) -> dict[str, Any]:
+    return {field: notes.get(field) for field in PUBLIC_COLLECTION_FIELDS if field in notes}
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -98,6 +112,10 @@ def copy_public_data() -> None:
     review = load_json(DATA_DIR / "operations_review.json")
     if review:
         write_json(data_dst / "operations_review_public.json", public_review_payload(review))
+
+    collection_notes = load_json(DATA_DIR / "collection_notes.json")
+    if collection_notes:
+        write_json(data_dst / "collection_notes_public.json", public_collection_notes_payload(collection_notes))
 
 
 def main() -> int:

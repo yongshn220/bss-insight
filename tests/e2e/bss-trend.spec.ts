@@ -60,6 +60,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page).toHaveTitle(/Home · BSS Trend Ranking/);
     await expect(page.getByRole('heading', { name: 'Beauty Supply 제품별 트렌드 순위' })).toBeVisible();
     await expect(page.getByText(/\d+ items · 8 categories/)).toBeVisible();
+    await expect(page.getByText('Data health')).toBeVisible();
+    await expect(page.locator('.data-health div')).toHaveCount(4);
     await expect(page.locator('.podium-card')).toHaveCount(3);
 
     const rankCards = page.locator('.rank-card');
@@ -153,5 +155,24 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
         ).toBe(true);
       }
     }
+  });
+
+  test('public deploy data artifacts expose review and collection health', async ({ request }) => {
+    const rankingsResponse = await request.get('/public/data/rankings.json');
+    expect(rankingsResponse.status()).toBeLessThan(400);
+    const rankings = await rankingsResponse.json();
+    expect(rankings.collection_health?.evidence_totals?.items_requested).toBeGreaterThan(0);
+
+    const reviewResponse = await request.get('/public/data/operations_review_public.json');
+    expect(reviewResponse.status()).toBeLessThan(400);
+    const review = await reviewResponse.json();
+    expect(review.metrics?.items).toBeGreaterThan(0);
+    expect(review.collection_health?.source_health).toBeTruthy();
+
+    const collectionResponse = await request.get('/public/data/collection_notes_public.json');
+    expect(collectionResponse.status()).toBeLessThan(400);
+    const collection = await collectionResponse.json();
+    expect(collection.evidence_totals?.items_requested).toBeGreaterThan(0);
+    expect(collection.source_health?.apify_tiktok_shop?.status).toBeTruthy();
   });
 });

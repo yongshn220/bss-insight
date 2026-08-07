@@ -19,6 +19,7 @@ import os
 import re
 import time
 import urllib.parse
+import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -30,12 +31,14 @@ RANKINGS_PATH = DATA_DIR / "rankings.json"
 HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RUNS_DIR = DATA_DIR / "ranking_runs"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
+COLLECTION_NOTES_PATH = DATA_DIR / "collection_notes.json"
 
 USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 CURRENT_DATE = dt.date.today()
 CURRENT_MONTH = CURRENT_DATE.month
 APIFY_TIKTOK_ACTOR = "coregent~tiktok-shop-product-scraper"
 SECRET_ENV_PATHS = [Path("/opt/data/.hermes/.env"), ROOT / ".env", ROOT / ".env.local"]
+COLLECTION_HEALTH: dict[str, Any] = {}
 
 TIMEFRAMES = {
     "weekly": {"label": "Weekly", "days": 14, "description": "최근 2주 중심의 빠른 신호"},
@@ -260,6 +263,35 @@ def int_env(name: str, default: int, lower: int, upper: int) -> int:
     except ValueError:
         value = default
     return max(lower, min(upper, value))
+
+
+def utc_now() -> str:
+    return dt.datetime.now(dt.UTC).isoformat().replace("+00:00", "Z")
+
+
+def clean_error_summary(value: object, limit: int = 700) -> str:
+    """Return a short, non-secret operational error summary for public diagnostics."""
+    text = re.sub(r"\s+", " ", str(value or "")).strip()
+    for secret_name in ("APIFY_TOKEN", "APIFY_API_TOKEN"):
+        secret = env_value(secret_name)
+        if secret:
+            text = text.replace(secret, "[REDACTED]")
+    return text[:limit]
+
+
+def set_source_health(source_id: str, status: str, **fields: Any) -> None:
+    """Track collection-source health without storing tokens or raw credentials."""
+    safe_fields = {key: value for key, value in fields.items() if value not in (None, "")}
+    COLLECTION_HEALTH[source_id] = {
+        "status": status,
+        "observed_at": utc_now(),
+        **safe_fields,
+    }
+
+
+def source_health(source_id: str) -> dict[str, Any]:
+    value = COLLECTION_HEALTH.get(source_id, {})
+    return value if isinstance(value, dict) else {}
 
 
 _NEXT_LOOP_FOCUS_CACHE: dict[str, Any] | None = None
@@ -720,11 +752,20 @@ def apify_tiktok_product_signal(product: dict[str, Any], row: dict[str, Any], qu
 
 def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     token = env_value("APIFY_TOKEN") or env_value("APIFY_API_TOKEN")
-    if not token or (env_value("APIFY_TIKTOK_ENABLED") or "1").lower() in {"0", "false", "no"}:
+    enabled = (env_value("APIFY_TIKTOK_ENABLED") or "1").lower() not in {"0", "false", "no"}
+    if not token or not enabled:
+        set_source_health(
+            "apify_tiktok_shop",
+            "skipped",
+            configured=bool(token),
+            enabled=enabled,
+            reason="APIFY token not configured or APIFY_TIKTOK_ENABLED disabled",
+        )
         return {}
     per_query = int_env("APIFY_TIKTOK_MAX_RESULTS_PER_QUERY", 1, 1, 5)
     max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(rows) * per_query), 1, 250)
     timeout = int_env("APIFY_TIKTOK_TIMEOUT_SECS", 300, 60, 900)
+    max_attempts = int_env("APIFY_TIKTOK_MAX_ATTEMPTS", 2, 1, 4)
     keywords: list[str] = []
     rows_by_keyword: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -742,22 +783,48 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         "includeReviews": False,
     }
     url = f"https://api.apify.com/v2/acts/{APIFY_TIKTOK_ACTOR}/run-sync-get-dataset-items"
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-            "User-Agent": USER_AGENT,
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            products = json.loads(resp.read().decode("utf-8"))
-    except Exception:
-        return {}
-    if not isinstance(products, list):
+    products: list[Any] | None = None
+    last_error = ""
+    attempts_used = 0
+    for attempt in range(1, max_attempts + 1):
+        attempts_used = attempt
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+                "User-Agent": USER_AGENT,
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                parsed = json.loads(resp.read().decode("utf-8"))
+            if isinstance(parsed, list):
+                products = parsed
+                last_error = ""
+                break
+            last_error = f"Unexpected Apify response type: {type(parsed).__name__}"
+        except urllib.error.HTTPError as exc:
+            body = exc.read(1500).decode("utf-8", errors="replace")
+            last_error = f"HTTP {exc.code} {exc.reason}: {body}"
+        except Exception as exc:
+            last_error = f"{type(exc).__name__}: {exc}"
+        if attempt < max_attempts:
+            time.sleep(min(18, 4 * attempt))
+    if products is None:
+        set_source_health(
+            "apify_tiktok_shop",
+            "failed",
+            configured=True,
+            enabled=True,
+            attempts=attempts_used,
+            keywords_requested=len(keywords),
+            max_results_total=max_total,
+            error_summary=clean_error_summary(last_error),
+            retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
+        )
         return {}
     evidence_by_item: dict[str, list[dict[str, Any]]] = {}
     seen: set[tuple[str, str]] = set()
@@ -780,6 +847,19 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
                 continue
             seen.add(dedupe_key)
             evidence_by_item.setdefault(row["id"], []).append(signal)
+    evidence_urls = sum(len(sources) for sources in evidence_by_item.values())
+    set_source_health(
+        "apify_tiktok_shop",
+        "success" if evidence_urls else "success_empty",
+        configured=True,
+        enabled=True,
+        attempts=attempts_used,
+        keywords_requested=len(keywords),
+        products_returned=len(products),
+        items_with_evidence=len(evidence_by_item),
+        evidence_urls=evidence_urls,
+        max_results_total=max_total,
+    )
     return evidence_by_item
 
 
@@ -850,6 +930,52 @@ def collect_all_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str,
                 seen.add(src.get("url"))
         existing.sort(key=source_sort_date, reverse=True)
     return evidence_by_item
+
+
+def evidence_collection_totals(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    rows = list(evidence_by_item.values())
+    all_sources = [src for sources in rows for src in sources if isinstance(src, dict)]
+    return {
+        "items_requested": sum(len(c["items"]) for c in CATEGORIES),
+        "items_with_any_verified_url": sum(1 for sources in rows if any(src.get("url") and not src.get("error") for src in sources)),
+        "items_with_published_trend_url": sum(1 for sources in rows if any(is_published_evidence(src) and not src.get("error") for src in sources)),
+        "items_with_retail_product_url": sum(1 for sources in rows if any(is_retail_product_evidence(src) and not src.get("error") for src in sources)),
+        "items_with_tiktok_shop_url": sum(1 for sources in rows if any(src.get("source_kind") == "tiktok_shop_apify" for src in sources)),
+        "verified_urls_total": sum(1 for src in all_sources if src.get("url") and not src.get("error")),
+        "published_trend_urls_total": sum(1 for src in all_sources if is_published_evidence(src) and not src.get("error")),
+        "retail_product_urls_total": sum(1 for src in all_sources if is_retail_product_evidence(src) and not src.get("error")),
+        "collection_error_records": sum(1 for src in all_sources if src.get("error")),
+    }
+
+
+def collection_next_actions(totals: dict[str, Any]) -> list[str]:
+    actions = []
+    apify = source_health("apify_tiktok_shop")
+    if apify.get("status") in {"failed", "success_empty", "skipped"}:
+        actions.append("TikTok Shop 수집 상태를 다음 run에서 먼저 확인: actor/upstream throttle이면 재시도, token/enablement 문제면 env 복구.")
+    if int(totals.get("items_with_published_trend_url") or 0) < 12:
+        actions.append("published/date-bearing source 보강: weak category별 item-specific article/post/thread/listing URL capture 우선.")
+    if int(totals.get("items_with_retail_product_url") or 0) < int(totals.get("items_requested") or 0):
+        actions.append("BSS/wholesale product URL coverage 보강: jewelry/nails/tools처럼 Shopify suggest가 약한 category에 vendor-specific collector 필요.")
+    return actions or ["현재 collection health에 즉시 조치가 필요한 source outage는 없습니다."]
+
+
+def write_collection_notes(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    totals = evidence_collection_totals(evidence_by_item)
+    notes = {
+        "generated_at": utc_now(),
+        "date": CURRENT_DATE.isoformat(),
+        "source_health": COLLECTION_HEALTH,
+        "evidence_totals": totals,
+        "limitations": [
+            "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
+            "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",
+            "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다.",
+        ],
+        "next_actions": collection_next_actions(totals),
+    }
+    COLLECTION_NOTES_PATH.write_text(json.dumps(notes, ensure_ascii=False, indent=2), encoding="utf-8")
+    return notes
 
 
 def retail_signal_sentence(row: dict[str, Any], trend_evidence: list[dict[str, Any]], retail_evidence: list[dict[str, Any]], timeframe: str) -> str:
@@ -1080,10 +1206,12 @@ def build_rankings() -> dict[str, Any]:
     rows = flatten_items()
     prev = previous_snapshot()
     evidence_by_item = collect_all_evidence(rows)
+    collection_notes = write_collection_notes(evidence_by_item)
     output: dict[str, Any] = {
         "generated_at": dt.datetime.now(dt.UTC).isoformat().replace("+00:00", "Z"),
         "date": CURRENT_DATE.isoformat(),
         "title": "BSS Beauty Product Trend Rankings",
+        "collection_health": collection_notes,
         "methodology": {
             "summary": "Item-only rankings across the broader BSS beauty market. Search/watchlist pages are separated from evidence; published URLs drive trend movement, while live BSS/wholesale/TikTok Shop product URLs validate retail availability and social-commerce supply only.",
             "score_components": ["published trend URL evidence", "recent published evidence", "BSS/wholesale/TikTok Shop product URLs", "BSS fit", "seasonality", "item specificity", "historical movement"],

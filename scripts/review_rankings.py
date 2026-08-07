@@ -23,6 +23,7 @@ RANKINGS_PATH = DATA_DIR / "rankings.json"
 OPS_REVIEW_PATH = DATA_DIR / "operations_review.json"
 OPS_HISTORY_PATH = DATA_DIR / "operations_review_history.json"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
+COLLECTION_NOTES_PATH = DATA_DIR / "collection_notes.json"
 PUBLIC_OPS_REVIEW_PATH = PUBLIC_DATA_DIR / "operations_review_public.json"
 
 TIMEFRAME = "weekly"
@@ -175,8 +176,56 @@ def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         )
         scored.append((priority, row, flags))
     scored.sort(key=lambda item: item[0], reverse=True)
+
+    # Independent QA lesson: pure rank-based focus kept selecting the same top
+    # watchlist lane and missed zero-trend categories such as Jewelry/Nails.
+    # Seed next-loop focus with the weakest categories first, then fill by rank.
+    by_category: dict[str, list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]]] = defaultdict(list)
+    category_totals: dict[str, int] = defaultdict(int)
+    category_trend: dict[str, int] = defaultdict(int)
+    for row in rows:
+        category = str(row.get("category_name") or row.get("category_id") or "Uncategorized")
+        category_totals[category] += 1
+        if count(row, "trend_evidence") > 0:
+            category_trend[category] += 1
+    for entry in scored:
+        _priority, row, _flags = entry
+        category = str(row.get("category_name") or row.get("category_id") or "Uncategorized")
+        by_category[category].append(entry)
+
+    selected: list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]] = []
+    selected_ids: set[str] = set()
+    weak_categories = sorted(
+        by_category,
+        key=lambda category: (
+            category_trend.get(category, 0) / max(1, category_totals.get(category, 1)),
+            -len(by_category.get(category, [])),
+            category,
+        ),
+    )
+    for category in weak_categories:
+        if len(selected) >= MAX_FOCUS_ITEMS:
+            break
+        entries = by_category.get(category) or []
+        if category_trend.get(category, 0) > 0 and selected:
+            continue
+        for entry in entries:
+            item_id = str(entry[1].get("item_id"))
+            if item_id not in selected_ids:
+                selected.append(entry)
+                selected_ids.add(item_id)
+                break
+    for entry in scored:
+        if len(selected) >= MAX_FOCUS_ITEMS:
+            break
+        item_id = str(entry[1].get("item_id"))
+        if item_id in selected_ids:
+            continue
+        selected.append(entry)
+        selected_ids.add(item_id)
+
     focus = []
-    for _priority, row, flags in scored[:MAX_FOCUS_ITEMS]:
+    for _priority, row, flags in selected[:MAX_FOCUS_ITEMS]:
         focus.append({
             "item_id": row.get("item_id"),
             "item_name": row.get("item_name"),
@@ -203,6 +252,13 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
     cats = cats if isinstance(cats, list) else []
     rows_by_id = {str(row.get("item_id")): row for row in rows if row.get("item_id")}
     previous_focus = load_json(NEXT_LOOP_FOCUS_PATH, {})
+    collection_notes = load_json(COLLECTION_NOTES_PATH, {})
+    if not isinstance(collection_notes, dict):
+        collection_notes = {}
+    source_health = collection_notes.get("source_health", {}) if isinstance(collection_notes, dict) else {}
+    source_health = source_health if isinstance(source_health, dict) else {}
+    apify_health = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
+    apify_health = apify_health if isinstance(apify_health, dict) else {}
     cat_stats = category_stats(rows)
 
     trend_items = sum(1 for row in rows if count(row, "trend_evidence") > 0)
@@ -224,10 +280,22 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
         good_points.append(f"TikTok Shop/marketplace supply signal이 {tiktok_items}개 item에 붙어 social-commerce availability 확인이 강화되었습니다.")
     if product_image_items:
         good_points.append(f"상품/출처 이미지가 {product_image_items}개 item에 연결되어 text-only dashboard 위험을 줄였습니다.")
+    if apify_health.get("status") == "success":
+        good_points.append(
+            "TikTok Shop collector health: "
+            f"success, attempts {apify_health.get('attempts')}, evidence URLs {apify_health.get('evidence_urls')}."
+        )
 
     improvement_points = []
     if watchlist_items:
         improvement_points.append(f"{watchlist_items}개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.")
+    if apify_health and apify_health.get("status") not in {"success"}:
+        error_summary = apify_health.get("error_summary") or apify_health.get("reason") or "no error summary"
+        improvement_points.append(
+            "TikTok Shop collector health: "
+            f"status={apify_health.get('status')} attempts={apify_health.get('attempts', 0)}. "
+            f"다음 run에서 source outage/actor upstream 상태를 먼저 확인해야 합니다. ({error_summary})"
+        )
     if recent_items < max(3, len(rows) // 5):
         improvement_points.append(f"최근 14일 발행 근거 보유 item이 {recent_items}개로 낮습니다. weekly view는 recency가 핵심이므로 신선한 article/post URL capture가 필요합니다.")
     if retail_items < len(rows):
@@ -262,6 +330,12 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
             "tiktok_shop_items": tiktok_items,
             "product_image_items": product_image_items,
             "watchlist_items": watchlist_items,
+        },
+        "collection_health": {
+            "generated_at": collection_notes.get("generated_at"),
+            "source_health": source_health,
+            "evidence_totals": collection_notes.get("evidence_totals", {}),
+            "next_actions": collection_notes.get("next_actions", []),
         },
         "category_stats": cat_stats,
         "previous_loop_follow_up": previous_focus_follow_up(previous_focus, rows_by_id),
@@ -307,6 +381,7 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
             "timeframe",
             "playwright_summary",
             "metrics",
+            "collection_health",
             "good_points",
             "improvement_points",
             "qa_focus",

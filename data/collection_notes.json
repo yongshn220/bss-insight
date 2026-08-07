@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-08-07T00:39:57.988666Z",
+  "date": "2026-08-07",
+  "source_health": {
+    "apify_tiktok_shop": {
+      "status": "success",
+      "observed_at": "2026-08-07T00:39:57.988242Z",
+      "configured": true,
+      "enabled": true,
+      "attempts": 1,
+      "keywords_requested": 44,
+      "products_returned": 44,
+      "items_with_evidence": 44,
+      "evidence_urls": 44,
+      "max_results_total": 44
+    }
+  },
+  "evidence_totals": {
+    "items_requested": 44,
+    "items_with_any_verified_url": 44,
+    "items_with_published_trend_url": 22,
+    "items_with_retail_product_url": 44,
+    "items_with_tiktok_shop_url": 44,
+    "verified_urls_total": 231,
+    "published_trend_urls_total": 48,
+    "retail_product_urls_total": 183,
+    "collection_error_records": 0
+  },
+  "limitations": [
+    "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
+    "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",
+    "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
+  ],
+  "next_actions": [
+    "현재 collection health에 즉시 조치가 필요한 source outage는 없습니다."
+  ]
+}

@@ -46,6 +46,11 @@ h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.9
 .hero-panel span, .score-hero span, .metric-card span, .detail-grid article span, .section-title span { display:block; color:var(--soft); font-family:'Geist Mono', ui-monospace, monospace; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
 .hero-panel strong, .score-hero strong { display:block; margin-top:8px; font-size:30px; letter-spacing:-.06em; }
 .hero-panel small, .score-hero small { color:var(--muted); }
+.health-label { margin-top:18px; }
+.data-health { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; margin-top:10px; }
+.data-health div { padding:10px; border-radius:14px; background:#fff; box-shadow:rgba(0,0,0,.08) 0 0 0 1px; }
+.data-health b { display:block; font-size:22px; line-height:1; letter-spacing:-.05em; }
+.data-health span { margin-top:5px; color:var(--muted); font-family:'Geist Mono', ui-monospace, monospace; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
 
 .category-strip { position:sticky; top:74px; z-index:30; display:flex; gap:8px; overflow-x:auto; padding:10px; margin:4px 0 28px; background:rgba(250,250,250,.9); backdrop-filter: blur(12px); border-radius:18px; box-shadow:var(--ring); }
 .cat-chip { white-space:nowrap; padding:10px 14px; border-radius:999px; color:#555; background:#fff; box-shadow:rgba(0,0,0,.08) 0 0 0 1px; font-size:14px; font-weight:600; }
