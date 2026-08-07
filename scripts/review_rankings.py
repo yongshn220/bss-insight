@@ -132,26 +132,30 @@ def query_variants(row: dict[str, Any]) -> list[str]:
     category = str(row.get("category_name") or "").lower()
     if not name:
         return []
+    # The collector treats generated/search queries as probes only; a result must
+    # still resolve to a dated, item-relevant URL before it can affect ranking.
+    # Mix exact phrases with looser item-type language so zero-trend categories do
+    # not get stuck on over-narrow searches forever.
     queries = [
         f'"{name}" beauty supply trend',
-        f'"{name}" TikTok review',
-        f'"{name}" Amazon reviews',
+        f'{name} 2026 trend',
+        f'{name} customer review 2026',
         f'"{name}" black beauty supply',
     ]
     if "wig" in category or "hair pieces" in category:
-        queries.extend([f'"{name}" install review', f'"{name}" lace wig customer review'])
+        queries.extend([f'{name} wig install trend', f'{name} natural hair review'])
     elif "braiding" in category or "crochet" in category:
-        queries.extend([f'"{name}" protective styles trend', f'"{name}" knotless braids TikTok'])
+        queries.extend([f'{name} protective style trend', f'{name} knotless braids review'])
     elif "tools" in category:
-        queries.extend([f'"{name}" beauty supply review', f'"{name}" hair tool TikTok'])
+        queries.extend([f'{name} wig install accessory review', f'{name} beauty supply accessory'])
     elif "jewelry" in category or "accessories" in category:
-        queries.extend([f'"{name}" black women outfit trend', f'"{name}" wholesale beauty supply'])
+        queries.extend([f'{name} outfit trend black women', f'{name} body jewelry trend'])
     elif "lashes" in category:
-        queries.extend([f'"{name}" DIY lash review', f'"{name}" lash tutorial TikTok'])
+        queries.extend([f'{name} DIY lash review', f'{name} lash tutorial trend'])
     elif "nails" in category:
-        queries.extend([f'"{name}" nail inspo trend', f'"{name}" press on review'])
+        queries.extend([f'{name} press-on nail trend', f'{name} nail design review'])
     elif "makeup" in category:
-        queries.extend([f'"{name}" makeup review', f'"{name}" beauty supply haul'])
+        queries.extend([f'{name} makeup review', f'{name} beauty supply haul'])
     seen = set()
     output = []
     for query in queries:
@@ -448,6 +452,7 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
             "good_points",
             "improvement_points",
             "qa_focus",
+            "independent_ai_review",
         ]
         if key in review
     }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T10:48:21.826858Z",
+  "updated_at": "2026-08-07T12:02:21.342658Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -7,15 +7,15 @@
       "item_id": "20g-surgical-steel-nose-stud",
       "item_name": "20G Surgical Steel Nose Stud",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 25,
+      "rank": 26,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"20G Surgical Steel Nose Stud\" beauty supply trend",
-        "\"20G Surgical Steel Nose Stud\" TikTok review",
-        "\"20G Surgical Steel Nose Stud\" Amazon reviews",
+        "20G Surgical Steel Nose Stud 2026 trend",
+        "20G Surgical Steel Nose Stud customer review 2026",
         "\"20G Surgical Steel Nose Stud\" black beauty supply",
-        "\"20G Surgical Steel Nose Stud\" black women outfit trend",
-        "\"20G Surgical Steel Nose Stud\" wholesale beauty supply"
+        "20G Surgical Steel Nose Stud outfit trend black women",
+        "20G Surgical Steel Nose Stud body jewelry trend"
       ],
       "baseline_source_counts": {
         "verified_evidence": 3,
@@ -41,15 +41,15 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
-        "\"Wig Grip Band\" TikTok review",
-        "\"Wig Grip Band\" Amazon reviews",
+        "Wig Grip Band 2026 trend",
+        "Wig Grip Band customer review 2026",
         "\"Wig Grip Band\" black beauty supply",
-        "\"Wig Grip Band\" beauty supply review",
-        "\"Wig Grip Band\" hair tool TikTok"
+        "Wig Grip Band wig install accessory review",
+        "Wig Grip Band beauty supply accessory"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -75,15 +75,15 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 24,
+      "rank": 25,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
-        "\"Short Square Press-On Nails\" TikTok review",
-        "\"Short Square Press-On Nails\" Amazon reviews",
+        "Short Square Press-On Nails 2026 trend",
+        "Short Square Press-On Nails customer review 2026",
         "\"Short Square Press-On Nails\" black beauty supply",
-        "\"Short Square Press-On Nails\" nail inspo trend",
-        "\"Short Square Press-On Nails\" press on review"
+        "Short Square Press-On Nails press-on nail trend",
+        "Short Square Press-On Nails nail design review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 3,
@@ -109,15 +109,15 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 8,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
-        "\"Synthetic Lace Front Wig\" TikTok review",
-        "\"Synthetic Lace Front Wig\" Amazon reviews",
+        "Synthetic Lace Front Wig 2026 trend",
+        "Synthetic Lace Front Wig customer review 2026",
         "\"Synthetic Lace Front Wig\" black beauty supply",
-        "\"Synthetic Lace Front Wig\" install review",
-        "\"Synthetic Lace Front Wig\" lace wig customer review"
+        "Synthetic Lace Front Wig wig install trend",
+        "Synthetic Lace Front Wig natural hair review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -143,12 +143,12 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
-        "\"Wig Adhesive Glue\" TikTok review",
-        "\"Wig Adhesive Glue\" Amazon reviews",
+        "Wig Adhesive Glue 2026 trend",
+        "Wig Adhesive Glue customer review 2026",
         "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
@@ -164,7 +164,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -172,33 +172,33 @@
       }
     },
     {
-      "item_id": "glueless-pre-cut-hd-lace-wig",
-      "item_name": "Glueless Pre-Cut HD Lace Wig",
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 12,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
-        "\"Glueless Pre-Cut HD Lace Wig\" TikTok review",
-        "\"Glueless Pre-Cut HD Lace Wig\" Amazon reviews",
-        "\"Glueless Pre-Cut HD Lace Wig\" black beauty supply",
-        "\"Glueless Pre-Cut HD Lace Wig\" install review",
-        "\"Glueless Pre-Cut HD Lace Wig\" lace wig customer review"
+        "\"V-Part Human Hair Wig\" beauty supply trend",
+        "V-Part Human Hair Wig 2026 trend",
+        "V-Part Human Hair Wig customer review 2026",
+        "\"V-Part Human Hair Wig\" black beauty supply",
+        "V-Part Human Hair Wig wig install trend",
+        "V-Part Human Hair Wig natural hair review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 12,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 12,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,

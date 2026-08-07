@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T10:47:45.085378Z",
+  "updated_at": "2026-08-07T12:03:32.079009Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -122,6 +122,25 @@
       ],
       "owner_value": "BSS owners can now see real Wig Adhesive Glue / lace adhesive listings and product image support, while the card stays WATCHLIST because no dated trend URL was captured.",
       "measurement_need": "GA4_PROPERTY_ID plus service credentials or Vercel Analytics export/API access are needed to connect this credibility fix to visits/clicks/repeats."
+    },
+    {
+      "campaign_id": "evidence-gap-transparency-v1",
+      "status": "live-on-site-after-build",
+      "objective": "Increase owner trust/shareability by making ranking evidence gaps visible instead of hiding WATCHLIST/source limitations behind a score.",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_click cta_evidence_snapshot_review",
+        "growth_exposure",
+        "growth_share_copy_result"
+      ],
+      "owner_value": "Owners can see which categories are still watchlist-only and avoid treating supply/listing coverage as a trend claim.",
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to measure CTA clicks and repeat visits."
     }
   ],
   "experiment_backlog": [
@@ -184,6 +203,12 @@
       "status": "promoted-to-collector-after-build",
       "hypothesis": "Whole-token matching and targeted item aliases protect evidence quality while recovering actionable supply cards.",
       "next_step": "Next loop should test V-Part Human Hair Wig alias/TikTok Shop fallback and continue zero-trend category evidence capture for Jewelry, Nails, Tools, and Wigs."
+    },
+    {
+      "experiment_id": "evidence-gap-transparency-v1",
+      "status": "promoted-to-live-site-after-build",
+      "hypothesis": "BSS owners will trust and share the dashboard more when trend-backed counts, WATCHLIST counts, zero-trend categories, and missing social-commerce coverage are visible before the share CTA.",
+      "next_step": "Measure evidence_snapshot_review CTA and share/copy behavior after analytics export is connected; if clicks are low, shorten copy or convert to a collapsible trust badge."
     }
   ],
   "permission_requests": [

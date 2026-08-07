@@ -32,6 +32,7 @@ PUBLIC_REVIEW_FIELDS = [
     "good_points",
     "improvement_points",
     "qa_focus",
+    "independent_ai_review",
 ]
 
 PUBLIC_COLLECTION_FIELDS = [

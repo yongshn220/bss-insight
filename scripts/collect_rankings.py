@@ -364,12 +364,16 @@ def needs_alias_product_probe(row: dict[str, Any]) -> bool:
     Wig adhesive is another strict exception: BSS stores often title the shelf as
     "lace adhesive", "wig adhesive", or "lace bond adhesive" rather than
     the full item name, and the primary phrase alone created a live-product gap.
+    V-part/leave-out wigs are also strict exceptions because marketplace titles
+    often omit "human hair" while still describing the same concrete wig type.
     """
     item_id = str(row.get("id") or "")
     if item_id in focus_item_ids():
         return True
     blob = " ".join(str(row.get(key, "")) for key in ("id", "name", "search_context")).lower()
     if row.get("category_id") == "hair-care-styling" and any(token in blob for token in ("adhesive", "glue", "lace bond")):
+        return True
+    if row.get("category_id") == "wigs-hair-pieces" and any(token in blob for token in ("v part", "v-part", "leave out", "leave-out")):
         return True
     if row.get("category_id") == "braiding-crochet-hair":
         return any(token in blob for token in ("marley", "kinky", "boho", "crochet", "twist", "loc"))

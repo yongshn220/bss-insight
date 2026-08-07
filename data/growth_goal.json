@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T10:47:45.085378Z",
+  "updated_at": "2026-08-07T12:03:32.079009Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T10:47:45.085378Z",
-    "provider_checked": "Live Vercel Web Analytics script + GA4 tag + cron env credential discovery; strict supply-relevance recovery shipped",
+    "last_checked_at": "2026-08-07T12:03:32.079009Z",
+    "provider_checked": "Live Vercel Web Analytics script + GA4 tag + env credential discovery; evidence-gap transparency and V-Part TikTok Shop coverage recovery shipped",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "This run added strict whole-token evidence relevance and wig-adhesive alias probes. Outcome: weekly retail_product_items=44/44 and product_image_items=44/44; Wig Adhesive Glue recovered 13 live product URLs and a verified product image while remaining WATCHLIST because trend URLs are still 0. Live Vercel Web Analytics script + GA4 tag are present; cron env still lacks GA4_PROPERTY_ID, so rolling 30-day visits cannot be queried numerically.",
-    "interpretation": "Measurement blocker remains: provide GA4_PROPERTY_ID plus a valid GOOGLE_APPLICATION_CREDENTIALS file path or GA4_SERVICE_ACCOUNT_JSON, or an approved Vercel Analytics export/API method. Product credibility improved this run, but central rolling 30-day traffic is still measurement pending."
+    "raw_result": "This run shipped Evidence quality snapshot UI and strict V-Part/leave-out alias fallback. Weekly TikTok Shop coverage is 44/44 with 68 TikTok Shop URLs; V-Part Human Hair Wig recovered TikTok Shop evidence. Weekly trend-backed items are 7/44 and WATCHLIST is 37/44, so no unsupported trend claim was promoted. GA4 tag and Vercel Web Analytics script are live; cron env still lacks GA4_PROPERTY_ID and server-side reporting credentials.",
+    "interpretation": "Product/actionability improved and score transparency improved, but central rolling 30-day visits remain measurement pending until GA4 Data API or Vercel analytics export access is provided."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -169,6 +169,16 @@
       ],
       "success_metric": "retail_product_items, product_image_items, false-positive product match rate, item-card/detail engagement once analytics export is available",
       "hypothesis": "Cleaner supply evidence and recovered product images make ranking cards more trustworthy for BSS owners, improving repeat visits and share confidence without inflating trend claims."
+    },
+    {
+      "experiment_id": "evidence-gap-transparency-v1",
+      "status": "active-site-ux-after-build",
+      "variants": [
+        "ranking_without_gap_snapshot",
+        "ranking_with_evidence_gap_snapshot_and_review_cta"
+      ],
+      "success_metric": "evidence_snapshot_review CTA clicks, ranking-card clicks, share-copy events, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners will trust and share the dashboard more when trend-backed counts, WATCHLIST counts, zero-trend categories, and missing social-commerce coverage are visible before the share CTA."
     }
   ],
   "reporting": {

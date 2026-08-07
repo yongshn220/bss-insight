@@ -77,6 +77,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     );
     expect(hasGa4InlineConfig).toBe(true);
     await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
+    await expect(page.getByText('Evidence quality snapshot')).toBeVisible();
+    await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_copy_link"]')).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-weekly-owner-share/);
@@ -169,6 +172,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
 
       await expect(page.locator('.tabs a.active')).toHaveText(label);
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
+      await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
       await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
 

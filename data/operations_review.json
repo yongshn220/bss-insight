@@ -1,34 +1,34 @@
 {
-  "reviewed_at": "2026-08-07T10:48:21.826858Z",
-  "source_generated_at": "2026-08-07T10:45:45.689744Z",
+  "reviewed_at": "2026-08-07T12:02:21.342658Z",
+  "source_generated_at": "2026-08-07T12:00:37.203596Z",
   "date": "2026-08-07",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (21.5s)",
+  "playwright_summary": "12 passed (21.9s)",
   "metrics": {
     "items": 44,
     "categories": 8,
-    "trend_items": 8,
-    "recent_trend_items": 8,
+    "trend_items": 7,
+    "recent_trend_items": 7,
     "retail_product_items": 44,
-    "tiktok_shop_items": 43,
+    "tiktok_shop_items": 44,
     "product_image_items": 44,
-    "watchlist_items": 36
+    "watchlist_items": 37
   },
   "collection_health": {
-    "generated_at": "2026-08-07T10:45:45.689431Z",
+    "generated_at": "2026-08-07T12:00:37.203284Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-07T10:45:45.688853Z",
+        "observed_at": "2026-08-07T12:00:37.202720Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
-        "keywords_requested": 68,
-        "expanded_keyword_items": 12,
-        "products_returned": 66,
-        "items_with_evidence": 43,
-        "evidence_urls": 63,
-        "max_results_total": 68
+        "keywords_requested": 70,
+        "expanded_keyword_items": 13,
+        "products_returned": 70,
+        "items_with_evidence": 44,
+        "evidence_urls": 68,
+        "max_results_total": 70
       }
     },
     "evidence_totals": {
@@ -36,10 +36,10 @@
       "items_with_any_verified_url": 44,
       "items_with_published_trend_url": 21,
       "items_with_retail_product_url": 44,
-      "items_with_tiktok_shop_url": 43,
-      "verified_urls_total": 270,
+      "items_with_tiktok_shop_url": 44,
+      "verified_urls_total": 276,
       "published_trend_urls_total": 44,
-      "retail_product_urls_total": 226,
+      "retail_product_urls_total": 232,
       "collection_error_records": 0
     },
     "next_actions": [
@@ -50,10 +50,10 @@
     {
       "category": "Braiding & Crochet Hair",
       "items": 6,
-      "trend_items": 2,
+      "trend_items": 1,
       "retail_items": 6,
       "product_image_items": 6,
-      "trend_ratio": 0.33,
+      "trend_ratio": 0.17,
       "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
@@ -131,33 +131,33 @@
   "coverage_deltas": {
     "trend_items": {
       "previous": 8,
-      "current": 8,
-      "delta": 0
+      "current": 7,
+      "delta": -1
     },
     "recent_trend_items": {
       "previous": 8,
-      "current": 8,
-      "delta": 0
+      "current": 7,
+      "delta": -1
     },
     "retail_product_items": {
-      "previous": 43,
+      "previous": 44,
       "current": 44,
-      "delta": 1
+      "delta": 0
     },
     "tiktok_shop_items": {
       "previous": 43,
-      "current": 43,
-      "delta": 0
-    },
-    "product_image_items": {
-      "previous": 43,
       "current": 44,
       "delta": 1
     },
+    "product_image_items": {
+      "previous": 44,
+      "current": 44,
+      "delta": 0
+    },
     "watchlist_items": {
       "previous": 36,
-      "current": 36,
-      "delta": 0
+      "current": 37,
+      "delta": 1
     }
   },
   "previous_loop_follow_up": [
@@ -354,7 +354,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -373,7 +373,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -382,42 +382,42 @@
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
-      "item_id": "glueless-pre-cut-hd-lace-wig",
-      "item_name": "Glueless Pre-Cut HD Lace Wig",
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
       "status": "still_needs_focus",
       "baseline": {
-        "verified_evidence": 12,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 12,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 12,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 12,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -427,36 +427,38 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (21.5s)",
+    "Playwright QA 완료: 12 passed (21.9s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Cluster Lash Extension Kit, #3 Lash Bond and Seal",
-    "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
-    "TikTok Shop/marketplace supply signal이 43개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
+    "Evidence separation 유지: published trend URL 보유 item 7개, BSS/marketplace live product URL 보유 item 44개.",
+    "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 63.",
-    "AI action: strict supply relevance recovery shipped — Wig Adhesive Glue regained 13 live product URLs and a verified product image while staying WATCHLIST because trend evidence remains 0.",
-    "Growth instrumentation remains provider-ready: Vercel analytics script and GA4 tag are live; central traffic number still needs GA4_PROPERTY_ID/reporting access."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 68.",
+    "AI action: V-Part/leave-out alias fallback recovered missing TikTok Shop coverage; weekly TikTok Shop items now 44/44 and evidence URLs 68.",
+    "AI action: Evidence quality snapshot UI added to home/timeframe pages so BSS owners see trend/watchlist/source gaps before sharing."
   ],
   "improvement_points": [
-    "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "37개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "이전 run 대비 coverage regression 감지: published trend item 8→7 (-1); recent trend item 8→7 (-1). 다음 loop에서는 source outage/collector query/retail suggest coverage를 우선 확인해야 합니다.",
+    "WATCHLIST item이 이전 run 대비 증가했습니다: 36→37 (+1). trend claim 확대보다 근거 보강이 우선입니다.",
+    "최근 14일 발행 근거 보유 item이 7개로 낮습니다. weekly view는 recency가 핵심이므로 신선한 article/post URL capture가 필요합니다.",
     "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8).",
-    "Growth measurement blocker: GA4_PROPERTY_ID/reporting credential is still missing, so rolling 30-day average daily visits cannot be reported numerically.",
-    "TikTok Shop coverage is 43/44; V-Part Human Hair Wig needs alias fallback or deeper marketplace collection next."
+    "Trend-source regression remains: weekly trend-backed items are 7/44, down from 8/44; next loop must prioritize dated URL capture, not supply-only claims."
   ],
   "next_loop_focus_items": [
     {
       "item_id": "20g-surgical-steel-nose-stud",
       "item_name": "20G Surgical Steel Nose Stud",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 25,
+      "rank": 26,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"20G Surgical Steel Nose Stud\" beauty supply trend",
-        "\"20G Surgical Steel Nose Stud\" TikTok review",
-        "\"20G Surgical Steel Nose Stud\" Amazon reviews",
+        "20G Surgical Steel Nose Stud 2026 trend",
+        "20G Surgical Steel Nose Stud customer review 2026",
         "\"20G Surgical Steel Nose Stud\" black beauty supply",
-        "\"20G Surgical Steel Nose Stud\" black women outfit trend",
-        "\"20G Surgical Steel Nose Stud\" wholesale beauty supply"
+        "20G Surgical Steel Nose Stud outfit trend black women",
+        "20G Surgical Steel Nose Stud body jewelry trend"
       ],
       "baseline_source_counts": {
         "verified_evidence": 3,
@@ -482,15 +484,15 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
-        "\"Wig Grip Band\" TikTok review",
-        "\"Wig Grip Band\" Amazon reviews",
+        "Wig Grip Band 2026 trend",
+        "Wig Grip Band customer review 2026",
         "\"Wig Grip Band\" black beauty supply",
-        "\"Wig Grip Band\" beauty supply review",
-        "\"Wig Grip Band\" hair tool TikTok"
+        "Wig Grip Band wig install accessory review",
+        "Wig Grip Band beauty supply accessory"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -516,15 +518,15 @@
       "item_id": "short-square-press-on-nails",
       "item_name": "Short Square Press-On Nails",
       "category": "Nails",
-      "rank": 24,
+      "rank": 25,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "queries": [
         "\"Short Square Press-On Nails\" beauty supply trend",
-        "\"Short Square Press-On Nails\" TikTok review",
-        "\"Short Square Press-On Nails\" Amazon reviews",
+        "Short Square Press-On Nails 2026 trend",
+        "Short Square Press-On Nails customer review 2026",
         "\"Short Square Press-On Nails\" black beauty supply",
-        "\"Short Square Press-On Nails\" nail inspo trend",
-        "\"Short Square Press-On Nails\" press on review"
+        "Short Square Press-On Nails press-on nail trend",
+        "Short Square Press-On Nails nail design review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 3,
@@ -550,15 +552,15 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 9,
+      "rank": 8,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Synthetic Lace Front Wig\" beauty supply trend",
-        "\"Synthetic Lace Front Wig\" TikTok review",
-        "\"Synthetic Lace Front Wig\" Amazon reviews",
+        "Synthetic Lace Front Wig 2026 trend",
+        "Synthetic Lace Front Wig customer review 2026",
         "\"Synthetic Lace Front Wig\" black beauty supply",
-        "\"Synthetic Lace Front Wig\" install review",
-        "\"Synthetic Lace Front Wig\" lace wig customer review"
+        "Synthetic Lace Front Wig wig install trend",
+        "Synthetic Lace Front Wig natural hair review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -584,12 +586,12 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 11,
+      "rank": 10,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
-        "\"Wig Adhesive Glue\" TikTok review",
-        "\"Wig Adhesive Glue\" Amazon reviews",
+        "Wig Adhesive Glue 2026 trend",
+        "Wig Adhesive Glue customer review 2026",
         "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
@@ -605,7 +607,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -613,33 +615,33 @@
       }
     },
     {
-      "item_id": "glueless-pre-cut-hd-lace-wig",
-      "item_name": "Glueless Pre-Cut HD Lace Wig",
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 12,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"Glueless Pre-Cut HD Lace Wig\" beauty supply trend",
-        "\"Glueless Pre-Cut HD Lace Wig\" TikTok review",
-        "\"Glueless Pre-Cut HD Lace Wig\" Amazon reviews",
-        "\"Glueless Pre-Cut HD Lace Wig\" black beauty supply",
-        "\"Glueless Pre-Cut HD Lace Wig\" install review",
-        "\"Glueless Pre-Cut HD Lace Wig\" lace wig customer review"
+        "\"V-Part Human Hair Wig\" beauty supply trend",
+        "V-Part Human Hair Wig 2026 trend",
+        "V-Part Human Hair Wig customer review 2026",
+        "\"V-Part Human Hair Wig\" black beauty supply",
+        "V-Part Human Hair Wig wig install trend",
+        "V-Part Human Hair Wig natural hair review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 12,
+        "verified_evidence": 13,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 12,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
         "article_evidence": 0,
         "unique_domains": 5,
         "unique_trend_domains": 0,
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -653,10 +655,12 @@
     "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
   ],
   "independent_ai_review": {
-    "reviewed_at": "2026-08-07T10:48:42.960599Z",
-    "primary_growth_blocker": "Traffic cannot be tied to the 500 average daily visits goal because GA4_PROPERTY_ID/reporting access is missing, despite live GA4 tag and Vercel analytics script.",
-    "primary_insight_quality_blocker": "36/44 weekly items remain WATCHLIST and Jewelry/Nails/Tools/Wigs have zero weekly published trend URLs; generated search links are kept as watchlist only.",
-    "action_taken": "Added whole-token evidence relevance and targeted Wig Adhesive Glue alias probes; recovered live product URL/image coverage from 43/44 to 44/44 without converting the item into a trend claim.",
-    "next_direction": "Add V-Part Human Hair Wig TikTok Shop alias fallback and prioritize dated post/article/thread capture for Jewelry, Nails, Tools, and Wigs."
+    "reviewed_at": "2026-08-07T12:03:32.079009Z",
+    "primary_growth_blocker": "Rolling 30-day traffic cannot be queried centrally because GA4_PROPERTY_ID and server-side GA4/Vercel analytics export access are still missing, even though GA4 tag and Vercel Web Analytics script are live.",
+    "primary_insight_quality_blocker": "37/44 weekly items remain WATCHLIST; zero-trend categories are Jewelry, Nails, Tools, and Wigs. Trend items regressed 8→7 this run, so no new trend claim was promoted.",
+    "action_taken": "Added strict V-Part/leave-out wig alias fallback for product/TikTok Shop collection; added public Evidence quality snapshot UI + review JSON CTA to home/timeframe pages; broadened next-loop dated-source focus queries so zero-trend categories are not stuck on over-exact search phrases.",
+    "material_change": "TikTok Shop item coverage improved 43/44→44/44 and TikTok Shop URLs 63→68; V-Part Human Hair Wig now has 3 TikTok Shop URLs and 13 total live product/listing URLs while staying WATCHLIST because trend URLs remain 0. Public pages now expose evidence gap counts before share CTA.",
+    "regression_or_limitation": "Published weekly trend coverage moved 8→7 and WATCHLIST 36→37; likely source-result volatility/over-narrow dated URL capture. This is reported as a gap, not hidden by supply gains.",
+    "next_direction": "Use the new broader focus queries to capture dated item-relevant article/post/thread URLs for Jewelry, Nails, Tools, and Wigs; keep TikTok Shop/listing URLs as supply validation only; connect GA4 Data API or Vercel export to measure the 500/day goal."
   }
 }

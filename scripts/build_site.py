@@ -275,6 +275,57 @@ def data_health_panel(rows: list[dict[str, Any]]) -> str:
     ) + '</div>'
 
 
+def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
+    """Compact transparency panel so ranking scores do not feel black-box."""
+    if not rows:
+        return ""
+    by_category: dict[str, dict[str, int]] = defaultdict(lambda: {"items": 0, "trend": 0})
+    missing_tiktok: list[str] = []
+    for row in rows:
+        counts = row.get("source_counts", {}) or {}
+        category = str(row.get("category_name") or row.get("category_id") or "Uncategorized")
+        by_category[category]["items"] += 1
+        if int(counts.get("trend_evidence") or counts.get("news_magazine") or 0) > 0:
+            by_category[category]["trend"] += 1
+        if int(counts.get("tiktok_shop_product_evidence") or 0) == 0:
+            missing_tiktok.append(str(row.get("item_name") or "Unknown item"))
+
+    trend_items = count_items_with_source(rows, "trend_evidence")
+    watchlist_items = sum(
+        1
+        for row in rows
+        if row.get("momentum") == "watchlist" or int((row.get("source_counts") or {}).get("trend_evidence") or 0) == 0
+    )
+    zero_trend_categories = [
+        f"{category} {stats['items']} items"
+        for category, stats in sorted(by_category.items())
+        if stats["trend"] == 0
+    ]
+    zero_summary = ", ".join(zero_trend_categories[:4]) if zero_trend_categories else "None"
+    if len(zero_trend_categories) > 4:
+        zero_summary += f" +{len(zero_trend_categories) - 4} more"
+    tiktok_summary = ", ".join(missing_tiktok[:3]) if missing_tiktok else "None"
+    if len(missing_tiktok) > 3:
+        tiktok_summary += f" +{len(missing_tiktok) - 3} more"
+
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    return f"""
+      <section class="wrap evidence-snapshot" data-growth-section="evidence-gap-transparency-v1" aria-label="Evidence quality snapshot">
+        <div class="evidence-snapshot-copy">
+          <span>Evidence quality snapshot</span>
+          <h2>{esc(label)} score를 과장하지 않기 위한 공개 체크</h2>
+          <p>Trend URL, WATCHLIST, zero-trend category, TikTok Shop coverage를 한눈에 보여 owner가 점수와 evidence gap을 같이 판단하게 합니다.</p>
+        </div>
+        <div class="evidence-snapshot-grid">
+          <div><b>{esc(trend_items)}/{esc(len(rows))}</b><span>Trend-backed items</span></div>
+          <div><b>{esc(watchlist_items)}</b><span>WATCHLIST items</span></div>
+          <div><b>{esc(len(zero_trend_categories))}</b><span>Zero-trend categories</span><small>{esc(zero_summary)}</small></div>
+          <div><b>{esc(len(missing_tiktok))}</b><span>Missing TikTok Shop</span><small>{esc(tiktok_summary)}</small></div>
+        </div>
+        <a class="snapshot-review-link" data-growth-cta="evidence_snapshot_review" href="/data/operations_review_public.json">Public review JSON 보기</a>
+      </section>"""
+
+
 def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str, **extra: object) -> str:
     params = {
         "utm_source": source,
@@ -521,6 +572,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
+      {evidence_gap_snapshot(weekly, 'weekly')}
       {share_panel('weekly', weekly)}
       <section class="wrap block">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
@@ -579,6 +631,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats)}</div>
+      {evidence_gap_snapshot(rows, timeframe)}
       {share_panel(timeframe, rows)}
       <section class="wrap block">
         <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
