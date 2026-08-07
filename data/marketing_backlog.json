@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T04:28:47.182256Z",
+  "updated_at": "2026-08-07T05:44:04Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -113,6 +113,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "Item-specific detail links are easier for reps/owners to forward than a full ranking page when discussing one product test.",
       "next_step": "Measure growth_share_copy_result and UTM visits once GA4/Vercel analytics export is available."
+    },
+    {
+      "experiment_id": "production-parity-public-data-qa-v1",
+      "status": "active-qa-hardening",
+      "hypothesis": "A Playwright server rooted at Vercel's public output plus /data/* artifact checks will catch production-only 404/tracking regressions before they hurt growth measurement.",
+      "next_step": "Keep live verification and e2e artifact URLs aligned; measure whether fewer deployment regressions occur once analytics export is available."
     }
   ],
   "permission_requests": [

@@ -65,6 +65,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.getByText('500/day')).toBeVisible();
     await expect(page.locator('script[src="/assets/growth.js"]')).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
+    await expect(page.locator('meta[name="gns:growth-goal"]')).toHaveAttribute('content', 'daily-visits-500');
+    await expect(page.locator('meta[name="gns:growth-experiment"]')).toHaveAttribute('content', 'hero-growth-cta-v1');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\//);
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
     const homeJsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
@@ -124,7 +126,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const clickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(clickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_primary')).toBe(true);
 
-    const goalResponse = await request.get('/public/data/growth_goal_public.json');
+    const goalResponse = await request.get('/data/growth_goal_public.json');
     expect(goalResponse.status()).toBeLessThan(400);
     const goal = await goalResponse.json();
     expect(goal.primary_goal?.target).toBe(500);
@@ -227,29 +229,29 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
   });
 
   test('public deploy data artifacts expose review and collection health', async ({ request }) => {
-    const rankingsResponse = await request.get('/public/data/rankings.json');
+    const rankingsResponse = await request.get('/data/rankings.json');
     expect(rankingsResponse.status()).toBeLessThan(400);
     const rankings = await rankingsResponse.json();
     expect(rankings.collection_health?.evidence_totals?.items_requested).toBeGreaterThan(0);
 
-    const reviewResponse = await request.get('/public/data/operations_review_public.json');
+    const reviewResponse = await request.get('/data/operations_review_public.json');
     expect(reviewResponse.status()).toBeLessThan(400);
     const review = await reviewResponse.json();
     expect(review.metrics?.items).toBeGreaterThan(0);
     expect(review.collection_health?.source_health).toBeTruthy();
 
-    const collectionResponse = await request.get('/public/data/collection_notes_public.json');
+    const collectionResponse = await request.get('/data/collection_notes_public.json');
     expect(collectionResponse.status()).toBeLessThan(400);
     const collection = await collectionResponse.json();
     expect(collection.evidence_totals?.items_requested).toBeGreaterThan(0);
     expect(collection.source_health?.apify_tiktok_shop?.status).toBeTruthy();
 
-    const marketingResponse = await request.get('/public/data/marketing_backlog_public.json');
+    const marketingResponse = await request.get('/data/marketing_backlog_public.json');
     expect(marketingResponse.status()).toBeLessThan(400);
     const marketing = await marketingResponse.json();
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-share-kit-v1')).toBe(true);
 
-    const snsRulesResponse = await request.get('/public/data/sns_posting_rules_public.json');
+    const snsRulesResponse = await request.get('/data/sns_posting_rules_public.json');
     expect(snsRulesResponse.status()).toBeLessThan(400);
     const snsRules = await snsRulesResponse.json();
     expect(snsRules.primary_channel?.tool).toBe('xurl');

@@ -23,7 +23,7 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   webServer: {
-    command: `python3 -m http.server ${port}`,
+    command: `python3 -m http.server ${port} --directory public`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 15_000,

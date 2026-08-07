@@ -125,6 +125,9 @@ def shell(
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{esc(description)}">
+  <meta name="gns:growth-goal" content="daily-visits-500">
+  <meta name="gns:growth-target" content="500 average daily visits">
+  <meta name="gns:growth-experiment" content="hero-growth-cta-v1">
   <link rel="canonical" href="{esc(canonical_url)}">
   <meta property="og:title" content="{esc(title)} · BSS Trend Ranking">
   <meta property="og:description" content="{esc(description)}">
@@ -139,7 +142,7 @@ def shell(
 {analytics_head()}{json_ld_script(json_ld)}  <link rel="stylesheet" href="/assets/style.css">
   <script defer src="/assets/growth.js"></script>
 </head>
-<body data-page-type="{esc(page_type)}">
+<body data-page-type="{esc(page_type)}" data-growth-goal-id="daily-visits-500" data-experiment-id="hero-growth-cta-v1">
   <header class="topbar">
     <div class="wrap navline">
       <a class="brand" href="/index.html"><span class="brand-dot"></span>BSS Trend Ranking</a>

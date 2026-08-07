@@ -37,9 +37,9 @@ data/next_loop_focus.json       다음 collection loop에 적용할 focus querie
 data/growth_goal.json           500 average daily visits goal, analytics providers, growth guardrails
 data/marketing_backlog.json     owner-share/SNS campaign drafts and experiments
 data/sns_posting_rules.json     X/xurl posting rule, frequency limits, guardrails, UTM template
-public/data/operations_review_public.json  live verification용 sanitized review output
-public/data/growth_goal_public.json        sanitized growth/analytics status
-public/data/sns_posting_rules_public.json  sanitized SNS posting rule
+public/data/operations_review_public.json  Vercel output; live URL은 /data/operations_review_public.json
+public/data/growth_goal_public.json        Vercel output; live URL은 /data/growth_goal_public.json
+public/data/sns_posting_rules_public.json  Vercel output; live URL은 /data/sns_posting_rules_public.json
 package.json                    Vercel build command
 vercel.json                     Vercel output config
 ```
@@ -51,7 +51,7 @@ vercel.json                     Vercel output config
 ```bash
 cd /opt/data/gns_research_hub
 npm run refresh
-python3 -m http.server 8765
+python3 -m http.server 8765 --directory public
 ```
 
 브라우저에서:
@@ -59,6 +59,7 @@ python3 -m http.server 8765
 ```text
 http://127.0.0.1:8765/index.html
 http://127.0.0.1:8765/rankings/weekly.html
+http://127.0.0.1:8765/data/growth_goal_public.json
 ```
 
 ## Playwright 버그/작동 테스트
@@ -70,7 +71,7 @@ npm install
 npm run test:e2e:install
 ```
 
-실제 검증은 아래 명령으로 실행합니다. `npm run build`를 먼저 돌린 뒤 local static server를 띄우고, desktop/mobile Chromium에서 페이지 렌더링, 탭/카테고리 이동, item detail click-through/back navigation, internal link/hash anchor, client-side error/404를 함께 확인합니다.
+실제 검증은 아래 명령으로 실행합니다. `npm run build`를 먼저 돌린 뒤 Vercel과 같은 `public/` output directory를 local static server root로 띄우고, desktop/mobile Chromium에서 페이지 렌더링, 탭/카테고리 이동, item detail click-through/back navigation, `/data/*` public JSON artifact, internal link/hash anchor, client-side error/404를 함께 확인합니다.
 
 ```bash
 npm run test:e2e
