@@ -21,6 +21,7 @@ SITEMAP_PATH = ROOT / "sitemap.xml"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
+TIMEFRAME_DAYS = {"weekly": 14, "monthly": 45, "quarterly": 120, "yearly": 365}
 SITE_BASE = "https://gnsresearchhub.vercel.app"
 GA4_MEASUREMENT_ID = "G-SW7HBY6WRE"
 
@@ -290,8 +291,13 @@ def data_health_panel(rows: list[dict[str, Any]]) -> str:
     ) + '</div>'
 
 
-def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
-    """Compact transparency panel so ranking scores do not feel black-box."""
+def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str, collection_health: dict[str, Any] | None = None) -> str:
+    """Compact transparency panel so ranking scores do not feel black-box.
+
+    The active ranking window can be much stricter than broader collection
+    diagnostics. Showing both prevents owners from misreading a 365-day captured
+    source count as a weekly trend claim.
+    """
     if not rows:
         return ""
     by_category: dict[str, dict[str, int]] = defaultdict(lambda: {"items": 0, "trend": 0})
@@ -326,6 +332,18 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
         tiktok_summary += f" +{len(missing_tiktok) - 3} more"
 
     label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    window_days = TIMEFRAME_DAYS.get(timeframe) or "—"
+    health = collection_health if isinstance(collection_health, dict) else {}
+    totals = health.get("evidence_totals", {}) if isinstance(health.get("evidence_totals"), dict) else {}
+    captured_trend_items = int(totals.get("items_with_published_trend_url") or 0)
+    captured_total_items = int(totals.get("items_requested") or len(rows) or 0)
+    captured_cell = ""
+    if captured_trend_items or captured_total_items:
+        captured_cell = (
+            f"<div><b>{esc(captured_trend_items)}/{esc(captured_total_items)}</b>"
+            "<span>365d captured published URLs</span>"
+            "<small>Collection diagnostic only · not weekly trend movement</small></div>"
+        )
     cache_cell = ""
     if cached_tiktok:
         cache_cell = (
@@ -333,17 +351,19 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str) -> str:
             "<small>Current actor failed; previous capture is labeled supply-only</small></div>"
         )
     return f"""
-      <section class="wrap evidence-snapshot" data-growth-section="evidence-gap-transparency-v1" aria-label="Evidence quality snapshot">
+      <section class="wrap evidence-snapshot" data-growth-section="evidence-gap-transparency-v1" data-growth-experiment="evidence-window-transparency-v1" aria-label="Evidence quality snapshot">
         <div class="evidence-snapshot-copy">
           <span>Evidence quality snapshot</span>
-          <h2>{esc(label)} score를 과장하지 않기 위한 공개 체크</h2>
-          <p>Trend URL, WATCHLIST, zero-trend category, TikTok Shop coverage를 한눈에 보여 owner가 점수와 evidence gap을 같이 판단하게 합니다.</p>
+          <h2>{esc(label)} evidence window를 먼저 확인</h2>
+          <p>이 view의 trend-backed count는 {esc(window_days)}일 안에 잡힌 published URL 기준입니다. 365d captured source는 수집 coverage 진단일 뿐, weekly movement를 만들지 않습니다.</p>
         </div>
         <div class="evidence-snapshot-grid">
+          <div><b>{esc(window_days)}d</b><span>Active trend window</span><small>Rank movement uses this view's dated URLs</small></div>
           <div><b>{esc(trend_items)}/{esc(len(rows))}</b><span>Trend-backed items</span></div>
           <div><b>{esc(watchlist_items)}</b><span>WATCHLIST items</span></div>
           <div><b>{esc(len(zero_trend_categories))}</b><span>Zero-trend categories</span><small>{esc(zero_summary)}</small></div>
           <div><b>{esc(len(missing_tiktok))}</b><span>Missing TikTok Shop</span><small>{esc(tiktok_summary)}</small></div>
+          {captured_cell}
           {cache_cell}
         </div>
         <a class="snapshot-review-link" data-growth-cta="evidence_snapshot_review" href="/data/operations_review_public.json">Public review JSON 보기</a>
@@ -881,7 +901,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
-      {evidence_gap_snapshot(weekly, 'weekly')}
+      {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
       {owner_quick_picks('weekly', weekly)}
       {owner_brief_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
@@ -943,7 +963,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats)}</div>
-      {evidence_gap_snapshot(rows, timeframe)}
+      {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}
       {owner_quick_picks(timeframe, rows)}
       {owner_brief_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}

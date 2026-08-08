@@ -78,7 +78,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(hasGa4InlineConfig).toBe(true);
     await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toHaveAttribute('data-growth-experiment', 'evidence-window-transparency-v1');
     await expect(page.getByText('Evidence quality snapshot')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Weekly evidence window를 먼저 확인' })).toBeVisible();
+    await expect(page.getByText('Active trend window')).toBeVisible();
+    await expect(page.getByText('365d captured published URLs')).toBeVisible();
     await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
     await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Weekly 매장 테스트 빠른 선택' })).toBeVisible();
@@ -214,6 +218,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'utm-attribution-persistence-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-brief-copy-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'source-evidence-clicks-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -353,6 +358,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'top3-owner-share-strip-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-brief-copy-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'source-evidence-clicks-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-window-transparency-v1')).toBe(true);
 
     const snsRulesResponse = await request.get('/data/sns_posting_rules_public.json');
     expect(snsRulesResponse.status()).toBeLessThan(400);

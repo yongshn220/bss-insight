@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-07T18:21:47.998717Z",
+  "updated_at": "2026-08-08T20:50:34.800726Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-07T18:21:47.998717Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are present/provider-ready, but central visit export is still unavailable in this runtime. This run added source-evidence-clicks-v1: item detail source cards now carry source_layer/source_kind/source_type/source_status/date_kind metadata and growth.js sends those fields on source_link clicks, so evidence-click intent can be separated from generic CTA/share clicks once analytics export is connected.",
+    "last_checked_at": "2026-08-08T20:50:34.800726Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added evidence-window-transparency-v1: the public evidence snapshot now separates each active ranking window (Weekly 14d / Monthly 45d / Quarterly 120d / Yearly 365d) from the broader 365d captured published-source coverage so owners do not confuse collection diagnostics with weekly trend movement.",
     "rolling_30d_average_daily_visits": null,
     "raw_result": "measurement pending: /_vercel/insights/script.js and GA4 G-SW7HBY6WRE are live, but GA4_PROPERTY_ID plus service-account reporting access or an approved Vercel Analytics export/API is still needed to calculate rolling 30-day visits.",
-    "interpretation": "Traffic progress cannot be claimed yet. The new source-click metadata improves diagnosability: if BSS owners click published trend URLs, BSS store URLs, or watchlist links differently, the next measured experiment can improve trust/shareability toward 500 average daily visits."
+    "interpretation": "Traffic progress still cannot be claimed. The new window/context UI should improve trust and shareability by making trend evidence recency explicit before owners copy/share ranking links."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -246,6 +246,16 @@
       ],
       "success_metric": "source_link clicks segmented by source_layer/source_kind/source_status, item detail share/copy events after evidence clicks, and UTM-attributed repeat visits once analytics export is available",
       "hypothesis": "BSS owners will trust and revisit item detail pages more when evidence/source clicks can be measured separately for published trend evidence, supply validation, cached fallback, and watchlist-only links."
+    },
+    {
+      "experiment_id": "evidence-window-transparency-v1",
+      "status": "active-site-ux-after-build",
+      "variants": [
+        "single_trend_count_only",
+        "timeframe_window_plus_365d_collection_context"
+      ],
+      "success_metric": "evidence_snapshot_review CTA clicks, item-card clicks after viewing the snapshot, owner brief/share copy events, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners will trust and share the ranking more when Weekly/Monthly/Quarterly/Yearly trend windows are clearly separated from 365d captured source coverage, reducing black-box score confusion."
     }
   ],
   "reporting": {
