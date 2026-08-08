@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-08T22:08:41.130581Z",
+  "updated_at": "2026-08-08T23:26:33.418183Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -306,6 +306,26 @@
       "owner_value": "Owners can see which WATCHLIST items are not yet trend-backed and decide small tests while understanding what the next research loop will try to verify.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are required to compare focus-watchlist clicks and repeat visits against quick-pick/owner-brief components.",
       "guardrail": "Focus items and generated queries are not scoring evidence; public JSON removes raw query strategy and trend claims still require dated captured source URLs."
+    },
+    {
+      "campaign_id": "section-visibility-engagement-v1",
+      "status": "live-in-growth-js-after-build",
+      "objective": "Measure which dashboard modules are actually seen before clicks/shares so the 500/day growth loop can optimize placement instead of relying on page-load exposure only.",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_section_view type=section_view",
+        "component_experiment_id and section_position for quick picks, evidence focus, owner brief, share strips, and source sections",
+        "item_count and heading metadata for module-quality comparison",
+        "downstream growth_click and growth_share_copy_result after viewed sections once analytics export is available"
+      ],
+      "owner_value": "The public UI does not add clutter; the growth loop can learn which owner-useful modules deserve higher placement and which should be shortened or removed.",
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to segment section views and tie them to visits, repeats, and share/click outcomes."
     }
   ],
   "experiment_backlog": [
@@ -355,7 +375,7 @@
       "experiment_id": "source-coverage-alias-fallback-v1",
       "status": "promoted-to-collector",
       "hypothesis": "Strict fallback aliases for item-level listing collectors will keep BSS-owner dashboard cards actionable when exact word order misses live product pages, while preserving watchlist/trend-evidence separation.",
-      "next_step": "Monitor operations_review coverage_deltas and live item-card clicks after GA4/Vercel export access is available."
+      "next_step": "Monitor Butterfly Charm Anklet and other jewelry accessory alias probes; keep recovered listing URLs supply-only and continue dated trend source capture for zero-trend Jewelry/Nails/Tools/Wigs."
     },
     {
       "experiment_id": "ranking-card-owner-action-v1",
@@ -404,6 +424,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "BSS owners will trust and share the ranking more when Weekly/Monthly/Quarterly/Yearly trend windows are clearly separated from 365d captured source coverage, reducing black-box score confusion.",
       "next_step": "Measure evidence_snapshot_review clicks and downstream share/item-card behavior after GA4/Vercel analytics export access is connected; if clicks are low, compress the explanation into a trust badge."
+    },
+    {
+      "experiment_id": "section-visibility-engagement-v1",
+      "status": "promoted-to-live-growth-js-after-build",
+      "hypothesis": "Section-level visibility events will reveal which ranking modules are actually seen before BSS owners click, copy, or share, enabling layout optimization toward 500/day visits.",
+      "next_step": "After analytics export access is connected, compare growth_section_view→growth_click/share_copy funnels by component_experiment_id and move weak modules lower or shorten their copy."
     }
   ],
   "permission_requests": [
@@ -412,6 +438,7 @@
     "Optional: choose/register a custom domain for better trust and repeat visits.",
     "Optional: define paid marketing budget cap and stop-loss rule before any ad spend.",
     "Provide ga4_data_api_property_or_service_credentials: Needed to compute rolling 30-day visits and segment source-evidence-clicks-v1 source_link events by source_layer/source_status.",
-    "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so evidence-window-transparency-v1 can be tied to rolling 30-day visits and downstream share/click events."
+    "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so evidence-window-transparency-v1 can be tied to rolling 30-day visits and downstream share/click events.",
+    "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so section-visibility-engagement-v1 can connect module views to clicks, shares, repeat visits, and rolling 30-day average daily visits."
   ]
 }

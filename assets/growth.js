@@ -264,6 +264,46 @@
     };
   }
 
+  function sectionViewPayload(section) {
+    const context = elementContext(section);
+    const heading = section.querySelector('h1, h2, h3');
+    const itemCount = section.querySelectorAll('[data-item-id]').length;
+    return {
+      type: 'section_view',
+      ...context,
+      heading: trimText(heading?.textContent || section.getAttribute('aria-label') || context.section, 120),
+      item_count: itemCount,
+    };
+  }
+
+  function installSectionViewTracking() {
+    const sections = Array.from(document.querySelectorAll('[data-growth-section]'));
+    if (!sections.length) return;
+    const seen = new Set();
+
+    function markViewed(section) {
+      const sectionId = section.getAttribute('data-growth-section') || '';
+      if (!sectionId || seen.has(sectionId)) return;
+      seen.add(sectionId);
+      track('growth_section_view', sectionViewPayload(section));
+    }
+
+    if (typeof window.IntersectionObserver !== 'function') {
+      sections.forEach(markViewed);
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.35) return;
+        markViewed(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: [0.35, 0.6] });
+
+    sections.forEach((section) => observer.observe(section));
+  }
+
   function labelForClick(target) {
     const context = elementContext(target);
     const share = target.closest('[data-growth-share]');
@@ -350,6 +390,7 @@
     applyExperiment(variant);
     installClickTracking();
     installCopyButtons();
+    installSectionViewTracking();
     const sections = growthSections();
     track('growth_exposure', {
       title: trimText(document.title),

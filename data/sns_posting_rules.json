@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-07T14:06:40.838741Z",
+  "updated_at": "2026-08-08T23:26:33.418183Z",
   "goal_id": "daily-visits-500",
   "status": "active_pending_xurl_install_and_oauth",
   "primary_channel": {
@@ -56,9 +56,11 @@
     "events": [
       "growth_exposure",
       "growth_click",
-      "growth_share_copy_result"
+      "growth_share_copy_result",
+      "growth_section_view"
     ],
     "utm_source": "x",
-    "utm_medium": "organic"
+    "utm_medium": "organic",
+    "note": "Posting remains draft/approval-only until xurl auth; section-view events now help measure whether SNS/owner-share traffic sees quick-picks/focus/share modules before clicking."
   }
 }

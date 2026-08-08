@@ -170,6 +170,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
 
+    await page.locator('[data-growth-section="owner-quick-picks-v1"]').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() =>
+      ((window as any).__GNS_GROWTH__?.events?.() ?? []).some(
+        (event: any) => event.event === 'growth_section_view' && event.section === 'owner-quick-picks-v1' && event.item_count > 0,
+      ),
+    );
+    const sectionViewEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(sectionViewEvents.some((event: any) => event.event === 'growth_section_view' && event.type === 'section_view' && event.component_experiment_id === 'owner-quick-picks-v1' && event.section_position && String(event.heading).includes('매장 테스트 빠른 선택'))).toBe(true);
+
     const top3CopyButton = page.locator('[data-growth-share="weekly_top3_copy_link"]').first();
     await top3CopyButton.click();
     await expect(top3CopyButton).toHaveText(/Copied|Link ready/);
@@ -240,6 +249,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'utm-attribution-persistence-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-brief-copy-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'source-evidence-clicks-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'section-visibility-engagement-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
   });
@@ -366,6 +376,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const review = await reviewResponse.json();
     expect(review.metrics?.items).toBeGreaterThan(0);
     expect(review.collection_health?.source_health).toBeTruthy();
+    expect(review.independent_ai_review?.review_type).toBe('independent_ai_operator_review');
+    expect(review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /analytics export/i.test(blocker))).toBe(true);
 
     const collectionResponse = await request.get('/data/collection_notes_public.json');
     expect(collectionResponse.status()).toBeLessThan(400);

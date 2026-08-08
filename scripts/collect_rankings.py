@@ -383,9 +383,10 @@ def needs_alias_product_probe(row: dict[str, Any]) -> bool:
     """Decide when product/supply collectors should try fallback aliases.
 
     Most items keep a single keyword to avoid noisy marketplace matches and API
-    cost. Feedback-focus items and body-jewelry SKUs are the exception: the first
-    exact phrase can be too narrow (for example, gauge/material/body-piercing
-    word order), so alternate item aliases are safer than broad search pages.
+    cost. Feedback-focus items and jewelry/body-jewelry SKUs are the exception:
+    the first exact phrase can be too narrow (for example, gauge/material/body-
+    piercing word order or charm/metal wording), so alternate item aliases are
+    safer than broad search pages.
     Wig adhesive is another strict exception: BSS stores often title the shelf as
     "lace adhesive", "wig adhesive", or "lace bond adhesive" rather than
     the full item name, and the primary phrase alone created a live-product gap.
@@ -404,7 +405,19 @@ def needs_alias_product_probe(row: dict[str, Any]) -> bool:
         return any(token in blob for token in ("marley", "kinky", "boho", "crochet", "twist", "loc"))
     if row.get("category_id") != "jewelry-fashion-accessories":
         return False
-    return any(token in blob for token in ("nose", "belly", "navel", "piercing", "gauge", "14g", "20g"))
+    # Jewelry listings often reorder the exact item phrase. Example observed in
+    # the 2026-08-08 refresh: "butterfly charm anklet" missed live supply while
+    # the stricter alias "gold butterfly anklet" matched a concrete HairToBeauty
+    # product URL. These aliases remain supply-validation probes only; they must
+    # still pass evidence_relevance and never create a trend claim.
+    return any(
+        token in blob
+        for token in (
+            "nose", "belly", "navel", "piercing", "gauge", "14g", "20g",
+            "anklet", "pendant", "necklace", "cuff", "cuffs", "stackable",
+            "stud", "studs", "hoop", "hoops", "rhinestone", "butterfly",
+        )
+    )
 
 
 def product_search_queries(row: dict[str, Any], max_queries: int = 3) -> list[str]:
