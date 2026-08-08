@@ -14,6 +14,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 RANKINGS_PATH = DATA_DIR / "rankings.json"
+NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
 RANKINGS_DIR = ROOT / "rankings"
 ITEMS_DIR = ROOT / "items"
 ROBOTS_PATH = ROOT / "robots.txt"
@@ -38,7 +39,7 @@ STORE_ZONE_LABELS = {
 
 
 def esc(value: object) -> str:
-    return html.escape(str(value or ""), quote=True)
+    return html.escape("" if value is None else str(value), quote=True)
 
 
 def absolute_url(path_or_url: object) -> str:
@@ -77,6 +78,17 @@ def load_rankings() -> dict[str, Any]:
     if not RANKINGS_PATH.exists():
         return {"rankings": {}, "categories": [], "generated_at": ""}
     return json.loads(RANKINGS_PATH.read_text(encoding="utf-8"))
+
+
+def load_next_loop_focus() -> dict[str, Any]:
+    """Load sanitized focus candidates from the feedback loop for owner-visible trust UX."""
+    if not NEXT_LOOP_FOCUS_PATH.exists():
+        return {}
+    try:
+        loaded = json.loads(NEXT_LOOP_FOCUS_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return {}
+    return loaded if isinstance(loaded, dict) else {}
 
 
 def fmt_change(change: Any) -> str:
@@ -367,6 +379,59 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str, collection
           {cache_cell}
         </div>
         <a class="snapshot-review-link" data-growth-cta="evidence_snapshot_review" href="/data/operations_review_public.json">Public review JSON 보기</a>
+      </section>"""
+
+
+def evidence_focus_watchlist(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Show which weak items the next evidence loop is actively trying to upgrade.
+
+    This does not turn focus queries into evidence. It gives BSS owners and reps a
+    concrete reason to revisit later while keeping WATCHLIST limitations visible.
+    """
+    focus = load_next_loop_focus()
+    focus_items = focus.get("focus_items", []) if isinstance(focus, dict) else []
+    if not isinstance(focus_items, list) or not rows:
+        return ""
+    by_id = {str(row.get("item_id") or ""): row for row in rows}
+    cards = []
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-evidence-focus-watchlist"
+    for item in focus_items[:6]:
+        if not isinstance(item, dict):
+            continue
+        item_id = str(item.get("item_id") or "").strip()
+        row = by_id.get(item_id)
+        if not row:
+            continue
+        counts = row.get("source_counts", {}) or {}
+        detail_url = growth_campaign_url(
+            f"/items/{item_id}.html",
+            source="site",
+            medium="focus_watchlist",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
+        reason = item.get("reason") or evidence_status_label(row)
+        cards.append(f"""
+        <a class="focus-card" data-growth-cta="evidence_focus_watchlist" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="{esc(detail_url)}">
+          <span>{esc(row.get('category_name'))} · #{esc(row.get('rank'))}</span>
+          <strong>{esc(row.get('item_name'))}</strong>
+          <p>{esc(clamp_text(reason, 118))}</p>
+          <small>Trend {esc(counts.get('trend_evidence', 0))} · 14d {esc(counts.get('recent_trend_evidence', 0))} · Store {esc(counts.get('retail_product_evidence', 0))} · TikTok {esc(counts.get('tiktok_shop_product_evidence', 0))}</small>
+        </a>""")
+    if not cards:
+        return ""
+    reviewed_at = focus.get("updated_at") or "pending review"
+    return f"""
+      <section class="wrap focus-watchlist" data-growth-section="evidence-focus-watchlist-v1" data-growth-experiment="evidence-focus-watchlist-v1" aria-labelledby="focus-watchlist-{esc(timeframe)}">
+        <div class="section-title focus-title">
+          <div><span>Evidence focus · next loop</span><h2 id="focus-watchlist-{esc(timeframe)}">{esc(label)} WATCHLIST 근거 보강 대상</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <p class="focus-note">아래 item은 ranking에서 숨기지 않고 다음 수집 loop가 우선 보강하는 대상입니다. 검색 URL이나 query 자체는 evidence가 아니며, 발행일 있는 post/article/listing URL이 잡힐 때만 trend claim으로 올라갑니다. Updated {esc(reviewed_at)}.</p>
+        <div class="focus-grid">{''.join(cards)}</div>
+        <a class="focus-review-link" data-growth-cta="evidence_focus_public_json" href="/data/next_loop_focus_public.json">Focus JSON 보기</a>
       </section>"""
 
 
@@ -902,6 +967,7 @@ def render_home(data: dict[str, Any]) -> str:
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
       {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
+      {evidence_focus_watchlist('weekly', weekly)}
       {owner_quick_picks('weekly', weekly)}
       {owner_brief_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
@@ -964,6 +1030,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       </section>
       <div class="wrap">{category_chips(cats)}</div>
       {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}
+      {evidence_focus_watchlist(timeframe, rows)}
       {owner_quick_picks(timeframe, rows)}
       {owner_brief_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}

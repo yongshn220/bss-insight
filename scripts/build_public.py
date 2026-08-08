@@ -83,6 +83,14 @@ PUBLIC_MARKETING_FIELDS = [
     "permission_requests",
 ]
 
+PUBLIC_NEXT_LOOP_FOCUS_FIELDS = [
+    "updated_at",
+    "source_review",
+    "reason",
+    "focus_items",
+    "qa_focus",
+]
+
 
 def copy_path(name: str) -> None:
     src = ROOT / name
@@ -150,6 +158,24 @@ def public_sns_posting_rules_payload(rules: dict[str, Any]) -> dict[str, Any]:
     return {field: rules.get(field) for field in PUBLIC_SNS_POSTING_RULE_FIELDS if field in rules}
 
 
+def public_next_loop_focus_payload(focus: dict[str, Any]) -> dict[str, Any]:
+    payload = {field: focus.get(field) for field in PUBLIC_NEXT_LOOP_FOCUS_FIELDS if field in focus}
+    focus_items = payload.get("focus_items")
+    if isinstance(focus_items, list):
+        payload["focus_items"] = [
+            {
+                "item_id": item.get("item_id"),
+                "item_name": item.get("item_name"),
+                "category": item.get("category"),
+                "rank": item.get("rank"),
+                "reason": item.get("reason"),
+            }
+            for item in focus_items
+            if isinstance(item, dict)
+        ]
+    return payload
+
+
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -183,6 +209,10 @@ def copy_public_data() -> None:
     sns_rules = load_json(DATA_DIR / "sns_posting_rules.json")
     if sns_rules:
         write_json(data_dst / "sns_posting_rules_public.json", public_sns_posting_rules_payload(sns_rules))
+
+    next_focus = load_json(DATA_DIR / "next_loop_focus.json")
+    if next_focus:
+        write_json(data_dst / "next_loop_focus_public.json", public_next_loop_focus_payload(next_focus))
 
 
 def main() -> int:

@@ -25,6 +25,7 @@ OPS_HISTORY_PATH = DATA_DIR / "operations_review_history.json"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
 COLLECTION_NOTES_PATH = DATA_DIR / "collection_notes.json"
 PUBLIC_OPS_REVIEW_PATH = PUBLIC_DATA_DIR / "operations_review_public.json"
+PUBLIC_NEXT_LOOP_FOCUS_PATH = PUBLIC_DATA_DIR / "next_loop_focus_public.json"
 
 TIMEFRAME = "weekly"
 MAX_FOCUS_ITEMS = 6
@@ -484,7 +485,29 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
     return payload
 
 
-def refresh_public_review(review: dict[str, Any]) -> str:
+def public_next_loop_focus_payload(next_focus: dict[str, Any]) -> dict[str, Any]:
+    payload = {
+        key: next_focus.get(key)
+        for key in ["updated_at", "source_review", "reason", "qa_focus"]
+        if key in next_focus
+    }
+    focus_items = next_focus.get("focus_items")
+    if isinstance(focus_items, list):
+        payload["focus_items"] = [
+            {
+                "item_id": item.get("item_id"),
+                "item_name": item.get("item_name"),
+                "category": item.get("category"),
+                "rank": item.get("rank"),
+                "reason": item.get("reason"),
+            }
+            for item in focus_items
+            if isinstance(item, dict)
+        ]
+    return payload
+
+
+def refresh_public_review(review: dict[str, Any], next_focus: dict[str, Any] | None = None) -> str:
     """Keep public/data fresh when review runs after Playwright's initial build."""
     PUBLIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
     # Remove older full/internal public copies from earlier builds; public should
@@ -494,6 +517,8 @@ def refresh_public_review(review: dict[str, Any]) -> str:
         if stale.exists() or stale.is_symlink():
             stale.unlink()
     save_json(PUBLIC_OPS_REVIEW_PATH, public_review_payload(review))
+    if isinstance(next_focus, dict) and next_focus:
+        save_json(PUBLIC_NEXT_LOOP_FOCUS_PATH, public_next_loop_focus_payload(next_focus))
     return str(PUBLIC_OPS_REVIEW_PATH)
 
 
@@ -504,7 +529,7 @@ def main() -> int:
 
     review = build_review(args.playwright_summary)
     next_focus = persist_review(review)
-    public_review_path = refresh_public_review(review)
+    public_review_path = refresh_public_review(review, next_focus)
     print(json.dumps({
         "status": "reviewed",
         "review_path": str(OPS_REVIEW_PATH),

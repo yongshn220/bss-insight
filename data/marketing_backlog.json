@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-08T20:52:01.296364Z",
+  "updated_at": "2026-08-08T22:08:41.130581Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -283,6 +283,29 @@
       ],
       "owner_value": "Owners can quickly see whether a ranking claim is backed by the current view window or only by broader historical collection coverage, making WATCHLIST and trend-backed items easier to explain.",
       "measurement_need": "GA4_PROPERTY_ID plus service credentials or Vercel Analytics export/API access are needed to connect evidence-window interactions to visits/clicks/repeats."
+    },
+    {
+      "campaign_id": "evidence-focus-watchlist-v1",
+      "status": "live-on-site-after-build",
+      "objective": "Turn the evidence feedback loop into a repeat-visit reason by showing sanitized WATCHLIST focus items and UTM-tagged item-detail links.",
+      "utm_campaign_pattern": "daily-visits-500-{timeframe}-evidence-focus-watchlist",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html",
+        "https://gnsresearchhub.vercel.app/data/next_loop_focus_public.json"
+      ],
+      "tracked_events": [
+        "growth_exposure visible_growth_sections includes evidence-focus-watchlist-v1",
+        "growth_click type=cta_evidence_focus_watchlist with item_id/item_rank/item_category",
+        "item detail entrances with utm_medium=focus_watchlist",
+        "growth_click type=cta_evidence_focus_public_json"
+      ],
+      "owner_value": "Owners can see which WATCHLIST items are not yet trend-backed and decide small tests while understanding what the next research loop will try to verify.",
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are required to compare focus-watchlist clicks and repeat visits against quick-pick/owner-brief components.",
+      "guardrail": "Focus items and generated queries are not scoring evidence; public JSON removes raw query strategy and trend claims still require dated captured source URLs."
     }
   ],
   "experiment_backlog": [

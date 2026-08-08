@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-08T20:50:34.800726Z",
+  "updated_at": "2026-08-08T22:08:41.130581Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-08T20:50:34.800726Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added evidence-window-transparency-v1: the public evidence snapshot now separates each active ranking window (Weekly 14d / Monthly 45d / Quarterly 120d / Yearly 365d) from the broader 365d captured published-source coverage so owners do not confuse collection diagnostics with weekly trend movement.",
+    "last_checked_at": "2026-08-08T22:08:41.130581Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added evidence-focus-watchlist-v1: the dashboard now exposes sanitized next-loop WATCHLIST focus cards with UTM-tagged item-detail links and a public next_loop_focus JSON artifact, so BSS owners/reps can see exactly which weak items are being improved without treating search queries as evidence.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: /_vercel/insights/script.js and GA4 G-SW7HBY6WRE are live, but GA4_PROPERTY_ID plus service-account reporting access or an approved Vercel Analytics export/API is still needed to calculate rolling 30-day visits.",
-    "interpretation": "Traffic progress still cannot be claimed. The new window/context UI should improve trust and shareability by making trend evidence recency explicit before owners copy/share ranking links."
+    "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component-level growth events.",
+    "interpretation": "Traffic progress still cannot be claimed. The new focus-watchlist component improves repeat-visit/share reasons and exposes feedback-loop direction while preserving evidence discipline."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -256,6 +256,16 @@
       ],
       "success_metric": "evidence_snapshot_review CTA clicks, item-card clicks after viewing the snapshot, owner brief/share copy events, and repeat visits once analytics export is available",
       "hypothesis": "BSS owners will trust and share the ranking more when Weekly/Monthly/Quarterly/Yearly trend windows are clearly separated from 365d captured source coverage, reducing black-box score confusion."
+    },
+    {
+      "experiment_id": "evidence-focus-watchlist-v1",
+      "status": "active-site-ux-after-build",
+      "variants": [
+        "hidden_internal_focus_only",
+        "owner_visible_sanitized_focus_cards"
+      ],
+      "success_metric": "evidence_focus_watchlist CTA clicks, item-detail entrances with utm_medium=focus_watchlist, source-link clicks from focus items, share/copy events, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners and reps will trust and revisit the dashboard more when weak WATCHLIST items show a transparent next-loop evidence focus instead of a black-box score or hidden internal backlog."
     }
   ],
   "reporting": {

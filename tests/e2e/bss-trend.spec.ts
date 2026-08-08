@@ -83,7 +83,18 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.getByRole('heading', { name: 'Weekly evidence window를 먼저 확인' })).toBeVisible();
     await expect(page.getByText('Active trend window')).toBeVisible();
     await expect(page.getByText('365d captured published URLs')).toBeVisible();
+    await expect(page.locator('.evidence-snapshot-grid div').filter({ hasText: 'Missing TikTok Shop' }).getByText('0')).toBeVisible();
     await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
+    await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toHaveAttribute('data-growth-experiment', 'evidence-focus-watchlist-v1');
+    await expect(page.getByRole('heading', { name: 'Weekly WATCHLIST 근거 보강 대상' })).toBeVisible();
+    const focusCards = page.locator('.focus-card');
+    expect(await focusCards.count()).toBeGreaterThanOrEqual(3);
+    await expect(focusCards.first()).toHaveAttribute('href', /daily-visits-500-weekly-evidence-focus-watchlist/);
+    await expect(focusCards.first()).toHaveAttribute('href', /utm_medium=focus_watchlist/);
+    await expect(focusCards.first()).toHaveAttribute('data-growth-cta', 'evidence_focus_watchlist');
+    await expect(focusCards.first()).toHaveAttribute('data-item-id', /.+/);
+    await expect(page.locator('[data-growth-cta="evidence_focus_public_json"]')).toHaveAttribute('href', '/data/next_loop_focus_public.json');
     await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Weekly 매장 테스트 빠른 선택' })).toBeVisible();
     const quickPickCards = page.locator('.quick-pick-card');
@@ -152,10 +163,12 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
 
     const top3CopyButton = page.locator('[data-growth-share="weekly_top3_copy_link"]').first();
     await top3CopyButton.click();
@@ -179,6 +192,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const quickPickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(quickPickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_quick_pick' && event.component_experiment_id === 'owner-quick-picks-v1' && event.item_id && String(event.href).includes('utm_medium=quick_pick'))).toBe(true);
+
+    await page.evaluate(() => {
+      const link = document.querySelector('.focus-card') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing focus-watchlist card');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const focusEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(focusEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_evidence_focus_watchlist' && event.component_experiment_id === 'evidence-focus-watchlist-v1' && event.item_id && String(event.href).includes('utm_medium=focus_watchlist'))).toBe(true);
 
     const ownerBriefButton = page.locator('[data-growth-share="weekly_owner_brief_copy"]').first();
     await ownerBriefButton.click();
@@ -219,6 +241,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-brief-copy-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'source-evidence-clicks-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -228,6 +251,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('.tabs a.active')).toHaveText(label);
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-share$="_owner_brief_copy"]')).toHaveAttribute('data-copy-text', /BSS owner brief/);
@@ -359,6 +383,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-brief-copy-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'source-evidence-clicks-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-window-transparency-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-focus-watchlist-v1')).toBe(true);
+
+    const focusResponse = await request.get('/data/next_loop_focus_public.json');
+    expect(focusResponse.status()).toBeLessThan(400);
+    const focus = await focusResponse.json();
+    expect(focus.focus_items?.length).toBeGreaterThan(0);
+    expect(focus.focus_items?.[0]?.queries).toBeUndefined();
 
     const snsRulesResponse = await request.get('/data/sns_posting_rules_public.json');
     expect(snsRulesResponse.status()).toBeLessThan(400);
