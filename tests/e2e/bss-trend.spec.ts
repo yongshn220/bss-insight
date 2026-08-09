@@ -68,6 +68,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-return-visitor-panel]')).not.toHaveAttribute('data-growth-section', /.+/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
     await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/feed.xml');
+    await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/manifest.webmanifest');
+    await expect(page.locator('link[rel="icon"][href="/assets/app-icon.svg"]')).toHaveCount(1);
+    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#111827');
     await expect(page.locator('meta[name="gns:growth-goal"]')).toHaveAttribute('content', 'daily-visits-500');
     await expect(page.locator('meta[name="gns:growth-experiment"]')).toHaveAttribute('content', 'hero-growth-cta-v1');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
@@ -77,6 +80,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const shareCardSvg = await shareCardResponse.text();
     expect(shareCardSvg).toContain('BSS-WIDE ITEM RANKING · WEEKLY');
     expect(shareCardSvg).toContain('Trend-backed');
+    const manifestResponse = await request.get('/manifest.webmanifest');
+    expect(manifestResponse.status()).toBeLessThan(400);
+    const manifest = await manifestResponse.json();
+    expect(manifest.start_url).toContain('daily-visits-500-owner-shortcut');
+    expect(manifest.icons?.[0]?.src).toBe('/assets/app-icon.svg');
+    const appIconResponse = await request.get('/assets/app-icon.svg');
+    expect(appIconResponse.status()).toBeLessThan(400);
+    expect(await appIconResponse.text()).toContain('BSS Trend Ranking app icon');
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
     const homeJsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
     expect(JSON.parse(homeJsonLd ?? '{}')['@type']).toBe('ItemList');
@@ -157,6 +168,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-cta="owner_feed_open"]')).toHaveAttribute('href', /daily-visits-500-owner-feed-subscribe/);
     await expect(page.locator('[data-growth-cta="owner_feed_open"]')).toHaveAttribute('href', /utm_medium=feed_subscribe/);
     await expect(page.locator('[data-growth-share="weekly_feed_copy"]')).toHaveAttribute('data-copy-url', /feed\.xml\?utm_source=site/);
+    await expect(page.locator('[data-growth-section="owner-shortcut-save-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="owner-shortcut-save-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-shortcut-save-v1');
+    await expect(page.getByRole('heading', { name: 'Weekly dashboard shortcut 저장' })).toBeVisible();
+    await expect(page.locator('[data-growth-cta="owner_shortcut_open"]')).toHaveAttribute('href', /daily-visits-500-owner-shortcut/);
+    await expect(page.locator('[data-growth-cta="owner_shortcut_open"]')).toHaveAttribute('href', /utm_medium=shortcut/);
+    await expect(page.locator('[data-growth-share="weekly_shortcut_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-shortcut/);
+    await expect(page.locator('[data-growth-cta="owner_shortcut_manifest"]')).toHaveAttribute('href', '/manifest.webmanifest');
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-share-kit-v1');
@@ -225,6 +243,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-feed-subscribe-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'owner-shortcut-save-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'category-landing-nav-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'top3-leaderboard-v1')).toBe(true);
@@ -237,6 +256,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-feed-subscribe-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-shortcut-save-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('category-landing-nav-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('ranking-main-list-v1'))).toBe(true);
@@ -322,6 +342,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const feedEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(feedEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_feed_copy' && event.component_experiment_id === 'owner-feed-subscribe-v1' && String(event.href).includes('daily-visits-500-owner-feed-subscribe'))).toBe(true);
     expect(feedEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_feed_copy' && event.section === 'owner-feed-subscribe-v1' && event.component_experiment_id === 'owner-feed-subscribe-v1' && String(event.href).includes('feed.xml'))).toBe(true);
+
+    const shortcutCopyButton = page.locator('[data-growth-share="weekly_shortcut_copy"]').first();
+    await shortcutCopyButton.click();
+    await expect(shortcutCopyButton).toHaveText(/Copied|Link ready/);
+    const shortcutEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(shortcutEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_shortcut_copy' && event.component_experiment_id === 'owner-shortcut-save-v1' && String(event.href).includes('daily-visits-500-owner-shortcut'))).toBe(true);
+    expect(shortcutEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_shortcut_copy' && event.section === 'owner-shortcut-save-v1' && event.component_experiment_id === 'owner-shortcut-save-v1' && String(event.href).includes('daily-visits-500-owner-shortcut'))).toBe(true);
 
     const engagementResult = await page.evaluate(() => {
       const growth = (window as any).__GNS_GROWTH__;
@@ -478,8 +505,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-feed-subscribe-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="owner-shortcut-save-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-share$="_owner_brief_copy"]')).toHaveAttribute('data-copy-text', /BSS owner brief/);
       await expect(page.locator('[data-growth-share$="_feed_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-feed-subscribe/);
+      await expect(page.locator('[data-growth-share$="_shortcut_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-shortcut/);
       await expect(page.locator('.quick-pick-card').first()).toHaveAttribute('href', new RegExp(`daily-visits-500-${label.toLowerCase()}-owner-quick-picks`));
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
       await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
@@ -667,6 +696,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     if (weeklyTopItemName) {
       expect(feed).toContain(weeklyTopItemName);
     }
+
+    const manifestResponse = await request.get('/manifest.webmanifest');
+    expect(manifestResponse.status()).toBeLessThan(400);
+    const manifest = await manifestResponse.json();
+    expect(manifest.start_url).toContain('utm_medium=shortcut');
+    expect(manifest.start_url).toContain('daily-visits-500-owner-shortcut');
+    expect(manifest.shortcuts?.some((shortcut: any) => String(shortcut.url).includes('/rankings/weekly.html'))).toBe(true);
+    const iconResponse = await request.get('/assets/app-icon.svg');
+    expect(iconResponse.status()).toBeLessThan(400);
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);

@@ -878,6 +878,33 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "owner-shortcut-save-v1",
+        "status": "live-web-manifest-and-shortcut-cta-after-build",
+        "objective": "Make repeat visits easier by giving BSS owners/reps a browser Add-to-Home-Screen/bookmark manifest and UTM-tagged shortcut links on home/timeframe pages.",
+        "utm_campaign": "daily-visits-500-owner-shortcut",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/manifest.webmanifest",
+            "https://gnsresearchhub.vercel.app/assets/app-icon.svg",
+            "https://gnsresearchhub.vercel.app/index.html (owner-shortcut-save-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (owner-shortcut-save-v1)",
+        ],
+        "tracked_events": [
+            "growth_section_view owner-shortcut-save-v1",
+            "growth_click cta_owner_shortcut_open with utm_medium=shortcut",
+            "growth_click cta_owner_shortcut_manifest",
+            "growth_click share_{timeframe}_shortcut_copy",
+            "growth_share_copy_result share_action={timeframe}_shortcut_copy",
+        ],
+        "tracked_quality_metrics": [
+            "manifest start_url uses utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-shortcut",
+            "visible shortcut CTA links use utm_source=site&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-shortcut",
+            f"shortcut_panel_weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+        ],
+        "owner_value": "Busy owners can save the ranking like an app/bookmark and reopen the current weekly view without searching for the URL, supporting repeat visits without external SNS posting.",
+        "measurement_need": "GA4/Vercel export access is still needed to measure shortcut UTM sessions, shortcut copy events, and returning-owner visits centrally.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "category-landing-pages-v1",
         "status": "live-static-category-seo-share-pages-after-build",
         "objective": "Create focused category landing pages that keep broad BSS store lanes navigable while ranking only concrete item types inside each lane.",
@@ -961,6 +988,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-visible-repeat-visit-cta-after-review",
             "hypothesis": "A visible feed subscribe/save panel should generate more repeat owner entrances than a hidden RSS alternate link because BSS owners/reps can copy or open the update feed from the dashboard itself.",
             "next_step": "After analytics export access is connected, compare owner-feed-subscribe section views, cta_owner_feed_open clicks, feed_copy results, and downstream utm_source=rss item-detail entrances.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "owner-shortcut-save-v1",
+            "status": "active-repeat-visit-shortcut-after-review",
+            "hypothesis": "A real web manifest plus visible shortcut copy/open CTA should make the hub easier for owners/reps to save and reopen, increasing repeat visit paths without requiring SNS posting credentials.",
+            "next_step": "After GA4/Vercel export access is connected, compare utm_medium=shortcut and utm_source=pwa sessions, shortcut copy events, and returning-owner visit_count against RSS/share paths.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1088,6 +1122,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["hidden_rel_alternate_only", "visible_feed_subscribe_save_panel"],
             "success_metric": "growth_section_view owner-feed-subscribe-v1, cta_owner_feed_open clicks, feed_copy copy results, utm_source=rss sessions, and returning-owner visits once analytics export is connected",
             "hypothesis": "Making the feed path visible should increase repeat owner visits compared with an RSS feed that only exists in metadata and sitemap.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "owner-shortcut-save-v1",
+            "status": "active-web-manifest-shortcut-after-build",
+            "variants": ["manual_bookmark_without_manifest", "web_manifest_plus_visible_shortcut_copy_cta"],
+            "success_metric": "utm_medium=shortcut and utm_source=pwa sessions, shortcut copy/open events, returning-owner visit_count, and repeat ranking entrances once analytics export is connected",
+            "hypothesis": "Giving owners/reps an installable shortcut and copyable saved link should reduce friction to reopening the dashboard, supporting repeat visits toward 500/day without external posting permissions.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

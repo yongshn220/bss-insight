@@ -23,6 +23,7 @@ CATEGORIES_DIR = ROOT / "categories"
 ROBOTS_PATH = ROOT / "robots.txt"
 SITEMAP_PATH = ROOT / "sitemap.xml"
 FEED_PATH = ROOT / "feed.xml"
+MANIFEST_PATH = ROOT / "manifest.webmanifest"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
@@ -378,6 +379,11 @@ def shell(
   <meta name="gns:growth-experiment" content="hero-growth-cta-v1">
   <link rel="canonical" href="{esc(canonical_url)}">
   <link rel="alternate" type="application/rss+xml" title="BSS Trend Ranking RSS" href="{SITE_BASE}/feed.xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/assets/app-icon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#111827">
+  <meta name="application-name" content="BSS Trend Ranking">
+  <meta name="apple-mobile-web-app-title" content="BSS Trend Ranking">
   <meta property="og:title" content="{esc(title)} · BSS Trend Ranking">
   <meta property="og:description" content="{esc(description)}">
   <meta property="og:type" content="website">
@@ -981,6 +987,74 @@ def write_rss_feed(data: dict[str, Any]) -> str:
     return str(FEED_PATH.relative_to(ROOT))
 
 
+def write_web_manifest(data: dict[str, Any]) -> list[str]:
+    """Generate an install/save shortcut manifest for repeat BSS owner visits.
+
+    The 500/day goal depends on owners/reps remembering and reopening the hub.
+    A lightweight web app manifest plus a same-origin icon gives browsers a real
+    Add-to-Home-Screen/bookmark target, while UTM-tagged start URLs keep the path
+    measurable once analytics exports are connected.
+    """
+    assets_dir = ROOT / "assets"
+    assets_dir.mkdir(exist_ok=True)
+    generated_at = str(data.get("generated_at") or data.get("date") or "")
+    icon_svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="BSS Trend Ranking app icon">
+  <defs>
+    <linearGradient id="icon-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#111827"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#icon-bg)"/>
+  <circle cx="394" cy="112" r="74" fill="#ffffff" opacity="0.12"/>
+  <circle cx="118" cy="392" r="96" fill="#38bdf8" opacity="0.16"/>
+  <text x="256" y="218" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="108" font-weight="900" fill="#ffffff">BSS</text>
+  <text x="256" y="292" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="800" fill="#fef3c7">RANKING</text>
+  <text x="256" y="350" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#dbeafe">500/day growth loop</text>
+  <text x="256" y="402" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" opacity="0.82">Generated {svg_text(generated_at, 22)}</text>
+</svg>
+"""
+    icon_path = assets_dir / "app-icon.svg"
+    icon_path.write_text(icon_svg, encoding="utf-8")
+
+    shortcut_campaign = "daily-visits-500-owner-shortcut"
+    manifest = {
+        "id": "/?app=gns-bss-ranking",
+        "name": "BSS Trend Ranking · GNS Research Hub",
+        "short_name": "BSS Ranking",
+        "description": "Evidence-separated Beauty Supply Store item rankings with display tips, risk notes, and owner share links.",
+        "lang": "ko-US",
+        "start_url": "/index.html?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-shortcut",
+        "scope": "/",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#111827",
+        "categories": ["business", "shopping", "news"],
+        "icons": [
+            {"src": "/assets/app-icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable"},
+        ],
+        "shortcuts": [
+            {
+                "name": "Weekly BSS ranking",
+                "short_name": "Weekly",
+                "description": "Open the current weekly item ranking with evidence/watchlist separation.",
+                "url": f"/rankings/weekly.html?utm_source=pwa&utm_medium=shortcut&utm_campaign={shortcut_campaign}&utm_content=weekly",
+                "icons": [{"src": "/assets/app-icon.svg", "sizes": "512x512", "type": "image/svg+xml"}],
+            },
+            {
+                "name": "Owner feed",
+                "short_name": "Feed",
+                "description": "Open the weekly owner item feed for repeat visits.",
+                "url": "/feed.xml?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-feed-subscribe",
+                "icons": [{"src": "/assets/app-icon.svg", "sizes": "512x512", "type": "image/svg+xml"}],
+            },
+        ],
+    }
+    MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    return [str(MANIFEST_PATH.relative_to(ROOT)), str(icon_path.relative_to(ROOT))]
+
+
 def choose_share_row(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Prefer evidence-backed leaders, then fall back to the top ranked item."""
     return next((row for row in rows if has_trend_evidence(row)), rows[0] if rows else None)
@@ -1157,6 +1231,49 @@ def owner_feed_subscribe_panel(timeframe: str, rows: list[dict[str, Any]]) -> st
           <div class="share-actions">
             <a class="share-action" data-growth-cta="owner_feed_open" href="{esc(feed_path)}">Open RSS feed</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_feed_copy" data-copy-url="{esc(feed_url)}">Copy feed link</button>
+          </div>
+        </article>
+      </section>"""
+
+
+def owner_shortcut_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Visible save/bookmark CTA backed by the web app manifest.
+
+    RSS helps subscribers, but many BSS owners will simply save a link on a phone
+    or POS/back-office browser. This panel gives them a measurable shortcut URL
+    and explains that the dashboard can be saved like an app/bookmark without
+    promising traffic gains before analytics access exists.
+    """
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = "daily-visits-500-owner-shortcut"
+    shortcut_path = growth_campaign_path(
+        f"/rankings/{timeframe}.html",
+        source="site",
+        medium="shortcut",
+        campaign=campaign,
+        utm_content=timeframe,
+    )
+    shortcut_url = absolute_url(shortcut_path)
+    trend_count = sum(1 for row in rows if has_trend_evidence(row))
+    top = choose_share_row(rows)
+    top_name = top.get("item_name") if top else "current ranking"
+    return f"""
+      <section class="wrap owner-feed owner-shortcut" data-growth-section="owner-shortcut-save-v1" data-growth-experiment="owner-shortcut-save-v1" aria-labelledby="owner-shortcut-{esc(timeframe)}">
+        <div class="owner-feed-copy">
+          <span>Repeat visit path · app/bookmark shortcut</span>
+          <h2 id="owner-shortcut-{esc(timeframe)}">{esc(label)} dashboard shortcut 저장</h2>
+          <p>500 average daily visits 목표를 위해 owner가 다시 열기 쉬운 저장 경로를 추가했습니다. Browser의 Add to Home Screen/Bookmark에 맞춘 manifest가 있고, 아래 shortcut link는 UTM이 붙어 provider 연결 후 repeat visit 경로를 분리 측정할 수 있습니다.</p>
+          <small>Shortcut opens {esc(label)} ranking · trend-backed {esc(trend_count)}/{esc(len(rows))} · lead item {esc(top_name)}</small>
+        </div>
+        <article class="owner-feed-card">
+          <strong>Owner shortcut link</strong>
+          <code>{esc(shortcut_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-cta="owner_shortcut_open" href="{esc(shortcut_path)}">Open shortcut view</a>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_shortcut_copy" data-copy-url="{esc(shortcut_url)}">Copy shortcut link</button>
+            <a class="share-action" data-growth-cta="owner_shortcut_manifest" href="/manifest.webmanifest">Manifest</a>
           </div>
         </article>
       </section>"""
@@ -1485,6 +1602,7 @@ def render_home(data: dict[str, Any]) -> str:
       {owner_quick_picks('weekly', weekly)}
       {owner_brief_panel('weekly', weekly)}
       {owner_feed_subscribe_panel('weekly', weekly)}
+      {owner_shortcut_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
@@ -1691,6 +1809,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {owner_quick_picks(timeframe, rows)}
       {owner_brief_panel(timeframe, rows)}
       {owner_feed_subscribe_panel(timeframe, data.get("rankings", {}).get("weekly", rows))}
+      {owner_shortcut_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
@@ -1885,6 +2004,7 @@ def main() -> int:
     data = load_rankings()
     generated_social_cards = write_social_share_cards(data)
     generated_feed = write_rss_feed(data)
+    generated_manifest = write_web_manifest(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
         (RANKINGS_DIR / f"{tf}.html").write_text(render_timeframe(data, tf), encoding="utf-8")
@@ -1899,7 +2019,7 @@ def main() -> int:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
     write_seo_files(data, {str(item_id) for item_id in item_ids if item_id}, category_ids)
-    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
+    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids), "categories": len(category_ids)}, ensure_ascii=False, indent=2))
     return 0
 

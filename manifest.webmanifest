@@ -1,0 +1,53 @@
+{
+  "id": "/?app=gns-bss-ranking",
+  "name": "BSS Trend Ranking · GNS Research Hub",
+  "short_name": "BSS Ranking",
+  "description": "Evidence-separated Beauty Supply Store item rankings with display tips, risk notes, and owner share links.",
+  "lang": "ko-US",
+  "start_url": "/index.html?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-shortcut",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#111827",
+  "categories": [
+    "business",
+    "shopping",
+    "news"
+  ],
+  "icons": [
+    {
+      "src": "/assets/app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Weekly BSS ranking",
+      "short_name": "Weekly",
+      "description": "Open the current weekly item ranking with evidence/watchlist separation.",
+      "url": "/rankings/weekly.html?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-shortcut&utm_content=weekly",
+      "icons": [
+        {
+          "src": "/assets/app-icon.svg",
+          "sizes": "512x512",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Owner feed",
+      "short_name": "Feed",
+      "description": "Open the weekly owner item feed for repeat visits.",
+      "url": "/feed.xml?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-feed-subscribe",
+      "icons": [
+        {
+          "src": "/assets/app-icon.svg",
+          "sizes": "512x512",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
