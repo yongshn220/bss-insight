@@ -321,9 +321,10 @@
         (window.vaq = window.vaq || []).push(arguments);
       };
     }
+    const scriptPath = window.__GNS_VERCEL_ANALYTICS_PATH || '/_vercel/insights/script.js';
     const script = document.createElement('script');
     script.defer = true;
-    script.src = '/_vercel/insights/script.js';
+    script.src = scriptPath;
     script.setAttribute('data-gns-vercel-analytics', 'true');
     document.head.appendChild(script);
   }

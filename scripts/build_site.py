@@ -93,13 +93,22 @@ def rss_datetime(value: dt.datetime) -> str:
 
 
 def analytics_head() -> str:
-    """Return production analytics tags shared by every generated page."""
+    """Return production analytics tags shared by every generated page.
+
+    GA4 can be loaded directly, but Vercel Web Analytics is injected by
+    ``assets/growth.js`` only on the production host. Defining the Vercel path
+    and ``window.va`` queue in the head keeps the provider bridge ready before
+    the deferred growth bundle sends the first exposure event, without forcing a
+    local Playwright server to request ``/_vercel/insights/script.js``.
+    """
     return f"""  <script async src=\"https://www.googletagmanager.com/gtag/js?id={GA4_MEASUREMENT_ID}\"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){{dataLayer.push(arguments);}}
     gtag('js', new Date());
     gtag('config', '{GA4_MEASUREMENT_ID}');
+    window.__GNS_VERCEL_ANALYTICS_PATH = '/_vercel/insights/script.js';
+    window.va = window.va || function(){{(window.vaq = window.vaq || []).push(arguments);}};
   </script>
 """
 

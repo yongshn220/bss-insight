@@ -924,6 +924,28 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "Analytics export is still needed to compare category_page/category_nav UTM sessions, category_copy_link events, and category ranking card clicks against generic home/ranking entrances.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "vercel-analytics-head-bootstrap-v1",
+        "status": "live-provider-bridge-after-build",
+        "objective": "Make Vercel Web Analytics event collection more reliable by exposing the provider path and window.va queue before the deferred growth bundle sends the first growth_exposure.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html",
+            "https://gnsresearchhub.vercel.app/assets/growth.js",
+            "https://gnsresearchhub.vercel.app/_vercel/insights/script.js",
+        ],
+        "tracked_events": [
+            "growth_exposure queued to window.va before provider script finishes loading",
+            "growth_click and growth_share_copy_result fan-out through Vercel Analytics and GA4 bridges",
+        ],
+        "tracked_quality_metrics": [
+            "head bootstrap defines window.__GNS_VERCEL_ANALYTICS_PATH=/_vercel/insights/script.js",
+            "Playwright asserts window.va is a function before growth event checks",
+            "live /_vercel/insights/script.js must return HTTP 200",
+        ],
+        "owner_value": "Traffic and share experiments become easier to measure once analytics export access is connected, reducing guesswork on which BSS owner paths drive repeat visits.",
+        "measurement_need": "Still requires GA4 Data API or Vercel Analytics export access to calculate rolling 30-day visits; this run only hardens client-side event capture.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -946,6 +968,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-client-side-provider-ready-after-review",
             "hypothesis": "Adding page_type, timeframe, and page_item_id to every growth event will make ranking vs. item-detail funnels measurable without relying only on path parsing.",
             "next_step": "After GA4/Vercel export access is connected, segment growth_exposure, growth_click, growth_section_view, and share/copy events by page_type/timeframe/page_item_id.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "vercel-analytics-head-bootstrap-v1",
+            "status": "active-provider-bridge-after-review",
+            "hypothesis": "A head-level window.va queue and explicit /_vercel/insights/script.js path should reduce missed first-exposure/share events while preserving local QA stability.",
+            "next_step": "After analytics export access is connected, compare Vercel custom event counts against local growth buffer QA for growth_exposure, growth_click, and share/copy events.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1023,7 +1052,8 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
         measurement["last_checked_at"] = now
         measurement["provider_checked"] = (
             "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
-            f"This run refreshed ranking/review metrics (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
+            "This run also verifies the head-level window.va queue/bootstrap for first-event capture. "
+            f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
         )
         measurement["rolling_30d_average_daily_visits"] = None
         measurement["raw_result"] = (
@@ -1066,6 +1096,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["path_only_event_context", "page_type_timeframe_item_context"],
             "success_metric": "growth_exposure, growth_click, growth_section_view, growth_engagement_summary, and share/copy events segmented by page_type, timeframe, and page_item_id once analytics export is connected",
             "hypothesis": "BSS owner growth optimization needs event context that distinguishes home, timeframe ranking, and item-detail pages without brittle URL parsing in the analytics dashboard.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "vercel-analytics-head-bootstrap-v1",
+            "status": "active-provider-bridge-after-build",
+            "variants": ["deferred_growth_js_creates_va_queue", "head_bootstrap_va_queue_plus_growth_js_script_injection"],
+            "success_metric": "Vercel Analytics custom event receipt for growth_exposure, growth_click, growth_share_copy_result, and growth_engagement_summary once export access is available",
+            "hypothesis": "Creating the Vercel Analytics queue in the document head before deferred growth.js runs should reduce missed first-event risk and make provider-side counts better align with local QA buffers.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

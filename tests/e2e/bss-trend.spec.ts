@@ -216,6 +216,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.getByRole('heading', { name: '이번 주 BSS 매장에서 바로 테스트할 제품 순위' })).toBeVisible();
     await expect(page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' })).toBeVisible();
 
+    const analyticsBridge = await page.evaluate(() => ({
+      vaType: typeof (window as any).va,
+      vercelPath: (window as any).__GNS_VERCEL_ANALYTICS_PATH,
+      queuedVercelEvents: Array.isArray((window as any).vaq) ? (window as any).vaq.length : 0,
+    }));
+    expect(analyticsBridge.vaType).toBe('function');
+    expect(analyticsBridge.vercelPath).toBe('/_vercel/insights/script.js');
+
     const exposure = await page.evaluate(() => {
       const growth = (window as any).__GNS_GROWTH__;
       return {
