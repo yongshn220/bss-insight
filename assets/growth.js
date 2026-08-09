@@ -8,7 +8,9 @@
   const VARIANT_KEY = `${STORAGE_PREFIX}:${EXPERIMENT_ID}:variant`;
   const ATTRIBUTION_KEY = `${STORAGE_PREFIX}:attribution`;
   const SESSION_KEY = `${STORAGE_PREFIX}:session_id`;
+  const VISITOR_KEY = `${STORAGE_PREFIX}:visitor`;
   const MAX_LOCAL_EVENTS = 80;
+  const VISIT_WINDOW_MS = 30 * 60 * 1000;
   const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
   const pageStartedAt = Date.now();
   const viewedSections = new Set();
@@ -22,6 +24,7 @@
   let maxScrollDepthPercent = 0;
   let scrollTicking = false;
   let engagementSummarySent = false;
+  let visitorContextCache = null;
 
   function safeNow() {
     return new Date().toISOString();
@@ -116,6 +119,46 @@
     return sessionId;
   }
 
+  function parseTimestamp(value) {
+    const parsed = Date.parse(String(value || ''));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function safeInteger(value, fallback = 0) {
+    const parsed = Number.parseInt(String(value ?? ''), 10);
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+  }
+
+  function getVisitorContext() {
+    if (visitorContextCache) return visitorContextCache;
+
+    const now = safeNow();
+    const nowMs = Date.now();
+    const stored = parseStoredJson(VISITOR_KEY, {});
+    const visitorId = stored.visitor_id || `gns_v_${nowMs.toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const firstSeenAt = stored.first_seen_at || now;
+    const lastVisitAt = stored.last_visit_at || '';
+    const lastVisitMs = parseTimestamp(lastVisitAt);
+    const previousVisitCount = safeInteger(stored.visit_count, 0);
+    const isNewVisit = !lastVisitMs || (nowMs - lastVisitMs) > VISIT_WINDOW_MS;
+    const visitCount = previousVisitCount + (isNewVisit ? 1 : 0);
+    const firstSeenMs = parseTimestamp(firstSeenAt) || nowMs;
+    const daysSinceFirstSeen = Math.max(0, Math.floor((nowMs - firstSeenMs) / 86400000));
+
+    visitorContextCache = {
+      visitor_id: visitorId,
+      first_seen_at: firstSeenAt,
+      last_seen_at: now,
+      last_visit_at: isNewVisit ? now : (lastVisitAt || now),
+      visit_count: visitCount,
+      is_returning_visitor: visitCount > 1,
+      days_since_first_seen: daysSinceFirstSeen,
+      visit_window_minutes: Math.round(VISIT_WINDOW_MS / 60000),
+    };
+    storageSet('localStorage', VISITOR_KEY, JSON.stringify(visitorContextCache));
+    return visitorContextCache;
+  }
+
   function currentUtm() {
     const params = new URLSearchParams(window.location.search);
     return UTM_KEYS.reduce((memo, key) => {
@@ -206,6 +249,7 @@
 
   function track(eventName, payload = {}) {
     const attribution = getAttribution();
+    const visitor = getVisitorContext();
     const event = {
       event: eventName,
       ts: safeNow(),
@@ -213,6 +257,11 @@
       experiment_id: EXPERIMENT_ID,
       variant: window.__GNS_GROWTH__?.variant || 'unknown',
       session_id: getSessionId(),
+      visitor_id: visitor.visitor_id,
+      visit_count: visitor.visit_count,
+      is_returning_visitor: visitor.is_returning_visitor,
+      visitor_first_seen_at: visitor.first_seen_at,
+      days_since_first_seen: visitor.days_since_first_seen,
       path: window.location.pathname,
       page_type: document.body?.dataset.pageType || 'unknown',
       timeframe: pageTimeframe(),
@@ -473,6 +522,7 @@
   function init() {
     const variant = getVariant();
     const sessionId = getSessionId();
+    const visitor = getVisitorContext();
     const attribution = getAttribution();
     window.__GNS_GROWTH__ = {
       goalId: GOAL_ID,
@@ -480,6 +530,8 @@
       experimentId: EXPERIMENT_ID,
       variant,
       sessionId,
+      visitorId: visitor.visitor_id,
+      visitor: () => getVisitorContext(),
       attribution: () => getAttribution(),
       initialAttribution: attribution,
       events: localEvents,

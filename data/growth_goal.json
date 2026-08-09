@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T13:22:24.770896Z",
+  "updated_at": "2026-08-09T14:05:13.179907Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T13:22:24.770896Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run refreshed ranking/review metrics (weekly trend_items=8, watchlist_items=36) and regenerated top3 marketing drafts ['glueless-pre-cut-hd-lace-wig', 'rosemary-mint-scalp-oil', 'lash-bond-and-seal'].",
+    "last_checked_at": "2026-08-09T14:05:13.179907Z",
+    "provider_checked": "Live /index.html, /_vercel/insights/script.js, /data/growth_goal_public.json, /data/sns_posting_rules_public.json returned HTTP 200 and GA4 tag G-SW7HBY6WRE is present. Central Vercel/GA4 visit export is still unavailable in this runtime; this run added return-visitor attribution fields to growth.js events.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels.",
-    "interpretation": "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. Needs recovery: published trend item coverage 9→8 (-1) Needs recovery: recent trend item coverage 9→8 (-1)"
+    "raw_result": "measurement pending: no GA4 Data API service credentials/property access and no approved Vercel Analytics export/API were available to calculate rolling 30-day visits.",
+    "interpretation": "Traffic progress cannot be claimed yet. Structural measurement improved: growth_exposure, growth_click, growth_section_view, growth_share_copy_result, and growth_engagement_summary now include anonymous visitor_id, visit_count, is_returning_visitor, and days_since_first_seen for repeat-visit funnel analysis once provider export is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -389,6 +389,17 @@
       "success_metric": "Live homepage/ranking focus cards show the same updated_at and focus items as /data/next_loop_focus_public.json; downstream focus-watchlist clicks once analytics export is connected",
       "hypothesis": "BSS owners and reps will trust the hub more when visible WATCHLIST focus cards match the latest post-QA review instead of lagging one run behind.",
       "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
+    },
+    {
+      "experiment_id": "return-visitor-attribution-v1",
+      "status": "active-client-side-provider-ready-after-build",
+      "variants": [
+        "pageview_only_without_return_context",
+        "anonymous_visit_count_and_returning_owner_context"
+      ],
+      "success_metric": "repeat visitor share/click/source engagement by visitor_id, visit_count, is_returning_visitor, first/current UTM, and component_experiment_id once GA4/Vercel export access is available",
+      "hypothesis": "The 500/day growth loop needs to know whether owner-share, X, email, quick-pick, and item-detail links create returning BSS owner visits, not just one-off page views.",
+      "last_refreshed_at": "2026-08-09T14:05:13.179907Z"
     }
   ],
   "reporting": {
@@ -405,11 +416,11 @@
     "ga4": {
       "status": "enabled-in-site-head",
       "measurement_id": "G-SW7HBY6WRE",
-      "event_bridge": "assets/growth.js sends growth_exposure, growth_section_view, growth_engagement_summary, growth_click, and growth_share_copy_result through gtag when available, including session_id plus first/current UTM attribution."
+      "event_bridge": "assets/growth.js sends growth_exposure, growth_section_view, growth_engagement_summary, growth_click, and growth_share_copy_result through gtag when available, including session_id, anonymous visitor_id, visit_count, is_returning_visitor, days_since_first_seen, plus first/current UTM attribution."
     },
     "internal_growth_events": {
       "status": "enabled-client-side",
-      "purpose": "A/B variant, first/current UTM persistence, session_id, section visibility, engagement summary, share/copy/click/source events, and provider fan-out to Vercel Analytics and GA4."
+      "purpose": "A/B variant, anonymous visitor lifecycle, first/current UTM persistence, session_id, section visibility, engagement summary, share/copy/click/source events, and provider fan-out to Vercel Analytics and GA4."
     }
   },
   "sns_strategy": {

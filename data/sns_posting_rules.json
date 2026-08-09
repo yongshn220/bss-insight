@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T01:58:13.144114Z",
+  "updated_at": "2026-08-09T14:05:13.179907Z",
   "goal_id": "daily-visits-500",
   "status": "active_pending_xurl_install_and_oauth",
   "primary_channel": {
@@ -62,6 +62,13 @@
     ],
     "utm_source": "x",
     "utm_medium": "organic",
-    "note": "Posting remains draft/approval-only until xurl CLI is installed/authenticated; growth_engagement_summary now helps measure whether SNS/owner-share traffic actually reads owner quick-picks/focus/share modules before clicking or copying."
+    "note": "Posting remains draft/approval-only until xurl CLI is installed/authenticated; every approved post URL must include utm_source=x&utm_medium=organic and a campaign id. growth events now include anonymous visitor lifecycle context so future X traffic can be segmented by first-time vs returning owner visits after analytics export is connected.",
+    "xurl_status": {
+      "last_checked_at": "2026-08-09T14:05:13.179907Z",
+      "cli_available": false,
+      "auth_checked": false,
+      "posting_status": "blocked_draft_only",
+      "note": "xurl CLI was not found in the cron runtime PATH; no live X post, reply, like, repost, follow, or DM was attempted."
+    }
   }
 }

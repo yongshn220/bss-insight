@@ -175,6 +175,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
         goalId: growth?.goalId,
         target: growth?.targetAverageDailyVisits,
         sessionId: growth?.sessionId,
+        visitorId: growth?.visitorId,
+        visitor: growth?.visitor?.(),
         attribution: growth?.attribution?.(),
         growthSections: growth?.growthSections?.() ?? [],
         events: growth?.events?.() ?? [],
@@ -183,6 +185,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.goalId).toBe('daily-visits-500');
     expect(exposure.target).toBe(500);
     expect(exposure.sessionId).toMatch(/^gns_/);
+    expect(exposure.visitorId).toMatch(/^gns_v_/);
+    expect(exposure.visitor.visitor_id).toBe(exposure.visitorId);
+    expect(exposure.visitor.visit_count).toBeGreaterThanOrEqual(1);
+    expect(exposure.visitor.is_returning_visitor).toBe(false);
+    expect(exposure.visitor.visit_window_minutes).toBe(30);
     expect(exposure.attribution.first.utm_source).toBe('e2e');
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
     expect(exposure.growthSections.some((section: any) => section.id === 'run-change-snapshot-v1')).toBe(true);
@@ -193,6 +200,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.visitor_id === exposure.visitorId && event.visit_count >= 1 && event.is_returning_visitor === false)).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'home' && event.timeframe === 'weekly_home' && event.page_item_id === '')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('run-change-snapshot-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
@@ -322,6 +330,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-list-engagement-context-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'apify-sharded-fallback-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'post-review-site-sync-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-attribution-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -498,6 +507,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'engagement-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-list-engagement-context-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-attribution-v1')).toBe(true);
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);

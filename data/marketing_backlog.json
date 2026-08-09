@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T13:22:24.770896Z",
+  "updated_at": "2026-08-09T14:05:13.179907Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -439,6 +439,27 @@
       "owner_value": "BSS owners keep current product/listing context during upstream actor instability, while cached URLs remain explicitly labeled supply-only and never create trend movement.",
       "measurement_need": "Analytics export is still needed to connect source-health transparency and item/source-link clicks to repeat visits.",
       "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
+    },
+    {
+      "campaign_id": "return-visitor-attribution-v1",
+      "status": "live-in-growth-js-after-build",
+      "objective": "Make the 500/day growth loop measurable by separating first-time visits from returning BSS owner visits across rankings, item detail pages, source clicks, and share/copy actions.",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html",
+        "https://gnsresearchhub.vercel.app/items/{item_id}.html"
+      ],
+      "tracked_events": [
+        "growth_exposure includes anonymous visitor_id, visit_count, is_returning_visitor, and days_since_first_seen",
+        "growth_click and growth_share_copy_result inherit visitor lifecycle context plus first/current UTM",
+        "growth_engagement_summary can be segmented by returning vs first-time visitor once provider export is available"
+      ],
+      "owner_value": "No extra UI clutter; this helps identify whether BSS owners actually return after owner-share, X, email, quick-pick, source, or item-detail interactions.",
+      "measurement_need": "GA4 Data API credentials or an approved Vercel Analytics export/API are required to connect return-visitor events to rolling 30-day average daily visits.",
+      "last_refreshed_at": "2026-08-09T14:05:13.179907Z"
     }
   ],
   "experiment_backlog": [
@@ -583,6 +604,13 @@
       "hypothesis": "Bounded shard fallback should reduce all-cache TikTok Shop regressions after upstream full-payload failures, keeping item cards useful without inflating trend claims.",
       "next_step": "Monitor apify_status, fresh_evidence_urls, cached_fallback_urls, and source-link clicks after analytics export is connected; keep TikTok Shop evidence supply-only.",
       "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
+    },
+    {
+      "experiment_id": "return-visitor-attribution-v1",
+      "status": "active-client-side-provider-ready-after-build",
+      "hypothesis": "Anonymous return-visitor context will show which campaigns create repeat owner visits and which only create one-off clicks.",
+      "next_step": "After analytics export access is connected, segment growth_exposure, growth_click, growth_share_copy_result, source_link, and growth_engagement_summary by visit_count/is_returning_visitor and UTM campaign.",
+      "last_refreshed_at": "2026-08-09T14:05:13.179907Z"
     }
   ],
   "permission_requests": [
@@ -594,6 +622,7 @@
     "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so evidence-window-transparency-v1 can be tied to rolling 30-day visits and downstream share/click events.",
     "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so section-visibility-engagement-v1 can connect module views to clicks, shares, repeat visits, and rolling 30-day average daily visits.",
     "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so share-panel-component-context-v1 can tie owner-share-kit and item-detail-share events to rolling 30-day visits and repeat sessions.",
-    "Provide GA4_PROPERTY_ID plus Data API/service-account viewer access or an approved Vercel Analytics export so engagement-summary-v1 can be tied to rolling 30-day visits and repeat sessions."
+    "Provide GA4_PROPERTY_ID plus Data API/service-account viewer access or an approved Vercel Analytics export so engagement-summary-v1 can be tied to rolling 30-day visits and repeat sessions.",
+    "Provide GA4 Data API access or approved Vercel Analytics export so return-visitor-attribution-v1 can connect visit_count/is_returning_visitor events to rolling 30-day average daily visits."
   ]
 }
