@@ -994,47 +994,22 @@ def load_tiktok_shop_cache() -> tuple[dict[str, list[dict[str, Any]]], dict[str,
     }
 
 
-def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
-    token = env_value("APIFY_TOKEN") or env_value("APIFY_API_TOKEN")
-    enabled = (env_value("APIFY_TIKTOK_ENABLED") or "1").lower() not in {"0", "false", "no"}
-    if not token or not enabled:
-        set_source_health(
-            "apify_tiktok_shop",
-            "skipped",
-            configured=bool(token),
-            enabled=enabled,
-            reason="APIFY token not configured or APIFY_TIKTOK_ENABLED disabled",
-        )
-        return {}
-    per_query = int_env("APIFY_TIKTOK_MAX_RESULTS_PER_QUERY", 1, 1, 5)
-    timeout = int_env("APIFY_TIKTOK_TIMEOUT_SECS", 300, 60, 900)
-    max_attempts = int_env("APIFY_TIKTOK_MAX_ATTEMPTS", 2, 1, 4)
-    keywords: list[str] = []
-    rows_by_keyword: dict[str, tuple[dict[str, Any], bool]] = {}
-    expanded_keyword_items = 0
-    for row in rows:
-        row_keywords = product_search_queries(row, max_queries=3)
-        if len(row_keywords) > 1:
-            expanded_keyword_items += 1
-        for idx, keyword in enumerate(row_keywords):
-            key = keyword.lower()
-            if key in rows_by_keyword:
-                continue
-            keywords.append(keyword)
-            # Only the primary query keeps the historical keyword-search fallback.
-            # Alias probes must relevance-match the listing title/snippet/vendor.
-            rows_by_keyword[key] = (row, idx == 0)
-    max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(keywords) * per_query), 1, 250)
-    payload = {
+def apify_payload(keywords: list[str], per_query: int, max_total: int) -> dict[str, Any]:
+    """Build an Apify TikTok Shop actor payload for a keyword batch."""
+    return {
         "keywords": keywords,
         "countries": ["US"],
         "maxResultsPerQuery": per_query,
-        "maxResultsTotal": max_total,
+        "maxResultsTotal": max(1, max_total),
         "deduplicateProducts": True,
         "includeSummary": False,
         "includeProductDetails": False,
         "includeReviews": False,
     }
+
+
+def run_apify_tiktok_actor(token: str, payload: dict[str, Any], timeout: int, max_attempts: int) -> tuple[list[Any] | None, str, int]:
+    """Run the Apify actor without leaking credentials in errors or stdout."""
     url = f"https://api.apify.com/v2/acts/{APIFY_TIKTOK_ACTOR}/run-sync-get-dataset-items"
     products: list[Any] | None = None
     last_error = ""
@@ -1066,6 +1041,136 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             last_error = f"{type(exc).__name__}: {exc}"
         if attempt < max_attempts:
             time.sleep(min(18, 4 * attempt))
+    return products, clean_error_summary(last_error), attempts_used
+
+
+def chunked(values: list[str], size: int, max_chunks: int) -> list[list[str]]:
+    """Return bounded keyword chunks for cron-safe fallback actor runs."""
+    size = max(1, size)
+    max_chunks = max(1, max_chunks)
+    chunks = [values[idx: idx + size] for idx in range(0, len(values), size)]
+    return [chunk for chunk in chunks[:max_chunks] if chunk]
+
+
+def dedupe_apify_products(products: list[Any]) -> list[Any]:
+    """Deduplicate Apify products while preserving source keyword coverage."""
+    output: list[Any] = []
+    seen: set[tuple[str, str]] = set()
+    for product in products:
+        if not isinstance(product, dict):
+            output.append(product)
+            continue
+        url = str(product.get("productUrl") or product.get("url") or product.get("productId") or "")
+        keywords = ",".join(sorted(k.lower() for k in apify_tiktok_source_keywords(product)))
+        key = (url, keywords)
+        if key in seen:
+            continue
+        seen.add(key)
+        output.append(product)
+    return output
+
+
+def apify_sharded_fallback(
+    token: str,
+    keywords: list[str],
+    per_query: int,
+    full_max_total: int,
+    full_error: str,
+) -> tuple[list[Any] | None, dict[str, Any]]:
+    """Recover fresh TikTok Shop URLs with smaller actor batches after a full-run failure.
+
+    The collector previously fell straight back to cache when the single large
+    actor payload failed. Smaller keyword shards can salvage fresh social-commerce
+    supply URLs for the owner dashboard while TikTok Shop remains supply-only and
+    never trend-scoring.
+    """
+    enabled = (env_value("APIFY_TIKTOK_SHARD_FALLBACK_ENABLED") or "1").lower() not in {"0", "false", "no"}
+    if not enabled or not keywords:
+        return None, {"shard_fallback_status": "disabled" if not enabled else "no_keywords"}
+
+    shard_size = int_env("APIFY_TIKTOK_SHARD_FALLBACK_SIZE", 20, 5, 50)
+    max_shards = int_env("APIFY_TIKTOK_SHARD_FALLBACK_MAX_SHARDS", 5, 1, 10)
+    shard_timeout = int_env("APIFY_TIKTOK_SHARD_FALLBACK_TIMEOUT_SECS", 120, 45, 300)
+    shards = chunked(keywords, shard_size, max_shards)
+    collected: list[Any] = []
+    errors: list[str] = []
+    attempts = 0
+    succeeded = 0
+
+    for shard in shards:
+        shard_max_total = min(full_max_total, max(1, len(shard) * per_query))
+        products, error, used = run_apify_tiktok_actor(
+            token,
+            apify_payload(shard, per_query, shard_max_total),
+            timeout=shard_timeout,
+            max_attempts=1,
+        )
+        attempts += used
+        if products is None:
+            errors.append(error or "unknown shard failure")
+            continue
+        succeeded += 1
+        collected.extend(products)
+
+    meta = {
+        "full_actor_status": "failed",
+        "full_error_summary": clean_error_summary(full_error),
+        "shard_fallback_status": "success" if collected and not errors else ("partial_success" if collected else "failed"),
+        "shard_size": shard_size,
+        "shards_requested": len(shards),
+        "shards_succeeded": succeeded,
+        "shards_failed": len(errors),
+        "shard_attempts": attempts,
+        "shard_keywords_requested": sum(len(shard) for shard in shards),
+        "shard_error_summary": clean_error_summary(" | ".join(errors[:3])) if errors else "",
+    }
+    if not collected:
+        return None, meta
+    return dedupe_apify_products(collected), meta
+
+
+def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    token = env_value("APIFY_TOKEN") or env_value("APIFY_API_TOKEN")
+    enabled = (env_value("APIFY_TIKTOK_ENABLED") or "1").lower() not in {"0", "false", "no"}
+    if not token or not enabled:
+        set_source_health(
+            "apify_tiktok_shop",
+            "skipped",
+            configured=bool(token),
+            enabled=enabled,
+            reason="APIFY token not configured or APIFY_TIKTOK_ENABLED disabled",
+        )
+        return {}
+    per_query = int_env("APIFY_TIKTOK_MAX_RESULTS_PER_QUERY", 1, 1, 5)
+    timeout = int_env("APIFY_TIKTOK_TIMEOUT_SECS", 300, 60, 900)
+    max_attempts = int_env("APIFY_TIKTOK_MAX_ATTEMPTS", 2, 1, 4)
+    keywords: list[str] = []
+    rows_by_keyword: dict[str, tuple[dict[str, Any], bool]] = {}
+    expanded_keyword_items = 0
+    for row in rows:
+        row_keywords = product_search_queries(row, max_queries=3)
+        if len(row_keywords) > 1:
+            expanded_keyword_items += 1
+        for idx, keyword in enumerate(row_keywords):
+            key = keyword.lower()
+            if key in rows_by_keyword:
+                continue
+            keywords.append(keyword)
+            # Only the primary query keeps the historical keyword-search fallback.
+            # Alias probes must relevance-match the listing title/snippet/vendor.
+            rows_by_keyword[key] = (row, idx == 0)
+    max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(keywords) * per_query), 1, 250)
+    products, last_error, attempts_used = run_apify_tiktok_actor(
+        token,
+        apify_payload(keywords, per_query, max_total),
+        timeout=timeout,
+        max_attempts=max_attempts,
+    )
+    fallback_meta: dict[str, Any] = {}
+    full_run_failed = products is None
+    if full_run_failed:
+        products, fallback_meta = apify_sharded_fallback(token, keywords, per_query, max_total, last_error)
+        attempts_used += int(fallback_meta.get("shard_attempts") or 0)
     if products is None:
         cached_evidence, cache_meta = load_tiktok_shop_cache()
         if cached_evidence:
@@ -1080,6 +1185,7 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
                 max_results_total=max_total,
                 current_actor_status="failed",
                 error_summary=clean_error_summary(last_error),
+                **fallback_meta,
                 retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
                 cache_policy="cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
                 **cache_meta,
@@ -1095,6 +1201,7 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             expanded_keyword_items=expanded_keyword_items,
             max_results_total=max_total,
             error_summary=clean_error_summary(last_error),
+            **fallback_meta,
             retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
             **cache_meta,
         )
@@ -1148,9 +1255,16 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
     evidence_urls = sum(len(sources) for sources in evidence_by_item.values())
     if evidence_urls:
         write_tiktok_shop_cache(evidence_by_item)
-    status = "success" if fresh_evidence_urls else "success_empty"
+    status = "success_sharded_after_full_failure" if full_run_failed and fresh_evidence_urls else ("success" if fresh_evidence_urls else "success_empty")
     if partial_cached_items:
-        status = "success_with_partial_cache"
+        status = "success_sharded_with_partial_cache" if full_run_failed and fresh_evidence_urls else "success_with_partial_cache"
+    current_actor_status = "success"
+    if full_run_failed and fresh_evidence_urls:
+        current_actor_status = "success_sharded_after_full_failure"
+    if partial_cached_items and fresh_evidence_urls:
+        current_actor_status = "success_partial_sharded" if full_run_failed else "success_partial"
+    elif partial_cached_items:
+        current_actor_status = "success_empty"
     set_source_health(
         "apify_tiktok_shop",
         status,
@@ -1165,9 +1279,10 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         fresh_evidence_urls=fresh_evidence_urls,
         partial_cached_items=partial_cached_items,
         partial_cached_evidence_urls=partial_cached_urls,
-        current_actor_status="success_partial" if partial_cached_items and fresh_evidence_urls else ("success_empty" if partial_cached_items else "success"),
+        current_actor_status=current_actor_status,
         cache_policy="Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement." if partial_cached_items else "cache not used",
         max_results_total=max_total,
+        **fallback_meta,
         **(cache_meta if partial_cached_items else {}),
     )
     return evidence_by_item
@@ -1374,7 +1489,17 @@ def collection_next_actions(totals: dict[str, Any], gaps: dict[str, Any] | None 
     gap_summary = gaps.get("summary", {}) if isinstance(gaps, dict) else {}
     apify = source_health("apify_tiktok_shop")
     apify_status = apify.get("status")
-    if apify_status == "success_with_partial_cache":
+    if apify_status == "success_sharded_after_full_failure":
+        shards = apify.get("shards_succeeded") or apify.get("shards_requested") or "n/a"
+        actions.append(
+            f"TikTok Shop full actor run failed, but sharded fallback recovered fresh supply URLs through {shards} shard(s). 다음 run에서 full-payload failure가 반복되면 shard size/actor limit를 조정합니다."
+        )
+    elif apify_status == "success_sharded_with_partial_cache":
+        cached_items = int(apify.get("partial_cached_items") or 0)
+        actions.append(
+            f"TikTok Shop sharded fallback recovered fresh URLs but {cached_items}개 item은 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 missing shard/query를 재확인합니다."
+        )
+    elif apify_status == "success_with_partial_cache":
         cached_items = int(apify.get("partial_cached_items") or 0)
         actions.append(
             f"TikTok Shop actor는 성공했지만 {cached_items}개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다."

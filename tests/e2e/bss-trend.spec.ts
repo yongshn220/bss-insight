@@ -311,6 +311,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'engagement-summary-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-list-engagement-context-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'apify-sharded-fallback-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {

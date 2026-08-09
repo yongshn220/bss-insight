@@ -691,6 +691,18 @@ def ensure_experiment(experiments: list[Any], experiment: dict[str, Any]) -> Non
     experiments.append(experiment)
 
 
+def ensure_campaign(campaigns: list[Any], campaign: dict[str, Any]) -> None:
+    """Upsert a marketing/growth campaign artifact by campaign_id."""
+    if not isinstance(campaigns, list):
+        return
+    campaign_id = campaign.get("campaign_id")
+    for entry in campaigns:
+        if isinstance(entry, dict) and entry.get("campaign_id") == campaign_id:
+            entry.update(campaign)
+            return
+    campaigns.append(campaign)
+
+
 def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]) -> dict[str, Any]:
     marketing = load_json(MARKETING_BACKLOG_PATH, {})
     if not isinstance(marketing, dict):
@@ -761,6 +773,25 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             },
         })
 
+    source_health = ((review.get("collection_health") or {}).get("source_health") or {}) if isinstance(review.get("collection_health"), dict) else {}
+    apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
+    apify = apify if isinstance(apify, dict) else {}
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "apify-sharded-fallback-v1",
+        "status": "live-in-collector-resilience-after-build",
+        "objective": "Recover fresh TikTok Shop social-commerce supply URLs with bounded keyword shards when the full actor payload fails, instead of silently relying only on stale cache.",
+        "live_location_pattern": "https://gnsresearchhub.vercel.app/rankings/{timeframe}.html and https://gnsresearchhub.vercel.app/data/collection_notes_public.json",
+        "tracked_quality_metrics": [
+            f"apify_status={apify.get('status', 'unknown')}",
+            f"fresh_evidence_urls={apify.get('fresh_evidence_urls', 0)}",
+            f"cached_fallback_urls={apify.get('cached_evidence_urls', apify.get('partial_cached_evidence_urls', 0))}",
+            f"shard_fallback_status={apify.get('shard_fallback_status', 'not_used')}",
+        ],
+        "owner_value": "BSS owners keep current product/listing context during upstream actor instability, while cached URLs remain explicitly labeled supply-only and never create trend movement.",
+        "measurement_need": "Analytics export is still needed to connect source-health transparency and item/source-link clicks to repeat visits.",
+        "last_refreshed_at": now,
+    })
+
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
         ensure_experiment(experiment_backlog, {
@@ -782,6 +813,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-client-side-provider-ready-after-review",
             "hypothesis": "Adding page_type, timeframe, and page_item_id to every growth event will make ranking vs. item-detail funnels measurable without relying only on path parsing.",
             "next_step": "After GA4/Vercel export access is connected, segment growth_exposure, growth_click, growth_section_view, and share/copy events by page_type/timeframe/page_item_id.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "apify-sharded-fallback-v1",
+            "status": "active-collection-resilience-after-review",
+            "hypothesis": "Bounded shard fallback should reduce all-cache TikTok Shop regressions after upstream full-payload failures, keeping item cards useful without inflating trend claims.",
+            "next_step": "Monitor apify_status, fresh_evidence_urls, cached_fallback_urls, and source-link clicks after analytics export is connected; keep TikTok Shop evidence supply-only.",
             "last_refreshed_at": now,
         })
 
@@ -846,6 +884,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["path_only_event_context", "page_type_timeframe_item_context"],
             "success_metric": "growth_exposure, growth_click, growth_section_view, growth_engagement_summary, and share/copy events segmented by page_type, timeframe, and page_item_id once analytics export is connected",
             "hypothesis": "BSS owner growth optimization needs event context that distinguishes home, timeframe ranking, and item-detail pages without brittle URL parsing in the analytics dashboard.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "apify-sharded-fallback-v1",
+            "status": "active-collection-resilience-after-build",
+            "variants": ["full_payload_then_cache", "full_payload_then_bounded_keyword_shards_then_labeled_cache"],
+            "success_metric": "fresh TikTok Shop URLs retained, cached fallback URLs minimized, no increase in unsupported trend claims, source-link/item-card engagement once analytics export is connected",
+            "hypothesis": "Sharded actor fallback will keep BSS owner item cards current through upstream TikTok Shop collector instability while preserving evidence discipline.",
             "last_refreshed_at": now,
         })
 

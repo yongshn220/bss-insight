@@ -483,6 +483,12 @@ def tiktok_shop_freshness_cell(health: dict[str, Any], cached_tiktok_count: int)
 
     if status == "success":
         note = f"Actor success · {attempts or 1} attempt(s) · no cache used"
+    elif status == "success_sharded_after_full_failure":
+        shards = apify.get("shards_succeeded") or apify.get("shards_requested") or "n/a"
+        note = f"Full actor failed; shard fallback recovered fresh URLs via {shards} shard(s) · no cache used"
+    elif status == "success_sharded_with_partial_cache":
+        shards = apify.get("shards_succeeded") or apify.get("shards_requested") or "n/a"
+        note = f"Shard fallback recovered fresh URLs via {shards} shard(s) plus {partial_items} cached item(s) · supply-only"
     elif status == "success_with_partial_cache":
         note = f"Actor success plus {partial_items} cached item(s); cache age {cache_age if cache_age is not None else 'n/a'}d · supply-only"
     elif status == "failed_using_cache":
