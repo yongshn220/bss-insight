@@ -924,7 +924,7 @@ def top_three(rows: list[dict[str, Any]]) -> str:
     cards = []
     for row in trend_rows[:3]:
         cards.append(f"""
-        <a class="podium-card" href="/items/{esc(row.get('item_id'))}.html">
+        <a class="podium-card" data-item-id="{esc(row.get('item_id'))}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="/items/{esc(row.get('item_id'))}.html">
           {image_tag(row, 'podium-img')}
           <span class="podium-rank">#{esc(row.get('rank'))}</span>
           <div>
@@ -972,15 +972,15 @@ def render_home(data: dict[str, Any]) -> str:
       {owner_brief_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
-      <section class="wrap block">
+      <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
         {top_three(weekly)}
       </section>
-      <section class="wrap board">
+      <section class="wrap board" data-growth-section="ranking-main-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Weekly ranking</span><h2>Top item list</h2></div><a href="/rankings/monthly.html">Monthly 보기</a></div>
         <div class="rank-list">{''.join(item_card(row, compact=True) for row in weekly[:12])}</div>
       </section>
-      <section class="wrap board secondary-board">
+      <section class="wrap board secondary-board" data-growth-section="monthly-preview-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Monthly leaders</span><h2>월간 흐름</h2></div></div>
         <div class="rank-grid">{''.join(item_card(row, compact=True) for row in monthly[:6])}</div>
       </section>
@@ -1035,11 +1035,11 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {owner_brief_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
-      <section class="wrap block">
+      <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
         {top_three(rows)}
       </section>
-      <section class="wrap board" id="all-items">
+      <section class="wrap board" id="all-items" data-growth-section="ranking-main-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>All categories</span><h2>전체 순위</h2></div><em>{len(rows)} items</em></div>
         <div class="rank-list">{''.join(item_card(row) for row in rows)}</div>
       </section>

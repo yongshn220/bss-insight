@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T03:18:07.347302Z",
+  "updated_at": "2026-08-09T04:25:42Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T03:18:07.347302Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run added partial-cache resilience for TikTok Shop supply coverage: collector can now label recent cached listing URLs when the Apify actor succeeds but omits an item.",
+    "last_checked_at": "2026-08-09T04:25:42Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run added ranking-list engagement context so Top 3 podium clicks and main ranking-card clicks carry section, component_experiment_id, item_id, and item_rank for future funnel analysis.",
     "rolling_30d_average_daily_visits": null,
     "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels.",
-    "interpretation": "Traffic progress cannot be claimed. Product/source credibility improved operationally, while final current data stayed fresh (partial_cached_items=0) and weekly trend evidence did not materially improve."
+    "interpretation": "Traffic progress cannot be claimed. Measurement granularity improved for the highest-intent ranking interactions, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -293,6 +293,16 @@
       ],
       "success_metric": "weekly_copy_link and item_copy_link clicks/copy results segmented by component_experiment_id and section once analytics export is available",
       "hypothesis": "Share panels will be easier to optimize toward 500/day when owner-share and item-detail-share events are separated from generic share actions."
+    },
+    {
+      "experiment_id": "ranking-list-engagement-context-v1",
+      "status": "active-site-tracking-after-build",
+      "variants": [
+        "ranking_clicks_without_section_context",
+        "top3_and_rank_list_clicks_with_item_section_context"
+      ],
+      "success_metric": "podium_card and item_card clicks segmented by top3-leaderboard-v1, ranking-main-list-v1, item_id, rank, timeframe, and downstream item-detail entrances once analytics export is available",
+      "hypothesis": "BSS owners' most important leaderboard clicks should be measurable by section and item, so weak modules can be moved or removed while high-intent ranking paths are optimized toward 500/day visits."
     },
     {
       "experiment_id": "engagement-summary-v1",

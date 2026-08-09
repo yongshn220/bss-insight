@@ -120,7 +120,12 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-share="weekly_top3_x_intent"]').first()).toHaveAttribute('href', /daily-visits-500-weekly-top3-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_top3_copy_link"]').first()).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-weekly-top3-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_top3_copy_link"]').first()).toHaveAttribute('data-copy-url', /utm_content=/);
+    await expect(page.locator('[data-growth-section="top3-leaderboard-v1"]')).toHaveAttribute('data-growth-experiment', 'ranking-list-engagement-context-v1');
+    await expect(page.locator('[data-growth-section="ranking-main-list-v1"]')).toHaveAttribute('data-growth-experiment', 'ranking-list-engagement-context-v1');
+    await expect(page.locator('[data-growth-section="monthly-preview-list-v1"]')).toHaveAttribute('data-growth-experiment', 'ranking-list-engagement-context-v1');
     await expect(page.locator('.podium-card')).toHaveCount(3);
+    await expect(page.locator('.podium-card').first()).toHaveAttribute('data-item-id', /.+/);
+    await expect(page.locator('.podium-card').first()).toHaveAttribute('data-item-rank', /\d+/);
 
     const rankCards = page.locator('.rank-card');
     await expect(rankCards.first()).toBeVisible();
@@ -166,11 +171,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'top3-leaderboard-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('ranking-main-list-v1'))).toBe(true);
 
     await page.locator('[data-growth-section="owner-quick-picks-v1"]').scrollIntoViewIfNeeded();
     await page.waitForFunction(() =>
@@ -212,6 +220,24 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const focusEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(focusEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_evidence_focus_watchlist' && event.component_experiment_id === 'evidence-focus-watchlist-v1' && event.item_id && String(event.href).includes('utm_medium=focus_watchlist'))).toBe(true);
+
+    await page.evaluate(() => {
+      const link = document.querySelector('[data-growth-section="top3-leaderboard-v1"] .podium-card') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing top3 podium card');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const podiumEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(podiumEvents.some((event: any) => event.event === 'growth_click' && event.type === 'podium_card' && event.section === 'top3-leaderboard-v1' && event.component_experiment_id === 'ranking-list-engagement-context-v1' && event.item_id && event.item_rank)).toBe(true);
+
+    await page.evaluate(() => {
+      const link = document.querySelector('[data-growth-section="ranking-main-list-v1"] .rank-card .rank-hit') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing ranking list item card');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const rankCardEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(rankCardEvents.some((event: any) => event.event === 'growth_click' && event.type === 'item_card' && event.section === 'ranking-main-list-v1' && event.component_experiment_id === 'ranking-list-engagement-context-v1' && event.item_id && event.item_rank)).toBe(true);
 
     const ownerBriefButton = page.locator('[data-growth-share="weekly_owner_brief_copy"]').first();
     await ownerBriefButton.click();
@@ -271,6 +297,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'engagement-summary-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-list-engagement-context-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -418,6 +445,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'engagement-summary-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-list-engagement-context-v1')).toBe(true);
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);

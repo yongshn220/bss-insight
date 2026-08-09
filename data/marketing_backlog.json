@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T03:18:07.347302Z",
+  "updated_at": "2026-08-09T04:25:42Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -338,6 +338,26 @@
       ],
       "owner_value": "The public UI does not add clutter; the growth loop can learn which owner-useful modules deserve higher placement and which should be shortened or removed.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to segment section views and tie them to visits, repeats, and share/click outcomes."
+    },
+    {
+      "campaign_id": "ranking-list-engagement-context-v1",
+      "status": "live-on-site-after-build",
+      "objective": "Measure the dashboard's highest-intent leaderboard behavior by separating Top 3 podium clicks from main ranking-list item-card clicks with item_id, rank, section, and component context.",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html"
+      ],
+      "tracked_events": [
+        "growth_click type=podium_card with section=top3-leaderboard-v1 and component_experiment_id=ranking-list-engagement-context-v1",
+        "growth_click type=item_card with section=ranking-main-list-v1 and item_id/item_rank context",
+        "growth_section_view for top3-leaderboard-v1, ranking-main-list-v1, and monthly-preview-list-v1",
+        "growth_engagement_summary viewed_sections can now include the actual leaderboard/list areas"
+      ],
+      "owner_value": "No extra UI clutter; the operator can learn whether BSS owners click Top 3 evidence-backed items, the full ranking list, or lower utility modules before optimizing layout toward repeat visits.",
+      "measurement_need": "GA4 Data API credentials or an approved Vercel Analytics export are needed to compare podium/list clicks against item-detail entrances and rolling 30-day visits."
     },
     {
       "campaign_id": "engagement-summary-v1",
