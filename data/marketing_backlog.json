@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T06:58:57.250508Z",
+  "updated_at": "2026-08-09T08:15:59.384831Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -20,7 +20,7 @@
       },
       "approval_needed_for_external_posting": "first_live_post_requires_manual_approval_then_safe_auto_post_rule",
       "tracked_events": [],
-      "last_refreshed_at": "2026-08-09T06:58:57.250508Z",
+      "last_refreshed_at": "2026-08-09T08:15:59.384831Z",
       "tracked_quality_metrics": [
         "current weekly owner insight draft regenerated from live top evidence-backed item",
         "lead_item_id=rosemary-mint-scalp-oil"
@@ -97,10 +97,10 @@
       "measurement_need": "GA4/Vercel event export access is needed to compare top3 item-share copy/click events against the older single featured share card.",
       "tracked_quality_metrics": [
         "weekly_top3_current=#1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Human Hair Boho Braiding Bundles",
-        "drafts refreshed at 2026-08-09T06:58:57.250508Z from data/rankings.json after current refresh/review",
+        "drafts refreshed at 2026-08-09T08:15:59.384831Z from data/rankings.json after current refresh/review",
         "stale draft guard active: public marketing JSON should match live weekly Top 3 item_ids"
       ],
-      "last_refreshed_at": "2026-08-09T06:58:57.250508Z",
+      "last_refreshed_at": "2026-08-09T08:15:59.384831Z",
       "quality_control": {
         "source": "data/rankings.json weekly evidence-backed top3",
         "stale_draft_guard": "Draft item_id order must match current weekly Top 3 trend-backed ranking before external posting.",
@@ -127,7 +127,7 @@
         "rank": 1,
         "url": "https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly"
       },
-      "last_refreshed_at": "2026-08-09T06:58:57.250508Z"
+      "last_refreshed_at": "2026-08-09T08:15:59.384831Z"
     },
     {
       "campaign_id": "seo-discovery-artifacts-v1",
@@ -546,7 +546,7 @@
       "status": "active-data-quality-after-review",
       "hypothesis": "Current item-specific SNS/rep drafts should convert better than stale rank copy because shared links match the live dashboard Top 3.",
       "next_step": "After analytics export access is connected, compare UTM campaigns for top3 owner share links against generic weekly ranking links.",
-      "last_refreshed_at": "2026-08-09T06:58:57.250508Z"
+      "last_refreshed_at": "2026-08-09T08:15:59.384831Z"
     }
   ],
   "permission_requests": [

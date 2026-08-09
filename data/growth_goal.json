@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T06:58:57.250508Z",
+  "updated_at": "2026-08-09T08:15:59.384831Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T06:58:57.250508Z",
+    "last_checked_at": "2026-08-09T08:15:59.384831Z",
     "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run refreshed ranking/review metrics (weekly trend_items=8, watchlist_items=36) and regenerated top3 marketing drafts ['rosemary-mint-scalp-oil', 'lash-bond-and-seal', 'human-hair-boho-braiding-bundles'].",
     "rolling_30d_average_daily_visits": null,
     "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels.",
-    "interpretation": "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. Improved: published trend item coverage 7→8 (+1) Improved: recent trend item coverage 7→8 (+1)"
+    "interpretation": "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. Improved: TikTok Shop cache fallback recovered 1→0 item(s); fresh URLs 79→80"
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -333,7 +333,18 @@
       ],
       "success_metric": "UTM-attributed top3 share clicks, owner brief copies, item-detail entrances, and repeat visits once analytics export is available",
       "hypothesis": "Keeping public SNS/rep drafts synchronized with the live Top 3 will reduce dead/stale shares and improve repeat-visit quality toward 500/day.",
-      "last_refreshed_at": "2026-08-09T06:58:57.250508Z"
+      "last_refreshed_at": "2026-08-09T08:15:59.384831Z"
+    },
+    {
+      "experiment_id": "run-change-snapshot-v1",
+      "status": "active-site-ux-after-build",
+      "variants": [
+        "hidden_refresh_status",
+        "owner_visible_measured_change_snapshot"
+      ],
+      "success_metric": "run_change_review clicks, ranking-card clicks after viewing latest-loop changes, share/copy events, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners and reps will revisit/share more often when the dashboard clearly separates material evidence/source changes from routine refreshes.",
+      "last_refreshed_at": "2026-08-09T08:15:59.384831Z"
     }
   ],
   "reporting": {

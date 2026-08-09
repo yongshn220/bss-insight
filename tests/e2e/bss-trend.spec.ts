@@ -77,6 +77,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     );
     expect(hasGa4InlineConfig).toBe(true);
     await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toHaveAttribute('data-growth-experiment', 'run-change-snapshot-v1');
+    await expect(page.getByRole('heading', { name: '오늘 다시 볼 이유' })).toBeVisible();
+    await expect(page.getByText('Cached fallback')).toBeVisible();
+    await expect(page.locator('[data-growth-cta="run_change_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
     await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toHaveAttribute('data-growth-experiment', 'evidence-window-transparency-v1');
     await expect(page.getByText('Evidence quality snapshot')).toBeVisible();
@@ -171,6 +176,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.sessionId).toMatch(/^gns_/);
     expect(exposure.attribution.first.utm_source).toBe('e2e');
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
+    expect(exposure.growthSections.some((section: any) => section.id === 'run-change-snapshot-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
@@ -178,6 +184,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('run-change-snapshot-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
@@ -297,6 +304,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-brief-copy-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'source-evidence-clicks-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'section-visibility-engagement-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'run-change-snapshot-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'engagement-summary-v1')).toBe(true);
@@ -309,6 +317,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
 
       await expect(page.locator('.tabs a.active')).toHaveText(label);
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
+      await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();

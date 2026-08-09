@@ -484,6 +484,29 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
     previous_metrics = previous_run.get("metrics", {}) if isinstance(previous_run, dict) else {}
     coverage_deltas = metric_deltas(current_metrics, previous_metrics if isinstance(previous_metrics, dict) else {})
     material_changes = material_change_notes(coverage_deltas)
+    previous_collection = previous_run.get("collection_health", {}) if isinstance(previous_run, dict) else {}
+    previous_source_health = previous_collection.get("source_health", {}) if isinstance(previous_collection, dict) else {}
+    previous_apify = previous_source_health.get("apify_tiktok_shop", {}) if isinstance(previous_source_health, dict) else {}
+    if isinstance(previous_apify, dict) and previous_apify:
+        current_cached_items = int(apify_health.get("partial_cached_items") or 0)
+        previous_cached_items = int(previous_apify.get("partial_cached_items") or 0)
+        current_fresh_urls = int(apify_health.get("fresh_evidence_urls") or 0)
+        previous_fresh_urls = int(previous_apify.get("fresh_evidence_urls") or 0)
+        source_change_notes = []
+        if previous_cached_items and current_cached_items < previous_cached_items:
+            source_change_notes.append(
+                "Improved: TikTok Shop cache fallback recovered "
+                f"{previous_cached_items}→{current_cached_items} item(s); fresh URLs {previous_fresh_urls}→{current_fresh_urls}"
+            )
+        elif apify_health.get("status") != previous_apify.get("status"):
+            source_change_notes.append(
+                "Source health changed: TikTok Shop collector "
+                f"{previous_apify.get('status')}→{apify_health.get('status')}"
+            )
+        if source_change_notes:
+            if len(material_changes) == 1 and str(material_changes[0]).startswith("No material coverage movement"):
+                material_changes = []
+            material_changes.extend(source_change_notes)
     top3 = rows[:3]
     weakest_category = min(cat_stats, key=lambda item: (item["trend_ratio"], item["retail_ratio"], item["product_image_ratio"]))
 
@@ -784,6 +807,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["stale_static_top3_drafts", "current_ranking_synced_top3_drafts"],
             "success_metric": "UTM-attributed top3 share clicks, owner brief copies, item-detail entrances, and repeat visits once analytics export is available",
             "hypothesis": "Keeping public SNS/rep drafts synchronized with the live Top 3 will reduce dead/stale shares and improve repeat-visit quality toward 500/day.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "run-change-snapshot-v1",
+            "status": "active-site-ux-after-build",
+            "variants": ["hidden_refresh_status", "owner_visible_measured_change_snapshot"],
+            "success_metric": "run_change_review clicks, ranking-card clicks after viewing latest-loop changes, share/copy events, and repeat visits once analytics export is available",
+            "hypothesis": "BSS owners and reps will revisit/share more often when the dashboard clearly separates material evidence/source changes from routine refreshes.",
             "last_refreshed_at": now,
         })
 

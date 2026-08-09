@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 RANKINGS_PATH = DATA_DIR / "rankings.json"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
+RANKING_HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RANKINGS_DIR = ROOT / "rankings"
 ITEMS_DIR = ROOT / "items"
 ROBOTS_PATH = ROOT / "robots.txt"
@@ -89,6 +90,168 @@ def load_next_loop_focus() -> dict[str, Any]:
     except (OSError, UnicodeDecodeError, json.JSONDecodeError):
         return {}
     return loaded if isinstance(loaded, dict) else {}
+
+
+def load_ranking_history() -> dict[str, Any]:
+    """Load recent ranking snapshots so the page can say what actually changed."""
+    if not RANKING_HISTORY_PATH.exists():
+        return {"runs": []}
+    try:
+        loaded = json.loads(RANKING_HISTORY_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return {"runs": []}
+    return loaded if isinstance(loaded, dict) else {"runs": []}
+
+
+def source_count(row: dict[str, Any], key: str) -> int:
+    try:
+        return int((row.get("source_counts") or {}).get(key) or 0)
+    except Exception:
+        return 0
+
+
+def previous_history_rows(current_generated_at: object, timeframe: str) -> list[dict[str, Any]]:
+    """Return the latest prior rows for the same timeframe, excluding the current snapshot."""
+    history = load_ranking_history()
+    runs = history.get("runs", []) if isinstance(history, dict) else []
+    if not isinstance(runs, list):
+        return []
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        if run.get("generated_at") == current_generated_at:
+            continue
+        rankings = run.get("rankings", {}) if isinstance(run.get("rankings"), dict) else {}
+        rows = rankings.get(timeframe, [])
+        if isinstance(rows, list):
+            return [row for row in rows if isinstance(row, dict)]
+    return []
+
+
+def coverage_snapshot(rows: list[dict[str, Any]]) -> dict[str, int]:
+    """Small metrics used by the owner-facing change snapshot."""
+    return {
+        "items": len(rows),
+        "trend_items": sum(1 for row in rows if source_count(row, "trend_evidence") > 0),
+        "watchlist_items": sum(
+            1 for row in rows
+            if row.get("momentum") == "watchlist" or source_count(row, "trend_evidence") == 0
+        ),
+        "retail_items": sum(1 for row in rows if source_count(row, "retail_product_evidence") > 0),
+        "tiktok_items": sum(1 for row in rows if source_count(row, "tiktok_shop_product_evidence") > 0),
+        "cached_tiktok_items": sum(1 for row in rows if source_count(row, "cached_tiktok_shop_product_evidence") > 0),
+    }
+
+
+def signed_delta(current: int, previous: int | None, inverse: bool = False) -> tuple[str, str]:
+    """Return a compact delta string and CSS class. Inverse means lower is better."""
+    if previous is None:
+        return "baseline", "neutral"
+    delta = current - previous
+    if delta == 0:
+        return "—", "neutral"
+    improved = delta < 0 if inverse else delta > 0
+    arrow = "▼" if delta < 0 else "▲"
+    return f"{arrow} {abs(delta)}", "good" if improved else "watch"
+
+
+def top3_change_summary(rows: list[dict[str, Any]], previous_rows: list[dict[str, Any]]) -> tuple[str, str]:
+    current_top = [str(row.get("item_id") or "") for row in rows[:3]]
+    previous_top = [str(row.get("item_id") or "") for row in previous_rows[:3]]
+    current_names = ", ".join(
+        f"#{row.get('rank')} {row.get('item_name')}" for row in rows[:3]
+    )
+    if not previous_rows:
+        return "New baseline", current_names
+    if current_top == previous_top:
+        return "Top 3 unchanged", current_names
+    previous_set = set(previous_top)
+    entrants = [row.get("item_name") for row in rows[:3] if str(row.get("item_id") or "") not in previous_set]
+    if entrants:
+        return "Top 3 changed", "New Top 3 entrant(s): " + ", ".join(str(name) for name in entrants)
+    return "Top 3 reordered", current_names
+
+
+def run_change_snapshot(data: dict[str, Any], timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Owner-facing answer to: why should I revisit this dashboard today?
+
+    The panel reports measured changes only. Routine refreshes with no evidence or
+    rank movement are labeled as no material movement instead of being framed as
+    research improvement.
+    """
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    previous_rows = previous_history_rows(data.get("generated_at"), timeframe)
+    current = coverage_snapshot(rows)
+    previous = coverage_snapshot(previous_rows) if previous_rows else {}
+    trend_delta, trend_delta_class = signed_delta(
+        current["trend_items"], previous.get("trend_items") if previous else None
+    )
+    watch_delta, watch_delta_class = signed_delta(
+        current["watchlist_items"], previous.get("watchlist_items") if previous else None, inverse=True
+    )
+    cached_delta, cached_delta_class = signed_delta(
+        current["cached_tiktok_items"], previous.get("cached_tiktok_items") if previous else None, inverse=True
+    )
+
+    health = data.get("collection_health", {}) if isinstance(data.get("collection_health"), dict) else {}
+    source_health = health.get("source_health", {}) if isinstance(health.get("source_health"), dict) else {}
+    apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
+    apify = apify if isinstance(apify, dict) else {}
+    fresh_urls = int(apify.get("fresh_evidence_urls") or 0)
+    total_urls = int(apify.get("evidence_urls") or 0)
+    status = str(apify.get("status") or "unknown")
+    source_note = (
+        f"TikTok Shop source health: {status} · fresh URLs {fresh_urls}/{total_urls}. "
+        "Supply URLs are not trend evidence."
+    )
+
+    top3_status, top3_note = top3_change_summary(rows, previous_rows)
+    material_notes = []
+    if previous:
+        if current["trend_items"] != previous.get("trend_items"):
+            material_notes.append(f"trend-backed items {previous.get('trend_items')}→{current['trend_items']}")
+        if current["watchlist_items"] != previous.get("watchlist_items"):
+            material_notes.append(f"WATCHLIST items {previous.get('watchlist_items')}→{current['watchlist_items']}")
+        if current["cached_tiktok_items"] != previous.get("cached_tiktok_items"):
+            material_notes.append(f"cached TikTok fallback items {previous.get('cached_tiktok_items')}→{current['cached_tiktok_items']}")
+        if top3_status != "Top 3 unchanged":
+            material_notes.append(top3_status.lower())
+    material_text = "; ".join(material_notes) if material_notes else "No material rank/evidence movement versus previous snapshot; measurement pending."
+
+    generated_at = data.get("generated_at") or ""
+    cards = [
+        ("Trend-backed", f"{current['trend_items']}/{current['items']}", trend_delta, trend_delta_class, "Published/date-bearing URLs in this view"),
+        ("WATCHLIST", str(current["watchlist_items"]), watch_delta, watch_delta_class, "Evidence insufficient; not trend claims"),
+        ("Fresh TikTok Shop", str(fresh_urls), "source", "neutral", "Supply/social-commerce validation only"),
+        ("Cached fallback", str(current["cached_tiktok_items"]), cached_delta, cached_delta_class, "Should stay low and labeled supply-only"),
+    ]
+    metric_cards = "".join(
+        f"""
+        <div class="run-change-card {esc(delta_class)}">
+          <span>{esc(title)}</span>
+          <strong>{esc(value)}</strong>
+          <em>{esc(delta)}</em>
+          <small>{esc(note)}</small>
+        </div>"""
+        for title, value, delta, delta_class, note in cards
+    )
+    return f"""
+      <section class="wrap run-change" data-growth-section="run-change-snapshot-v1" data-growth-experiment="run-change-snapshot-v1" aria-label="Latest loop change snapshot">
+        <div class="run-change-copy">
+          <span>Latest loop change · {esc(label)}</span>
+          <h2>오늘 다시 볼 이유</h2>
+          <p>{esc(material_text)}</p>
+          <small>{esc(source_note)} · Generated {esc(generated_at)}</small>
+        </div>
+        <div class="run-change-grid">{metric_cards}</div>
+        <div class="run-change-top3">
+          <span>{esc(top3_status)}</span>
+          <strong>{esc(top3_note)}</strong>
+          <a data-growth-cta="run_change_review" href="/data/operations_review_public.json">Review JSON</a>
+        </div>
+      </section>"""
 
 
 def fmt_change(change: Any) -> str:
@@ -995,6 +1158,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
+      {run_change_snapshot(data, 'weekly', weekly)}
       {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
       {evidence_focus_watchlist('weekly', weekly)}
       {owner_quick_picks('weekly', weekly)}
@@ -1058,6 +1222,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats)}</div>
+      {run_change_snapshot(data, timeframe, rows)}
       {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}
       {evidence_focus_watchlist(timeframe, rows)}
       {owner_quick_picks(timeframe, rows)}

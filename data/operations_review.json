@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-09T06:58:57.250508Z",
-  "source_generated_at": "2026-08-09T06:53:52.087140Z",
+  "reviewed_at": "2026-08-09T08:15:59.384831Z",
+  "source_generated_at": "2026-08-09T08:08:12.871896Z",
   "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (25.8s); marketing-draft-freshness-v1 and watchlist delta logic updated",
+  "playwright_summary": "12 passed (25.5s); run-change-snapshot-v1 UI/tracking QA added",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,32 +15,25 @@
     "watchlist_items": 36
   },
   "collection_health": {
-    "generated_at": "2026-08-09T06:53:52.086858Z",
+    "generated_at": "2026-08-09T08:08:12.871671Z",
     "source_health": {
       "apify_tiktok_shop": {
-        "status": "success_with_partial_cache",
-        "observed_at": "2026-08-09T06:53:52.085971Z",
+        "status": "success",
+        "observed_at": "2026-08-09T08:08:12.870834Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 82,
         "expanded_keyword_items": 19,
-        "products_returned": 80,
+        "products_returned": 82,
         "items_with_evidence": 44,
         "evidence_urls": 80,
-        "fresh_evidence_urls": 79,
-        "partial_cached_items": 1,
-        "partial_cached_evidence_urls": 1,
-        "current_actor_status": "success_partial",
-        "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
-        "max_results_total": 82,
-        "cache_status": "usable",
-        "cache_path": "data/tiktok_shop_cache.json",
-        "cache_updated_at": "2026-08-09T05:40:34.070483Z",
-        "cache_age_days": 0,
-        "cache_max_age_days": 7,
-        "cached_items": 44,
-        "cached_evidence_urls": 80
+        "fresh_evidence_urls": 80,
+        "partial_cached_items": 0,
+        "partial_cached_evidence_urls": 0,
+        "current_actor_status": "success",
+        "cache_policy": "cache not used",
+        "max_results_total": 82
       }
     },
     "evidence_totals": {
@@ -49,15 +42,14 @@
       "items_with_published_trend_url": 24,
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
-      "items_with_cached_tiktok_shop_url": 1,
-      "verified_urls_total": 299,
-      "published_trend_urls_total": 45,
+      "items_with_cached_tiktok_shop_url": 0,
+      "verified_urls_total": 298,
+      "published_trend_urls_total": 44,
       "retail_product_urls_total": 254,
-      "cached_tiktok_shop_urls_total": 1,
+      "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
     "next_actions": [
-      "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
       "published trend URL gap 20개 item 유지: Wigs & Hair Pieces, Tools & Accessories, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
       "zero-trend category 유지: Wigs & Hair Pieces. 다음 run은 broad category가 아니라 item-level dated URL capture를 우선합니다."
     ]
@@ -146,14 +138,14 @@
   ],
   "coverage_deltas": {
     "trend_items": {
-      "previous": 7,
+      "previous": 8,
       "current": 8,
-      "delta": 1
+      "delta": 0
     },
     "recent_trend_items": {
-      "previous": 7,
+      "previous": 8,
       "current": 8,
-      "delta": 1
+      "delta": 0
     },
     "retail_product_items": {
       "previous": 44,
@@ -171,15 +163,13 @@
       "delta": 0
     },
     "watchlist_items": {
-      "previous": 37,
+      "previous": 36,
       "current": 36,
-      "delta": -1
+      "delta": 0
     }
   },
   "material_changes": [
-    "Improved: published trend item coverage 7→8 (+1)",
-    "Improved: recent trend item coverage 7→8 (+1)",
-    "Improved: WATCHLIST item count 37→36 (-1)"
+    "Improved: TikTok Shop cache fallback recovered 1→0 item(s); fresh URLs 79→80"
   ],
   "previous_loop_follow_up": [
     {
@@ -246,7 +236,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -266,7 +256,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -430,7 +420,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -450,7 +440,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -460,16 +450,16 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (25.8s); marketing-draft-freshness-v1 and watchlist delta logic updated",
+    "Playwright QA 완료: 12 passed (25.5s); run-change-snapshot-v1 UI/tracking QA added",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Human Hair Boho Braiding Bundles",
     "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
-    "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
+    "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 80."
   ],
   "improvement_points": [
     "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-    "TikTok Shop collector health: status=success_with_partial_cache attempts=1. 다음 run에서 source outage/actor upstream 상태를 먼저 확인해야 합니다. (no error summary)",
     "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8)."
   ],
   "next_loop_focus_items": [
@@ -536,7 +526,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -672,7 +662,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -690,15 +680,13 @@
     "primary_growth_blockers": [
       "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
       "WATCHLIST remains high: 36/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
-      "Zero weekly trend-evidence categories: Jewelry & Fashion Accessories, Nails, Tools & Accessories, Wigs & Hair Pieces.",
-      "TikTok Shop collector status requires attention: success_with_partial_cache."
+      "Zero weekly trend-evidence categories: Jewelry & Fashion Accessories, Nails, Tools & Accessories, Wigs & Hair Pieces."
     ],
     "good_points": [
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-      "Fresh weekly trend evidence exists for 8 item(s), keeping Top 3 from being supply-only.",
-      "Material coverage progress: published trend item coverage 7→8 (+1); recent trend item coverage 7→8 (+1); WATCHLIST item count 37→36 (-1)."
+      "Fresh weekly trend evidence exists for 8 item(s), keeping Top 3 from being supply-only."
     ],
     "remaining_issues": [
       "Published trend evidence coverage is 8/44; recent 14d coverage is 8/44.",
