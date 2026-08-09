@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-09T01:59:59.765794Z",
-  "source_generated_at": "2026-08-09T01:54:42.475061Z",
+  "reviewed_at": "2026-08-09T03:16:54.517307Z",
+  "source_generated_at": "2026-08-09T03:15:56.631224Z",
   "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (24.5s); engagement-summary-v1 QA passed across desktop/mobile",
+  "playwright_summary": "12 passed (25.7s); partial-cache resilience logic added and build/e2e passed",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,11 +15,11 @@
     "watchlist_items": 37
   },
   "collection_health": {
-    "generated_at": "2026-08-09T01:54:42.474816Z",
+    "generated_at": "2026-08-09T03:15:56.631015Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-09T01:54:42.474078Z",
+        "observed_at": "2026-08-09T03:15:56.630307Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
@@ -27,7 +27,12 @@
         "expanded_keyword_items": 19,
         "products_returned": 82,
         "items_with_evidence": 44,
-        "evidence_urls": 79,
+        "evidence_urls": 80,
+        "fresh_evidence_urls": 80,
+        "partial_cached_items": 0,
+        "partial_cached_evidence_urls": 0,
+        "current_actor_status": "success",
+        "cache_policy": "cache not used",
         "max_results_total": 82
       }
     },
@@ -39,8 +44,8 @@
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
       "verified_urls_total": 297,
-      "published_trend_urls_total": 44,
-      "retail_product_urls_total": 253,
+      "published_trend_urls_total": 43,
+      "retail_product_urls_total": 254,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
@@ -294,7 +299,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 0,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -305,52 +310,6 @@
     {
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
-      "status": "still_needs_focus",
-      "baseline": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "current": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-    },
-    {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
       "status": "still_needs_focus",
       "baseline": {
         "verified_evidence": 13,
@@ -395,8 +354,8 @@
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
-      "item_id": "wig-adhesive-glue",
-      "item_name": "Wig Adhesive Glue",
+      "item_id": "lace-melting-spray",
+      "item_name": "Lace Melting Spray",
       "status": "still_needs_focus",
       "baseline": {
         "verified_evidence": 13,
@@ -412,7 +371,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -432,7 +391,53 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
+        "retail_exact_evidence": 5,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+    },
+    {
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "status": "still_needs_focus",
+      "baseline": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
         "retail_exact_evidence": 10,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "current": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -442,13 +447,13 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (24.5s); engagement-summary-v1 QA passed across desktop/mobile",
+    "Playwright QA 완료: 12 passed (25.7s); partial-cache resilience logic added and build/e2e passed",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Brown Lip Liner Pencil",
     "Evidence separation 유지: published trend URL 보유 item 7개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 79."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 80."
   ],
   "improvement_points": [
     "37개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
@@ -554,7 +559,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 0,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -589,7 +594,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -622,7 +627,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -655,7 +660,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 10,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -709,6 +714,24 @@
         "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
       }
     },
-    "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only."
+    "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only.",
+    "operator_assessment": "이번 run의 실제 병목은 UI보다 source resilience와 measurement/export 부재입니다. 초기 refresh에서 Long Coffin Press-On Nails가 TikTok/social-commerce coverage에서 빠질 수 있는 회귀가 관찰되어, Apify actor가 성공하더라도 일부 item을 누락하면 최근 cache를 labeled supply-only fallback으로 쓰는 partial-cache logic을 추가했습니다. 최종 refresh에서는 actor가 fresh listing을 다시 반환해 cache는 사용되지 않았지만, 다음 partial 성공/누락 run에서 44/44 coverage collapse를 막을 수 있습니다.",
+    "material_changes_this_run": [
+      "scripts/collect_rankings.py: TikTok Shop actor success 후 missing item_id를 최근 cache로 보강하는 success_with_partial_cache path 추가.",
+      "source_health에 fresh_evidence_urls, partial_cached_items, partial_cached_evidence_urls, current_actor_status, cache_policy를 기록하도록 확장.",
+      "collection_next_actions가 success_with_partial_cache 상태를 다음 run action으로 설명하도록 업데이트.",
+      "data/next_loop_focus.json/public review를 최신 Playwright pass 후 재생성해 weak WATCHLIST items를 다음 loop로 유지."
+    ],
+    "actual_outcomes": [
+      "Final weekly coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
+      "Trend-backed weekly items remain 7/44; WATCHLIST remains 37/44 — no new trend claim was created.",
+      "Apify current status: success with fresh_evidence_urls=80 and partial_cached_items=0.",
+      "Measurement remains blocked: no GA4 Data API property/service credentials or approved Vercel Analytics export/API available in this runtime."
+    ],
+    "next_safest_actions": [
+      "Next run should target dated item-level URLs for Wigs & Hair Pieces, Tools & Accessories, Jewelry & Fashion Accessories, and Nails instead of broad category trend claims.",
+      "If source_health.apify_tiktok_shop.status becomes success_with_partial_cache, inspect which item used cache and refresh that item with stricter product query/source capture.",
+      "Connect GA4 Data API or Vercel Analytics export to compare owner quick-pick, source-link, share/copy, and engagement-summary events against rolling 30-day visits."
+    ]
   }
 }

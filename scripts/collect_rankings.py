@@ -906,9 +906,10 @@ def write_tiktok_shop_cache(evidence_by_item: dict[str, list[dict[str, Any]]]) -
     """Persist last successful TikTok Shop listing URLs for transparent fallback.
 
     The cache contains only public product/listing fields already safe for the
-    dashboard. It is used when the upstream Apify actor fails so the UI can keep
-    showing previously captured supply signals while clearly labeling them as
-    cached, never as fresh trend evidence.
+    dashboard. It is used when the upstream Apify actor fails or when a
+    successful actor run drops an item that had a recent listing capture. The UI
+    keeps showing that supply signal while clearly labeling it as cached, never
+    as fresh trend evidence.
     """
     evidence_by_item = {
         item_id: [dict(src) for src in sources if isinstance(src, dict) and src.get("url")]
@@ -1120,12 +1121,39 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
                 continue
             seen.add(dedupe_key)
             evidence_by_item.setdefault(row["id"], []).append(signal)
+    fresh_evidence_urls = sum(len(sources) for sources in evidence_by_item.values())
+    cached_evidence, cache_meta = load_tiktok_shop_cache()
+    target_item_ids = [str(row.get("id") or "") for row in rows if row.get("id")]
+    missing_item_ids = [item_id for item_id in target_item_ids if item_id not in evidence_by_item]
+    partial_cached_items = 0
+    partial_cached_urls = 0
+    if cached_evidence and missing_item_ids:
+        for item_id in missing_item_ids:
+            sources = cached_evidence.get(item_id, [])
+            if not sources:
+                continue
+            recovered_sources = []
+            for source in sources:
+                cached = dict(source)
+                cached["source_layer"] = "social_commerce_product_url_cached"
+                cached["date_kind"] = "observed_cached_product"
+                cached["evidence_status"] = "cached_verified_url"
+                cached["cache_status"] = "reused_after_partial_apify_success"
+                cached["cache_reason"] = "actor_success_but_item_missing_from_current_dataset"
+                recovered_sources.append(cached)
+            if recovered_sources:
+                evidence_by_item[item_id] = recovered_sources
+                partial_cached_items += 1
+                partial_cached_urls += len(recovered_sources)
     evidence_urls = sum(len(sources) for sources in evidence_by_item.values())
     if evidence_urls:
         write_tiktok_shop_cache(evidence_by_item)
+    status = "success" if fresh_evidence_urls else "success_empty"
+    if partial_cached_items:
+        status = "success_with_partial_cache"
     set_source_health(
         "apify_tiktok_shop",
-        "success" if evidence_urls else "success_empty",
+        status,
         configured=True,
         enabled=True,
         attempts=attempts_used,
@@ -1134,7 +1162,13 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         products_returned=len(products),
         items_with_evidence=len(evidence_by_item),
         evidence_urls=evidence_urls,
+        fresh_evidence_urls=fresh_evidence_urls,
+        partial_cached_items=partial_cached_items,
+        partial_cached_evidence_urls=partial_cached_urls,
+        current_actor_status="success_partial" if partial_cached_items and fresh_evidence_urls else ("success_empty" if partial_cached_items else "success"),
+        cache_policy="Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement." if partial_cached_items else "cache not used",
         max_results_total=max_total,
+        **(cache_meta if partial_cached_items else {}),
     )
     return evidence_by_item
 
@@ -1314,7 +1348,12 @@ def collection_next_actions(totals: dict[str, Any], gaps: dict[str, Any] | None 
     gap_summary = gaps.get("summary", {}) if isinstance(gaps, dict) else {}
     apify = source_health("apify_tiktok_shop")
     apify_status = apify.get("status")
-    if apify_status == "failed_using_cache":
+    if apify_status == "success_with_partial_cache":
+        cached_items = int(apify.get("partial_cached_items") or 0)
+        actions.append(
+            f"TikTok Shop actor는 성공했지만 {cached_items}개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다."
+        )
+    elif apify_status == "failed_using_cache":
         actions.append("TikTok Shop actor는 실패했지만 최근 성공 cache를 supply fallback으로 사용했습니다. 다음 run에서 actor/upstream 재시도 후 cache freshness를 갱신해야 합니다.")
     elif apify_status in {"failed", "success_empty", "skipped"}:
         actions.append("TikTok Shop 수집 상태를 다음 run에서 먼저 확인: actor/upstream throttle이면 재시도, token/enablement 문제면 env 복구.")

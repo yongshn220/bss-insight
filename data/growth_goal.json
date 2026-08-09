@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T01:58:13.144114Z",
+  "updated_at": "2026-08-09T03:18:07.347302Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T01:58:13.144114Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added engagement-summary-v1: assets/growth.js now emits growth_engagement_summary with time_on_page_ms, max_scroll_depth_percent, viewed_sections, click/share/copy/source counters, timeframe, item_id, UTM, and session context.",
+    "last_checked_at": "2026-08-09T03:18:07.347302Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run added partial-cache resilience for TikTok Shop supply coverage: collector can now label recent cached listing URLs when the Apify actor succeeds but omits an item.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component-level engagement funnels.",
-    "interpretation": "Traffic progress still cannot be claimed. Tracking quality improved because visits can now be segmented by depth/dwell/section exposure once analytics export is connected, making module placement decisions less dependent on raw page views."
+    "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels.",
+    "interpretation": "Traffic progress cannot be claimed. Product/source credibility improved operationally, while final current data stayed fresh (partial_cached_items=0) and weekly trend evidence did not materially improve."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -190,13 +190,14 @@
     },
     {
       "experiment_id": "tiktok-shop-cache-resilience-v1",
-      "status": "active-collection-resilience-after-build",
+      "status": "active-collection-resilience-partial-cache-ready-after-build",
       "variants": [
         "no_cache_actor_failure_zero_tiktok_coverage",
         "labeled_last_success_cache_supply_only"
       ],
-      "success_metric": "fewer avoidable TikTok Shop coverage outages, stable product images/source cards, and no increase in unsupported trend claims",
-      "hypothesis": "Transparent cached supply fallback preserves owner trust during upstream actor failures while keeping trend claims evidence-based."
+      "success_metric": "Maintain 44/44 TikTok Shop or clearly labeled cached supply coverage without increasing unsupported trend claims; monitor partial_cached_items and source-link engagement after analytics export is connected.",
+      "hypothesis": "Transparent cached supply fallback preserves owner trust during upstream actor failures while keeping trend claims evidence-based.",
+      "last_run_note": "2026-08-09T03:18:07.347302Z: final source_health.status=success; fresh_evidence_urls=80; partial_cached_items=0."
     },
     {
       "experiment_id": "top3-owner-share-strip-v1",
