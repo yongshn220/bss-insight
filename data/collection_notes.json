@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-09T09:33:32.164417Z",
+  "generated_at": "2026-08-09T10:47:34.799098Z",
   "date": "2026-08-09",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-09T09:33:32.163510Z",
+      "observed_at": "2026-08-09T10:47:34.798271Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,

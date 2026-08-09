@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T09:38:48.637582Z",
+  "updated_at": "2026-08-09T10:48:25.287079Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T09:38:48.637582Z",
+    "last_checked_at": "2026-08-09T10:48:25.287079Z",
     "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run refreshed ranking/review metrics (weekly trend_items=9, watchlist_items=35) and regenerated top3 marketing drafts ['glueless-pre-cut-hd-lace-wig', 'rosemary-mint-scalp-oil', 'lash-bond-and-seal'].",
     "rolling_30d_average_daily_visits": null,
     "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels.",
-    "interpretation": "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. Improved: published trend item coverage 8→9 (+1) Improved: recent trend item coverage 8→9 (+1)"
+    "interpretation": "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. No material coverage movement versus previous distinct ranking snapshot; measurement pending."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -333,7 +333,7 @@
       ],
       "success_metric": "UTM-attributed top3 share clicks, owner brief copies, item-detail entrances, and repeat visits once analytics export is available",
       "hypothesis": "Keeping public SNS/rep drafts synchronized with the live Top 3 will reduce dead/stale shares and improve repeat-visit quality toward 500/day.",
-      "last_refreshed_at": "2026-08-09T09:38:48.637582Z"
+      "last_refreshed_at": "2026-08-09T10:48:25.287079Z"
     },
     {
       "experiment_id": "run-change-snapshot-v1",
@@ -344,7 +344,7 @@
       ],
       "success_metric": "run_change_review clicks, ranking-card clicks after viewing latest-loop changes, share/copy events, and repeat visits once analytics export is available",
       "hypothesis": "BSS owners and reps will revisit/share more often when the dashboard clearly separates material evidence/source changes from routine refreshes.",
-      "last_refreshed_at": "2026-08-09T09:38:48.637582Z"
+      "last_refreshed_at": "2026-08-09T10:48:25.287079Z"
     },
     {
       "experiment_id": "trend-preserving-source-cap-v1",
@@ -355,7 +355,18 @@
       ],
       "success_metric": "items_with_published_trend_url, published_trend_urls_total, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
       "hypothesis": "Preserving dated published URLs before same-day supply listings enter the per-item cap should improve evidence trust and reduce avoidable WATCHLIST labeling without counting search URLs as evidence.",
-      "last_refreshed_at": "2026-08-09T09:38:48.637582Z"
+      "last_refreshed_at": "2026-08-09T10:48:25.287079Z"
+    },
+    {
+      "experiment_id": "common-event-page-context-v1",
+      "status": "active-client-side-provider-ready-after-build",
+      "variants": [
+        "path_only_event_context",
+        "page_type_timeframe_item_context"
+      ],
+      "success_metric": "growth_exposure, growth_click, growth_section_view, growth_engagement_summary, and share/copy events segmented by page_type, timeframe, and page_item_id once analytics export is connected",
+      "hypothesis": "BSS owner growth optimization needs event context that distinguishes home, timeframe ranking, and item-detail pages without brittle URL parsing in the analytics dashboard.",
+      "last_refreshed_at": "2026-08-09T10:48:25.287079Z"
     }
   ],
   "reporting": {

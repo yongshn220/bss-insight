@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-09T09:38:48.637582Z",
-  "source_generated_at": "2026-08-09T09:33:32.164832Z",
+  "reviewed_at": "2026-08-09T10:48:25.287079Z",
+  "source_generated_at": "2026-08-09T10:47:34.799504Z",
   "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (26.6s); trend-preserving-source-cap-v1 QA added",
+  "playwright_summary": "12 passed (26.2s); common-event-page-context-v1 QA added",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,11 +15,11 @@
     "watchlist_items": 35
   },
   "collection_health": {
-    "generated_at": "2026-08-09T09:33:32.164417Z",
+    "generated_at": "2026-08-09T10:47:34.799098Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-09T09:33:32.163510Z",
+        "observed_at": "2026-08-09T10:47:34.798271Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
@@ -145,14 +145,14 @@
   ],
   "coverage_deltas": {
     "trend_items": {
-      "previous": 8,
+      "previous": 9,
       "current": 9,
-      "delta": 1
+      "delta": 0
     },
     "recent_trend_items": {
-      "previous": 8,
+      "previous": 9,
       "current": 9,
-      "delta": 1
+      "delta": 0
     },
     "retail_product_items": {
       "previous": 44,
@@ -170,15 +170,13 @@
       "delta": 0
     },
     "watchlist_items": {
-      "previous": 36,
+      "previous": 35,
       "current": 35,
-      "delta": -1
+      "delta": 0
     }
   },
   "material_changes": [
-    "Improved: published trend item coverage 8→9 (+1)",
-    "Improved: recent trend item coverage 8→9 (+1)",
-    "Improved: WATCHLIST item count 36→35 (-1)"
+    "No material coverage movement versus previous distinct ranking snapshot; measurement pending."
   ],
   "previous_loop_follow_up": [
     {
@@ -265,7 +263,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -311,7 +309,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -357,7 +355,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -390,12 +388,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 13,
+        "verified_evidence": 12,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 5,
@@ -403,7 +401,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -459,7 +457,7 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (26.6s); trend-preserving-source-cap-v1 QA added",
+    "Playwright QA 완료: 12 passed (26.2s); common-event-page-context-v1 QA added",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 Rosemary Mint Scalp Oil, #3 Lash Bond and Seal",
     "Evidence separation 유지: published trend URL 보유 item 9개, BSS/marketplace live product URL 보유 item 44개.",
@@ -511,7 +509,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 12,
+      "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
@@ -535,7 +533,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -570,7 +568,7 @@
         "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -605,40 +603,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
-      "category": "Hair Care & Styling",
-      "rank": 11,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Lace Melting Spray\" beauty supply trend",
-        "Lace Melting Spray 2026 trend",
-        "Lace Melting Spray customer review 2026",
-        "\"Lace Melting Spray\" black beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -649,7 +614,7 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 13,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Wig Adhesive Glue\" beauty supply trend",
@@ -677,6 +642,41 @@
         "manual_references": 14,
         "news_magazine": 0
       }
+    },
+    {
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 13,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"V-Part Human Hair Wig\" beauty supply trend",
+        "V-Part Human Hair Wig 2026 trend",
+        "V-Part Human Hair Wig customer review 2026",
+        "\"V-Part Human Hair Wig\" black beauty supply",
+        "V-Part Human Hair Wig wig install trend",
+        "V-Part Human Hair Wig natural hair review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 2,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
     }
   ],
   "qa_focus": [
@@ -695,8 +695,7 @@
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-      "Fresh weekly trend evidence exists for 9 item(s), keeping Top 3 from being supply-only.",
-      "Material coverage progress: published trend item coverage 8→9 (+1); recent trend item coverage 8→9 (+1); WATCHLIST item count 36→35 (-1)."
+      "Fresh weekly trend evidence exists for 9 item(s), keeping Top 3 from being supply-only."
     ],
     "remaining_issues": [
       "Published trend evidence coverage is 9/44; recent 14d coverage is 9/44.",

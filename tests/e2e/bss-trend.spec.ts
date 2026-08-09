@@ -184,6 +184,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'home' && event.timeframe === 'weekly_home' && event.page_item_id === '')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('run-change-snapshot-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
@@ -290,6 +291,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     expect(itemExposure.utm_source).toBe('site');
     expect(itemExposure.first_utm_source).toBe('e2e');
+    expect(itemExposure.page_item_id).toMatch(/.+/);
     expect(itemExposure.session_id).toMatch(/^gns_/);
 
     const goalResponse = await request.get('/data/growth_goal_public.json');

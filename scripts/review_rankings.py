@@ -777,6 +777,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "next_step": "Track items_with_published_trend_url and source_link clicks after analytics export is connected; do not treat generated search URLs as evidence.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "common-event-page-context-v1",
+            "status": "active-client-side-provider-ready-after-review",
+            "hypothesis": "Adding page_type, timeframe, and page_item_id to every growth event will make ranking vs. item-detail funnels measurable without relying only on path parsing.",
+            "next_step": "After GA4/Vercel export access is connected, segment growth_exposure, growth_click, growth_section_view, and share/copy events by page_type/timeframe/page_item_id.",
+            "last_refreshed_at": now,
+        })
 
     save_json(MARKETING_BACKLOG_PATH, marketing)
     return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
@@ -831,6 +838,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["mixed_recency_cap", "published_first_verified_source_cap"],
             "success_metric": "items_with_published_trend_url, published_trend_urls_total, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
             "hypothesis": "Preserving dated published URLs before same-day supply listings enter the per-item cap should improve evidence trust and reduce avoidable WATCHLIST labeling without counting search URLs as evidence.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "common-event-page-context-v1",
+            "status": "active-client-side-provider-ready-after-build",
+            "variants": ["path_only_event_context", "page_type_timeframe_item_context"],
+            "success_metric": "growth_exposure, growth_click, growth_section_view, growth_engagement_summary, and share/copy events segmented by page_type, timeframe, and page_item_id once analytics export is connected",
+            "hypothesis": "BSS owner growth optimization needs event context that distinguishes home, timeframe ranking, and item-detail pages without brittle URL parsing in the analytics dashboard.",
             "last_refreshed_at": now,
         })
 
