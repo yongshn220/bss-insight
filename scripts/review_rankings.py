@@ -851,6 +851,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "next_step": "After GA4/Vercel export access is connected, segment growth_return_visit_prompt exposure, cta_return_visitor_current_ranking clicks, and is_returning_visitor traffic.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "visit-session-boundary-v1",
+            "status": "active-client-side-provider-ready-after-review",
+            "hypothesis": "A new session_id after the 30-minute visit window will make return-owner visits and UTM funnels easier to measure without inflating one long-lived browser session.",
+            "next_step": "After GA4/Vercel export access is connected, compare session_id, visit_count, is_returning_visitor, and first/current UTM on repeat ranking and item-detail entrances.",
+            "last_refreshed_at": now,
+        })
 
     save_json(MARKETING_BACKLOG_PATH, marketing)
     return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
@@ -937,6 +944,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["hidden_for_first_visit", "shown_for_returning_owner_visit"],
             "success_metric": "growth_return_visit_prompt exposures, return_visitor CTA clicks, share/copy events, and rolling 30-day repeat visits once analytics export is connected",
             "hypothesis": "Returning BSS owners should be routed directly to changed ranking/watchlist actions instead of re-reading the full dashboard, increasing repeat-use value toward 500/day.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "visit-session-boundary-v1",
+            "status": "active-client-side-provider-ready-after-build",
+            "variants": ["persistent_local_session_id", "30_minute_visit_window_session_boundary"],
+            "success_metric": "growth_exposure and growth_engagement_summary segmented by fresh session_id, visit_count, is_returning_visitor, first/current UTM, and repeat item-detail entrances once analytics export is connected",
+            "hypothesis": "Renewing session_id after the 30-minute visit boundary prevents repeat owners from being collapsed into a stale browser session, improving measurement toward the 500/day goal.",
             "last_refreshed_at": now,
         })
 

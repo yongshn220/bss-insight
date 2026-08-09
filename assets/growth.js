@@ -9,6 +9,7 @@
   const VARIANT_KEY = `${STORAGE_PREFIX}:${EXPERIMENT_ID}:variant`;
   const ATTRIBUTION_KEY = `${STORAGE_PREFIX}:attribution`;
   const SESSION_KEY = `${STORAGE_PREFIX}:session_id`;
+  const SESSION_FALLBACK_KEY = `${STORAGE_PREFIX}:session_fallback`;
   const VISITOR_KEY = `${STORAGE_PREFIX}:visitor`;
   const MAX_LOCAL_EVENTS = 80;
   const VISIT_WINDOW_MS = 30 * 60 * 1000;
@@ -110,13 +111,28 @@
     }
   }
 
+  function storedVisitWindowExpired() {
+    const stored = parseStoredJson(VISITOR_KEY, {});
+    const lastVisitMs = parseTimestamp(stored.last_visit_at);
+    return Boolean(lastVisitMs && (Date.now() - lastVisitMs) > VISIT_WINDOW_MS);
+  }
+
   function getSessionId() {
-    let sessionId = storageGet('sessionStorage', SESSION_KEY) || storageGet('localStorage', SESSION_KEY);
+    const visitWindowExpired = storedVisitWindowExpired();
+    let sessionId = visitWindowExpired ? '' : storageGet('sessionStorage', SESSION_KEY);
+    if (!sessionId) {
+      const fallback = parseStoredJson(SESSION_FALLBACK_KEY, {});
+      const fallbackCreatedAt = parseTimestamp(fallback.created_at);
+      const fallbackAgeMs = fallbackCreatedAt ? Date.now() - fallbackCreatedAt : Number.POSITIVE_INFINITY;
+      if (!visitWindowExpired && fallback.session_id && fallbackAgeMs >= 0 && fallbackAgeMs <= VISIT_WINDOW_MS) {
+        sessionId = fallback.session_id;
+      }
+    }
     if (!sessionId) {
       sessionId = `gns_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
     }
     storageSet('sessionStorage', SESSION_KEY, sessionId);
-    storageSet('localStorage', SESSION_KEY, sessionId);
+    storageSet('localStorage', SESSION_FALLBACK_KEY, JSON.stringify({ session_id: sessionId, created_at: safeNow() }));
     return sessionId;
   }
 

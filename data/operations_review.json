@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-09T14:38:28.912154Z",
-  "source_generated_at": "2026-08-09T14:29:55.013653Z",
+  "reviewed_at": "2026-08-09T15:51:41.487842Z",
+  "source_generated_at": "2026-08-09T15:48:00.793065Z",
   "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "14 passed (28.0s); return-visitor-prompt-v1 QA added",
+  "playwright_summary": "14 passed (28.8s); visit-session-boundary-v1 QA added",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,20 +15,20 @@
     "watchlist_items": 35
   },
   "collection_health": {
-    "generated_at": "2026-08-09T14:29:55.013217Z",
+    "generated_at": "2026-08-09T15:48:00.792699Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-09T14:29:55.012443Z",
+        "observed_at": "2026-08-09T15:48:00.792003Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 80,
         "expanded_keyword_items": 18,
-        "products_returned": 78,
+        "products_returned": 79,
         "items_with_evidence": 44,
-        "evidence_urls": 77,
-        "fresh_evidence_urls": 77,
+        "evidence_urls": 78,
+        "fresh_evidence_urls": 78,
         "partial_cached_items": 0,
         "partial_cached_evidence_urls": 0,
         "current_actor_status": "success",
@@ -43,9 +43,9 @@
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 306,
-      "published_trend_urls_total": 55,
-      "retail_product_urls_total": 251,
+      "verified_urls_total": 308,
+      "published_trend_urls_total": 56,
+      "retail_product_urls_total": 252,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
@@ -145,14 +145,14 @@
   ],
   "coverage_deltas": {
     "trend_items": {
-      "previous": 8,
+      "previous": 9,
       "current": 9,
-      "delta": 1
+      "delta": 0
     },
     "recent_trend_items": {
-      "previous": 8,
+      "previous": 9,
       "current": 9,
-      "delta": 1
+      "delta": 0
     },
     "retail_product_items": {
       "previous": 44,
@@ -170,22 +170,19 @@
       "delta": 0
     },
     "watchlist_items": {
-      "previous": 36,
+      "previous": 35,
       "current": 35,
-      "delta": -1
+      "delta": 0
     }
   },
   "material_changes": [
-    "Improved: published trend item coverage 8→9 (+1)",
-    "Improved: recent trend item coverage 8→9 (+1)",
-    "Improved: WATCHLIST item count 36→35 (-1)",
-    "Improved: TikTok Shop cache fallback recovered 1→0 item(s); fresh URLs 77→77"
+    "No material coverage movement versus previous distinct ranking snapshot; measurement pending."
   ],
   "previous_loop_follow_up": [
     {
       "item_id": "rhinestone-stud-earrings-6mm",
       "item_name": "6mm Rhinestone Stud Earrings",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
         "verified_evidence": 5,
         "trend_evidence": 0,
@@ -207,12 +204,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 5,
+        "verified_evidence": 6,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 5,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 6,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 2,
@@ -226,7 +223,7 @@
         "manual_references": 16,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "wig-grip-band",
@@ -404,7 +401,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -450,7 +447,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -460,13 +457,13 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 14 passed (28.0s); return-visitor-prompt-v1 QA added",
+    "Playwright QA 완료: 14 passed (28.8s); visit-session-boundary-v1 QA added",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 Rosemary Mint Scalp Oil, #3 Lash Bond and Seal",
     "Evidence separation 유지: published trend URL 보유 item 9개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 77."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 78."
   ],
   "improvement_points": [
     "35개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
@@ -477,7 +474,7 @@
       "item_id": "rhinestone-stud-earrings-6mm",
       "item_name": "6mm Rhinestone Stud Earrings",
       "category": "Jewelry & Fashion Accessories",
-      "rank": 23,
+      "rank": 22,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"6mm Rhinestone Stud Earrings\" beauty supply trend",
@@ -488,12 +485,12 @@
         "6mm Rhinestone Stud Earrings body jewelry trend"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 5,
+        "verified_evidence": 6,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 5,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 6,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 2,
@@ -547,7 +544,7 @@
       "item_id": "rhinestone-nail-charms",
       "item_name": "Rhinestone Nail Charms",
       "category": "Nails",
-      "rank": 22,
+      "rank": 23,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"Rhinestone Nail Charms\" beauty supply trend",
@@ -639,7 +636,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -674,7 +671,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -698,8 +695,7 @@
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-      "Fresh weekly trend evidence exists for 9 item(s), keeping Top 3 from being supply-only.",
-      "Material coverage progress: published trend item coverage 8→9 (+1); recent trend item coverage 8→9 (+1); WATCHLIST item count 36→35 (-1)."
+      "Fresh weekly trend evidence exists for 9 item(s), keeping Top 3 from being supply-only."
     ],
     "remaining_issues": [
       "Published trend evidence coverage is 9/44; recent 14d coverage is 9/44.",

@@ -338,9 +338,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
 
   test('return visitor prompt appears and is event-tracked on a later visit', async ({ page }) => {
     await page.goto('/index.html?variant=A&utm_source=e2e_first&utm_medium=playwright&utm_campaign=daily-visits-500');
-    const firstVisit = await page.evaluate(() => (window as any).__GNS_GROWTH__?.visitor?.());
-    expect(firstVisit?.visit_count).toBe(1);
-    expect(firstVisit?.is_returning_visitor).toBe(false);
+    const firstVisit = await page.evaluate(() => {
+      const growth = (window as any).__GNS_GROWTH__;
+      return { visitor: growth?.visitor?.(), sessionId: growth?.sessionId };
+    });
+    expect(firstVisit.visitor?.visit_count).toBe(1);
+    expect(firstVisit.visitor?.is_returning_visitor).toBe(false);
+    expect(firstVisit.sessionId).toMatch(/^gns_/);
     await expect(page.locator('[data-return-visitor-panel]')).toBeHidden();
 
     await page.evaluate(() => {
@@ -349,7 +353,6 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       stored.visit_count = Math.max(1, Number(stored.visit_count || 1));
       stored.last_visit_at = new Date(Date.now() - (31 * 60 * 1000)).toISOString();
       window.localStorage.setItem(key, JSON.stringify(stored));
-      window.sessionStorage.removeItem('gns_growth:session_id');
     });
 
     await page.goto('/index.html?variant=A&utm_source=return_test&utm_medium=direct&utm_campaign=daily-visits-500-return-visitor-prompt');
@@ -365,12 +368,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       const growth = (window as any).__GNS_GROWTH__;
       return {
         visitor: growth?.visitor?.(),
+        sessionId: growth?.sessionId,
         sections: growth?.growthSections?.() ?? [],
         events: growth?.events?.() ?? [],
       };
     });
     expect(returnVisit.visitor?.is_returning_visitor).toBe(true);
     expect(returnVisit.visitor?.visit_count).toBe(2);
+    expect(returnVisit.sessionId).toMatch(/^gns_/);
+    expect(returnVisit.sessionId).not.toBe(firstVisit.sessionId);
     expect(returnVisit.sections.some((section: any) => section.id === 'return-visitor-prompt-v1')).toBe(true);
     expect(returnVisit.events.some((event: any) => event.event === 'growth_return_visit_prompt' && event.section === 'return-visitor-prompt-v1' && event.visit_count === 2 && event.is_returning_visitor === true)).toBe(true);
     expect(returnVisit.events.some((event: any) => event.event === 'growth_exposure' && event.is_returning_visitor === true && String(event.visible_growth_sections).includes('return-visitor-prompt-v1'))).toBe(true);
