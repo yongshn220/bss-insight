@@ -834,6 +834,24 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "Analytics export is still needed to compare UTM-attributed sessions from shared links before/after social preview cards; no external posting is performed here.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "rss-owner-feed-v1",
+        "status": "live-static-rss-feed-after-build",
+        "objective": "Create a subscriber/crawler-friendly RSS feed of weekly BSS owner item picks so repeat visits are not limited to manual page refreshes or SNS posting.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/feed.xml",
+            "https://gnsresearchhub.vercel.app/index.html (rel=alternate application/rss+xml)",
+            "https://gnsresearchhub.vercel.app/sitemap.xml",
+        ],
+        "tracked_quality_metrics": [
+            "feed links use utm_source=rss&utm_medium=organic&utm_campaign=daily-visits-500-rss-feed",
+            "feed item descriptions include display/risk/evidence status and label WATCHLIST rows as evidence insufficient",
+            "rss feed top item ids=" + ", ".join(top3_ids),
+        ],
+        "owner_value": "BSS owners or reps can subscribe to a lightweight weekly item feed and reopen item detail pages with display/risk copy, which supports repeat visits toward the 500/day goal.",
+        "measurement_need": "GA4/Vercel export access is still needed to measure rss UTM sessions and compare feed-driven repeat visits against owner_share/x/email channels.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -884,6 +902,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-static-shareability-after-review",
             "hypothesis": "Ranking-specific OG/Twitter preview cards should improve trust and click intent when BSS owners/reps share links because the preview shows concrete Top 3 items and evidence/watchlist discipline before the visit.",
             "next_step": "After analytics export access is connected, compare UTM-attributed sessions from owner_share/x/email links and share-copy events before/after /assets/share-{timeframe}.svg deployment.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "rss-owner-feed-v1",
+            "status": "active-static-distribution-after-review",
+            "hypothesis": "A crawlable/subscribable RSS feed with item-level display, risk, evidence labels, and rss UTM links should increase repeat entrances from BSS owners who prefer saved feeds or rep workflows over manual refreshes.",
+            "next_step": "After analytics export access is connected, segment utm_source=rss sessions, item-detail entrances, and returning visitor rate against x/email/owner_share traffic.",
             "last_refreshed_at": now,
         })
 
@@ -988,6 +1013,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["random_product_image_preview", "ranking_specific_top3_evidence_preview_card"],
             "success_metric": "UTM-attributed sessions from owner_share/x/email links, share/copy events, and repeat visits once analytics export is connected",
             "hypothesis": "Ranking-specific social preview images should make shared BSS owner links clearer and more trustworthy because previews show Top 3 item names plus trend/watchlist counts without unsupported claims.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "rss-owner-feed-v1",
+            "status": "active-static-distribution-after-build",
+            "variants": ["no_subscriber_feed", "weekly_owner_item_rss_feed_with_utm_links"],
+            "success_metric": "utm_source=rss sessions, item-detail entrances, returning-owner visits, and share/copy events once analytics export is connected",
+            "hypothesis": "A subscriber/crawler-friendly RSS feed should create another organic repeat-visit path for BSS owners and reps without requiring external SNS posting permissions.",
             "last_refreshed_at": now,
         })
 

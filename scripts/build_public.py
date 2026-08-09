@@ -15,6 +15,7 @@ COPY_PATHS = [
     "index.html",
     "robots.txt",
     "sitemap.xml",
+    "feed.xml",
     "assets",
     "rankings",
     "items",

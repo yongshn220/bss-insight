@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import email.utils
 import html
 import json
 import shutil
@@ -20,6 +21,7 @@ RANKINGS_DIR = ROOT / "rankings"
 ITEMS_DIR = ROOT / "items"
 ROBOTS_PATH = ROOT / "robots.txt"
 SITEMAP_PATH = ROOT / "sitemap.xml"
+FEED_PATH = ROOT / "feed.xml"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
@@ -61,6 +63,31 @@ def json_ld_script(payload: dict[str, Any] | list[dict[str, Any]] | None) -> str
         return ""
     text = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     return f'  <script type="application/ld+json">{text}</script>\n'
+
+
+def generated_datetime(data: dict[str, Any]) -> dt.datetime:
+    """Parse the current data timestamp for RSS/SEO metadata."""
+    raw = str(data.get("generated_at") or data.get("date") or "").strip()
+    if raw:
+        try:
+            parsed = dt.datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=dt.UTC)
+            return parsed.astimezone(dt.UTC)
+        except ValueError:
+            try:
+                parsed_date = dt.date.fromisoformat(raw[:10])
+                return dt.datetime.combine(parsed_date, dt.time.min, tzinfo=dt.UTC)
+            except ValueError:
+                pass
+    return dt.datetime.now(dt.UTC)
+
+
+def rss_datetime(value: dt.datetime) -> str:
+    """Return an RFC 2822 timestamp accepted by RSS readers."""
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=dt.UTC)
+    return email.utils.format_datetime(value.astimezone(dt.UTC), usegmt=True)
 
 
 def analytics_head() -> str:
@@ -349,6 +376,7 @@ def shell(
   <meta name="gns:growth-target" content="500 average daily visits">
   <meta name="gns:growth-experiment" content="hero-growth-cta-v1">
   <link rel="canonical" href="{esc(canonical_url)}">
+  <link rel="alternate" type="application/rss+xml" title="BSS Trend Ranking RSS" href="{SITE_BASE}/feed.xml">
   <meta property="og:title" content="{esc(title)} · BSS Trend Ranking">
   <meta property="og:description" content="{esc(description)}">
   <meta property="og:type" content="website">
@@ -819,6 +847,75 @@ def write_social_share_cards(data: dict[str, Any]) -> list[str]:
         out.write_text(svg, encoding="utf-8")
         generated.append(str(out.relative_to(ROOT)))
     return generated
+
+
+def rss_feed_rows(data: dict[str, Any], limit: int = 12) -> list[dict[str, Any]]:
+    """Return weekly rows for RSS: trend-backed first, then clearly labeled watchlist."""
+    rankings = data.get("rankings", {}) if isinstance(data.get("rankings"), dict) else {}
+    weekly = rankings.get("weekly", []) if isinstance(rankings, dict) else []
+    rows = [row for row in weekly if isinstance(row, dict)] if isinstance(weekly, list) else []
+    trend_rows = [row for row in rows if has_trend_evidence(row)]
+    watch_rows = [row for row in rows if not has_trend_evidence(row)]
+    return (trend_rows + watch_rows)[:limit]
+
+
+def write_rss_feed(data: dict[str, Any]) -> str:
+    """Generate an owner/subscriber RSS feed for organic repeat visits.
+
+    The feed is a distribution artifact, not a new evidence source. It links to
+    item detail pages with UTM tags and labels WATCHLIST rows as evidence
+    insufficient so RSS readers cannot mistake supply-only items for trends.
+    """
+    generated = generated_datetime(data)
+    generated_label = str(data.get("generated_at") or data.get("date") or generated.date().isoformat())
+    rows = rss_feed_rows(data)
+    items: list[str] = []
+    for row in rows:
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        evidence = evidence_status_label(row)
+        status = "trend-backed" if has_trend_evidence(row) else "WATCHLIST"
+        link = growth_campaign_url(
+            f"/items/{item_id}.html",
+            source="rss",
+            medium="organic",
+            campaign="daily-visits-500-rss-feed",
+            utm_content=item_id,
+            utm_term="weekly",
+        )
+        title = f"#{row.get('rank')} {row.get('item_name')} · {status}"
+        description = (
+            f"Category: {row.get('category_name')}. Score {row.get('score')}. "
+            f"Evidence: {evidence}. Display test: {row.get('display_tip')}. "
+            f"Risk/caution: {row.get('risk')}. "
+            "Published URLs drive trend movement; supply/search links are not trend evidence."
+        )
+        items.append(f"""
+    <item>
+      <title>{esc(title)}</title>
+      <link>{esc(link)}</link>
+      <guid isPermaLink="false">gnsresearchhub:{esc(item_id)}:{esc(generated_label)}</guid>
+      <pubDate>{esc(rss_datetime(generated))}</pubDate>
+      <category>{esc(row.get('category_name'))}</category>
+      <description>{esc(description)}</description>
+    </item>""")
+    feed = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>BSS Trend Ranking · Weekly Owner Picks</title>
+    <link>{SITE_BASE}/index.html</link>
+    <atom:link href="{SITE_BASE}/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Weekly Beauty Supply Store item ranking updates with evidence status, display tests, risk cautions, and UTM-tagged item links. Search/watchlist URLs are not counted as trend evidence.</description>
+    <language>ko-US</language>
+    <lastBuildDate>{esc(rss_datetime(generated))}</lastBuildDate>
+    <ttl>720</ttl>
+{''.join(items)}
+  </channel>
+</rss>
+"""
+    FEED_PATH.write_text(feed, encoding="utf-8")
+    return str(FEED_PATH.relative_to(ROOT))
 
 
 def choose_share_row(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -1510,6 +1607,7 @@ def write_seo_files(data: dict[str, Any], item_ids: set[str]) -> None:
     lastmod = str(data.get("date") or dt.date.today().isoformat())
     paths: list[tuple[str, str, str]] = [
         ("/index.html", "1.0", "daily"),
+        ("/feed.xml", "0.8", "daily"),
         *[(f"/rankings/{tf}.html", "0.9", "daily") for tf in TIMEFRAME_ORDER],
         *[(f"/items/{item_id}.html", "0.72", "weekly") for item_id in sorted(item_ids) if item_id],
     ]
@@ -1535,6 +1633,7 @@ def main() -> int:
     ITEMS_DIR.mkdir(exist_ok=True)
     data = load_rankings()
     generated_social_cards = write_social_share_cards(data)
+    generated_feed = write_rss_feed(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
         (RANKINGS_DIR / f"{tf}.html").write_text(render_timeframe(data, tf), encoding="utf-8")
@@ -1543,7 +1642,7 @@ def main() -> int:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
     write_seo_files(data, {str(item_id) for item_id in item_ids if item_id})
-    generated = ["index.html", "robots.txt", "sitemap.xml", *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
+    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids)}, ensure_ascii=False, indent=2))
     return 0
 

@@ -67,6 +67,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-return-visitor-panel]')).toBeHidden();
     await expect(page.locator('[data-return-visitor-panel]')).not.toHaveAttribute('data-growth-section', /.+/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
+    await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/feed.xml');
     await expect(page.locator('meta[name="gns:growth-goal"]')).toHaveAttribute('content', 'daily-visits-500');
     await expect(page.locator('meta[name="gns:growth-experiment"]')).toHaveAttribute('content', 'hero-growth-cta-v1');
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
@@ -341,6 +342,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
   });
 
   test('return visitor prompt appears and is event-tracked on a later visit', async ({ page }) => {
@@ -567,9 +569,26 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
     expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
+    const rssCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1');
+    expect(rssCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/feed.xml');
+
+    const feedResponse = await request.get('/feed.xml');
+    expect(feedResponse.status()).toBeLessThan(400);
+    const feed = await feedResponse.text();
+    expect(feed).toContain('<rss version="2.0"');
+    expect(feed).toContain('BSS Trend Ranking · Weekly Owner Picks');
+    expect(feed).toContain('daily-visits-500-rss-feed');
+    expect(feed).toContain('utm_source=rss');
+    expect(feed).toContain('Published URLs drive trend movement');
+    const weeklyTopItemName = rankings.rankings?.weekly?.[0]?.item_name;
+    if (weeklyTopItemName) {
+      expect(feed).toContain(weeklyTopItemName);
+    }
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);
@@ -592,6 +611,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(sitemapResponse.status()).toBeLessThan(400);
     const sitemap = await sitemapResponse.text();
     expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/index.html</loc>');
+    expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/feed.xml</loc>');
     expect(sitemap).toContain('/rankings/weekly.html</loc>');
     expect(sitemap).toContain('/items/');
   });
