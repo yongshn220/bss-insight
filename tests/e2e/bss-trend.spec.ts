@@ -429,6 +429,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(review.collection_health?.source_health).toBeTruthy();
     expect(review.independent_ai_review?.review_type).toBe('independent_ai_operator_review');
     expect(review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /analytics export/i.test(blocker))).toBe(true);
+    expect(review.material_changes?.length).toBeGreaterThan(0);
+    expect(review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /Coverage regression detected:.*WATCHLIST item count/i.test(blocker))).toBe(false);
+
+    const weeklyTop3Ids = (rankings.rankings?.weekly ?? [])
+      .filter((row: any) => Number(row.source_counts?.trend_evidence ?? 0) > 0)
+      .slice(0, 3)
+      .map((row: any) => row.item_id);
 
     const collectionResponse = await request.get('/data/collection_notes_public.json');
     expect(collectionResponse.status()).toBeLessThan(400);
@@ -443,6 +450,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const marketing = await marketingResponse.json();
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-share-kit-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'top3-owner-share-strip-v1')).toBe(true);
+    const top3Campaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'top3-owner-share-strip-v1');
+    expect(top3Campaign?.last_refreshed_at).toBeTruthy();
+    expect(top3Campaign?.quality_control?.current_weekly_top3_item_ids).toEqual(weeklyTop3Ids);
+    expect((top3Campaign?.drafts?.x_twitter_top3_weekly ?? []).map((draft: any) => draft.item_id)).toEqual(weeklyTop3Ids);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'marketing-draft-freshness-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-brief-copy-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'source-evidence-clicks-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-window-transparency-v1')).toBe(true);

@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import urllib.parse
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -24,11 +25,14 @@ OPS_REVIEW_PATH = DATA_DIR / "operations_review.json"
 OPS_HISTORY_PATH = DATA_DIR / "operations_review_history.json"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
 COLLECTION_NOTES_PATH = DATA_DIR / "collection_notes.json"
+MARKETING_BACKLOG_PATH = DATA_DIR / "marketing_backlog.json"
+GROWTH_GOAL_PATH = DATA_DIR / "growth_goal.json"
 PUBLIC_OPS_REVIEW_PATH = PUBLIC_DATA_DIR / "operations_review_public.json"
 PUBLIC_NEXT_LOOP_FOCUS_PATH = PUBLIC_DATA_DIR / "next_loop_focus_public.json"
 
 TIMEFRAME = "weekly"
 MAX_FOCUS_ITEMS = 6
+SITE_BASE = "https://gnsresearchhub.vercel.app"
 
 
 def utc_now() -> str:
@@ -54,6 +58,27 @@ def count(row: dict[str, Any], key: str) -> int:
         return int((row.get("source_counts") or {}).get(key) or 0)
     except Exception:
         return 0
+
+
+def has_trend_evidence(row: dict[str, Any]) -> bool:
+    """Return true only when the ranking row has published/date-bearing trend evidence."""
+    return bool(count(row, "trend_evidence") or count(row, "news_magazine"))
+
+
+def evidence_status_label(row: dict[str, Any]) -> str:
+    """Human-readable evidence label for marketing drafts without inflating WATCHLIST rows."""
+    trend_count = count(row, "trend_evidence") or count(row, "news_magazine")
+    if trend_count:
+        return f"{trend_count} published trend URL(s)"
+    return "WATCHLIST · evidence insufficient"
+
+
+def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str, **extra: object) -> str:
+    params = {"utm_source": source, "utm_medium": medium, "utm_campaign": campaign}
+    for key, value in extra.items():
+        if value not in (None, ""):
+            params[key] = str(value)
+    return f"{SITE_BASE}{path}?{urllib.parse.urlencode(params)}"
 
 
 def item_quality_flags(row: dict[str, Any]) -> list[str]:
@@ -181,7 +206,7 @@ def previous_history_run(current_generated_at: object) -> dict[str, Any]:
 
 
 def metric_deltas(current: dict[str, int], previous: dict[str, Any]) -> dict[str, dict[str, int]]:
-    """Compare coverage metrics to the previous loop so regressions are visible."""
+    """Compare coverage metrics to the previous loop so material changes are visible."""
     deltas: dict[str, dict[str, int]] = {}
     for key in [
         "trend_items",
@@ -202,6 +227,49 @@ def metric_deltas(current: dict[str, int], previous: dict[str, Any]) -> dict[str
             "delta": current_value - prev_value,
         }
     return deltas
+
+
+def coverage_change_labels(coverage_deltas: dict[str, dict[str, int]]) -> tuple[list[str], list[str]]:
+    """Return (improvements, regressions) with watchlist direction handled correctly.
+
+    For most coverage metrics, a positive delta is good and a negative delta is a
+    regression. WATCHLIST is the inverse: fewer watchlist-only items is progress,
+    while an increase means more items lack published/date-bearing trend evidence.
+    """
+    label_map = {
+        "trend_items": "published trend item coverage",
+        "recent_trend_items": "recent trend item coverage",
+        "retail_product_items": "live product coverage",
+        "tiktok_shop_items": "TikTok Shop supply coverage",
+        "product_image_items": "product image coverage",
+        "watchlist_items": "WATCHLIST item count",
+    }
+    improvements: list[str] = []
+    regressions: list[str] = []
+    for key, delta in coverage_deltas.items():
+        if not isinstance(delta, dict):
+            continue
+        try:
+            change = int(delta.get("delta") or 0)
+        except Exception:
+            continue
+        if change == 0:
+            continue
+        label = label_map.get(key, key)
+        note = f"{label} {delta.get('previous')}→{delta.get('current')} ({change:+d})"
+        if key == "watchlist_items":
+            (improvements if change < 0 else regressions).append(note)
+        else:
+            (improvements if change > 0 else regressions).append(note)
+    return improvements, regressions
+
+
+def material_change_notes(coverage_deltas: dict[str, dict[str, int]]) -> list[str]:
+    improvements, regressions = coverage_change_labels(coverage_deltas)
+    notes = []
+    notes.extend(f"Improved: {note}" for note in improvements)
+    notes.extend(f"Needs recovery: {note}" for note in regressions)
+    return notes or ["No material coverage movement versus previous distinct ranking snapshot; measurement pending."]
 
 
 def independent_ai_review(
@@ -228,11 +296,7 @@ def independent_ai_review(
         for stat in cat_stats
         if isinstance(stat, dict) and int(stat.get("trend_items") or 0) == 0
     ]
-    regressions = [
-        f"{key} {delta.get('previous')}→{delta.get('current')} ({delta.get('delta')})"
-        for key, delta in coverage_deltas.items()
-        if isinstance(delta, dict) and int(delta.get("delta") or 0) < 0
-    ]
+    material_improvements, regressions = coverage_change_labels(coverage_deltas)
     evidence_totals = collection_notes.get("evidence_totals", {}) if isinstance(collection_notes, dict) else {}
     source_health = collection_notes.get("source_health", {}) if isinstance(collection_notes, dict) else {}
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
@@ -256,6 +320,8 @@ def independent_ai_review(
     ]
     if recent_items:
         good_points.append(f"Fresh weekly trend evidence exists for {recent_items} item(s), keeping Top 3 from being supply-only.")
+    if material_improvements:
+        good_points.append("Material coverage progress: " + "; ".join(material_improvements[:3]) + ".")
 
     next_direction = [
         "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
@@ -417,6 +483,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
     previous_run = previous_history_run(data.get("generated_at"))
     previous_metrics = previous_run.get("metrics", {}) if isinstance(previous_run, dict) else {}
     coverage_deltas = metric_deltas(current_metrics, previous_metrics if isinstance(previous_metrics, dict) else {})
+    material_changes = material_change_notes(coverage_deltas)
     top3 = rows[:3]
     weakest_category = min(cat_stats, key=lambda item: (item["trend_ratio"], item["retail_ratio"], item["product_image_ratio"]))
 
@@ -499,6 +566,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
         },
         "category_stats": cat_stats,
         "coverage_deltas": coverage_deltas,
+        "material_changes": material_changes,
         "previous_loop_follow_up": previous_focus_follow_up(previous_focus, rows_by_id),
         "good_points": good_points,
         "improvement_points": improvement_points,
@@ -532,6 +600,204 @@ def persist_review(review: dict[str, Any]) -> dict[str, Any]:
     return next_focus
 
 
+def weekly_ranking_rows() -> list[dict[str, Any]]:
+    data = load_json(RANKINGS_PATH, {})
+    rankings = data.get("rankings", {}) if isinstance(data, dict) else {}
+    rows = rankings.get(TIMEFRAME, []) if isinstance(rankings, dict) else []
+    return [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else []
+
+
+def top3_share_drafts(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Build current top-3 SNS drafts from live ranking rows.
+
+    This keeps marketing artifacts aligned with the current dashboard so reps do
+    not share stale item/rank copy after the collector changes the Top 3.
+    """
+    share_rows = [row for row in rows if has_trend_evidence(row)][:3] or rows[:3]
+    drafts = []
+    campaign = "daily-visits-500-weekly-top3-owner-share"
+    for row in share_rows:
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        item_name = row.get("item_name") or "BSS item"
+        display = row.get("display_tip") or "front-area test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        evidence = evidence_status_label(row)
+        url = growth_campaign_url(
+            f"/items/{item_id}.html",
+            source="x",
+            medium="organic",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=TIMEFRAME,
+        )
+        drafts.append({
+            "item_id": item_id,
+            "item_name": item_name,
+            "rank": row.get("rank"),
+            "url": url,
+            "x_twitter": (
+                f"Beauty Supply owners: Weekly share starter — {item_name}. "
+                f"Display test: {display}. Evidence status: {evidence}. {url}"
+            ),
+            "sales_rep_note": (
+                f"Owner님, 이번 Weekly ranking #{row.get('rank')} item은 {item_name}입니다. "
+                f"Display: {display}. Risk/caution: {risk}. Evidence: {evidence}."
+            ),
+        })
+    return drafts
+
+
+def current_owner_insight_post(drafts: list[dict[str, Any]]) -> str:
+    if not drafts:
+        return ""
+    lead = drafts[0]
+    return str(lead.get("x_twitter") or "")
+
+
+def ensure_experiment(experiments: list[Any], experiment: dict[str, Any]) -> None:
+    if not isinstance(experiments, list):
+        return
+    experiment_id = experiment.get("experiment_id")
+    for entry in experiments:
+        if isinstance(entry, dict) and entry.get("experiment_id") == experiment_id:
+            entry.update(experiment)
+            return
+    experiments.append(experiment)
+
+
+def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]) -> dict[str, Any]:
+    marketing = load_json(MARKETING_BACKLOG_PATH, {})
+    if not isinstance(marketing, dict):
+        marketing = {}
+    now = str(review.get("reviewed_at") or utc_now())
+    drafts = top3_share_drafts(rows)
+    top3_ids = [str(draft.get("item_id")) for draft in drafts if draft.get("item_id")]
+    marketing["updated_at"] = now
+    marketing.setdefault("goal_id", "daily-visits-500")
+    marketing.setdefault("status", "active")
+    active_campaigns = marketing.setdefault("active_campaigns", [])
+    if not isinstance(active_campaigns, list):
+        active_campaigns = []
+        marketing["active_campaigns"] = active_campaigns
+
+    found_top3 = False
+    for campaign in active_campaigns:
+        if not isinstance(campaign, dict):
+            continue
+        campaign_id = campaign.get("campaign_id")
+        if campaign_id == "top3-owner-share-strip-v1":
+            found_top3 = True
+            campaign["status"] = "live-on-site-after-build-current-drafts"
+            campaign.setdefault("drafts", {})["x_twitter_top3_weekly"] = drafts
+            campaign["last_refreshed_at"] = now
+            campaign["quality_control"] = {
+                "source": "data/rankings.json weekly evidence-backed top3",
+                "stale_draft_guard": "Draft item_id order must match current weekly Top 3 trend-backed ranking before external posting.",
+                "current_weekly_top3_item_ids": top3_ids,
+            }
+            campaign["tracked_quality_metrics"] = [
+                "weekly_top3_current=" + ", ".join(
+                    f"#{draft.get('rank')} {draft.get('item_name')}" for draft in drafts
+                ),
+                f"drafts refreshed at {now} from data/rankings.json after current refresh/review",
+                "stale draft guard active: public marketing JSON should match live weekly Top 3 item_ids",
+            ]
+        elif campaign_id == "weekly-stock-this-test-v1":
+            campaign.setdefault("drafts", {})["x_daily_owner_item_insight_current"] = current_owner_insight_post(drafts)
+            campaign["last_refreshed_at"] = now
+            campaign["tracked_quality_metrics"] = [
+                "current weekly owner insight draft regenerated from live top evidence-backed item",
+                f"lead_item_id={top3_ids[0] if top3_ids else 'none'}",
+            ]
+        elif campaign_id == "x-daily-owner-insight-v1":
+            campaign["sample_post"] = current_owner_insight_post(drafts) or campaign.get("sample_post", "")
+            if drafts:
+                campaign["primary_item"] = {
+                    "item_id": drafts[0].get("item_id"),
+                    "item_name": drafts[0].get("item_name"),
+                    "rank": drafts[0].get("rank"),
+                    "url": drafts[0].get("url"),
+                }
+            campaign["last_refreshed_at"] = now
+
+    if not found_top3:
+        active_campaigns.append({
+            "campaign_id": "top3-owner-share-strip-v1",
+            "status": "live-on-site-after-build-current-drafts",
+            "objective": "Keep item-specific owner share starters aligned with the current weekly ranking.",
+            "utm_campaign_pattern": "daily-visits-500-{timeframe}-top3-owner-share",
+            "drafts": {"x_twitter_top3_weekly": drafts},
+            "last_refreshed_at": now,
+            "quality_control": {
+                "source": "data/rankings.json weekly evidence-backed top3",
+                "stale_draft_guard": "Draft item_id order must match current weekly Top 3 trend-backed ranking before external posting.",
+                "current_weekly_top3_item_ids": top3_ids,
+            },
+        })
+
+    experiment_backlog = marketing.setdefault("experiment_backlog", [])
+    if isinstance(experiment_backlog, list):
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "marketing-draft-freshness-v1",
+            "status": "active-data-quality-after-review",
+            "hypothesis": "Current item-specific SNS/rep drafts should convert better than stale rank copy because shared links match the live dashboard Top 3.",
+            "next_step": "After analytics export access is connected, compare UTM campaigns for top3 owner share links against generic weekly ranking links.",
+            "last_refreshed_at": now,
+        })
+
+    save_json(MARKETING_BACKLOG_PATH, marketing)
+    return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
+
+
+def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any]) -> dict[str, Any]:
+    goal = load_json(GROWTH_GOAL_PATH, {})
+    if not isinstance(goal, dict):
+        goal = {}
+    now = str(review.get("reviewed_at") or utc_now())
+    metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
+    material_changes = review.get("material_changes", []) if isinstance(review.get("material_changes"), list) else []
+    top3_ids = marketing_summary.get("top3_item_ids", []) if isinstance(marketing_summary, dict) else []
+    goal["updated_at"] = now
+    measurement = goal.setdefault("measurement_status", {})
+    if isinstance(measurement, dict):
+        measurement["last_checked_at"] = now
+        measurement["provider_checked"] = (
+            "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
+            f"This run refreshed ranking/review metrics (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
+        )
+        measurement["rolling_30d_average_daily_visits"] = None
+        measurement["raw_result"] = (
+            "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels."
+        )
+        measurement["interpretation"] = (
+            "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. "
+            + " ".join(str(note) for note in material_changes[:2])
+        ).strip()
+
+    experiments = goal.setdefault("initial_experiments", [])
+    if isinstance(experiments, list):
+        ensure_experiment(experiments, {
+            "experiment_id": "marketing-draft-freshness-v1",
+            "status": "active-data-quality-after-review",
+            "variants": ["stale_static_top3_drafts", "current_ranking_synced_top3_drafts"],
+            "success_metric": "UTM-attributed top3 share clicks, owner brief copies, item-detail entrances, and repeat visits once analytics export is available",
+            "hypothesis": "Keeping public SNS/rep drafts synchronized with the live Top 3 will reduce dead/stale shares and improve repeat-visit quality toward 500/day.",
+            "last_refreshed_at": now,
+        })
+
+    save_json(GROWTH_GOAL_PATH, goal)
+    return {"updated_at": now, "top3_item_ids": top3_ids}
+
+
+def refresh_growth_artifacts(review: dict[str, Any]) -> dict[str, Any]:
+    rows = weekly_ranking_rows()
+    marketing_summary = refresh_marketing_backlog(review, rows)
+    growth_summary = refresh_growth_goal(review, marketing_summary)
+    return {"marketing": marketing_summary, "growth_goal": growth_summary}
+
+
 def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
     """Return a sanitized review suitable for public live verification."""
     payload = {
@@ -545,6 +811,7 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
             "metrics",
             "collection_health",
             "coverage_deltas",
+            "material_changes",
             "good_points",
             "improvement_points",
             "qa_focus",
@@ -624,6 +891,7 @@ def main() -> int:
 
     review = build_review(args.playwright_summary)
     next_focus = persist_review(review)
+    growth_artifacts = refresh_growth_artifacts(review)
     public_review_path = refresh_public_review(review, next_focus)
     print(json.dumps({
         "status": "reviewed",
@@ -631,6 +899,7 @@ def main() -> int:
         "history_path": str(OPS_HISTORY_PATH),
         "next_focus_path": str(NEXT_LOOP_FOCUS_PATH),
         "public_review_path": public_review_path,
+        "growth_artifacts": growth_artifacts,
         "metrics": review["metrics"],
         "good_points": review["good_points"][:3],
         "improvement_points": review["improvement_points"][:3],

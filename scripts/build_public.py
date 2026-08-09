@@ -29,6 +29,7 @@ PUBLIC_REVIEW_FIELDS = [
     "metrics",
     "collection_health",
     "coverage_deltas",
+    "material_changes",
     "good_points",
     "improvement_points",
     "qa_focus",
