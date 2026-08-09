@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-08T23:26:33.418183Z",
+  "updated_at": "2026-08-09T00:44:52.016971Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-08T23:26:33.418183Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added section-visibility-engagement-v1 (IntersectionObserver growth_section_view events for ranking modules) and strict jewelry accessory alias probes to recover missing Butterfly Charm Anklet supply coverage without treating search queries as evidence.",
+    "last_checked_at": "2026-08-09T00:44:52.016971Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added share-panel-component-context-v1: owner-share-kit-v1 and item-detail-share-card-v1 now render as data-growth-section/data-growth-experiment containers, so weekly_copy_link and item_copy_link events carry component_experiment_id and section context.",
     "rolling_30d_average_daily_visits": null,
     "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component-level growth events.",
-    "interpretation": "Traffic progress still cannot be claimed. Instrumentation now separates page exposure from module visibility, and supply alias recovery improves owner trust while preserving evidence discipline."
+    "interpretation": "Traffic progress still cannot be claimed. Tracking quality improved because generic share panel and item detail share clicks can now be segmented by component once analytics export is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -222,9 +222,11 @@
         "owner_quick_picks",
         "top3_owner_share_strip",
         "evidence_gap_snapshot",
-        "item_detail_share"
+        "item_detail_share",
+        "owner_share_panel",
+        "item_detail_share_panel"
       ],
-      "success_metric": "growth_click and growth_share_copy_result by component_experiment_id, section_position, item_id, UTM, and repeat item-detail entrances once analytics export is available",
+      "success_metric": "growth_click and growth_share_copy_result by component_experiment_id, section_position, item_id, UTM, and repeat item-detail entrances once analytics export is available; now includes owner-share-kit-v1 and item-detail-share-card-v1.",
       "hypothesis": "Component-level event context will show which dashboard modules actually drive BSS owner repeat visits toward 500/day, instead of treating every click as one generic hero experiment."
     },
     {
@@ -276,6 +278,16 @@
       ],
       "success_metric": "growth_section_view events by component_experiment_id/section_position, downstream item-card clicks, share/copy events, and repeat visits once analytics export is available",
       "hypothesis": "Measuring which modules BSS owners actually scroll into view will identify whether quick picks, focus watchlists, evidence snapshot, owner brief, or share strips deserve top placement toward the 500/day visit goal."
+    },
+    {
+      "experiment_id": "share-panel-component-context-v1",
+      "status": "active-client-side-provider-ready-after-build",
+      "variants": [
+        "generic_share_events_without_section",
+        "owner_share_and_item_detail_share_with_component_context"
+      ],
+      "success_metric": "weekly_copy_link and item_copy_link clicks/copy results segmented by component_experiment_id and section once analytics export is available",
+      "hypothesis": "Share panels will be easier to optimize toward 500/day when owner-share and item-detail-share events are separated from generic share actions."
     }
   ],
   "reporting": {

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-08T23:31:50.687541Z",
+  "updated_at": "2026-08-09T00:43:51.769270Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -66,7 +66,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -169,7 +169,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -177,18 +177,16 @@
       }
     },
     {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
-      "category": "Wigs & Hair Pieces",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "category": "Hair Care & Styling",
       "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"V-Part Human Hair Wig\" beauty supply trend",
-        "V-Part Human Hair Wig 2026 trend",
-        "V-Part Human Hair Wig customer review 2026",
-        "\"V-Part Human Hair Wig\" black beauty supply",
-        "V-Part Human Hair Wig wig install trend",
-        "V-Part Human Hair Wig natural hair review"
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "Wig Adhesive Glue 2026 trend",
+        "Wig Adhesive Glue customer review 2026",
+        "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -204,7 +202,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,

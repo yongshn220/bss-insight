@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-08T23:31:50.687541Z",
-  "source_generated_at": "2026-08-08T23:30:57.268856Z",
-  "date": "2026-08-08",
+  "reviewed_at": "2026-08-09T00:43:51.769270Z",
+  "source_generated_at": "2026-08-09T00:41:25.971128Z",
+  "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (25.3s); section-visibility-engagement-v1, independent AI public review, and jewelry alias supply recovery QA passed across desktop/mobile",
+  "playwright_summary": "12 passed (25.2s); owner-share-kit-v1 and item-detail-share-card-v1 share panel component attribution QA passed across desktop/mobile",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,11 +15,11 @@
     "watchlist_items": 37
   },
   "collection_health": {
-    "generated_at": "2026-08-08T23:30:57.268593Z",
+    "generated_at": "2026-08-09T00:41:25.970917Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-08T23:30:57.267772Z",
+        "observed_at": "2026-08-09T00:41:25.970292Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
@@ -27,25 +27,25 @@
         "expanded_keyword_items": 19,
         "products_returned": 81,
         "items_with_evidence": 44,
-        "evidence_urls": 79,
+        "evidence_urls": 80,
         "max_results_total": 82
       }
     },
     "evidence_totals": {
       "items_requested": 44,
       "items_with_any_verified_url": 44,
-      "items_with_published_trend_url": 22,
+      "items_with_published_trend_url": 24,
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 298,
-      "published_trend_urls_total": 45,
-      "retail_product_urls_total": 253,
+      "verified_urls_total": 296,
+      "published_trend_urls_total": 42,
+      "retail_product_urls_total": 254,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
     "next_actions": [
-      "published trend URL gap 22개 item 유지: Wigs & Hair Pieces, Tools & Accessories, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
+      "published trend URL gap 20개 item 유지: Wigs & Hair Pieces, Tools & Accessories, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
       "zero-trend category 유지: Wigs & Hair Pieces. 다음 run은 broad category가 아니라 item-level dated URL capture를 우선합니다."
     ]
   },
@@ -248,7 +248,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -386,7 +386,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -432,7 +432,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -442,13 +442,14 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 12 passed (25.3s); section-visibility-engagement-v1, independent AI public review, and jewelry alias supply recovery QA passed across desktop/mobile",
+    "실제 개선: owner-share-kit-v1 / item-detail-share-card-v1에 data-growth-section + data-growth-experiment를 추가해 weekly_copy_link와 item_copy_link 이벤트가 component_experiment_id/section으로 분리됩니다.",
+    "Playwright QA 완료: 12 passed (25.2s); owner-share-kit-v1 and item-detail-share-card-v1 share panel component attribution QA passed across desktop/mobile",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Brown Lip Liner Pencil",
     "Evidence separation 유지: published trend URL 보유 item 7개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 79."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 80."
   ],
   "improvement_points": [
     "37개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
@@ -519,7 +520,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -622,7 +623,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -630,18 +631,16 @@
       }
     },
     {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
-      "category": "Wigs & Hair Pieces",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "category": "Hair Care & Styling",
       "rank": 11,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
-        "\"V-Part Human Hair Wig\" beauty supply trend",
-        "V-Part Human Hair Wig 2026 trend",
-        "V-Part Human Hair Wig customer review 2026",
-        "\"V-Part Human Hair Wig\" black beauty supply",
-        "V-Part Human Hair Wig wig install trend",
-        "V-Part Human Hair Wig natural hair review"
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "Wig Adhesive Glue 2026 trend",
+        "Wig Adhesive Glue customer review 2026",
+        "\"Wig Adhesive Glue\" black beauty supply"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -657,7 +656,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -678,6 +677,7 @@
       "Zero weekly trend-evidence categories: Jewelry & Fashion Accessories, Nails, Tools & Accessories, Wigs & Hair Pieces."
     ],
     "good_points": [
+      "실제 개선: owner-share-kit-v1 / item-detail-share-card-v1에 data-growth-section + data-growth-experiment를 추가해 weekly_copy_link와 item_copy_link 이벤트가 component_experiment_id/section으로 분리됩니다.",
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
@@ -711,6 +711,7 @@
         "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
       }
     },
-    "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only."
+    "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only.",
+    "this_run_material_change": "share-panel-component-context-v1 deployed locally: generic ranking share panel and item-detail share panel now carry component attribution; no fabricated evidence or score lift was claimed."
   }
 }

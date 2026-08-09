@@ -112,6 +112,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(ownerBriefCopy).toHaveAttribute('data-copy-text', /BSS owner brief/);
     await expect(ownerBriefCopy).toHaveAttribute('data-copy-text', /Display test/);
     await expect(page.locator('.share-kit')).toBeVisible();
+    await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-share-kit-v1');
     await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_copy_link"]')).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-weekly-owner-share/);
     await expect(page.locator('[data-growth-section="top3-owner-share-strip-v1"]')).toBeVisible();
@@ -190,8 +192,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await copyButton.click();
     await expect(copyButton).toHaveText(/Copied|Link ready/);
     const shareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(shareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_copy_link')).toBe(true);
-    expect(shareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_copy_link')).toBe(true);
+    expect(shareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_copy_link' && event.section === 'owner-share-kit-v1' && event.component_experiment_id === 'owner-share-kit-v1')).toBe(true);
+    expect(shareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_copy_link' && event.section === 'owner-share-kit-v1' && event.component_experiment_id === 'owner-share-kit-v1')).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('.quick-pick-card') as HTMLAnchorElement | null;
@@ -321,13 +323,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const sourceClickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(sourceClickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'source_link' && event.section === 'source-evidence-clicks-v1' && event.component_experiment_id === 'source-evidence-clicks-v1' && event.source_layer && event.source_kind && event.source_status)).toBe(true);
     await expect(page.locator('.item-share-kit')).toBeVisible();
+    await expect(page.locator('.item-share-kit')).toHaveAttribute('data-growth-section', 'item-detail-share-card-v1');
+    await expect(page.locator('.item-share-kit')).toHaveAttribute('data-growth-experiment', 'item-detail-share-card-v1');
     const itemCopyButton = page.locator('[data-growth-share="item_copy_link"]').first();
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-item-detail-share/);
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_content=/);
     await itemCopyButton.click();
     await expect(itemCopyButton).toHaveText(/Copied|Link ready/);
     const itemShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(itemShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_copy_link')).toBe(true);
+    expect(itemShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_copy_link' && event.section === 'item-detail-share-card-v1' && event.component_experiment_id === 'item-detail-share-card-v1')).toBe(true);
 
     await page.getByRole('link', { name: /Ranking으로 돌아가기/ }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html$/);

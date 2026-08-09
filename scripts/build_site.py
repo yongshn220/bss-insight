@@ -542,7 +542,7 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
         "body": f"이번 {label} BSS item ranking 공유드립니다.\n\nTop item: {item_name}\nDisplay tip: {display}\nRisk/caution: {risk}\n\nOwner link: {email_url}",
     })
     return f"""
-      <section class="wrap share-kit" aria-labelledby="share-kit-{esc(timeframe)}">
+      <section class="wrap share-kit" data-growth-section="owner-share-kit-v1" data-growth-experiment="owner-share-kit-v1" aria-labelledby="share-kit-{esc(timeframe)}">
         <div>
           <span>Growth loop · owner share kit</span>
           <h2 id="share-kit-{esc(timeframe)}">바로 공유할 수 있는 {esc(label)} owner link</h2>
@@ -892,7 +892,7 @@ def item_share_panel(row: dict[str, Any]) -> str:
         ),
     })
     return f"""
-      <section class="wrap share-kit item-share-kit" aria-labelledby="item-share-{esc(item_id)}">
+      <section class="wrap share-kit item-share-kit" data-growth-section="item-detail-share-card-v1" data-growth-experiment="item-detail-share-card-v1" aria-labelledby="item-share-{esc(item_id)}">
         <div>
           <span>Growth loop · item detail share</span>
           <h2 id="item-share-{esc(item_id)}">이 item detail을 owner에게 바로 공유</h2>
