@@ -792,6 +792,27 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "Analytics export is still needed to connect source-health transparency and item/source-link clicks to repeat visits.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "return-visitor-prompt-v1",
+        "status": "live-client-side-ux-after-build",
+        "objective": "Encourage repeat BSS owner visits by revealing a concise current-ranking path only after anonymous visitor context shows a later visit.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+            "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+            "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+            "https://gnsresearchhub.vercel.app/rankings/yearly.html",
+        ],
+        "tracked_events": [
+            "growth_return_visit_prompt",
+            "growth_exposure with visible_growth_sections containing return-visitor-prompt-v1",
+            "growth_click cta_return_visitor_current_ranking",
+            "growth_click cta_return_visitor_all_items",
+        ],
+        "owner_value": "Returning owners see what to check first instead of re-reading the whole dashboard: Top 3, evidence gaps, WATCHLIST, and owner-ready display tips.",
+        "measurement_need": "GA4/Vercel event export access is needed to compare repeat-visitor prompt exposure and CTA clicks against first-visit flows.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -821,6 +842,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-collection-resilience-after-review",
             "hypothesis": "Bounded shard fallback should reduce all-cache TikTok Shop regressions after upstream full-payload failures, keeping item cards useful without inflating trend claims.",
             "next_step": "Monitor apify_status, fresh_evidence_urls, cached_fallback_urls, and source-link clicks after analytics export is connected; keep TikTok Shop evidence supply-only.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "return-visitor-prompt-v1",
+            "status": "active-repeat-visit-ux-after-review",
+            "hypothesis": "A concise returning-owner prompt should increase current-ranking CTA clicks and repeat visits by showing what to check first after the initial visit.",
+            "next_step": "After GA4/Vercel export access is connected, segment growth_return_visit_prompt exposure, cta_return_visitor_current_ranking clicks, and is_returning_visitor traffic.",
             "last_refreshed_at": now,
         })
 
@@ -901,6 +929,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["json_only_post_qa_review", "html_public_json_rebuilt_after_review"],
             "success_metric": "Live homepage/ranking focus cards show the same updated_at and focus items as /data/next_loop_focus_public.json; downstream focus-watchlist clicks once analytics export is connected",
             "hypothesis": "BSS owners and reps will trust the hub more when visible WATCHLIST focus cards match the latest post-QA review instead of lagging one run behind.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "return-visitor-prompt-v1",
+            "status": "active-repeat-visit-ux-after-build",
+            "variants": ["hidden_for_first_visit", "shown_for_returning_owner_visit"],
+            "success_metric": "growth_return_visit_prompt exposures, return_visitor CTA clicks, share/copy events, and rolling 30-day repeat visits once analytics export is connected",
+            "hypothesis": "Returning BSS owners should be routed directly to changed ranking/watchlist actions instead of re-reading the full dashboard, increasing repeat-use value toward 500/day.",
             "last_refreshed_at": now,
         })
 

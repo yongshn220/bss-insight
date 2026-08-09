@@ -64,6 +64,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('.data-health div')).toHaveCount(4);
     await expect(page.getByText('500/day')).toBeVisible();
     await expect(page.locator('script[src="/assets/growth.js"]')).toHaveCount(1);
+    await expect(page.locator('[data-return-visitor-panel]')).toBeHidden();
+    await expect(page.locator('[data-return-visitor-panel]')).not.toHaveAttribute('data-growth-section', /.+/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
     await expect(page.locator('meta[name="gns:growth-goal"]')).toHaveAttribute('content', 'daily-visits-500');
     await expect(page.locator('meta[name="gns:growth-experiment"]')).toHaveAttribute('content', 'hero-growth-cta-v1');
@@ -331,6 +333,47 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'apify-sharded-fallback-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'post-review-site-sync-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-attribution-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-prompt-v1')).toBe(true);
+  });
+
+  test('return visitor prompt appears and is event-tracked on a later visit', async ({ page }) => {
+    await page.goto('/index.html?variant=A&utm_source=e2e_first&utm_medium=playwright&utm_campaign=daily-visits-500');
+    const firstVisit = await page.evaluate(() => (window as any).__GNS_GROWTH__?.visitor?.());
+    expect(firstVisit?.visit_count).toBe(1);
+    expect(firstVisit?.is_returning_visitor).toBe(false);
+    await expect(page.locator('[data-return-visitor-panel]')).toBeHidden();
+
+    await page.evaluate(() => {
+      const key = 'gns_growth:visitor';
+      const stored = JSON.parse(window.localStorage.getItem(key) || '{}');
+      stored.visit_count = Math.max(1, Number(stored.visit_count || 1));
+      stored.last_visit_at = new Date(Date.now() - (31 * 60 * 1000)).toISOString();
+      window.localStorage.setItem(key, JSON.stringify(stored));
+      window.sessionStorage.removeItem('gns_growth:session_id');
+    });
+
+    await page.goto('/index.html?variant=A&utm_source=return_test&utm_medium=direct&utm_campaign=daily-visits-500-return-visitor-prompt');
+    const panel = page.locator('[data-return-visitor-panel]');
+    await expect(panel).toBeVisible();
+    await expect(panel).toHaveAttribute('data-growth-section', 'return-visitor-prompt-v1');
+    await expect(panel).toHaveAttribute('data-growth-experiment', 'return-visitor-prompt-v1');
+    await expect(panel).toHaveAttribute('data-visit-count', '2');
+    await expect(panel).toContainText('Visit #2');
+    await expect(panel.getByRole('link', { name: 'Current ranking 보기' })).toHaveAttribute('href', /daily-visits-500-return-visitor-prompt/);
+
+    const returnVisit = await page.evaluate(() => {
+      const growth = (window as any).__GNS_GROWTH__;
+      return {
+        visitor: growth?.visitor?.(),
+        sections: growth?.growthSections?.() ?? [],
+        events: growth?.events?.() ?? [],
+      };
+    });
+    expect(returnVisit.visitor?.is_returning_visitor).toBe(true);
+    expect(returnVisit.visitor?.visit_count).toBe(2);
+    expect(returnVisit.sections.some((section: any) => section.id === 'return-visitor-prompt-v1')).toBe(true);
+    expect(returnVisit.events.some((event: any) => event.event === 'growth_return_visit_prompt' && event.section === 'return-visitor-prompt-v1' && event.visit_count === 2 && event.is_returning_visitor === true)).toBe(true);
+    expect(returnVisit.events.some((event: any) => event.event === 'growth_exposure' && event.is_returning_visitor === true && String(event.visible_growth_sections).includes('return-visitor-prompt-v1'))).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -508,6 +551,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'engagement-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-list-engagement-context-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-attribution-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-prompt-v1')).toBe(true);
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);

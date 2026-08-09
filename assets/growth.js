@@ -3,6 +3,7 @@
 
   const GOAL_ID = 'daily-visits-500';
   const EXPERIMENT_ID = 'hero-growth-cta-v1';
+  const RETURN_VISITOR_EXPERIMENT_ID = 'return-visitor-prompt-v1';
   const STORAGE_PREFIX = 'gns_growth';
   const EVENT_KEY = `${STORAGE_PREFIX}:events`;
   const VARIANT_KEY = `${STORAGE_PREFIX}:${EXPERIMENT_ID}:variant`;
@@ -323,6 +324,36 @@
     if (secondaryCta) secondaryCta.textContent = '근거와 watchlist 확인';
   }
 
+  function applyReturnVisitorPrompt(visitor) {
+    if (!visitor?.is_returning_visitor) return;
+    const panel = document.querySelector('[data-return-visitor-panel]');
+    if (!panel) return;
+
+    const visitCount = safeInteger(visitor.visit_count, 1);
+    const daysSinceFirstSeen = safeInteger(visitor.days_since_first_seen, 0);
+    const title = panel.querySelector('[data-return-visitor-title]');
+    const copy = panel.querySelector('[data-return-visitor-copy]');
+    if (title) title.textContent = `Visit #${visitCount}: 바뀐 ranking과 WATCHLIST부터 확인하세요`;
+    if (copy) {
+      const dayText = daysSinceFirstSeen > 0 ? `${daysSinceFirstSeen}일 전 첫 방문 이후 ` : '';
+      copy.textContent = `${dayText}Top 3, evidence gap, owner-ready display tip을 먼저 확인하고 공유할 item을 고르세요. Repeat visit 여부는 익명 event로만 측정합니다.`;
+    }
+
+    panel.hidden = false;
+    panel.removeAttribute('aria-hidden');
+    panel.setAttribute('data-growth-section', RETURN_VISITOR_EXPERIMENT_ID);
+    panel.setAttribute('data-growth-experiment', RETURN_VISITOR_EXPERIMENT_ID);
+    panel.setAttribute('data-visit-count', String(visitCount));
+    panel.setAttribute('data-days-since-first-seen', String(daysSinceFirstSeen));
+    track('growth_return_visit_prompt', {
+      type: 'return_visitor_prompt',
+      section: RETURN_VISITOR_EXPERIMENT_ID,
+      component_experiment_id: RETURN_VISITOR_EXPERIMENT_ID,
+      visit_count: visitCount,
+      days_since_first_seen: daysSinceFirstSeen,
+    });
+  }
+
   function growthSections() {
     return Array.from(document.querySelectorAll('[data-growth-section]'))
       .map((section, index) => ({
@@ -542,6 +573,7 @@
     };
     loadVercelAnalyticsIfHosted();
     applyExperiment(variant);
+    applyReturnVisitorPrompt(visitor);
     installClickTracking();
     installCopyButtons();
     installSectionViewTracking();

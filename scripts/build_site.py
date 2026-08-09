@@ -172,6 +172,39 @@ def top3_change_summary(rows: list[dict[str, Any]], previous_rows: list[dict[str
     return "Top 3 reordered", current_names
 
 
+def return_visitor_panel(timeframe: str = "weekly") -> str:
+    """Hidden repeat-visit prompt revealed by growth.js for returning owners.
+
+    The dashboard's growth goal depends on repeat visits, but first-time visitors
+    should not see a personalized message. growth.js reveals this panel only when
+    anonymous local visitor context shows a later visit, then attaches the growth
+    section metadata so exposure/click tracking stays accurate.
+    """
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    ranking_path = f"/rankings/{timeframe}.html"
+    campaign = "daily-visits-500-return-visitor-prompt"
+    primary_url = (
+        f"{ranking_path}?utm_source=site&utm_medium=return_prompt"
+        f"&utm_campaign={campaign}&utm_content=current-ranking&utm_term={timeframe}"
+    )
+    all_items_url = (
+        f"{ranking_path}?utm_source=site&utm_medium=return_prompt"
+        f"&utm_campaign={campaign}&utm_content=all-items&utm_term={timeframe}#all-items"
+    )
+    return f"""
+      <section class="wrap return-visitor-panel" hidden data-return-visitor-panel aria-hidden="true">
+        <div class="return-visitor-copy">
+          <span>Return owner path</span>
+          <h2 data-return-visitor-title>다시 오신 owner님, 바뀐 ranking부터 확인하세요</h2>
+          <p data-return-visitor-copy>{esc(label)} page에서 Top 3, WATCHLIST, display test를 먼저 보고 이번 방문에서 바로 공유/저장할 item을 고르세요.</p>
+        </div>
+        <div class="return-visitor-actions">
+          <a class="primary-action" data-growth-cta="return_visitor_current_ranking" href="{esc(primary_url)}">Current ranking 보기</a>
+          <a class="secondary-action" data-growth-cta="return_visitor_all_items" href="{esc(all_items_url)}">All item 확인</a>
+        </div>
+      </section>"""
+
+
 def run_change_snapshot(data: dict[str, Any], timeframe: str, rows: list[dict[str, Any]]) -> str:
     """Owner-facing answer to: why should I revisit this dashboard today?
 
@@ -1164,6 +1197,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
+      {return_visitor_panel('weekly')}
       {run_change_snapshot(data, 'weekly', weekly)}
       {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
       {evidence_focus_watchlist('weekly', weekly)}
@@ -1228,6 +1262,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats)}</div>
+      {return_visitor_panel(timeframe)}
       {run_change_snapshot(data, timeframe, rows)}
       {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}
       {evidence_focus_watchlist(timeframe, rows)}
