@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-08-09T08:08:12.871671Z",
+  "generated_at": "2026-08-09T09:33:32.164417Z",
   "date": "2026-08-09",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-09T08:08:12.870834Z",
+      "observed_at": "2026-08-09T09:33:32.163510Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 82,
       "expanded_keyword_items": 19,
-      "products_returned": 82,
+      "products_returned": 81,
       "items_with_evidence": 44,
       "evidence_urls": 80,
       "fresh_evidence_urls": 80,
@@ -24,35 +24,24 @@
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 24,
+    "items_with_published_trend_url": 27,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 0,
-    "verified_urls_total": 298,
-    "published_trend_urls_total": 44,
+    "verified_urls_total": 310,
+    "published_trend_urls_total": 56,
     "retail_product_urls_total": 254,
     "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 20,
+      "published_trend_missing_items": 17,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
-      "zero_trend_categories": 1
+      "zero_trend_categories": 0
     },
     "weak_categories": [
-      {
-        "category_id": "wigs-hair-pieces",
-        "category_name": "Wigs & Hair Pieces",
-        "items": 5,
-        "trend_items": 0,
-        "retail_product_items": 5,
-        "tiktok_shop_items": 5,
-        "trend_ratio": 0.0,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
       {
         "category_id": "tools-accessories",
         "category_name": "Tools & Accessories",
@@ -76,13 +65,13 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling",
-        "items": 6,
-        "trend_items": 3,
-        "retail_product_items": 6,
-        "tiktok_shop_items": 6,
-        "trend_ratio": 0.5,
+        "category_id": "wigs-hair-pieces",
+        "category_name": "Wigs & Hair Pieces",
+        "items": 5,
+        "trend_items": 2,
+        "retail_product_items": 5,
+        "tiktok_shop_items": 5,
+        "trend_ratio": 0.4,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -94,6 +83,17 @@
         "retail_product_items": 4,
         "tiktok_shop_items": 4,
         "trend_ratio": 0.5,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "hair-care-styling",
+        "category_name": "Hair Care & Styling",
+        "items": 6,
+        "trend_items": 4,
+        "retail_product_items": 6,
+        "tiktok_shop_items": 6,
+        "trend_ratio": 0.67,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -133,18 +133,6 @@
     ],
     "missing_published_trend_items": [
       {
-        "item_id": "glueless-pre-cut-hd-lace-wig",
-        "item_name": "Glueless Pre-Cut HD Lace Wig",
-        "category_id": "wigs-hair-pieces",
-        "category_name": "Wigs & Hair Pieces"
-      },
-      {
-        "item_id": "13x4-hd-lace-frontal-wig",
-        "item_name": "13x4 HD Lace Frontal Wig",
-        "category_id": "wigs-hair-pieces",
-        "category_name": "Wigs & Hair Pieces"
-      },
-      {
         "item_id": "v-part-human-hair-wig",
         "item_name": "V-Part Human Hair Wig",
         "category_id": "wigs-hair-pieces",
@@ -165,12 +153,6 @@
       {
         "item_id": "lace-melting-spray",
         "item_name": "Lace Melting Spray",
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling"
-      },
-      {
-        "item_id": "wig-adhesive-glue",
-        "item_name": "Wig Adhesive Glue",
         "category_id": "hair-care-styling",
         "category_name": "Hair Care & Styling"
       },
@@ -257,13 +239,21 @@
     "missing_retail_product_items": [],
     "discipline_note": "Gap records are diagnostics only; search/watchlist URLs remain non-scoring and trend claims still require dated captured URLs."
   },
+  "source_cap_policy": {
+    "policy_id": "trend_preserving_verified_source_cap_v1",
+    "published_first": true,
+    "published_per_item_cap": 8,
+    "retail_per_item_cap": 10,
+    "total_pre_tiktok_per_item_cap": 14,
+    "purpose": "Keep dated article/post/news URLs in rankings.json before same-day product/listing URLs can fill the per-item cap; supply URLs remain validation only and do not create trend movement."
+  },
   "limitations": [
     "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
     "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",
+    "Published trend URLs are preserved before product/listing URL caps so older dated sources are not hidden by same-day supply validation.",
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "published trend URL gap 20개 item 유지: Wigs & Hair Pieces, Tools & Accessories, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
-    "zero-trend category 유지: Wigs & Hair Pieces. 다음 run은 broad category가 아니라 item-level dated URL capture를 우선합니다."
+    "published trend URL gap 17개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }

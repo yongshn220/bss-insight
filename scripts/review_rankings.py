@@ -585,6 +585,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
             "generated_at": collection_notes.get("generated_at"),
             "source_health": source_health,
             "evidence_totals": collection_notes.get("evidence_totals", {}),
+            "source_cap_policy": collection_notes.get("source_cap_policy", {}),
             "next_actions": collection_notes.get("next_actions", []),
         },
         "category_stats": cat_stats,
@@ -769,6 +770,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "next_step": "After analytics export access is connected, compare UTM campaigns for top3 owner share links against generic weekly ranking links.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "trend-preserving-source-cap-v1",
+            "status": "active-collection-quality-after-review",
+            "hypothesis": "If dated published URLs are preserved ahead of same-day supply listings, shared item pages should look more credible and reduce unsupported WATCHLIST confusion.",
+            "next_step": "Track items_with_published_trend_url and source_link clicks after analytics export is connected; do not treat generated search URLs as evidence.",
+            "last_refreshed_at": now,
+        })
 
     save_json(MARKETING_BACKLOG_PATH, marketing)
     return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
@@ -815,6 +823,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["hidden_refresh_status", "owner_visible_measured_change_snapshot"],
             "success_metric": "run_change_review clicks, ranking-card clicks after viewing latest-loop changes, share/copy events, and repeat visits once analytics export is available",
             "hypothesis": "BSS owners and reps will revisit/share more often when the dashboard clearly separates material evidence/source changes from routine refreshes.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "trend-preserving-source-cap-v1",
+            "status": "active-collection-quality-after-build",
+            "variants": ["mixed_recency_cap", "published_first_verified_source_cap"],
+            "success_metric": "items_with_published_trend_url, published_trend_urls_total, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
+            "hypothesis": "Preserving dated published URLs before same-day supply listings enter the per-item cap should improve evidence trust and reduce avoidable WATCHLIST labeling without counting search URLs as evidence.",
             "last_refreshed_at": now,
         })
 

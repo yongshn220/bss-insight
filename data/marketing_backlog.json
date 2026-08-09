@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T08:15:59.384831Z",
+  "updated_at": "2026-08-09T09:38:48.637582Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -16,14 +16,14 @@
         "instagram_caption": "이번 주 BSS 매장에서 바로 테스트할 수 있는 item ranking을 업데이트했습니다. Trend claim과 supply validation을 분리해서, owner가 과장 없이 display/reorder test를 판단할 수 있게 정리했습니다. Link in bio / weekly ranking.",
         "sales_rep_note": "Owner님, 이번 주 손님들이 반응할 만한 item을 product-level로 정리했습니다. 단순 trend가 아니라 실제 source/evidence와 display tip까지 같이 보실 수 있습니다.",
         "x_daily_owner_item_insight": "Beauty Supply owners: this week’s ranking highlights {item_name}. Display test: {display_tip}. Evidence and supply links are separated so you can judge trend vs. watchlist. {url}",
-        "x_daily_owner_item_insight_current": "Beauty Supply owners: Weekly share starter — Rosemary Mint Scalp Oil. Display test: scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly"
+        "x_daily_owner_item_insight_current": "Beauty Supply owners: Weekly share starter — Glueless Pre-Cut HD Lace Wig. Display test: wig wall 상단/신상품 구역에 glueless, pre-cut, HD lace 키워드를 크게 표기. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/glueless-pre-cut-hd-lace-wig.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=glueless-pre-cut-hd-lace-wig&utm_term=weekly"
       },
       "approval_needed_for_external_posting": "first_live_post_requires_manual_approval_then_safe_auto_post_rule",
       "tracked_events": [],
-      "last_refreshed_at": "2026-08-09T08:15:59.384831Z",
+      "last_refreshed_at": "2026-08-09T09:38:48.637582Z",
       "tracked_quality_metrics": [
         "current weekly owner insight draft regenerated from live top evidence-backed item",
-        "lead_item_id=rosemary-mint-scalp-oil"
+        "lead_item_id=glueless-pre-cut-hd-lace-wig"
       ]
     },
     {
@@ -68,46 +68,46 @@
       "drafts": {
         "x_twitter_top3_weekly": [
           {
+            "item_id": "glueless-pre-cut-hd-lace-wig",
+            "item_name": "Glueless Pre-Cut HD Lace Wig",
+            "rank": 1,
+            "url": "https://gnsresearchhub.vercel.app/items/glueless-pre-cut-hd-lace-wig.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=glueless-pre-cut-hd-lace-wig&utm_term=weekly",
+            "x_twitter": "Beauty Supply owners: Weekly share starter — Glueless Pre-Cut HD Lace Wig. Display test: wig wall 상단/신상품 구역에 glueless, pre-cut, HD lace 키워드를 크게 표기. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/glueless-pre-cut-hd-lace-wig.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=glueless-pre-cut-hd-lace-wig&utm_term=weekly",
+            "sales_rep_note": "Owner님, 이번 Weekly ranking #1 item은 Glueless Pre-Cut HD Lace Wig입니다. Display: wig wall 상단/신상품 구역에 glueless, pre-cut, HD lace 키워드를 크게 표기. Risk/caution: 가격대가 높아 반품/착용 흔적/컬러 선택 관리 필요. Evidence: 2 published trend URL(s)."
+          },
+          {
             "item_id": "rosemary-mint-scalp-oil",
             "item_name": "Rosemary Mint Scalp Oil",
-            "rank": 1,
+            "rank": 2,
             "url": "https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly",
             "x_twitter": "Beauty Supply owners: Weekly share starter — Rosemary Mint Scalp Oil. Display test: scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly",
-            "sales_rep_note": "Owner님, 이번 Weekly ranking #1 item은 Rosemary Mint Scalp Oil입니다. Display: scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치. Risk/caution: 성장 효능 과장 금지, scalp comfort 중심 설명. Evidence: 2 published trend URL(s)."
+            "sales_rep_note": "Owner님, 이번 Weekly ranking #2 item은 Rosemary Mint Scalp Oil입니다. Display: scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치. Risk/caution: 성장 효능 과장 금지, scalp comfort 중심 설명. Evidence: 2 published trend URL(s)."
           },
           {
             "item_id": "lash-bond-and-seal",
             "item_name": "Lash Bond and Seal",
-            "rank": 2,
+            "rank": 3,
             "url": "https://gnsresearchhub.vercel.app/items/lash-bond-and-seal.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=lash-bond-and-seal&utm_term=weekly",
             "x_twitter": "Beauty Supply owners: Weekly share starter — Lash Bond and Seal. Display test: cluster lash kit 바로 옆에 필수 add-on으로 배치. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/lash-bond-and-seal.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=lash-bond-and-seal&utm_term=weekly",
-            "sales_rep_note": "Owner님, 이번 Weekly ranking #2 item은 Lash Bond and Seal입니다. Display: cluster lash kit 바로 옆에 필수 add-on으로 배치. Risk/caution: 눈 주변 제품이라 안전/사용법 주의. Evidence: 2 published trend URL(s)."
-          },
-          {
-            "item_id": "human-hair-boho-braiding-bundles",
-            "item_name": "Human Hair Boho Braiding Bundles",
-            "rank": 3,
-            "url": "https://gnsresearchhub.vercel.app/items/human-hair-boho-braiding-bundles.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=human-hair-boho-braiding-bundles&utm_term=weekly",
-            "x_twitter": "Beauty Supply owners: Weekly share starter — Human Hair Boho Braiding Bundles. Display test: boho/knotless braid sign 아래 premium add-on bundle로 분리. Evidence status: 1 published trend URL(s). https://gnsresearchhub.vercel.app/items/human-hair-boho-braiding-bundles.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=human-hair-boho-braiding-bundles&utm_term=weekly",
-            "sales_rep_note": "Owner님, 이번 Weekly ranking #3 item은 Human Hair Boho Braiding Bundles입니다. Display: boho/knotless braid sign 아래 premium add-on bundle로 분리. Risk/caution: 가격대가 높고 품질 차이가 커서 supplier/return 관리 중요. Evidence: 1 published trend URL(s)."
+            "sales_rep_note": "Owner님, 이번 Weekly ranking #3 item은 Lash Bond and Seal입니다. Display: cluster lash kit 바로 옆에 필수 add-on으로 배치. Risk/caution: 눈 주변 제품이라 안전/사용법 주의. Evidence: 2 published trend URL(s)."
           }
         ]
       },
       "owner_value": "Busy BSS owners can receive one item-level link with display/risk/evidence status, making it easier to forward or revisit a specific product test.",
       "measurement_need": "GA4/Vercel event export access is needed to compare top3 item-share copy/click events against the older single featured share card.",
       "tracked_quality_metrics": [
-        "weekly_top3_current=#1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Human Hair Boho Braiding Bundles",
-        "drafts refreshed at 2026-08-09T08:15:59.384831Z from data/rankings.json after current refresh/review",
+        "weekly_top3_current=#1 Glueless Pre-Cut HD Lace Wig, #2 Rosemary Mint Scalp Oil, #3 Lash Bond and Seal",
+        "drafts refreshed at 2026-08-09T09:38:48.637582Z from data/rankings.json after current refresh/review",
         "stale draft guard active: public marketing JSON should match live weekly Top 3 item_ids"
       ],
-      "last_refreshed_at": "2026-08-09T08:15:59.384831Z",
+      "last_refreshed_at": "2026-08-09T09:38:48.637582Z",
       "quality_control": {
         "source": "data/rankings.json weekly evidence-backed top3",
         "stale_draft_guard": "Draft item_id order must match current weekly Top 3 trend-backed ranking before external posting.",
         "current_weekly_top3_item_ids": [
+          "glueless-pre-cut-hd-lace-wig",
           "rosemary-mint-scalp-oil",
-          "lash-bond-and-seal",
-          "human-hair-boho-braiding-bundles"
+          "lash-bond-and-seal"
         ]
       }
     },
@@ -118,16 +118,16 @@
       "utm_campaign": "daily-visits-500-x-daily-owner-insight",
       "primary_url": "https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-x-daily-owner-insight",
       "posting_rule_file": "data/sns_posting_rules.json",
-      "sample_post": "Beauty Supply owners: Weekly share starter — Rosemary Mint Scalp Oil. Display test: scalp care/hair growth 관심 제품으로 hair oil shelf eye-level에 배치. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly",
+      "sample_post": "Beauty Supply owners: Weekly share starter — Glueless Pre-Cut HD Lace Wig. Display test: wig wall 상단/신상품 구역에 glueless, pre-cut, HD lace 키워드를 크게 표기. Evidence status: 2 published trend URL(s). https://gnsresearchhub.vercel.app/items/glueless-pre-cut-hd-lace-wig.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=glueless-pre-cut-hd-lace-wig&utm_term=weekly",
       "approval_needed_for_external_posting": "first_live_post_requires_manual_approval_then_safe_auto_post_rule",
       "tracked_events": [],
       "primary_item": {
-        "item_id": "rosemary-mint-scalp-oil",
-        "item_name": "Rosemary Mint Scalp Oil",
+        "item_id": "glueless-pre-cut-hd-lace-wig",
+        "item_name": "Glueless Pre-Cut HD Lace Wig",
         "rank": 1,
-        "url": "https://gnsresearchhub.vercel.app/items/rosemary-mint-scalp-oil.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=rosemary-mint-scalp-oil&utm_term=weekly"
+        "url": "https://gnsresearchhub.vercel.app/items/glueless-pre-cut-hd-lace-wig.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=glueless-pre-cut-hd-lace-wig&utm_term=weekly"
       },
-      "last_refreshed_at": "2026-08-09T08:15:59.384831Z"
+      "last_refreshed_at": "2026-08-09T09:38:48.637582Z"
     },
     {
       "campaign_id": "seo-discovery-artifacts-v1",
@@ -546,7 +546,14 @@
       "status": "active-data-quality-after-review",
       "hypothesis": "Current item-specific SNS/rep drafts should convert better than stale rank copy because shared links match the live dashboard Top 3.",
       "next_step": "After analytics export access is connected, compare UTM campaigns for top3 owner share links against generic weekly ranking links.",
-      "last_refreshed_at": "2026-08-09T08:15:59.384831Z"
+      "last_refreshed_at": "2026-08-09T09:38:48.637582Z"
+    },
+    {
+      "experiment_id": "trend-preserving-source-cap-v1",
+      "status": "active-collection-quality-after-review",
+      "hypothesis": "If dated published URLs are preserved ahead of same-day supply listings, shared item pages should look more credible and reduce unsupported WATCHLIST confusion.",
+      "next_step": "Track items_with_published_trend_url and source_link clicks after analytics export is connected; do not treat generated search URLs as evidence.",
+      "last_refreshed_at": "2026-08-09T09:38:48.637582Z"
     }
   ],
   "permission_requests": [

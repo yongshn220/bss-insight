@@ -42,6 +42,7 @@ PUBLIC_COLLECTION_FIELDS = [
     "source_health",
     "evidence_totals",
     "coverage_gaps",
+    "source_cap_policy",
     "limitations",
     "next_actions",
 ]

@@ -1173,6 +1173,31 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
     return evidence_by_item
 
 
+def cap_verified_sources(deduped: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep dated trend evidence from being displaced by fresh product URLs.
+
+    Product/listing URLs use today's observed_date, so a single mixed recency sort
+    can push older but still valid published trend URLs out of the per-item cap.
+    Search/watchlist URLs remain excluded; this only changes which captured,
+    concrete URLs survive into rankings.json.
+    """
+    published_cap = int_env("SOURCE_CAP_PUBLISHED_PER_ITEM", 8, 1, 20)
+    retail_cap = int_env("SOURCE_CAP_RETAIL_PER_ITEM", 10, 1, 24)
+    total_cap = int_env("SOURCE_CAP_TOTAL_PER_ITEM", 14, 4, 32)
+    published: list[dict[str, Any]] = []
+    retail: list[dict[str, Any]] = []
+    other: list[dict[str, Any]] = []
+    for src in deduped:
+        if is_published_evidence(src):
+            published.append(src)
+        elif is_retail_product_evidence(src):
+            retail.append(src)
+        else:
+            other.append(src)
+    prioritized = published[:published_cap] + retail[:retail_cap] + other
+    return prioritized[:total_cap]
+
+
 def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     sources = []
     errors = []
@@ -1217,8 +1242,9 @@ def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
             seen.add(url)
             deduped.append(src)
     deduped.sort(key=source_sort_date, reverse=True)
-    # Keep fetch errors only in collection notes, not as evidence.
-    return deduped[:10]
+    # Keep fetch errors only in collection notes, not as evidence. Published URLs
+    # get first claim on the cap; supply URLs stay visible but never create trend movement.
+    return cap_verified_sources(deduped)
 
 
 def collect_all_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
@@ -1398,6 +1424,18 @@ def collection_next_actions(totals: dict[str, Any], gaps: dict[str, Any] | None 
     return actions or ["현재 collection health에 즉시 조치가 필요한 source outage는 없습니다."]
 
 
+def source_cap_policy() -> dict[str, Any]:
+    """Expose the verified-source cap policy without leaking env/secrets."""
+    return {
+        "policy_id": "trend_preserving_verified_source_cap_v1",
+        "published_first": True,
+        "published_per_item_cap": int_env("SOURCE_CAP_PUBLISHED_PER_ITEM", 8, 1, 20),
+        "retail_per_item_cap": int_env("SOURCE_CAP_RETAIL_PER_ITEM", 10, 1, 24),
+        "total_pre_tiktok_per_item_cap": int_env("SOURCE_CAP_TOTAL_PER_ITEM", 14, 4, 32),
+        "purpose": "Keep dated article/post/news URLs in rankings.json before same-day product/listing URLs can fill the per-item cap; supply URLs remain validation only and do not create trend movement.",
+    }
+
+
 def write_collection_notes(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     totals = evidence_collection_totals(evidence_by_item)
     gaps = coverage_gap_summary(evidence_by_item)
@@ -1407,9 +1445,11 @@ def write_collection_notes(evidence_by_item: dict[str, list[dict[str, Any]]]) ->
         "source_health": COLLECTION_HEALTH,
         "evidence_totals": totals,
         "coverage_gaps": gaps,
+        "source_cap_policy": source_cap_policy(),
         "limitations": [
             "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
             "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",
+            "Published trend URLs are preserved before product/listing URL caps so older dated sources are not hidden by same-day supply validation.",
             "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다.",
         ],
         "next_actions": collection_next_actions(totals, gaps),
