@@ -69,7 +69,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
     await expect(page.locator('meta[name="gns:growth-goal"]')).toHaveAttribute('content', 'daily-visits-500');
     await expect(page.locator('meta[name="gns:growth-experiment"]')).toHaveAttribute('content', 'hero-growth-cta-v1');
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\//);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', 'https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
+    const shareCardResponse = await request.get('/assets/share-weekly.svg');
+    expect(shareCardResponse.status()).toBeLessThan(400);
+    const shareCardSvg = await shareCardResponse.text();
+    expect(shareCardSvg).toContain('BSS-WIDE ITEM RANKING · WEEKLY');
+    expect(shareCardSvg).toContain('Trend-backed');
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
     const homeJsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
     expect(JSON.parse(homeJsonLd ?? '{}')['@type']).toBe('ItemList');
@@ -334,6 +340,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'post-review-site-sync-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-prompt-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
   });
 
   test('return visitor prompt appears and is event-tracked on a later visit', async ({ page }) => {
@@ -388,6 +395,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
 
       await expect(page.locator('.tabs a.active')).toHaveText(label);
       await expect(page.getByRole('heading', { name: `${label} ranking` })).toBeVisible();
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', `https://gnsresearchhub.vercel.app/assets/share-${label.toLowerCase()}.svg`);
       await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
@@ -558,6 +566,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-list-engagement-context-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-prompt-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
+    const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
+    expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);

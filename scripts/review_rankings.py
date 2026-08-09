@@ -711,6 +711,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
     now = str(review.get("reviewed_at") or utc_now())
     drafts = top3_share_drafts(rows)
     top3_ids = [str(draft.get("item_id")) for draft in drafts if draft.get("item_id")]
+    metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
     marketing["updated_at"] = now
     marketing.setdefault("goal_id", "daily-visits-500")
     marketing.setdefault("status", "active")
@@ -813,6 +814,26 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel event export access is needed to compare repeat-visitor prompt exposure and CTA clicks against first-visit flows.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "social-share-preview-card-v1",
+        "status": "live-static-og-twitter-card-after-build",
+        "objective": "Make owner/reps shared ranking links render a ranking-specific visual preview with Top 3, evidence counts, WATCHLIST count, and the 500/day growth goal instead of a random product image.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/assets/share-weekly.svg",
+            "https://gnsresearchhub.vercel.app/assets/share-monthly.svg",
+            "https://gnsresearchhub.vercel.app/assets/share-quarterly.svg",
+            "https://gnsresearchhub.vercel.app/assets/share-yearly.svg",
+        ],
+        "tracked_quality_metrics": [
+            "weekly_share_card_top3=" + ", ".join(top3_ids),
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+            "homepage and timeframe pages use local /assets/share-{timeframe}.svg in og:image and twitter:image",
+        ],
+        "owner_value": "When a BSS owner or sales rep shares the hub, the preview itself communicates concrete item picks and evidence discipline before the click, improving trust and repeat-visit intent.",
+        "measurement_need": "Analytics export is still needed to compare UTM-attributed sessions from shared links before/after social preview cards; no external posting is performed here.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -856,6 +877,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-client-side-provider-ready-after-review",
             "hypothesis": "A new session_id after the 30-minute visit window will make return-owner visits and UTM funnels easier to measure without inflating one long-lived browser session.",
             "next_step": "After GA4/Vercel export access is connected, compare session_id, visit_count, is_returning_visitor, and first/current UTM on repeat ranking and item-detail entrances.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "social-share-preview-card-v1",
+            "status": "active-static-shareability-after-review",
+            "hypothesis": "Ranking-specific OG/Twitter preview cards should improve trust and click intent when BSS owners/reps share links because the preview shows concrete Top 3 items and evidence/watchlist discipline before the visit.",
+            "next_step": "After analytics export access is connected, compare UTM-attributed sessions from owner_share/x/email links and share-copy events before/after /assets/share-{timeframe}.svg deployment.",
             "last_refreshed_at": now,
         })
 
@@ -952,6 +980,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["persistent_local_session_id", "30_minute_visit_window_session_boundary"],
             "success_metric": "growth_exposure and growth_engagement_summary segmented by fresh session_id, visit_count, is_returning_visitor, first/current UTM, and repeat item-detail entrances once analytics export is connected",
             "hypothesis": "Renewing session_id after the 30-minute visit boundary prevents repeat owners from being collapsed into a stale browser session, improving measurement toward the 500/day goal.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "social-share-preview-card-v1",
+            "status": "active-static-shareability-after-build",
+            "variants": ["random_product_image_preview", "ranking_specific_top3_evidence_preview_card"],
+            "success_metric": "UTM-attributed sessions from owner_share/x/email links, share/copy events, and repeat visits once analytics export is connected",
+            "hypothesis": "Ranking-specific social preview images should make shared BSS owner links clearer and more trustworthy because previews show Top 3 item names plus trend/watchlist counts without unsupported claims.",
             "last_refreshed_at": now,
         })
 

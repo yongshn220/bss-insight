@@ -743,6 +743,84 @@ def product_json_ld(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def social_share_card_path(timeframe: str) -> str:
+    """Return the generated OG/Twitter image path for a ranking timeframe."""
+    return f"/assets/share-{timeframe}.svg"
+
+
+def svg_text(value: object, limit: int | None = None) -> str:
+    """Escape and optionally clamp text for the generated social preview SVG."""
+    text = " ".join(str(value or "").split())
+    if limit and len(text) > limit:
+        text = text[: max(0, limit - 1)].rstrip() + "…"
+    return html.escape(text, quote=False)
+
+
+def write_social_share_cards(data: dict[str, Any]) -> list[str]:
+    """Generate local social preview cards for OG/Twitter shareability.
+
+    Shared ranking links should not depend on a random product image or a text-only
+    preview. These static SVGs summarize top items and evidence/watchlist counts
+    from the current ranking snapshot without making any new trend claims.
+    """
+    assets_dir = ROOT / "assets"
+    assets_dir.mkdir(exist_ok=True)
+    generated: list[str] = []
+    rankings = data.get("rankings", {}) if isinstance(data.get("rankings"), dict) else {}
+    generated_at = str(data.get("generated_at") or data.get("date") or "")
+    for timeframe in TIMEFRAME_ORDER:
+        rows = rankings.get(timeframe, []) if isinstance(rankings, dict) else []
+        rows = [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else []
+        if not rows:
+            continue
+        label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+        trend_rows = [row for row in rows if has_trend_evidence(row)]
+        leaders = (trend_rows or rows)[:3]
+        trend_items = count_items_with_source(rows, "trend_evidence")
+        watchlist_items = sum(
+            1
+            for row in rows
+            if row.get("momentum") == "watchlist" or source_count(row, "trend_evidence") == 0
+        )
+        leader_lines = []
+        y = 278
+        for row in leaders:
+            evidence = evidence_status_label(row)
+            leader_lines.append(f"""
+  <g transform="translate(82 {y})">
+    <rect width="1036" height="82" rx="24" fill="#ffffff" opacity="0.96"/>
+    <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#171717">#{svg_text(row.get('rank'))} {svg_text(row.get('item_name'), 48)}</text>
+    <text x="28" y="62" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666666">{svg_text(row.get('category_name'), 34)} · {svg_text(evidence, 38)}</text>
+    <text x="966" y="51" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#171717">{svg_text(row.get('score'))}</text>
+  </g>""")
+            y += 98
+        svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="{svg_text(label)} BSS Trend Ranking social preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fbff"/>
+      <stop offset="0.52" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fff7ed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="96" r="118" fill="#171717" opacity="0.06"/>
+  <circle cx="96" cy="548" r="142" fill="#0072f5" opacity="0.07"/>
+  <text x="82" y="82" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#0072f5" letter-spacing="3">BSS-WIDE ITEM RANKING · {svg_text(label.upper())}</text>
+  <text x="82" y="150" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="800" fill="#171717">Beauty Supply Store</text>
+  <text x="82" y="208" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="800" fill="#171717">owner product picks</text>
+  <text x="82" y="246" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#555555">Published URLs drive trend movement. Supply URLs stay validation-only.</text>
+  {''.join(leader_lines)}
+  <g transform="translate(82 578)">
+    <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Trend-backed {trend_items}/{len(rows)} · WATCHLIST {watchlist_items} · Growth goal 500/day · Generated {svg_text(generated_at, 24)}</text>
+  </g>
+</svg>
+"""
+        out = assets_dir / f"share-{timeframe}.svg"
+        out.write_text(svg, encoding="utf-8")
+        generated.append(str(out.relative_to(ROOT)))
+    return generated
+
+
 def choose_share_row(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Prefer evidence-backed leaders, then fall back to the top ranked item."""
     return next((row for row in rows if has_trend_evidence(row)), rows[0] if rows else None)
@@ -1225,7 +1303,7 @@ def render_home(data: dict[str, Any]) -> str:
         page_type="home",
         page_path="/index.html",
         description=page_description("Weekly BSS retail-owner product ranking", weekly),
-        image_url=(choose_share_row(weekly) or {}).get("image_url") if weekly else None,
+        image_url=social_share_card_path("weekly") if weekly else None,
         json_ld=item_list_json_ld(weekly, "weekly", "/index.html"),
     )
 
@@ -1288,7 +1366,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         page_type="ranking",
         page_path=ranking_path,
         description=page_description(f"{TIMEFRAME_LABELS.get(timeframe, timeframe.title())} BSS product ranking", rows),
-        image_url=(choose_share_row(rows) or {}).get("image_url") if rows else None,
+        image_url=social_share_card_path(timeframe) if rows else None,
         json_ld=item_list_json_ld(rows, timeframe, ranking_path),
     )
 
@@ -1456,6 +1534,7 @@ def main() -> int:
     RANKINGS_DIR.mkdir(exist_ok=True)
     ITEMS_DIR.mkdir(exist_ok=True)
     data = load_rankings()
+    generated_social_cards = write_social_share_cards(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
         (RANKINGS_DIR / f"{tf}.html").write_text(render_timeframe(data, tf), encoding="utf-8")
@@ -1464,7 +1543,7 @@ def main() -> int:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
     write_seo_files(data, {str(item_id) for item_id in item_ids if item_id})
-    generated = ["index.html", "robots.txt", "sitemap.xml"] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
+    generated = ["index.html", "robots.txt", "sitemap.xml", *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids)}, ensure_ascii=False, indent=2))
     return 0
 

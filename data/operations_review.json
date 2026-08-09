@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-09T15:51:41.487842Z",
-  "source_generated_at": "2026-08-09T15:48:00.793065Z",
+  "reviewed_at": "2026-08-09T17:08:12.071931Z",
+  "source_generated_at": "2026-08-09T17:01:10.980070Z",
   "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "14 passed (28.8s); visit-session-boundary-v1 QA added",
+  "playwright_summary": "14 passed (28.3s); social-share-preview-card-v1 QA added",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,11 +15,11 @@
     "watchlist_items": 35
   },
   "collection_health": {
-    "generated_at": "2026-08-09T15:48:00.792699Z",
+    "generated_at": "2026-08-09T17:01:10.979712Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-09T15:48:00.792003Z",
+        "observed_at": "2026-08-09T17:01:10.978989Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
@@ -39,12 +39,12 @@
     "evidence_totals": {
       "items_requested": 44,
       "items_with_any_verified_url": 44,
-      "items_with_published_trend_url": 27,
+      "items_with_published_trend_url": 26,
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 308,
-      "published_trend_urls_total": 56,
+      "verified_urls_total": 306,
+      "published_trend_urls_total": 54,
       "retail_product_urls_total": 252,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
@@ -58,7 +58,7 @@
       "purpose": "Keep dated article/post/news URLs in rankings.json before same-day product/listing URLs can fill the per-item cap; supply URLs remain validation only and do not create trend movement."
     },
     "next_actions": [
-      "published trend URL gap 17개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+      "published trend URL gap 18개 item 유지: Tools & Accessories, Wigs & Hair Pieces, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다."
     ]
   },
   "category_stats": [
@@ -182,14 +182,14 @@
     {
       "item_id": "rhinestone-stud-earrings-6mm",
       "item_name": "6mm Rhinestone Stud Earrings",
-      "status": "improved",
+      "status": "still_needs_focus",
       "baseline": {
-        "verified_evidence": 5,
+        "verified_evidence": 6,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 5,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 6,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 2,
@@ -223,7 +223,7 @@
         "manual_references": 16,
         "news_magazine": 0
       },
-      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
+      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
       "item_id": "wig-grip-band",
@@ -243,7 +243,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -263,7 +263,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -276,12 +276,12 @@
       "item_name": "Rhinestone Nail Charms",
       "status": "still_needs_focus",
       "baseline": {
-        "verified_evidence": 6,
+        "verified_evidence": 5,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 6,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 5,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 4,
@@ -296,12 +296,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 6,
+        "verified_evidence": 5,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 6,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 5,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 4,
@@ -335,7 +335,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -355,7 +355,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -381,7 +381,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -401,7 +401,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -427,7 +427,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -457,7 +457,7 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 14 passed (28.8s); visit-session-boundary-v1 QA added",
+    "Playwright QA 완료: 14 passed (28.3s); social-share-preview-card-v1 QA added",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 Rosemary Mint Scalp Oil, #3 Lash Bond and Seal",
     "Evidence separation 유지: published trend URL 보유 item 9개, BSS/marketplace live product URL 보유 item 44개.",
@@ -533,7 +533,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -555,12 +555,12 @@
         "Rhinestone Nail Charms nail design review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 6,
+        "verified_evidence": 5,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 6,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 5,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 4,
@@ -603,7 +603,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -636,7 +636,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Weekly BSS Trend Ranking social preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fbff"/>
+      <stop offset="0.52" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fff7ed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="96" r="118" fill="#171717" opacity="0.06"/>
+  <circle cx="96" cy="548" r="142" fill="#0072f5" opacity="0.07"/>
+  <text x="82" y="82" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#0072f5" letter-spacing="3">BSS-WIDE ITEM RANKING · WEEKLY</text>
+  <text x="82" y="150" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="800" fill="#171717">Beauty Supply Store</text>
+  <text x="82" y="208" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="800" fill="#171717">owner product picks</text>
+  <text x="82" y="246" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#555555">Published URLs drive trend movement. Supply URLs stay validation-only.</text>
+  
+  <g transform="translate(82 278)">
+    <rect width="1036" height="82" rx="24" fill="#ffffff" opacity="0.96"/>
+    <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#171717">#1 Glueless Pre-Cut HD Lace Wig</text>
+    <text x="28" y="62" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666666">Wigs &amp; Hair Pieces · 2 published trend URL(s)</text>
+    <text x="966" y="51" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#171717">82</text>
+  </g>
+  <g transform="translate(82 376)">
+    <rect width="1036" height="82" rx="24" fill="#ffffff" opacity="0.96"/>
+    <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#171717">#2 Rosemary Mint Scalp Oil</text>
+    <text x="28" y="62" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666666">Hair Care &amp; Styling · 2 published trend URL(s)</text>
+    <text x="966" y="51" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#171717">77</text>
+  </g>
+  <g transform="translate(82 474)">
+    <rect width="1036" height="82" rx="24" fill="#ffffff" opacity="0.96"/>
+    <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#171717">#3 Lash Bond and Seal</text>
+    <text x="28" y="62" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666666">Lashes &amp; Brows · 2 published trend URL(s)</text>
+    <text x="966" y="51" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="#171717">70</text>
+  </g>
+  <g transform="translate(82 578)">
+    <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Trend-backed 9/44 · WATCHLIST 35 · Growth goal 500/day · Generated 2026-08-09T17:01:10.980…</text>
+  </g>
+</svg>
