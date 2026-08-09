@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T04:25:42Z",
+  "updated_at": "2026-08-09T05:43:24.137147Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T04:25:42Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run added ranking-list engagement context so Top 3 podium clicks and main ranking-card clicks carry section, component_experiment_id, item_id, and item_rank for future funnel analysis.",
+    "last_checked_at": "2026-08-09T05:43:24.137147Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. This run refreshed collection health (TikTok Shop status=success_with_partial_cache, fresh_evidence_urls=79, partial_cached_items=1) and added an owner-visible TikTok Shop freshness card so fresh vs cached supply URLs are not confused with trend evidence.",
     "rolling_30d_average_daily_visits": null,
     "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels.",
-    "interpretation": "Traffic progress cannot be claimed. Measurement granularity improved for the highest-intent ranking interactions, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected."
+    "interpretation": "Traffic progress cannot be claimed. Source freshness transparency improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -197,7 +197,7 @@
       ],
       "success_metric": "Maintain 44/44 TikTok Shop or clearly labeled cached supply coverage without increasing unsupported trend claims; monitor partial_cached_items and source-link engagement after analytics export is connected.",
       "hypothesis": "Transparent cached supply fallback preserves owner trust during upstream actor failures while keeping trend claims evidence-based.",
-      "last_run_note": "2026-08-09T03:18:07.347302Z: final source_health.status=success; fresh_evidence_urls=80; partial_cached_items=0."
+      "last_run_note": "2026-08-09T05:43:24.137147Z: source_health.status=success_with_partial_cache; fresh_evidence_urls=79; partial_cached_items=1; UI now separates fresh/cached TikTok Shop supply counts."
     },
     {
       "experiment_id": "top3-owner-share-strip-v1",
@@ -313,6 +313,16 @@
       ],
       "success_metric": "growth_engagement_summary events with time_on_page_ms, max_scroll_depth_percent, viewed_sections, click/share/copy/source counters, and downstream repeat visits once analytics export is available",
       "hypothesis": "BSS owner growth optimization will improve faster when the hub measures whether visitors actually read/scroll through owner-useful modules before clicking or sharing, instead of counting page views alone."
+    },
+    {
+      "experiment_id": "source-health-freshness-card-v1",
+      "status": "active-site-trust-ux-after-build",
+      "variants": [
+        "hidden_source_health",
+        "owner_visible_fresh_vs_cached_tiktok_shop_counts"
+      ],
+      "success_metric": "evidence_snapshot_review clicks, source_link clicks, share/copy events, and repeat visits once analytics export is available",
+      "hypothesis": "BSS owners will trust and share the dashboard more when fresh TikTok Shop product URLs and cached supply-only fallbacks are visible before they click source details."
     }
   ],
   "reporting": {

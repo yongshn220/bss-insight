@@ -303,6 +303,40 @@ def data_health_panel(rows: list[dict[str, Any]]) -> str:
     ) + '</div>'
 
 
+def tiktok_shop_freshness_cell(health: dict[str, Any], cached_tiktok_count: int) -> str:
+    """Show current TikTok Shop source freshness without overstating cached URLs."""
+    source_health = health.get("source_health", {}) if isinstance(health.get("source_health"), dict) else {}
+    apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
+    if not isinstance(apify, dict) or not apify:
+        return ""
+
+    status = str(apify.get("status") or "unknown")
+    fresh_urls = int(apify.get("fresh_evidence_urls") or 0)
+    total_urls = int(apify.get("evidence_urls") or apify.get("cached_evidence_urls") or cached_tiktok_count or 0)
+    cached_urls = int(apify.get("partial_cached_evidence_urls") or 0) or cached_tiktok_count
+    partial_items = int(apify.get("partial_cached_items") or 0)
+    cache_age = apify.get("cache_age_days")
+    attempts = apify.get("attempts")
+
+    if status == "success":
+        note = f"Actor success · {attempts or 1} attempt(s) · no cache used"
+    elif status == "success_with_partial_cache":
+        note = f"Actor success plus {partial_items} cached item(s); cache age {cache_age if cache_age is not None else 'n/a'}d · supply-only"
+    elif status == "failed_using_cache":
+        note = f"Actor failed; cached TikTok Shop URLs reused as supply-only · cache age {cache_age if cache_age is not None else 'n/a'}d"
+    elif status in {"failed", "success_empty", "skipped"}:
+        note = f"Status {status}; TikTok Shop freshness needs next-run recovery"
+    else:
+        note = f"Status {status}; source health is shown for owner trust"
+
+    return (
+        f'<div class="source-health-cell {esc(status)}" data-source-health="tiktok_shop">'
+        f'<b>{esc(fresh_urls)}/{esc(cached_urls)}</b>'
+        '<span>TikTok Shop freshness</span>'
+        f'<small>{esc(note)} · total URLs {esc(total_urls)}</small></div>'
+    )
+
+
 def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str, collection_health: dict[str, Any] | None = None) -> str:
     """Compact transparency panel so ranking scores do not feel black-box.
 
@@ -356,18 +390,13 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str, collection
             "<span>365d captured published URLs</span>"
             "<small>Collection diagnostic only · not weekly trend movement</small></div>"
         )
-    cache_cell = ""
-    if cached_tiktok:
-        cache_cell = (
-            f"<div><b>{esc(cached_tiktok)}</b><span>Cached TikTok Shop</span>"
-            "<small>Current actor failed; previous capture is labeled supply-only</small></div>"
-        )
+    freshness_cell = tiktok_shop_freshness_cell(health, cached_tiktok)
     return f"""
       <section class="wrap evidence-snapshot" data-growth-section="evidence-gap-transparency-v1" data-growth-experiment="evidence-window-transparency-v1" aria-label="Evidence quality snapshot">
         <div class="evidence-snapshot-copy">
           <span>Evidence quality snapshot</span>
           <h2>{esc(label)} evidence window를 먼저 확인</h2>
-          <p>이 view의 trend-backed count는 {esc(window_days)}일 안에 잡힌 published URL 기준입니다. 365d captured source는 수집 coverage 진단일 뿐, weekly movement를 만들지 않습니다.</p>
+          <p>이 view의 trend-backed count는 {esc(window_days)}일 안에 잡힌 published URL 기준입니다. 365d captured source는 수집 coverage 진단일 뿐, weekly movement를 만들지 않습니다. TikTok Shop freshness는 fresh/cached supply URL을 분리해 보여줍니다.</p>
         </div>
         <div class="evidence-snapshot-grid">
           <div><b>{esc(window_days)}d</b><span>Active trend window</span><small>Rank movement uses this view's dated URLs</small></div>
@@ -376,7 +405,7 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str, collection
           <div><b>{esc(len(zero_trend_categories))}</b><span>Zero-trend categories</span><small>{esc(zero_summary)}</small></div>
           <div><b>{esc(len(missing_tiktok))}</b><span>Missing TikTok Shop</span><small>{esc(tiktok_summary)}</small></div>
           {captured_cell}
-          {cache_cell}
+          {freshness_cell}
         </div>
         <a class="snapshot-review-link" data-growth-cta="evidence_snapshot_review" href="/data/operations_review_public.json">Public review JSON 보기</a>
       </section>"""

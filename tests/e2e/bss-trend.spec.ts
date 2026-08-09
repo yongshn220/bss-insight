@@ -84,6 +84,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.getByText('Active trend window')).toBeVisible();
     await expect(page.getByText('365d captured published URLs')).toBeVisible();
     await expect(page.locator('.evidence-snapshot-grid div').filter({ hasText: 'Missing TikTok Shop' }).getByText('0')).toBeVisible();
+    await expect(page.locator('[data-source-health="tiktok_shop"]')).toBeVisible();
+    await expect(page.locator('[data-source-health="tiktok_shop"]')).toContainText('TikTok Shop freshness');
+    await expect(page.locator('[data-source-health="tiktok_shop"]')).not.toContainText('Current actor failed; previous capture');
     await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
     await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toHaveAttribute('data-growth-experiment', 'evidence-focus-watchlist-v1');

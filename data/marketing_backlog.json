@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T04:25:42Z",
+  "updated_at": "2026-08-09T05:43:24.137147Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -380,6 +380,23 @@
       ],
       "owner_value": "No extra UI clutter; the operator can later shorten, move, or remove modules that owners do not view or use, improving the dashboard toward repeat visits.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare engagement-summary-v1 quality metrics against rolling 30-day visits and repeat sessions."
+    },
+    {
+      "campaign_id": "source-health-freshness-card-v1",
+      "status": "live-on-site-trust-ux-provider-ready",
+      "objective": "Reduce black-box score distrust by showing fresh vs cached TikTok Shop supply health inside the evidence snapshot before owner share CTAs.",
+      "utm_campaign": "daily-visits-500-source-health-freshness",
+      "primary_url": "https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=site&utm_medium=evidence_snapshot&utm_campaign=daily-visits-500-source-health-freshness",
+      "drafts": {
+        "sales_rep_note": "Owner님, 이번 ranking은 TikTok Shop supply signal도 fresh/cached로 분리해서 보여줍니다. Cached URL은 trend evidence가 아니라 supply 참고로만 보시면 됩니다.",
+        "x_twitter": "Beauty Supply owners: source freshness matters. The BSS item ranking now separates fresh TikTok Shop supply URLs from cached supply-only fallbacks, while trend claims still require dated published URLs. https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-source-health-freshness"
+      },
+      "approval_needed_for_external_posting": "first_live_post_requires_manual_approval_then_safe_auto_post_rule",
+      "tracked_events": [
+        "growth_section_view:evidence-gap-transparency-v1",
+        "growth_click:evidence_snapshot_review",
+        "growth_click:source_link"
+      ]
     }
   ],
   "experiment_backlog": [
