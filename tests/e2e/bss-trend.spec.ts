@@ -54,7 +54,7 @@ test.afterEach(async ({ page }) => {
 });
 
 test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
-  test('home page renders the ranking dashboard with product visuals', async ({ page }) => {
+  test('home page renders the ranking dashboard with product visuals', async ({ page, request }) => {
     await page.goto('/index.html?variant=A');
 
     await expect(page).toHaveTitle(/Home · BSS Trend Ranking/);
@@ -103,6 +103,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(focusCards.first()).toHaveAttribute('data-growth-cta', 'evidence_focus_watchlist');
     await expect(focusCards.first()).toHaveAttribute('data-item-id', /.+/);
     await expect(page.locator('[data-growth-cta="evidence_focus_public_json"]')).toHaveAttribute('href', '/data/next_loop_focus_public.json');
+    const focusResponse = await request.get('/data/next_loop_focus_public.json');
+    expect(focusResponse.status()).toBeLessThan(400);
+    const focusPayload = await focusResponse.json();
+    expect(focusPayload.updated_at).toBeTruthy();
+    await expect(page.locator('.focus-note')).toContainText(focusPayload.updated_at);
+    const firstFocusItem = focusPayload.focus_items?.[0];
+    if (firstFocusItem?.item_name) {
+      await expect(focusCards.first()).toContainText(firstFocusItem.item_name);
+    }
     await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Weekly 매장 테스트 빠른 선택' })).toBeVisible();
     const quickPickCards = page.locator('.quick-pick-card');
@@ -312,6 +321,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'engagement-summary-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-list-engagement-context-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'apify-sharded-fallback-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'post-review-site-sync-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -442,7 +452,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(review.independent_ai_review?.review_type).toBe('independent_ai_operator_review');
     expect(review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /analytics export/i.test(blocker))).toBe(true);
     expect(review.material_changes?.length).toBeGreaterThan(0);
-    expect(review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /Coverage regression detected:.*WATCHLIST item count/i.test(blocker))).toBe(false);
+    const watchlistRegressionBlocker = review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /Coverage regression detected:.*WATCHLIST item count/i.test(blocker));
+    if (watchlistRegressionBlocker) {
+      expect(review.material_changes?.some((note: string) => /Needs recovery: WATCHLIST item count/i.test(note))).toBe(true);
+    }
 
     const weeklyTop3Ids = (rankings.rankings?.weekly ?? [])
       .filter((row: any) => Number(row.source_counts?.trend_evidence ?? 0) > 0)

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T12:07:34.770729Z",
+  "updated_at": "2026-08-09T13:22:24.770896Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -20,7 +20,7 @@
       },
       "approval_needed_for_external_posting": "first_live_post_requires_manual_approval_then_safe_auto_post_rule",
       "tracked_events": [],
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z",
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z",
       "tracked_quality_metrics": [
         "current weekly owner insight draft regenerated from live top evidence-backed item",
         "lead_item_id=glueless-pre-cut-hd-lace-wig"
@@ -97,10 +97,10 @@
       "measurement_need": "GA4/Vercel event export access is needed to compare top3 item-share copy/click events against the older single featured share card.",
       "tracked_quality_metrics": [
         "weekly_top3_current=#1 Glueless Pre-Cut HD Lace Wig, #2 Rosemary Mint Scalp Oil, #3 Lash Bond and Seal",
-        "drafts refreshed at 2026-08-09T12:07:34.770729Z from data/rankings.json after current refresh/review",
+        "drafts refreshed at 2026-08-09T13:22:24.770896Z from data/rankings.json after current refresh/review",
         "stale draft guard active: public marketing JSON should match live weekly Top 3 item_ids"
       ],
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z",
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z",
       "quality_control": {
         "source": "data/rankings.json weekly evidence-backed top3",
         "stale_draft_guard": "Draft item_id order must match current weekly Top 3 trend-backed ranking before external posting.",
@@ -127,7 +127,7 @@
         "rank": 1,
         "url": "https://gnsresearchhub.vercel.app/items/glueless-pre-cut-hd-lace-wig.html?utm_source=x&utm_medium=organic&utm_campaign=daily-visits-500-weekly-top3-owner-share&utm_content=glueless-pre-cut-hd-lace-wig&utm_term=weekly"
       },
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z"
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
     },
     {
       "campaign_id": "seo-discovery-artifacts-v1",
@@ -431,14 +431,14 @@
       "objective": "Recover fresh TikTok Shop social-commerce supply URLs with bounded keyword shards when the full actor payload fails, instead of silently relying only on stale cache.",
       "live_location_pattern": "https://gnsresearchhub.vercel.app/rankings/{timeframe}.html and https://gnsresearchhub.vercel.app/data/collection_notes_public.json",
       "tracked_quality_metrics": [
-        "apify_status=success",
-        "fresh_evidence_urls=79",
-        "cached_fallback_urls=0",
+        "apify_status=success_with_partial_cache",
+        "fresh_evidence_urls=77",
+        "cached_fallback_urls=79",
         "shard_fallback_status=not_used"
       ],
       "owner_value": "BSS owners keep current product/listing context during upstream actor instability, while cached URLs remain explicitly labeled supply-only and never create trend movement.",
       "measurement_need": "Analytics export is still needed to connect source-health transparency and item/source-link clicks to repeat visits.",
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z"
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
     }
   ],
   "experiment_backlog": [
@@ -561,28 +561,28 @@
       "status": "active-data-quality-after-review",
       "hypothesis": "Current item-specific SNS/rep drafts should convert better than stale rank copy because shared links match the live dashboard Top 3.",
       "next_step": "After analytics export access is connected, compare UTM campaigns for top3 owner share links against generic weekly ranking links.",
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z"
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
     },
     {
       "experiment_id": "trend-preserving-source-cap-v1",
       "status": "active-collection-quality-after-review",
       "hypothesis": "If dated published URLs are preserved ahead of same-day supply listings, shared item pages should look more credible and reduce unsupported WATCHLIST confusion.",
       "next_step": "Track items_with_published_trend_url and source_link clicks after analytics export is connected; do not treat generated search URLs as evidence.",
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z"
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
     },
     {
       "experiment_id": "common-event-page-context-v1",
       "status": "active-client-side-provider-ready-after-review",
       "hypothesis": "Adding page_type, timeframe, and page_item_id to every growth event will make ranking vs. item-detail funnels measurable without relying only on path parsing.",
       "next_step": "After GA4/Vercel export access is connected, segment growth_exposure, growth_click, growth_section_view, and share/copy events by page_type/timeframe/page_item_id.",
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z"
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
     },
     {
       "experiment_id": "apify-sharded-fallback-v1",
       "status": "active-collection-resilience-after-review",
       "hypothesis": "Bounded shard fallback should reduce all-cache TikTok Shop regressions after upstream full-payload failures, keeping item cards useful without inflating trend claims.",
       "next_step": "Monitor apify_status, fresh_evidence_urls, cached_fallback_urls, and source-link clicks after analytics export is connected; keep TikTok Shop evidence supply-only.",
-      "last_refreshed_at": "2026-08-09T12:07:34.770729Z"
+      "last_refreshed_at": "2026-08-09T13:22:24.770896Z"
     }
   ],
   "permission_requests": [

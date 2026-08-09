@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import subprocess
 import urllib.parse
 from collections import defaultdict
 from pathlib import Path
@@ -894,6 +895,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "hypothesis": "Sharded actor fallback will keep BSS owner item cards current through upstream TikTok Shop collector instability while preserving evidence discipline.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiments, {
+            "experiment_id": "post-review-site-sync-v1",
+            "status": "active-ops-quality-after-review",
+            "variants": ["json_only_post_qa_review", "html_public_json_rebuilt_after_review"],
+            "success_metric": "Live homepage/ranking focus cards show the same updated_at and focus items as /data/next_loop_focus_public.json; downstream focus-watchlist clicks once analytics export is connected",
+            "hypothesis": "BSS owners and reps will trust the hub more when visible WATCHLIST focus cards match the latest post-QA review instead of lagging one run behind.",
+            "last_refreshed_at": now,
+        })
 
     save_json(GROWTH_GOAL_PATH, goal)
     return {"updated_at": now, "top3_item_ids": top3_ids}
@@ -992,6 +1001,39 @@ def refresh_public_review(review: dict[str, Any], next_focus: dict[str, Any] | N
     return str(PUBLIC_OPS_REVIEW_PATH)
 
 
+def rebuild_site_with_post_review_artifacts() -> dict[str, Any]:
+    """Rebuild static HTML after review writes next-loop/growth artifacts.
+
+    The normal refresh/build step runs before post-QA review, so owner-facing HTML
+    can otherwise show the previous loop's focus cards while the public JSON shows
+    the new review. Rebuilding here keeps live pages, public data, and the next
+    loop focus in the same snapshot before deploy.
+    """
+    commands = [
+        ["python3", "scripts/build_site.py"],
+        ["python3", "scripts/build_public.py"],
+    ]
+    results: list[dict[str, Any]] = []
+    for command in commands:
+        completed = subprocess.run(
+            command,
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            timeout=300,
+            check=True,
+        )
+        results.append({
+            "command": " ".join(command),
+            "stdout_tail": completed.stdout.strip().splitlines()[-3:],
+        })
+    return {
+        "status": "rebuilt_after_review",
+        "reason": "HTML focus/watchlist/growth sections now reflect the post-QA operations_review and next_loop_focus snapshot, not the previous run.",
+        "commands": results,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--playwright-summary", default="", help="Human-readable Playwright result line from the just-completed QA run.")
@@ -1000,6 +1042,7 @@ def main() -> int:
     review = build_review(args.playwright_summary)
     next_focus = persist_review(review)
     growth_artifacts = refresh_growth_artifacts(review)
+    rebuild_summary = rebuild_site_with_post_review_artifacts()
     public_review_path = refresh_public_review(review, next_focus)
     print(json.dumps({
         "status": "reviewed",
@@ -1008,6 +1051,7 @@ def main() -> int:
         "next_focus_path": str(NEXT_LOOP_FOCUS_PATH),
         "public_review_path": public_review_path,
         "growth_artifacts": growth_artifacts,
+        "post_review_site_sync": rebuild_summary,
         "metrics": review["metrics"],
         "good_points": review["good_points"][:3],
         "improvement_points": review["improvement_points"][:3],
