@@ -853,6 +853,31 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "owner-feed-subscribe-v1",
+        "status": "live-visible-repeat-visit-cta-after-build",
+        "objective": "Make the weekly RSS/saved-feed repeat-visit path visible on home and timeframe ranking pages instead of relying only on hidden rel=alternate metadata.",
+        "utm_campaign": "daily-visits-500-owner-feed-subscribe",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (owner-feed-subscribe-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (owner-feed-subscribe-v1)",
+            "https://gnsresearchhub.vercel.app/feed.xml",
+        ],
+        "tracked_events": [
+            "growth_section_view owner-feed-subscribe-v1",
+            "growth_click cta_owner_feed_open with utm_medium=feed_subscribe",
+            "growth_click share_{timeframe}_feed_copy",
+            "growth_share_copy_result share_action={timeframe}_feed_copy",
+        ],
+        "tracked_quality_metrics": [
+            f"weekly_feed_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_feed_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+            "visible feed CTA links to /feed.xml?utm_source=site&utm_medium=feed_subscribe&utm_campaign=daily-visits-500-owner-feed-subscribe",
+        ],
+        "owner_value": "Owners/reps get a one-click way to save or subscribe to weekly item updates; feed entries still preserve display/risk/evidence labels and never turn WATCHLIST items into trend claims.",
+        "measurement_need": "Analytics export is still needed to compare owner-feed-subscribe section views/clicks/copy events and downstream utm_source=rss visits against other repeat-visit paths.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "category-landing-pages-v1",
         "status": "live-static-category-seo-share-pages-after-build",
         "objective": "Create focused category landing pages that keep broad BSS store lanes navigable while ranking only concrete item types inside each lane.",
@@ -929,6 +954,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-static-distribution-after-review",
             "hypothesis": "A crawlable/subscribable RSS feed with item-level display, risk, evidence labels, and rss UTM links should increase repeat entrances from BSS owners who prefer saved feeds or rep workflows over manual refreshes.",
             "next_step": "After analytics export access is connected, segment utm_source=rss sessions, item-detail entrances, and returning visitor rate against x/email/owner_share traffic.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "owner-feed-subscribe-v1",
+            "status": "active-visible-repeat-visit-cta-after-review",
+            "hypothesis": "A visible feed subscribe/save panel should generate more repeat owner entrances than a hidden RSS alternate link because BSS owners/reps can copy or open the update feed from the dashboard itself.",
+            "next_step": "After analytics export access is connected, compare owner-feed-subscribe section views, cta_owner_feed_open clicks, feed_copy results, and downstream utm_source=rss item-detail entrances.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1048,6 +1080,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["no_subscriber_feed", "weekly_owner_item_rss_feed_with_utm_links"],
             "success_metric": "utm_source=rss sessions, item-detail entrances, returning-owner visits, and share/copy events once analytics export is connected",
             "hypothesis": "A subscriber/crawler-friendly RSS feed should create another organic repeat-visit path for BSS owners and reps without requiring external SNS posting permissions.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "owner-feed-subscribe-v1",
+            "status": "active-visible-repeat-visit-cta-after-build",
+            "variants": ["hidden_rel_alternate_only", "visible_feed_subscribe_save_panel"],
+            "success_metric": "growth_section_view owner-feed-subscribe-v1, cta_owner_feed_open clicks, feed_copy copy results, utm_source=rss sessions, and returning-owner visits once analytics export is connected",
+            "hypothesis": "Making the feed path visible should increase repeat owner visits compared with an RSS feed that only exists in metadata and sitemap.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

@@ -192,6 +192,16 @@ h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.9
 .owner-brief-copybox { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:12px; align-items:center; padding:12px; border-radius:18px; background:#171717; color:#fff; }
 .owner-brief-copybox code { white-space:pre-wrap; color:rgba(255,255,255,.84); font-family:'Geist Mono', ui-monospace, monospace; font-size:11px; line-height:1.45; }
 
+.owner-feed { display:grid; grid-template-columns:minmax(0, 1fr) 390px; gap:16px; align-items:stretch; margin:0 auto 28px; padding:18px; border-radius:24px; background:linear-gradient(135deg, #eefcf6, #ffffff); box-shadow:var(--ring); }
+.owner-feed-copy { min-width:0; }
+.owner-feed-copy span { display:block; color:var(--green); font-family:'Geist Mono', ui-monospace, monospace; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.owner-feed-copy h2 { margin:6px 0 8px; font-size:30px; line-height:1.08; letter-spacing:-.055em; }
+.owner-feed-copy p { margin:0; color:#4d4d4d; line-height:1.56; }
+.owner-feed-copy small { display:block; margin-top:10px; color:#666; font-size:12px; line-height:1.45; }
+.owner-feed-card { min-width:0; padding:16px; border-radius:20px; background:#fff; box-shadow:var(--ring); display:flex; flex-direction:column; justify-content:space-between; gap:12px; }
+.owner-feed-card strong { display:block; font-size:22px; line-height:1.12; letter-spacing:-.05em; }
+.owner-feed-card code { display:block; padding:10px; border-radius:12px; background:#f7fbff; color:#555; font-family:'Geist Mono', ui-monospace, monospace; font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:rgba(0,0,0,.07) 0 0 0 1px; }
+
 .block, .board, .category-stack, .sources { margin-bottom:42px; }
 .section-title { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:16px; }
 .section-title h2 { margin:4px 0 0; font-size:30px; line-height:1.08; letter-spacing:-.055em; }
@@ -283,7 +293,7 @@ h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.9
 @media (max-width: 960px) {
   .hero { grid-template-columns:1fr; }
   .hero-panel, .score-hero { max-width:420px; }
-  .podium, .rank-grid, .metrics-grid, .detail-grid, .source-grid, .share-kit, .top-share-grid, .focus-grid, .quick-pick-grid, .owner-brief-steps, .owner-brief-copybox, .evidence-snapshot, .run-change, .return-visitor-panel, .category-landing-grid { grid-template-columns:1fr; }
+  .podium, .rank-grid, .metrics-grid, .detail-grid, .source-grid, .share-kit, .owner-feed, .top-share-grid, .focus-grid, .quick-pick-grid, .owner-brief-steps, .owner-brief-copybox, .evidence-snapshot, .run-change, .return-visitor-panel, .category-landing-grid { grid-template-columns:1fr; }
   .return-visitor-actions { justify-content:flex-start; }
   .top-share-title em, .focus-title em, .quick-picks-title em, .owner-brief-title em, .category-landing-title em { text-align:left; }
   .snapshot-review-link { justify-self:start; }

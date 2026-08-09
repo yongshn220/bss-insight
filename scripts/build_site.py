@@ -1120,6 +1120,48 @@ def owner_brief_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def owner_feed_subscribe_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Visible repeat-visit CTA for the weekly RSS/feed distribution path.
+
+    The feed already exists as a crawlable artifact, but a hidden rel=alternate
+    tag is too passive for busy owners/reps. This panel makes the repeat-visit
+    path visible without making new trend claims: the feed contains the same
+    evidence labels and UTM-tagged item links generated from current rankings.
+    """
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    trend_rows = [row for row in rows if has_trend_evidence(row)]
+    watchlist_items = len(rows) - len(trend_rows)
+    top_names = ", ".join(str(row.get("item_name")) for row in (trend_rows or rows)[:3] if row.get("item_name"))
+    campaign = "daily-visits-500-owner-feed-subscribe"
+    feed_path = growth_campaign_path(
+        "/feed.xml",
+        source="site",
+        medium="feed_subscribe",
+        campaign=campaign,
+        utm_content=timeframe,
+    )
+    feed_url = absolute_url(feed_path)
+    return f"""
+      <section class="wrap owner-feed" data-growth-section="owner-feed-subscribe-v1" data-growth-experiment="owner-feed-subscribe-v1" aria-labelledby="owner-feed-{esc(timeframe)}">
+        <div class="owner-feed-copy">
+          <span>Repeat visit path · RSS / saved feed</span>
+          <h2 id="owner-feed-{esc(timeframe)}">Weekly owner feed 구독/저장</h2>
+          <p>{esc(label)} dashboard를 매번 직접 찾지 않아도, weekly feed에서 item detail로 다시 들어올 수 있습니다. Feed item도 display/risk/evidence status를 포함하고, WATCHLIST {esc(watchlist_items)}개는 evidence insufficient로 표시합니다.</p>
+          <small>Current feed leaders: {esc(top_names or 'ranking items')} · {esc(len(trend_rows))}/{esc(len(rows))} trend-backed</small>
+        </div>
+        <article class="owner-feed-card">
+          <strong>Subscribe / save link</strong>
+          <code>{esc(feed_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-cta="owner_feed_open" href="{esc(feed_path)}">Open RSS feed</a>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_feed_copy" data-copy-url="{esc(feed_url)}">Copy feed link</button>
+          </div>
+        </article>
+      </section>"""
+
+
 def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
     """Item-specific top share starters for reps/owners, with UTM and item-level tracking."""
     share_rows = [row for row in rows if has_trend_evidence(row)][:3]
@@ -1442,6 +1484,7 @@ def render_home(data: dict[str, Any]) -> str:
       {evidence_focus_watchlist('weekly', weekly)}
       {owner_quick_picks('weekly', weekly)}
       {owner_brief_panel('weekly', weekly)}
+      {owner_feed_subscribe_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
@@ -1647,6 +1690,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {evidence_focus_watchlist(timeframe, rows)}
       {owner_quick_picks(timeframe, rows)}
       {owner_brief_panel(timeframe, rows)}
+      {owner_feed_subscribe_panel(timeframe, data.get("rankings", {}).get("weekly", rows))}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
