@@ -14,6 +14,7 @@ public/
 # Generated static pages written for local preview
 /index.html
 /rankings/
+/categories/
 /items/
 
 # Obsolete previous report-style MVP artifacts kept locally but not committed/deployed

@@ -18,6 +18,7 @@ COPY_PATHS = [
     "feed.xml",
     "assets",
     "rankings",
+    "categories",
     "items",
 ]
 

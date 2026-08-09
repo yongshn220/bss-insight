@@ -852,6 +852,26 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel export access is still needed to measure rss UTM sessions and compare feed-driven repeat visits against owner_share/x/email channels.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "category-landing-pages-v1",
+        "status": "live-static-category-seo-share-pages-after-build",
+        "objective": "Create focused category landing pages that keep broad BSS store lanes navigable while ranking only concrete item types inside each lane.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/categories/wigs-hair-pieces.html",
+            "https://gnsresearchhub.vercel.app/categories/jewelry-fashion-accessories.html",
+            "https://gnsresearchhub.vercel.app/index.html (category-landing-nav-v1)",
+            "https://gnsresearchhub.vercel.app/sitemap.xml",
+        ],
+        "tracked_quality_metrics": [
+            "category_pages=8",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            "category pages use utm_medium=category_nav/category_page and preserve WATCHLIST labels",
+            "sitemap includes /categories/{category_id}.html URLs for organic discovery",
+        ],
+        "owner_value": "Busy BSS owners can open a store-zone-specific page such as Wigs, Lashes, Nails, or Jewelry and see item-level display/risk/evidence status without scanning all 44 products.",
+        "measurement_need": "Analytics export is still needed to compare category_page/category_nav UTM sessions, category_copy_link events, and category ranking card clicks against generic home/ranking entrances.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -909,6 +929,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-static-distribution-after-review",
             "hypothesis": "A crawlable/subscribable RSS feed with item-level display, risk, evidence labels, and rss UTM links should increase repeat entrances from BSS owners who prefer saved feeds or rep workflows over manual refreshes.",
             "next_step": "After analytics export access is connected, segment utm_source=rss sessions, item-detail entrances, and returning visitor rate against x/email/owner_share traffic.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "category-landing-pages-v1",
+            "status": "active-static-seo-shareability-after-review",
+            "hypothesis": "Store-zone category pages should increase organic/search and owner-share entry points because owners can land directly on their relevant BSS lane while still seeing concrete item-level recommendations.",
+            "next_step": "After analytics export access is connected, compare utm_medium=category_nav/category_page sessions, category_copy_link events, category-ranking card clicks, and repeat visits against home-page broad ranking entrances.",
             "last_refreshed_at": now,
         })
 
@@ -1021,6 +1048,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["no_subscriber_feed", "weekly_owner_item_rss_feed_with_utm_links"],
             "success_metric": "utm_source=rss sessions, item-detail entrances, returning-owner visits, and share/copy events once analytics export is connected",
             "hypothesis": "A subscriber/crawler-friendly RSS feed should create another organic repeat-visit path for BSS owners and reps without requiring external SNS posting permissions.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "category-landing-pages-v1",
+            "status": "active-static-seo-shareability-after-build",
+            "variants": ["ranking_anchor_only", "store_zone_category_landing_pages"],
+            "success_metric": "utm_medium=category_nav/category_page sessions, category_copy_link share events, category ranking-card clicks, and repeat visits once analytics export is connected",
+            "hypothesis": "Focused category pages should turn broad BSS store lanes into crawlable/shareable entry points while preserving item-only ranking discipline.",
             "last_refreshed_at": now,
         })
 

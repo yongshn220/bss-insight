@@ -19,6 +19,7 @@ NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
 RANKING_HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RANKINGS_DIR = ROOT / "rankings"
 ITEMS_DIR = ROOT / "items"
+CATEGORIES_DIR = ROOT / "categories"
 ROBOTS_PATH = ROOT / "robots.txt"
 SITEMAP_PATH = ROOT / "sitemap.xml"
 FEED_PATH = ROOT / "feed.xml"
@@ -505,6 +506,68 @@ def category_chips(categories: list[dict[str, Any]], base_path: str = "") -> str
     for cat in categories:
         chips.append(f'<a href="{prefix}#{esc(cat.get("id"))}" class="cat-chip">{esc(cat.get("name"))}</a>')
     return '<nav class="category-strip">' + ''.join(chips) + '</nav>'
+
+
+def growth_campaign_path(path: str, *, source: str, medium: str, campaign: str, **extra: object) -> str:
+    """Return a same-origin UTM path for internal growth links."""
+    params = {
+        "utm_source": source,
+        "utm_medium": medium,
+        "utm_campaign": campaign,
+    }
+    for key, value in extra.items():
+        if value not in (None, ""):
+            params[key] = str(value)
+    return f"{path}?{urllib.parse.urlencode(params)}"
+
+
+def rows_for_category(rows: list[dict[str, Any]], category_id: object) -> list[dict[str, Any]]:
+    category_id = str(category_id or "")
+    return [row for row in rows if str(row.get("category_id") or "") == category_id]
+
+
+def category_landing_nav(categories: list[dict[str, Any]], rows: list[dict[str, Any]]) -> str:
+    """Create crawlable category landing links without ranking broad categories."""
+    if not categories or not rows:
+        return ""
+    cards: list[str] = []
+    campaign = "daily-visits-500-category-landing-pages"
+    for cat in categories:
+        cat_id = str(cat.get("id") or "").strip()
+        if not cat_id:
+            continue
+        cat_rows = rows_for_category(rows, cat_id)
+        if not cat_rows:
+            continue
+        trend_items = sum(1 for row in cat_rows if has_trend_evidence(row))
+        watchlist_items = sum(1 for row in cat_rows if not has_trend_evidence(row))
+        top = next((row for row in cat_rows if has_trend_evidence(row)), cat_rows[0])
+        href = growth_campaign_path(
+            f"/categories/{cat_id}.html",
+            source="site",
+            medium="category_nav",
+            campaign=campaign,
+            utm_content=cat_id,
+            utm_term="weekly",
+        )
+        cards.append(f"""
+        <a class="category-landing-card" data-growth-cta="category_landing_nav" data-category-id="{esc(cat_id)}" data-item-id="{esc(top.get('item_id'))}" data-item-rank="{esc(top.get('rank'))}" data-item-category="{esc(cat_id)}" href="{esc(href)}">
+          <span>{esc(cat.get('name'))}</span>
+          <strong>{esc(top.get('item_name'))}</strong>
+          <p>{esc(cat.get('description'))}</p>
+          <small>{esc(STORE_ZONE_LABELS.get(cat_id, 'Store zone'))} · {esc(trend_items)}/{esc(len(cat_rows))} trend-backed · {esc(watchlist_items)} WATCHLIST</small>
+        </a>""")
+    if not cards:
+        return ""
+    return f"""
+      <section class="wrap category-landing-nav" data-growth-section="category-landing-nav-v1" data-growth-experiment="category-landing-pages-v1" aria-labelledby="category-landing-title">
+        <div class="section-title category-landing-title">
+          <div><span>Store category pages · SEO/share path</span><h2 id="category-landing-title">Category별 item ranking 바로가기</h2></div>
+          <em>daily-visits-500-category-landing-pages</em>
+        </div>
+        <p class="category-landing-note">Category는 browsing lane일 뿐 rank 대상이 아닙니다. 각 landing page는 해당 매장 zone 안의 concrete item type만 보여주고, WATCHLIST와 trend-backed item을 분리합니다.</p>
+        <div class="category-landing-grid">{''.join(cards)}</div>
+      </section>"""
 
 
 def count_items_with_source(rows: list[dict[str, Any]], key: str) -> int:
@@ -1372,6 +1435,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
+      {category_landing_nav(cats, weekly)}
       {return_visitor_panel('weekly')}
       {run_change_snapshot(data, 'weekly', weekly)}
       {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
@@ -1402,6 +1466,146 @@ def render_home(data: dict[str, Any]) -> str:
         description=page_description("Weekly BSS retail-owner product ranking", weekly),
         image_url=social_share_card_path("weekly") if weekly else None,
         json_ld=item_list_json_ld(weekly, "weekly", "/index.html"),
+    )
+
+
+def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
+    """Render an SEO/share landing page for one store-like category lane.
+
+    The page does not rank broad categories. It gives owners a focused, shareable
+    view of the concrete item types inside one BSS store zone.
+    """
+    cat_id = str(category.get("id") or "").strip()
+    cat_name = str(category.get("name") or cat_id or "Category")
+    weekly_rows = data.get("rankings", {}).get("weekly", [])
+    rows = rows_for_category([row for row in weekly_rows if isinstance(row, dict)], cat_id)
+    trend_rows = [row for row in rows if has_trend_evidence(row)]
+    watchlist_items = len(rows) - len(trend_rows)
+    store_zone = STORE_ZONE_LABELS.get(cat_id, "Store zone")
+    category_path = f"/categories/{cat_id}.html"
+    ranking_anchor = f"/rankings/weekly.html#{cat_id}"
+    owner_url = growth_campaign_url(
+        category_path,
+        source="owner_share",
+        medium="category_page",
+        campaign="daily-visits-500-category-landing-pages",
+        utm_content=cat_id,
+        utm_term="weekly",
+    )
+    x_intent = "https://twitter.com/intent/tweet?" + urllib.parse.urlencode({
+        "text": (
+            f"Beauty Supply owners: {cat_name} item ranking shows concrete product types, "
+            f"display tests, risk cautions, and WATCHLIST separation."
+        ),
+        "url": growth_campaign_url(
+            category_path,
+            source="x",
+            medium="organic",
+            campaign="daily-visits-500-category-landing-pages",
+            utm_content=cat_id,
+            utm_term="weekly",
+        ),
+    })
+    mailto = "mailto:?" + urllib.parse.urlencode({
+        "subject": f"BSS category item ranking: {cat_name}",
+        "body": (
+            f"Owner님, {cat_name} category 안에서 이번 주 볼 item ranking입니다.\n"
+            f"Store zone: {store_zone}\nTrend-backed: {len(trend_rows)}/{len(rows)} · WATCHLIST: {watchlist_items}\n"
+            f"Link: {owner_url}"
+        ),
+    })
+    top_cards = top_three(rows)
+    if not rows:
+        top_cards = """
+        <section class="empty-state">
+          <strong>현재 이 category에 표시할 item이 없습니다.</strong>
+          <p>다음 refresh에서 data/rankings.json category mapping을 확인합니다.</p>
+        </section>"""
+    owner_test_cards = []
+    for row in rows[:3]:
+        item_id = str(row.get("item_id") or "").strip()
+        item_href = growth_campaign_path(
+            f"/items/{item_id}.html",
+            source="site",
+            medium="category_page",
+            campaign="daily-visits-500-category-landing-pages",
+            utm_content=item_id,
+            utm_term=cat_id,
+        )
+        owner_test_cards.append(f"""
+        <a class="quick-pick-card" data-growth-cta="category_owner_test" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(cat_id)}" href="{esc(item_href)}">
+          <span>{esc(store_zone)} · #{esc(row.get('rank'))}</span>
+          <strong>{esc(row.get('item_name'))}</strong>
+          <p>{esc(row.get('display_tip'))}</p>
+          <small>{esc(evidence_status_label(row))} · Risk: {esc(row.get('risk'))}</small>
+        </a>""")
+    body = f"""
+    <main>
+      <section class="hero wrap compact category-hero" id="all">
+        <div class="hero-copy">
+          <a class="back" href="/rankings/weekly.html">← Weekly ranking으로 돌아가기</a>
+          <p class="eyebrow">Store category · weekly item ranking</p>
+          <h1>{esc(cat_name)} item ranking</h1>
+          <p class="lead">{esc(category.get('description'))}. 이 page는 category 자체를 trend로 주장하지 않고, {esc(store_zone)} 안에서 owner가 실제로 stock/test/reorder할 수 있는 item type만 보여줍니다.</p>
+          <div class="hero-actions" aria-label="Category growth actions">
+            <a class="primary-action" data-growth-cta="category_weekly_anchor" href="{esc(ranking_anchor)}">Weekly section 보기</a>
+            <a class="secondary-action" data-growth-cta="category_all_items" href="#all-items">이 category item 보기</a>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <span>Category health</span>
+          <strong>{esc(len(rows))} items</strong>
+          <small>{esc(store_zone)} · {esc(data.get('date'))}</small>
+          <div class="data-health" aria-label="Category data health">
+            <div><b>{esc(len(trend_rows))}</b><span>Trend-backed</span></div>
+            <div><b>{esc(watchlist_items)}</b><span>WATCHLIST</span></div>
+            <div><b>{esc(count_items_with_source(rows, 'retail_product_evidence'))}</b><span>Store URLs</span></div>
+            <div><b>{esc(count_items_with_source(rows, 'tiktok_shop_product_evidence'))}</b><span>TikTok Shop</span></div>
+          </div>
+        </div>
+      </section>
+      <div class="wrap">{category_chips(data.get('categories', []), base_path='/rankings/weekly.html')}</div>
+      {return_visitor_panel('weekly')}
+      <section class="wrap share-kit category-share-kit" data-growth-section="category-share-kit-v1" data-growth-experiment="category-landing-pages-v1" aria-labelledby="category-share-{esc(cat_id)}">
+        <div>
+          <span>Category share path</span>
+          <h2 id="category-share-{esc(cat_id)}">{esc(cat_name)} owner link</h2>
+          <p>Category-specific page를 공유하면 owner가 broad ranking 전체를 읽기 전에 자신의 매장 zone과 관련된 item만 빠르게 확인할 수 있습니다. WATCHLIST는 evidence insufficient로 유지합니다.</p>
+        </div>
+        <article class="share-card">
+          <p class="share-eyebrow">Focused owner link</p>
+          <h3>{esc(cat_name)}</h3>
+          <p>{esc(store_zone)} · {esc(len(trend_rows))}/{esc(len(rows))} trend-backed · {esc(watchlist_items)} WATCHLIST</p>
+          <code>{esc(owner_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-share="category_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
+            <a class="share-action" data-growth-share="category_email_forward" href="{esc(mailto)}">Email draft</a>
+            <button class="share-action" type="button" data-growth-share="category_copy_link" data-copy-url="{esc(owner_url)}">Copy category link</button>
+          </div>
+        </article>
+      </section>
+      <section class="wrap block" data-growth-section="category-top-items-v1" data-growth-experiment="category-landing-pages-v1">
+        <div class="section-title"><div><span>{esc(cat_name)}</span><h2>Top item signals</h2></div><em>{esc(len(trend_rows))}/{esc(len(rows))} trend-backed</em></div>
+        {top_cards}
+      </section>
+      <section class="wrap quick-picks category-owner-test" data-growth-section="category-owner-test-v1" data-growth-experiment="category-landing-pages-v1" aria-labelledby="category-owner-test-{esc(cat_id)}">
+        <div class="section-title quick-picks-title"><div><span>Owner test · {esc(store_zone)}</span><h2 id="category-owner-test-{esc(cat_id)}">이 category에서 먼저 볼 display test</h2></div><em>trend-backed 먼저, 없으면 WATCHLIST 소량 test</em></div>
+        <div class="quick-pick-grid">{''.join(owner_test_cards)}</div>
+      </section>
+      <section class="wrap board" id="all-items" data-growth-section="category-ranking-list-v1" data-growth-experiment="category-landing-pages-v1">
+        <div class="section-title"><div><span>Concrete item types only</span><h2>{esc(cat_name)} 전체 item</h2></div><a href="{esc(ranking_anchor)}">Weekly ranking anchor</a></div>
+        <div class="rank-list">{''.join(item_card(row) for row in rows)}</div>
+      </section>
+    </main>"""
+    return shell(
+        f"{cat_name} Category",
+        body,
+        active="weekly",
+        page_type="category",
+        page_path=category_path,
+        description=page_description(f"Weekly BSS {cat_name} category item ranking", rows),
+        image_url=social_share_card_path("weekly") if rows else f"/assets/category-{cat_id}.svg",
+        json_ld=item_list_json_ld(rows, "weekly", category_path),
     )
 
 
@@ -1602,13 +1806,15 @@ def sitemap_entry(path: str, lastmod: str, priority: str, changefreq: str = "dai
     )
 
 
-def write_seo_files(data: dict[str, Any], item_ids: set[str]) -> None:
+def write_seo_files(data: dict[str, Any], item_ids: set[str], category_ids: set[str] | None = None) -> None:
     """Generate crawl/share discovery artifacts for the deployed static site."""
     lastmod = str(data.get("date") or dt.date.today().isoformat())
+    category_ids = category_ids or set()
     paths: list[tuple[str, str, str]] = [
         ("/index.html", "1.0", "daily"),
         ("/feed.xml", "0.8", "daily"),
         *[(f"/rankings/{tf}.html", "0.9", "daily") for tf in TIMEFRAME_ORDER],
+        *[(f"/categories/{category_id}.html", "0.82", "daily") for category_id in sorted(category_ids) if category_id],
         *[(f"/items/{item_id}.html", "0.72", "weekly") for item_id in sorted(item_ids) if item_id],
     ]
     sitemap = "\n".join(
@@ -1626,24 +1832,31 @@ def write_seo_files(data: dict[str, Any], item_ids: set[str]) -> None:
 
 
 def main() -> int:
-    for generated_dir in (RANKINGS_DIR, ITEMS_DIR):
+    for generated_dir in (RANKINGS_DIR, ITEMS_DIR, CATEGORIES_DIR):
         if generated_dir.exists():
             shutil.rmtree(generated_dir)
     RANKINGS_DIR.mkdir(exist_ok=True)
     ITEMS_DIR.mkdir(exist_ok=True)
+    CATEGORIES_DIR.mkdir(exist_ok=True)
     data = load_rankings()
     generated_social_cards = write_social_share_cards(data)
     generated_feed = write_rss_feed(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
         (RANKINGS_DIR / f"{tf}.html").write_text(render_timeframe(data, tf), encoding="utf-8")
+    category_ids = set()
+    for category in data.get("categories", []):
+        if isinstance(category, dict) and category.get("id"):
+            category_id = str(category.get("id"))
+            category_ids.add(category_id)
+            (CATEGORIES_DIR / f"{category_id}.html").write_text(render_category_page(data, category), encoding="utf-8")
     item_ids = {r.get("item_id") for rows in data.get("rankings", {}).values() for r in rows}
     for item_id in item_ids:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
-    write_seo_files(data, {str(item_id) for item_id in item_ids if item_id})
-    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER]
-    print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids)}, ensure_ascii=False, indent=2))
+    write_seo_files(data, {str(item_id) for item_id in item_ids if item_id}, category_ids)
+    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
+    print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids), "categories": len(category_ids)}, ensure_ascii=False, indent=2))
     return 0
 
 

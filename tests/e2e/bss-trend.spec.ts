@@ -121,6 +121,20 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     if (firstFocusItem?.item_name) {
       await expect(focusCards.first()).toContainText(firstFocusItem.item_name);
     }
+    await expect(page.locator('[data-growth-section="category-landing-nav-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="category-landing-nav-v1"]')).toHaveAttribute('data-growth-experiment', 'category-landing-pages-v1');
+    await expect(page.getByRole('heading', { name: 'Category별 item ranking 바로가기' })).toBeVisible();
+    const categoryLandingCards = page.locator('.category-landing-card');
+    await expect(categoryLandingCards).toHaveCount(8);
+    await expect(categoryLandingCards.first()).toHaveAttribute('href', /\/categories\/.+\.html\?utm_source=site/);
+    await expect(categoryLandingCards.first()).toHaveAttribute('href', /utm_medium=category_nav/);
+    await expect(categoryLandingCards.first()).toHaveAttribute('data-growth-cta', 'category_landing_nav');
+    await expect(categoryLandingCards.first()).toHaveAttribute('data-category-id', /.+/);
+    const categoryResponse = await request.get('/categories/wigs-hair-pieces.html');
+    expect(categoryResponse.status()).toBeLessThan(400);
+    const categoryHtml = await categoryResponse.text();
+    expect(categoryHtml).toContain('Wigs &amp; Hair Pieces item ranking');
+    expect(categoryHtml).toContain('category-landing-pages-v1');
     await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Weekly 매장 테스트 빠른 선택' })).toBeVisible();
     const quickPickCards = page.locator('.quick-pick-card');
@@ -205,6 +219,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'category-landing-nav-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'top3-leaderboard-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
@@ -215,6 +230,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('category-landing-nav-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('ranking-main-list-v1'))).toBe(true);
 
     await page.locator('[data-growth-section="owner-quick-picks-v1"]').scrollIntoViewIfNeeded();
@@ -257,6 +273,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const focusEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(focusEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_evidence_focus_watchlist' && event.component_experiment_id === 'evidence-focus-watchlist-v1' && event.item_id && String(event.href).includes('utm_medium=focus_watchlist'))).toBe(true);
+
+    await page.evaluate(() => {
+      const link = document.querySelector('.category-landing-card') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing category landing card');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const categoryNavEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(categoryNavEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_category_landing_nav' && event.component_experiment_id === 'category-landing-pages-v1' && event.category_id && String(event.href).includes('utm_medium=category_nav'))).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('[data-growth-section="top3-leaderboard-v1"] .podium-card') as HTMLAnchorElement | null;
@@ -343,6 +368,39 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
+  });
+
+  test('category landing pages focus broad store lanes into item-level owner actions', async ({ page }) => {
+    await page.goto('/categories/wigs-hair-pieces.html?utm_source=e2e&utm_medium=category_page&utm_campaign=daily-visits-500-category-landing-pages');
+
+    await expect(page).toHaveTitle(/Wigs & Hair Pieces Category · BSS Trend Ranking/);
+    await expect(page.locator('body')).toHaveAttribute('data-page-type', 'category');
+    await expect(page.getByRole('heading', { name: 'Wigs & Hair Pieces item ranking' })).toBeVisible();
+    await expect(page.getByText('Category health')).toBeVisible();
+    await expect(page.locator('[data-growth-section="category-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'category-landing-pages-v1');
+    await expect(page.locator('[data-growth-section="category-top-items-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="category-owner-test-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="category-ranking-list-v1"]')).toBeVisible();
+    await expect(page.locator('#all-items .rank-card')).toHaveCount(5);
+    await expect(page.locator('[data-growth-share="category_copy_link"]')).toHaveAttribute('data-copy-url', /daily-visits-500-category-landing-pages/);
+
+    const categoryContext = await page.evaluate(() => {
+      const growth = (window as any).__GNS_GROWTH__;
+      return {
+        categoryId: growth?.pageCategoryId?.(),
+        sections: growth?.growthSections?.() ?? [],
+        events: growth?.events?.() ?? [],
+      };
+    });
+    expect(categoryContext.categoryId).toBe('wigs-hair-pieces');
+    expect(categoryContext.sections.some((section: any) => section.id === 'category-share-kit-v1')).toBe(true);
+    expect(categoryContext.events.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'category' && event.timeframe === 'weekly_category' && event.page_category_id === 'wigs-hair-pieces')).toBe(true);
+
+    const copyButton = page.locator('[data-growth-share="category_copy_link"]');
+    await copyButton.click();
+    await expect(copyButton).toHaveText(/Copied|Link ready/);
+    const copyEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(copyEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'category_copy_link' && event.category_id === 'wigs-hair-pieces')).toBe(true);
   });
 
   test('return visitor prompt appears and is event-tracked on a later visit', async ({ page }) => {
@@ -613,6 +671,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/index.html</loc>');
     expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/feed.xml</loc>');
     expect(sitemap).toContain('/rankings/weekly.html</loc>');
+    expect(sitemap).toContain('/categories/wigs-hair-pieces.html</loc>');
     expect(sitemap).toContain('/items/');
   });
 });

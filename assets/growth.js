@@ -57,8 +57,15 @@
     const path = window.location.pathname;
     const match = path.match(/\/rankings\/(weekly|monthly|quarterly|yearly)\.html$/i);
     if (match) return match[1].toLowerCase();
+    if (/\/categories\/[^/]+\.html$/i.test(path)) return 'weekly_category';
     if (/\/(index\.html)?$/i.test(path)) return 'weekly_home';
     return '';
+  }
+
+  function pageCategoryId() {
+    const path = window.location.pathname;
+    const match = path.match(/\/categories\/([^/]+)\.html$/i);
+    return match ? decodeURIComponent(match[1]) : '';
   }
 
   function pageItemId() {
@@ -282,6 +289,7 @@
       path: window.location.pathname,
       page_type: document.body?.dataset.pageType || 'unknown',
       timeframe: pageTimeframe(),
+      page_category_id: pageCategoryId(),
       page_item_id: pageItemId(),
       referrer: document.referrer || '',
       landing_path: attribution.landing_path || '',
@@ -390,6 +398,7 @@
     const section = target.closest?.('[data-growth-section]');
     const experiment = target.closest?.('[data-growth-experiment]');
     const item = target.closest?.('[data-item-id]');
+    const category = target.closest?.('[data-category-id]');
     const source = target.closest?.('[data-growth-source-layer]');
     const sectionId = section?.getAttribute('data-growth-section') || '';
     const componentExperimentId = experiment?.getAttribute('data-growth-experiment') || sectionId;
@@ -400,6 +409,7 @@
       item_id: item?.getAttribute('data-item-id') || '',
       item_rank: item?.getAttribute('data-item-rank') || '',
       item_category: item?.getAttribute('data-item-category') || '',
+      category_id: category?.getAttribute('data-category-id') || pageCategoryId(),
       source_layer: source?.getAttribute('data-growth-source-layer') || '',
       source_kind: source?.getAttribute('data-growth-source-kind') || '',
       source_type: source?.getAttribute('data-growth-source-type') || '',
@@ -533,6 +543,7 @@
       reason,
       page_type: document.body?.dataset.pageType || 'unknown',
       timeframe: pageTimeframe(),
+      category_id: pageCategoryId(),
       item_id: pageItemId(),
       time_on_page_ms: Math.max(0, Date.now() - pageStartedAt),
       max_scroll_depth_percent: maxScrollDepthPercent,
@@ -581,6 +592,7 @@
       visitor: () => getVisitorContext(),
       attribution: () => getAttribution(),
       initialAttribution: attribution,
+      pageCategoryId,
       events: localEvents,
       growthSections,
       engagementSnapshot,
