@@ -220,6 +220,22 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(ownerBriefEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_owner_brief_copy' && event.component_experiment_id === 'owner-brief-copy-v1' && String(event.href).includes('daily-visits-500-weekly-owner-brief'))).toBe(true);
     expect(ownerBriefEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_owner_brief_copy' && event.copy_mode === 'brief_text' && event.copy_text_length > 120 && event.section === 'owner-brief-copy-v1')).toBe(true);
 
+    const engagementResult = await page.evaluate(() => {
+      const growth = (window as any).__GNS_GROWTH__;
+      const summary = growth?.flushEngagementSummary?.('playwright_manual');
+      return { summary, events: growth?.events?.() ?? [] };
+    });
+    expect(engagementResult.summary?.type).toBe('engagement_summary');
+    expect(engagementResult.summary?.reason).toBe('playwright_manual');
+    expect(engagementResult.summary?.page_type).toBe('home');
+    expect(engagementResult.summary?.timeframe).toBe('weekly_home');
+    expect(engagementResult.summary?.max_scroll_depth_percent).toBeGreaterThan(0);
+    expect(engagementResult.summary?.viewed_section_count).toBeGreaterThanOrEqual(1);
+    expect(String(engagementResult.summary?.viewed_sections)).toContain('owner-quick-picks-v1');
+    expect(engagementResult.summary?.share_click_count).toBeGreaterThanOrEqual(3);
+    expect(engagementResult.summary?.copy_result_count).toBeGreaterThanOrEqual(3);
+    expect(engagementResult.events.some((event: any) => event.event === 'growth_engagement_summary' && event.reason === 'playwright_manual' && event.goal_id === 'daily-visits-500')).toBe(true);
+
     await page.getByRole('link', { name: '이번 주 팔아볼 제품 보기' }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html/);
     const clickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
@@ -254,6 +270,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'section-visibility-engagement-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'engagement-summary-v1')).toBe(true);
   });
 
   test('timeframe tabs and category chips navigate to working ranking sections', async ({ page }) => {
@@ -400,6 +417,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'source-evidence-clicks-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'engagement-summary-v1')).toBe(true);
 
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);
@@ -412,6 +430,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const snsRules = await snsRulesResponse.json();
     expect(snsRules.primary_channel?.tool).toBe('xurl');
     expect(snsRules.posting_rule?.frequency_limits?.standard_post).toBe('max_1_per_day');
+    expect(snsRules.measurement?.events).toContain('growth_engagement_summary');
 
     const robotsResponse = await request.get('/robots.txt');
     expect(robotsResponse.status()).toBeLessThan(400);

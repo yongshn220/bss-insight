@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-09T00:43:51.769270Z",
-  "source_generated_at": "2026-08-09T00:41:25.971128Z",
+  "reviewed_at": "2026-08-09T01:59:59.765794Z",
+  "source_generated_at": "2026-08-09T01:54:42.475061Z",
   "date": "2026-08-09",
   "timeframe": "weekly",
-  "playwright_summary": "12 passed (25.2s); owner-share-kit-v1 and item-detail-share-card-v1 share panel component attribution QA passed across desktop/mobile",
+  "playwright_summary": "12 passed (24.5s); engagement-summary-v1 QA passed across desktop/mobile",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,19 +15,19 @@
     "watchlist_items": 37
   },
   "collection_health": {
-    "generated_at": "2026-08-09T00:41:25.970917Z",
+    "generated_at": "2026-08-09T01:54:42.474816Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-09T00:41:25.970292Z",
+        "observed_at": "2026-08-09T01:54:42.474078Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 82,
         "expanded_keyword_items": 19,
-        "products_returned": 81,
+        "products_returned": 82,
         "items_with_evidence": 44,
-        "evidence_urls": 80,
+        "evidence_urls": 79,
         "max_results_total": 82
       }
     },
@@ -38,9 +38,9 @@
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 296,
-      "published_trend_urls_total": 42,
-      "retail_product_urls_total": 254,
+      "verified_urls_total": 297,
+      "published_trend_urls_total": 44,
+      "retail_product_urls_total": 253,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
@@ -228,7 +228,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -340,7 +340,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -366,7 +366,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -386,7 +386,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -395,8 +395,8 @@
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
       "status": "still_needs_focus",
       "baseline": {
         "verified_evidence": 13,
@@ -412,7 +412,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 9,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -432,7 +432,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -442,14 +442,13 @@
     }
   ],
   "good_points": [
-    "실제 개선: owner-share-kit-v1 / item-detail-share-card-v1에 data-growth-section + data-growth-experiment를 추가해 weekly_copy_link와 item_copy_link 이벤트가 component_experiment_id/section으로 분리됩니다.",
-    "Playwright QA 완료: 12 passed (25.2s); owner-share-kit-v1 and item-detail-share-card-v1 share panel component attribution QA passed across desktop/mobile",
+    "Playwright QA 완료: 12 passed (24.5s); engagement-summary-v1 QA passed across desktop/mobile",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Brown Lip Liner Pencil",
     "Evidence separation 유지: published trend URL 보유 item 7개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 80."
+    "TikTok Shop collector health: success, attempts 1, evidence URLs 79."
   ],
   "improvement_points": [
     "37개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
@@ -590,7 +589,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -623,7 +622,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -656,7 +655,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 9,
+        "retail_exact_evidence": 10,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -677,7 +676,6 @@
       "Zero weekly trend-evidence categories: Jewelry & Fashion Accessories, Nails, Tools & Accessories, Wigs & Hair Pieces."
     ],
     "good_points": [
-      "실제 개선: owner-share-kit-v1 / item-detail-share-card-v1에 data-growth-section + data-growth-experiment를 추가해 weekly_copy_link와 item_copy_link 이벤트가 component_experiment_id/section으로 분리됩니다.",
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
@@ -689,7 +687,7 @@
       "Traffic progress is measurement pending until a provider reporting credential/export is connected."
     ],
     "next_direction": [
-      "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_click, and share/copy events can be tied to the 500/day visit goal.",
+      "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
       "Prioritize dated item-level source capture for Wigs, Tools, Nails, and Jewelry before expanding broad category claims.",
       "Keep product/listing alias probes strict: recover missing supply URLs, but never promote those URLs into trend movement without a dated post/article/listing signal."
     ],
@@ -711,7 +709,6 @@
         "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
       }
     },
-    "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only.",
-    "this_run_material_change": "share-panel-component-context-v1 deployed locally: generic ranking share panel and item-detail share panel now carry component attribution; no fabricated evidence or score lift was claimed."
+    "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only."
   }
 }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-08T23:26:33.418183Z",
+  "updated_at": "2026-08-09T01:58:13.144114Z",
   "goal_id": "daily-visits-500",
   "status": "active_pending_xurl_install_and_oauth",
   "primary_channel": {
@@ -57,10 +57,11 @@
       "growth_exposure",
       "growth_click",
       "growth_share_copy_result",
-      "growth_section_view"
+      "growth_section_view",
+      "growth_engagement_summary"
     ],
     "utm_source": "x",
     "utm_medium": "organic",
-    "note": "Posting remains draft/approval-only until xurl auth; section-view events now help measure whether SNS/owner-share traffic sees quick-picks/focus/share modules before clicking."
+    "note": "Posting remains draft/approval-only until xurl CLI is installed/authenticated; growth_engagement_summary now helps measure whether SNS/owner-share traffic actually reads owner quick-picks/focus/share modules before clicking or copying."
   }
 }

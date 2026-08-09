@@ -258,7 +258,7 @@ def independent_ai_review(
         good_points.append(f"Fresh weekly trend evidence exists for {recent_items} item(s), keeping Top 3 from being supply-only.")
 
     next_direction = [
-        "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_click, and share/copy events can be tied to the 500/day visit goal.",
+        "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
         "Prioritize dated item-level source capture for Wigs, Tools, Nails, and Jewelry before expanding broad category claims.",
         "Keep product/listing alias probes strict: recover missing supply URLs, but never promote those URLs into trend movement without a dated post/article/listing signal.",
     ]

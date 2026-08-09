@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T00:44:52.016971Z",
+  "updated_at": "2026-08-09T01:58:13.144114Z",
   "goal_id": "daily-visits-500",
   "status": "active",
   "principle": "Drive repeat visits from BSS retail owners by publishing practical, evidence-backed item rankings and shareable owner-ready recommendations.",
@@ -336,6 +336,28 @@
       ],
       "owner_value": "The public UI does not add clutter; the growth loop can learn which owner-useful modules deserve higher placement and which should be shortened or removed.",
       "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to segment section views and tie them to visits, repeats, and share/click outcomes."
+    },
+    {
+      "campaign_id": "engagement-summary-v1",
+      "status": "live-in-growth-js-after-build",
+      "objective": "Measure whether BSS owners actually engage with ranking modules deeply enough to justify placement, share prompts, and repeat-visit CTAs.",
+      "live_locations": [
+        "https://gnsresearchhub.vercel.app/index.html",
+        "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+        "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+        "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+        "https://gnsresearchhub.vercel.app/rankings/yearly.html",
+        "https://gnsresearchhub.vercel.app/items/{item_id}.html"
+      ],
+      "tracked_events": [
+        "growth_engagement_summary type=engagement_summary",
+        "time_on_page_ms and max_scroll_depth_percent for dwell/depth quality",
+        "viewed_sections/viewed_section_count for module exposure before clicks/shares",
+        "click_count/share_click_count/copy_result_count/source_click_count/item_card_click_count for engagement mix",
+        "timeframe/item_id/session_id/first-current UTM inherited through growth.js track()"
+      ],
+      "owner_value": "No extra UI clutter; the operator can later shorten, move, or remove modules that owners do not view or use, improving the dashboard toward repeat visits.",
+      "measurement_need": "GA4 Data API credentials or Vercel Analytics export/API access are needed to compare engagement-summary-v1 quality metrics against rolling 30-day visits and repeat sessions."
     }
   ],
   "experiment_backlog": [
@@ -446,6 +468,12 @@
       "status": "promoted-to-live-site-after-build",
       "hypothesis": "Adding component context to generic owner-share and item-detail-share panels will identify which share surfaces produce repeat visits once analytics export is available.",
       "next_step": "After GA4/Vercel export access is connected, compare weekly_copy_link and item_copy_link events by component_experiment_id and adjust module order/copy."
+    },
+    {
+      "experiment_id": "engagement-summary-v1",
+      "status": "promoted-to-live-growth-js-after-build",
+      "hypothesis": "Depth/dwell summaries will reveal whether owner quick picks, evidence focus, owner brief, share strips, and item detail pages are being consumed before action.",
+      "next_step": "After GA4/Vercel export access is connected, compare growth_engagement_summary viewed_sections + time_on_page_ms against growth_click/share_copy_result and move low-engagement modules lower or shorten them."
     }
   ],
   "permission_requests": [
@@ -456,6 +484,7 @@
     "Provide ga4_data_api_property_or_service_credentials: Needed to compute rolling 30-day visits and segment source-evidence-clicks-v1 source_link events by source_layer/source_status.",
     "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so evidence-window-transparency-v1 can be tied to rolling 30-day visits and downstream share/click events.",
     "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so section-visibility-engagement-v1 can connect module views to clicks, shares, repeat visits, and rolling 30-day average daily visits.",
-    "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so share-panel-component-context-v1 can tie owner-share-kit and item-detail-share events to rolling 30-day visits and repeat sessions."
+    "Provide GA4 Data API access: GA4_PROPERTY_ID plus GOOGLE_APPLICATION_CREDENTIALS or GA4_SERVICE_ACCOUNT_JSON so share-panel-component-context-v1 can tie owner-share-kit and item-detail-share events to rolling 30-day visits and repeat sessions.",
+    "Provide GA4_PROPERTY_ID plus Data API/service-account viewer access or an approved Vercel Analytics export so engagement-summary-v1 can be tied to rolling 30-day visits and repeat sessions."
   ]
 }

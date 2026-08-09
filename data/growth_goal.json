@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-09T00:44:52.016971Z",
+  "updated_at": "2026-08-09T01:58:13.144114Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,11 +10,11 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-09T00:44:52.016971Z",
-    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added share-panel-component-context-v1: owner-share-kit-v1 and item-detail-share-card-v1 now render as data-growth-section/data-growth-experiment containers, so weekly_copy_link and item_copy_link events carry component_experiment_id and section context.",
+    "last_checked_at": "2026-08-09T01:58:13.144114Z",
+    "provider_checked": "Live Vercel Web Analytics script and GA4 tag remain provider-ready, but central visit export is unavailable in this runtime. This run added engagement-summary-v1: assets/growth.js now emits growth_engagement_summary with time_on_page_ms, max_scroll_depth_percent, viewed_sections, click/share/copy/source counters, timeframe, item_id, UTM, and session context.",
     "rolling_30d_average_daily_visits": null,
-    "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component-level growth events.",
-    "interpretation": "Traffic progress still cannot be claimed. Tracking quality improved because generic share panel and item detail share clicks can now be segmented by component once analytics export is connected."
+    "raw_result": "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component-level engagement funnels.",
+    "interpretation": "Traffic progress still cannot be claimed. Tracking quality improved because visits can now be segmented by depth/dwell/section exposure once analytics export is connected, making module placement decisions less dependent on raw page views."
   },
   "north_star": "Help BSS retail owners find practical, evidence-backed product insights often enough that the hub becomes a repeat visit destination.",
   "growth_channels": [
@@ -67,6 +67,10 @@
     {
       "need": "paid_marketing_budget_optional",
       "why": "Paid tests require explicit budget, platform, and stop-loss rules before execution."
+    },
+    {
+      "need": "ga4_property_id_with_data_api_viewer_access",
+      "why": "Needed to read growth_engagement_summary, growth_section_view, growth_click, and share/copy events centrally and calculate rolling 30-day average daily visits toward 500/day."
     }
   ],
   "initial_experiments": [
@@ -288,6 +292,16 @@
       ],
       "success_metric": "weekly_copy_link and item_copy_link clicks/copy results segmented by component_experiment_id and section once analytics export is available",
       "hypothesis": "Share panels will be easier to optimize toward 500/day when owner-share and item-detail-share events are separated from generic share actions."
+    },
+    {
+      "experiment_id": "engagement-summary-v1",
+      "status": "active-client-side-provider-ready-after-build",
+      "variants": [
+        "page_load_and_click_events_only",
+        "pagehide_visibility_engagement_summary"
+      ],
+      "success_metric": "growth_engagement_summary events with time_on_page_ms, max_scroll_depth_percent, viewed_sections, click/share/copy/source counters, and downstream repeat visits once analytics export is available",
+      "hypothesis": "BSS owner growth optimization will improve faster when the hub measures whether visitors actually read/scroll through owner-useful modules before clicking or sharing, instead of counting page views alone."
     }
   ],
   "reporting": {
@@ -304,11 +318,11 @@
     "ga4": {
       "status": "enabled-in-site-head",
       "measurement_id": "G-SW7HBY6WRE",
-      "event_bridge": "assets/growth.js sends growth_exposure, growth_section_view, growth_click, and growth_share_copy_result through gtag when available, including session_id plus first/current UTM attribution."
+      "event_bridge": "assets/growth.js sends growth_exposure, growth_section_view, growth_engagement_summary, growth_click, and growth_share_copy_result through gtag when available, including session_id plus first/current UTM attribution."
     },
     "internal_growth_events": {
       "status": "enabled-client-side",
-      "purpose": "A/B variant, first/current UTM persistence, session_id, section visibility, share/copy/click events, and provider fan-out to Vercel Analytics and GA4."
+      "purpose": "A/B variant, first/current UTM persistence, session_id, section visibility, engagement summary, share/copy/click/source events, and provider fan-out to Vercel Analytics and GA4."
     }
   },
   "sns_strategy": {
