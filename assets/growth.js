@@ -416,6 +416,7 @@
       source_type: source?.getAttribute('data-growth-source-type') || '',
       source_status: source?.getAttribute('data-growth-source-status') || '',
       source_date_kind: source?.getAttribute('data-growth-source-date-kind') || '',
+      source_domain: source?.getAttribute('data-growth-source-domain') || '',
     };
   }
 

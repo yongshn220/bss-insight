@@ -947,6 +947,30 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
 
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "item-evidence-summary-v1",
+        "status": "live-item-detail-trust-cta-after-build",
+        "objective": "Turn each item detail page into a quick owner trust check that separates trend claim status, 14-day recency, supply validation, and watchlist references before owners share or stock-test an item.",
+        "utm_campaign": "daily-visits-500-item-evidence-summary",
+        "live_location_pattern": "https://gnsresearchhub.vercel.app/items/{item_id}.html (item-evidence-summary-v1)",
+        "tracked_events": [
+            "growth_section_view item-evidence-summary-v1",
+            "growth_click cta_item_evidence_source_jump",
+            "growth_click share_item_evidence_summary_copy",
+            "growth_share_copy_result share_action=item_evidence_summary_copy",
+            "growth_click source_link with source_domain context",
+        ],
+        "tracked_quality_metrics": [
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+            "item detail pages expose Trend claim status, 14d recency, Supply validation, and Watchlist references before source cards",
+            "copyable evidence summaries use utm_medium=evidence_summary and preserve the rule that supply/search links are not trend evidence",
+        ],
+        "owner_value": "Busy BSS owners and reps can copy a share-safe evidence summary from a product detail page and jump to source links without mistaking supply/watchlist URLs for trend proof.",
+        "measurement_need": "GA4/Vercel export access is still needed to compare item-evidence-summary section views, source jumps, copy events, and downstream item-detail repeat visits.",
+        "last_refreshed_at": now,
+    })
+
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
         ensure_experiment(experiment_backlog, {
@@ -996,6 +1020,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-client-side-provider-ready-after-review",
             "hypothesis": "A new session_id after the 30-minute visit window will make return-owner visits and UTM funnels easier to measure without inflating one long-lived browser session.",
             "next_step": "After GA4/Vercel export access is connected, compare session_id, visit_count, is_returning_visitor, and first/current UTM on repeat ranking and item-detail entrances.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "item-evidence-summary-v1",
+            "status": "active-item-detail-trust-cta-after-review",
+            "hypothesis": "A compact item-detail trust check with copyable evidence summary should increase source-link clicks, share-safe owner forwards, and repeat item-detail visits because owners can judge trend-backed vs WATCHLIST status before acting.",
+            "next_step": "After analytics export access is connected, segment item-evidence-summary section views, item_evidence_summary_copy results, source jumps, source_domain clicks, and downstream owner_share/evidence_summary UTM visits.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1136,6 +1167,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["persistent_local_session_id", "30_minute_visit_window_session_boundary"],
             "success_metric": "growth_exposure and growth_engagement_summary segmented by fresh session_id, visit_count, is_returning_visitor, first/current UTM, and repeat item-detail entrances once analytics export is connected",
             "hypothesis": "Renewing session_id after the 30-minute visit boundary prevents repeat owners from being collapsed into a stale browser session, improving measurement toward the 500/day goal.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "item-evidence-summary-v1",
+            "status": "active-item-detail-trust-cta-after-build",
+            "variants": ["detail_page_without_trust_panel", "trend_supply_watchlist_summary_with_copyable_owner_text"],
+            "success_metric": "item-evidence-summary section views, source-jump clicks, evidence-summary copy results, source_domain clicks, item-detail shares, and repeat item-detail entrances once analytics export is connected",
+            "hypothesis": "BSS owners and reps will trust and share item pages more when each detail page summarizes trend claim status, 14-day recency, supply validation, and watchlist references before the source list.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

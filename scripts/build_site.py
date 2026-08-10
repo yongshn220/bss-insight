@@ -1550,6 +1550,79 @@ def item_share_panel(row: dict[str, Any]) -> str:
       </section>"""
 
 
+def item_evidence_summary_panel(row: dict[str, Any]) -> str:
+    """Item-detail trust panel for owners who need to judge trend vs. supply quickly."""
+    item_id = str(row.get("item_id") or "").strip()
+    if not item_id:
+        return ""
+    counts = row.get("source_counts", {}) or {}
+    item_name = row.get("item_name") or "BSS item"
+    display = row.get("display_tip") or "front-area display test"
+    risk = row.get("risk") or "track sell-through and shrink"
+    trend_count = int(counts.get("trend_evidence") or counts.get("news_magazine") or 0)
+    recent_count = int(counts.get("recent_trend_evidence") or counts.get("recent_evidence") or 0)
+    retail_count = int(counts.get("retail_product_evidence") or 0)
+    tiktok_count = int(counts.get("tiktok_shop_product_evidence") or 0)
+    cached_tiktok_count = int(counts.get("cached_tiktok_shop_product_evidence") or 0)
+    watchlist_count = int(counts.get("watchlist_links") or 0)
+    domain_count = int(counts.get("unique_domains") or 0)
+    status_label = "Trend-backed" if trend_count else "WATCHLIST only"
+    status_note = (
+        f"{trend_count} published/date-bearing URL(s) count toward trend movement."
+        if trend_count
+        else "No published/date-bearing URL in this view; treat as a small test, not a trend claim."
+    )
+    tiktok_note = f"TikTok Shop {tiktok_count} fresh"
+    if cached_tiktok_count:
+        tiktok_note += f" · {cached_tiktok_count} cached supply-only"
+    evidence_url = growth_campaign_url(
+        f"/items/{item_id}.html",
+        source="owner_share",
+        medium="evidence_summary",
+        campaign="daily-visits-500-item-evidence-summary",
+        utm_content=item_id,
+        utm_term="weekly",
+    )
+    source_url = evidence_url + "#source-links"
+    copy_text = "\n".join([
+        f"BSS item evidence check: {item_name}",
+        f"Status: {evidence_status_label(row)}",
+        f"Trend URLs: {trend_count}; 14d trend URLs: {recent_count}; supply/product URLs: {retail_count}; TikTok Shop URLs: {tiktok_count}; source domains: {domain_count}; watchlist links: {watchlist_count}.",
+        f"Display test: {display}",
+        f"Risk/caution: {risk}",
+        "Rule: published URLs drive trend movement; BSS/wholesale/TikTok Shop URLs validate supply only.",
+        f"Source links: {source_url}",
+    ])
+    cards = [
+        ("Trend claim status", status_label, status_note),
+        ("14d recency", str(recent_count), "Weekly view uses recent published URLs; broader 365d capture is diagnostic only."),
+        ("Supply validation", str(retail_count), f"BSS/marketplace product URLs validate availability only. {tiktok_note}."),
+        ("Watchlist references", str(watchlist_count), "Search/SNS/watchlist links are follow-up leads and never scoring evidence."),
+    ]
+    card_html = "".join(
+        f"""
+        <article>
+          <span>{esc(label)}</span>
+          <strong>{esc(value)}</strong>
+          <small>{esc(note)}</small>
+        </article>"""
+        for label, value, note in cards
+    )
+    return f"""
+      <section class="wrap item-evidence-summary" data-growth-section="item-evidence-summary-v1" data-growth-experiment="item-evidence-summary-v1" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" aria-labelledby="item-evidence-summary-{esc(item_id)}">
+        <div class="section-title item-evidence-title">
+          <div><span>Owner trust check · trend vs supply</span><h2 id="item-evidence-summary-{esc(item_id)}">이 item을 trend로 말해도 되는지 먼저 확인</h2></div>
+          <em>daily-visits-500-item-evidence-summary</em>
+        </div>
+        <p class="item-evidence-note">BSS owner가 공유/진열 전에 바로 판단할 수 있도록 trend claim, supply validation, watchlist를 한 화면에서 분리합니다. 이 panel은 새 근거를 만들지 않고 현재 source counts만 요약합니다.</p>
+        <div class="item-evidence-grid">{card_html}</div>
+        <div class="share-actions item-evidence-actions">
+          <a class="share-action" data-growth-cta="item_evidence_source_jump" href="#source-links">Source links 보기</a>
+          <button class="share-action" type="button" data-growth-share="item_evidence_summary_copy" data-copy-url="{esc(source_url)}" data-copy-text="{esc(copy_text)}">Copy evidence summary</button>
+        </div>
+      </section>"""
+
+
 def top_three(rows: list[dict[str, Any]]) -> str:
     trend_rows = [row for row in rows if has_trend_evidence(row)]
     if not trend_rows:
@@ -1916,8 +1989,9 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
             source_type = src.get("source_type") or "unknown"
             source_status = src.get("evidence_status") or ("cached_verified_url" if src.get("cache_status") else "unknown")
             source_date_kind = src.get("date_kind") or "unknown"
+            source_domain = src.get("domain") or urllib.parse.urlparse(str(src.get("url") or "")).netloc or "unknown"
             source_cards.append(f"""
-            <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer" data-growth-source-layer="{esc(source_layer)}" data-growth-source-kind="{esc(source_kind)}" data-growth-source-type="{esc(source_type)}" data-growth-source-status="{esc(source_status)}" data-growth-source-date-kind="{esc(source_date_kind)}">
+            <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer" data-growth-source-layer="{esc(source_layer)}" data-growth-source-kind="{esc(source_kind)}" data-growth-source-type="{esc(source_type)}" data-growth-source-status="{esc(source_status)}" data-growth-source-date-kind="{esc(source_date_kind)}" data-growth-source-domain="{esc(source_domain)}">
               <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date_label) if date_label else ''}{price}</span>
               <strong>{esc(title)}</strong>
               <p>{esc(summary)}</p>
@@ -1942,6 +2016,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
       </section>
       <section class="wrap metrics-grid">{''.join(rank_cards)}</section>
       {item_share_panel(row)}
+      {item_evidence_summary_panel(row)}
       <section class="wrap detail-grid">
         <article><span>Display</span><p>{esc(row.get('display_tip'))}</p></article>
         <article><span>Risk</span><p>{esc(row.get('risk'))}</p></article>
@@ -1950,7 +2025,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         <article><span>Score breakdown</span><ul>{breakdown_items}</ul></article>
         <article><span>Movement rule</span><p>{esc(row.get('change_note'))}</p></article>
       </section>
-      <section class="wrap sources" data-growth-section="source-evidence-clicks-v1" data-growth-experiment="source-evidence-clicks-v1">
+      <section class="wrap sources" id="source-links" data-growth-section="source-evidence-clicks-v1" data-growth-experiment="source-evidence-clicks-v1">
         <div class="section-title"><div><span>Evidence vs watchlist</span><h2>실제 근거와 참고 링크 분리</h2></div></div>
         {''.join(source_sections)}
       </section>

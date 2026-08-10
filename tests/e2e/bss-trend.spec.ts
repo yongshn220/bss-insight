@@ -419,6 +419,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
   });
 
   test('category landing pages focus broad store lanes into item-level owner actions', async ({ page }) => {
@@ -566,15 +567,28 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(firstSourceCard).toHaveAttribute('data-growth-source-kind', /.+/);
     await expect(firstSourceCard).toHaveAttribute('data-growth-source-type', /.+/);
     await expect(firstSourceCard).toHaveAttribute('data-growth-source-status', /.+/);
+    await expect(firstSourceCard).toHaveAttribute('data-growth-source-domain', /.+/);
     await firstSourceCard.evaluate((element) => {
       element.addEventListener('click', (event) => event.preventDefault(), { once: true });
       (element as HTMLAnchorElement).click();
     });
     const sourceClickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(sourceClickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'source_link' && event.section === 'source-evidence-clicks-v1' && event.component_experiment_id === 'source-evidence-clicks-v1' && event.source_layer && event.source_kind && event.source_status)).toBe(true);
+    expect(sourceClickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'source_link' && event.section === 'source-evidence-clicks-v1' && event.component_experiment_id === 'source-evidence-clicks-v1' && event.source_layer && event.source_kind && event.source_status && event.source_domain)).toBe(true);
     await expect(page.locator('.item-share-kit')).toBeVisible();
     await expect(page.locator('.item-share-kit')).toHaveAttribute('data-growth-section', 'item-detail-share-card-v1');
     await expect(page.locator('.item-share-kit')).toHaveAttribute('data-growth-experiment', 'item-detail-share-card-v1');
+    await expect(page.locator('[data-growth-section="item-evidence-summary-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="item-evidence-summary-v1"]')).toHaveAttribute('data-growth-experiment', 'item-evidence-summary-v1');
+    await expect(page.getByRole('heading', { name: '이 item을 trend로 말해도 되는지 먼저 확인' })).toBeVisible();
+    await expect(page.locator('.item-evidence-grid article')).toHaveCount(4);
+    await expect(page.locator('[data-growth-cta="item_evidence_source_jump"]')).toHaveAttribute('href', '#source-links');
+    const evidenceSummaryButton = page.locator('[data-growth-share="item_evidence_summary_copy"]').first();
+    await expect(evidenceSummaryButton).toHaveAttribute('data-copy-url', /daily-visits-500-item-evidence-summary/);
+    await expect(evidenceSummaryButton).toHaveAttribute('data-copy-text', /BSS item evidence check/);
+    await evidenceSummaryButton.click();
+    await expect(evidenceSummaryButton).toHaveText(/Copied|Text ready/);
+    const evidenceSummaryEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(evidenceSummaryEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_evidence_summary_copy' && event.section === 'item-evidence-summary-v1' && event.component_experiment_id === 'item-evidence-summary-v1' && event.copy_mode === 'brief_text')).toBe(true);
     const itemCopyButton = page.locator('[data-growth-share="item_copy_link"]').first();
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-item-detail-share/);
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_content=/);
@@ -684,9 +698,11 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-feed-subscribe-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
     const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
     expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
     const rssCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1');
