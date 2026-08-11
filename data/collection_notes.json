@@ -1,32 +1,24 @@
 {
-  "generated_at": "2026-08-11T17:37:54.388805Z",
+  "generated_at": "2026-08-11T19:05:16.467991Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "skipped_recent_failure_using_cache",
-      "observed_at": "2026-08-11T17:37:54.388034Z",
+      "status": "success",
+      "observed_at": "2026-08-11T19:05:16.467138Z",
       "configured": true,
       "enabled": true,
-      "attempts": 0,
-      "keywords_requested": 84,
-      "expanded_keyword_items": 20,
-      "max_results_total": 84,
-      "current_actor_status": "skipped_recent_failure_cooldown",
-      "retry_rule": "APIFY_TIKTOK_FAILURE_COOLDOWN_MINUTES controls cache-first cooldown after a recent actor failure; set to 0 to disable.",
-      "cache_policy": "Recent TikTok Shop actor failure cooldown reused cache as supply fallback only; cached URLs never create trend movement.",
-      "last_actor_failure_status": "failed_using_cache",
-      "last_actor_failure_observed_at": "2026-08-11T17:29:35.582199Z",
-      "last_actor_failure_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 9Dydbf8320sDGfBf8, status: FAILED).\" } }",
-      "failure_age_minutes": 8,
-      "cooldown_minutes": 90,
-      "cooldown_remaining_minutes": 82,
-      "cache_status": "usable",
-      "cache_path": "data/tiktok_shop_cache.json",
-      "cache_updated_at": "2026-08-11T16:17:47.802998Z",
-      "cache_age_days": 0,
-      "cache_max_age_days": 7,
-      "cached_items": 44,
-      "cached_evidence_urls": 79
+      "attempts": 1,
+      "keywords_requested": 82,
+      "expanded_keyword_items": 19,
+      "products_returned": 81,
+      "items_with_evidence": 44,
+      "evidence_urls": 78,
+      "fresh_evidence_urls": 78,
+      "partial_cached_items": 0,
+      "partial_cached_evidence_urls": 0,
+      "current_actor_status": "success",
+      "cache_policy": "cache not used",
+      "max_results_total": 82
     }
   },
   "evidence_totals": {
@@ -35,11 +27,11 @@
     "items_with_published_trend_url": 37,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "items_with_cached_tiktok_shop_url": 44,
-    "verified_urls_total": 363,
-    "published_trend_urls_total": 110,
-    "retail_product_urls_total": 253,
-    "cached_tiktok_shop_urls_total": 79,
+    "items_with_cached_tiktok_shop_url": 0,
+    "verified_urls_total": 361,
+    "published_trend_urls_total": 109,
+    "retail_product_urls_total": 252,
+    "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },
   "coverage_gaps": {
@@ -210,7 +202,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "TikTok Shop actor 최근 실패 cooldown으로 이번 run은 cache-first supply fallback을 사용했습니다. 약 82분 후 자동 재시도하며, cache URL은 trend evidence가 아닙니다.",
     "published trend URL gap 7개 item 유지: Lashes & Brows, Wigs & Hair Pieces, Tools & Accessories부터 item-level dated source capture를 보강합니다."
   ]
 }

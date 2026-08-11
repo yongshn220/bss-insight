@@ -497,9 +497,9 @@
     if (!clickedUrl) return null;
     const embeddedUrl = clickedUrl.searchParams?.get('url') || clickedUrl.searchParams?.get('u') || '';
     if (embeddedUrl) return parseTrackingUrl(embeddedUrl);
-    if (clickedUrl.protocol === 'mailto:') {
-      const body = clickedUrl.searchParams?.get('body') || '';
-      const match = body.match(/https?:\/\/[^\s<>"')]+/i);
+    const textBody = clickedUrl.searchParams?.get('body') || clickedUrl.searchParams?.get('text') || '';
+    if (clickedUrl.protocol === 'mailto:' || clickedUrl.protocol === 'sms:' || /wa\.me|whatsapp\.com|t\.me/i.test(clickedUrl.hostname || '')) {
+      const match = textBody.match(/https?:\/\/[^\s<>"')]+/i);
       if (match) return parseTrackingUrl(match[0].replace(/[.,;]+$/, ''));
     }
     return clickedUrl;

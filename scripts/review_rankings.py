@@ -1502,7 +1502,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "growth_click includes link_utm_source/link_utm_medium/link_utm_campaign/link_utm_content/link_utm_term",
             "growth_click includes link_protocol/link_origin/link_path/destination_origin/destination_path/link_has_utm/link_is_external",
             "growth_share_copy_result includes the same destination UTM context for data-copy-url buttons",
-            "embedded X intent URL and mailto body URLs are parsed so downstream campaign links remain measurable",
+            "embedded X intent URL, mailto body URLs, and sms: body URLs are parsed so downstream campaign links remain measurable",
         ],
         "tracked_quality_metrics": [
             "Playwright asserts weekly_top3_copy_link carries link_utm_source=owner_share and campaign=daily-visits-500-weekly-top3-owner-share",
@@ -1511,6 +1511,33 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         ],
         "owner_value": "No extra UI clutter. This makes it possible to learn which BSS-owner share paths actually create repeat visits once GA4/Vercel event export is connected, instead of treating all clicks as generic dashboard interactions.",
         "measurement_need": "GA4_PROPERTY_ID plus service credentials or approved Vercel Analytics export/API access is still required to read provider-side link_utm_* event counts and tie them to rolling 30-day visits.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "direct-message-owner-share-v1",
+        "status": "live-site-direct-share-after-build",
+        "objective": "Add SMS/Kakao-ready owner message copy and SMS draft links to ranking, Top 3, and item detail share modules so distribution can proceed without external SNS posting credentials.",
+        "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-share and daily-visits-500-{timeframe}-top3-owner-share",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (weekly_message_copy and weekly_top3_message_copy)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (direct message copy buttons)",
+            "https://gnsresearchhub.vercel.app/items/{item_id}.html (item_message_copy)",
+        ],
+        "tracked_events": [
+            "growth_click share_{timeframe}_sms_draft with embedded message UTM parsed from sms: body",
+            "growth_click share_{timeframe}_message_copy",
+            "growth_share_copy_result share_action={timeframe}_message_copy copy_mode=brief_text",
+            "growth_share_copy_result share_action={timeframe}_top3_message_copy with item_id context",
+            "growth_share_copy_result share_action=item_message_copy on item detail pages",
+        ],
+        "tracked_quality_metrics": [
+            "message links use utm_source=message&utm_medium=direct",
+            "SMS/Kakao text includes display test, evidence_status_label, risk/caution, and the rule that supply/watchlist URLs are not trend claims",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "BSS owners and reps often forward short text messages faster than X/email posts; this creates a measurable direct-message path while staying draft/copy-only and evidence-safe.",
+        "measurement_need": "GA4/Vercel export access is still needed to compare utm_source=message sessions, SMS draft clicks, message copy events, and return visits against owner_share, X, email, RSS, shortcut, and calendar channels.",
         "last_refreshed_at": now,
     })
 
@@ -1664,6 +1691,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "direct-message-owner-share-v1",
+            "status": "active-site-direct-share-after-review",
+            "hypothesis": "SMS/Kakao-ready copy should create more practical owner/reps distribution than X/email-only drafts because many BSS owners respond to direct short messages and no external posting credentials are required.",
+            "next_step": "After analytics export access is connected, compare utm_source=message sessions, share_*_message_copy results, sms_draft clicks, and return visits against owner_share/x/email/RSS/shortcut/calendar channels.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "owner-5-minute-route-v1",
             "status": "active-site-ux-distribution-after-review",
             "hypothesis": "A 3-step store-walk route should increase BSS owner action and share intent versus reading only the full leaderboard because it gives a hair/install pick, a front-end add-on, and a WATCHLIST small-test in one copy-ready block.",
@@ -1717,7 +1751,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
         measurement["last_checked_at"] = now
         measurement["provider_checked"] = (
             "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
-            "This run also verifies the head-level window.va queue/bootstrap, the client-side growth_provider_ready health event, and destination link_utm_* context on clicked/copied share paths for first-event capture. "
+            "This run also verifies the head-level window.va queue/bootstrap, the client-side growth_provider_ready health event, destination link_utm_* context on clicked/copied share paths, and direct-message/SMS owner share events for first-event capture. "
             f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
         )
         measurement["rolling_30d_average_daily_visits"] = None
@@ -1912,7 +1946,15 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "status": "active-client-side-provider-ready-after-build",
             "variants": ["click_events_with_visible_href_only", "click_and_copy_events_with_link_destination_utm_fields"],
             "success_metric": "growth_click and growth_share_copy_result segmented by link_utm_source, link_utm_medium, link_utm_campaign, link_utm_content, destination_path, component_experiment_id, and item_id once analytics export is connected",
-            "hypothesis": "BSS owner growth optimization needs destination-level UTM context on every clicked/copied link so owner_share, X, email, RSS, shortcut, calendar, focus-watchlist, and item-detail share paths can be compared without brittle URL parsing.",
+            "hypothesis": "BSS owner growth optimization needs destination-level UTM context on every clicked/copied link so owner_share, X, email, message, RSS, shortcut, calendar, focus-watchlist, and item-detail share paths can be compared without brittle URL parsing.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "direct-message-owner-share-v1",
+            "status": "active-site-direct-share-after-build",
+            "variants": ["x_email_copy_only", "sms_kakao_direct_message_copy_with_utm"],
+            "success_metric": "utm_source=message sessions, share_*_message_copy results, sms_draft clicks, item-detail entrances, and returning-owner visits once analytics export is connected",
+            "hypothesis": "SMS/Kakao-ready direct message copy should improve practical distribution to BSS owners and reps while remaining draft/copy-only and evidence-safe without external SNS credentials.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

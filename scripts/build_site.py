@@ -855,6 +855,31 @@ def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str, *
     return f"{SITE_BASE}{path}?{query}"
 
 
+def sms_intent_url(message: str) -> str:
+    """Return a user-initiated SMS draft link; no external post is sent by the build."""
+    return "sms:?" + urllib.parse.urlencode({"body": message})
+
+
+def owner_direct_message_text(
+    *,
+    item_name: object,
+    display: object,
+    risk: object,
+    evidence: object,
+    url: object,
+    prefix: str = "BSS owner text",
+) -> str:
+    """Compact SMS/Kakao/WhatsApp-safe owner message with evidence discipline."""
+    return "\n".join([
+        f"{prefix}: {item_name}",
+        f"Display test: {display}",
+        f"Evidence: {evidence}",
+        f"Risk/caution: {risk}",
+        "Rule: published URLs drive trend movement; supply/watchlist links are not trend claims.",
+        f"Link: {url}",
+    ])
+
+
 def has_trend_evidence(row: dict[str, Any]) -> bool:
     counts = row.get("source_counts", {})
     return bool(counts.get("trend_evidence") or counts.get("news_magazine"))
@@ -1303,11 +1328,19 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
     owner_url = growth_campaign_url(ranking_path, source="owner_share", medium="organic", campaign=campaign)
     x_url = growth_campaign_url(ranking_path, source="x", medium="organic", campaign=campaign)
     email_url = growth_campaign_url(ranking_path, source="email", medium="owner_forward", campaign=campaign)
+    message_url = growth_campaign_url(
+        ranking_path,
+        source="message",
+        medium="direct",
+        campaign=campaign,
+        utm_content=f"{timeframe}-owner-message",
+    )
     item_name = row.get("item_name") or "top item"
     category = row.get("category_name") or "BSS item"
     score = row.get("score") or ""
     display = row.get("display_tip") or "front-area test"
     risk = row.get("risk") or "track sell-through and shrink"
+    evidence_label = evidence_status_label(row)
     text = (
         f"Beauty Supply Store owners: {label} ranking에서 #{row.get('rank')} {item_name} "
         f"({category})를 확인하세요. Score {score}. Display test: {display}."
@@ -1317,12 +1350,21 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
         "subject": f"{label} BSS item ranking: {item_name}",
         "body": f"이번 {label} BSS item ranking 공유드립니다.\n\nTop item: {item_name}\nDisplay tip: {display}\nRisk/caution: {risk}\n\nOwner link: {email_url}",
     })
+    message_text = owner_direct_message_text(
+        prefix=f"{label} BSS owner text",
+        item_name=f"#{row.get('rank')} {item_name}",
+        display=display,
+        risk=risk,
+        evidence=evidence_label,
+        url=message_url,
+    )
+    sms_intent = sms_intent_url(message_text)
     return f"""
       <section class="wrap share-kit" data-growth-section="owner-share-kit-v1" data-growth-experiment="owner-share-kit-v1" aria-labelledby="share-kit-{esc(timeframe)}">
         <div>
           <span>Growth loop · owner share kit</span>
           <h2 id="share-kit-{esc(timeframe)}">바로 공유할 수 있는 {esc(label)} owner link</h2>
-          <p>500 average daily visits 목표를 위해 owner가 다시 열어볼 이유를 강화합니다. 이 링크는 UTM이 붙어 있어 analytics provider 연결 후 channel별 방문/클릭을 분리 측정할 수 있습니다.</p>
+          <p>500 average daily visits 목표를 위해 owner가 다시 열어볼 이유를 강화합니다. 이 링크는 UTM이 붙어 있어 analytics provider 연결 후 channel별 방문/클릭을 분리 측정할 수 있습니다. SMS/Kakao copy는 외부 계정 없이 owner에게 직접 전달할 수 있는 measured share path입니다.</p>
         </div>
         <article class="share-card">
           <p class="share-eyebrow">Featured item</p>
@@ -1333,7 +1375,9 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
           <div class="share-actions">
             <a class="share-action" data-growth-share="{esc(timeframe)}_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_email_forward" href="{esc(mailto)}">Email draft</a>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_copy_link" data-copy-url="{esc(owner_url)}">Copy owner link</button>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
         </article>
       </section>"""
@@ -1846,6 +1890,14 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
             utm_content=item_id,
             utm_term=timeframe,
         )
+        message_url = growth_campaign_url(
+            item_path,
+            source="message",
+            medium="direct",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
         text = (
             f"Beauty Supply owners: {label} share starter — {item_name}. "
             f"Display test: {display}. Evidence status: {evidence_label}."
@@ -1863,6 +1915,15 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
                 f"Item link: {email_url}"
             ),
         })
+        message_text = owner_direct_message_text(
+            prefix=f"{label} BSS direct share",
+            item_name=f"#{row.get('rank')} {item_name}",
+            display=display,
+            risk=risk,
+            evidence=evidence_label,
+            url=message_url,
+        )
+        sms_intent = sms_intent_url(message_text)
         cards.append(f"""
         <article class="top-share-card" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}">
           <span>{esc(label)} share starter · #{esc(row.get('rank'))}</span>
@@ -1874,7 +1935,9 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
           <div class="share-actions">
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_email_forward" href="{esc(mailto)}">Email draft</a>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_top3_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
         </article>""")
     if not cards:
@@ -1885,7 +1948,7 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
           <div><span>Share starters · measurable growth path</span><h2 id="top-share-{esc(timeframe)}">Top 3 item-specific owner links</h2></div>
           <em>{esc(campaign)}</em>
         </div>
-        <p class="top-share-note">Single featured link만으로 끝내지 않고, evidence-backed 상위 item 3개를 owner/reps가 바로 복사·공유할 수 있게 분리했습니다. 모든 링크는 item_id가 붙은 UTM과 growth event context를 남깁니다.</p>
+        <p class="top-share-note">Single featured link만으로 끝내지 않고, evidence-backed 상위 item 3개를 owner/reps가 바로 복사·공유할 수 있게 분리했습니다. SMS/Kakao text는 외부 SNS posting 없이도 전달 가능한 direct channel이며, 모든 링크는 item_id가 붙은 UTM과 growth event context를 남깁니다.</p>
         <div class="top-share-grid">{''.join(cards)}</div>
       </section>"""
 
@@ -2027,6 +2090,13 @@ def item_share_panel(row: dict[str, Any]) -> str:
         campaign=campaign,
         utm_content=item_id,
     )
+    message_url = growth_campaign_url(
+        item_path,
+        source="message",
+        medium="direct",
+        campaign=campaign,
+        utm_content=item_id,
+    )
     text = (
         f"Beauty Supply Store owners: {item_name} detail page shows display tip, risk, "
         f"and evidence status ({evidence_label}). Display test: {display}."
@@ -2044,12 +2114,21 @@ def item_share_panel(row: dict[str, Any]) -> str:
             f"Detail link: {email_url}"
         ),
     })
+    message_text = owner_direct_message_text(
+        prefix="BSS item detail text",
+        item_name=item_name,
+        display=display,
+        risk=risk,
+        evidence=evidence_label,
+        url=message_url,
+    )
+    sms_intent = sms_intent_url(message_text)
     return f"""
       <section class="wrap share-kit item-share-kit" data-growth-section="item-detail-share-card-v1" data-growth-experiment="item-detail-share-card-v1" aria-labelledby="item-share-{esc(item_id)}">
         <div>
           <span>Growth loop · item detail share</span>
           <h2 id="item-share-{esc(item_id)}">이 item detail을 owner에게 바로 공유</h2>
-          <p>개별 상품 페이지도 repeat visit 진입점으로 만들기 위해 UTM이 붙은 item-specific link를 제공합니다. Evidence status를 함께 보여 과장된 trend claim 없이 공유할 수 있습니다.</p>
+          <p>개별 상품 페이지도 repeat visit 진입점으로 만들기 위해 UTM이 붙은 item-specific link를 제공합니다. Evidence status를 함께 보여 과장된 trend claim 없이 공유할 수 있습니다. SMS/Kakao text는 owner에게 바로 보낼 수 있는 direct-message version입니다.</p>
         </div>
         <article class="share-card">
           <p class="share-eyebrow">Item share</p>
@@ -2060,7 +2139,9 @@ def item_share_panel(row: dict[str, Any]) -> str:
           <div class="share-actions">
             <a class="share-action" data-growth-share="item_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="item_email_forward" href="{esc(mailto)}">Email draft</a>
+            <a class="share-action" data-growth-share="item_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
             <button class="share-action" type="button" data-growth-share="item_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
+            <button class="share-action" type="button" data-growth-share="item_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
         </article>
       </section>"""
