@@ -719,6 +719,63 @@ def evidence_gap_snapshot(rows: list[dict[str, Any]], timeframe: str, collection
       </section>"""
 
 
+def timeframe_evidence_ladder(data: dict[str, Any], active_timeframe: str) -> str:
+    """Show how strict evidence windows change before owners browse rankings.
+
+    Weekly evidence can regress even when broader captured coverage improves. This
+    panel gives BSS owners a non-black-box path: use Weekly for fresh movement and
+    Monthly/Quarterly/Yearly for context, without turning older URLs into weekly
+    trend claims.
+    """
+    rankings = data.get("rankings", {}) if isinstance(data.get("rankings"), dict) else {}
+    cards: list[str] = []
+    campaign = "daily-visits-500-timeframe-evidence-ladder"
+    active_label = TIMEFRAME_LABELS.get(active_timeframe, active_timeframe.title())
+    for timeframe in TIMEFRAME_ORDER:
+        rows = rankings.get(timeframe, [])
+        if not isinstance(rows, list) or not rows:
+            continue
+        label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+        window_days = TIMEFRAME_DAYS.get(timeframe) or "—"
+        trend_items = count_items_with_source(rows, "trend_evidence")
+        watchlist_items = sum(
+            1
+            for row in rows
+            if row.get("momentum") == "watchlist" or source_count(row, "trend_evidence") == 0
+        )
+        retail_items = count_items_with_source(rows, "retail_product_evidence")
+        tiktok_items = count_items_with_source(rows, "tiktok_shop_product_evidence")
+        top = next((row for row in rows if has_trend_evidence(row)), rows[0])
+        href = growth_campaign_path(
+            f"/rankings/{timeframe}.html",
+            source="site",
+            medium="evidence_ladder",
+            campaign=campaign,
+            utm_content=f"{active_timeframe}-to-{timeframe}",
+            utm_term=timeframe,
+        )
+        classes = "evidence-ladder-card" + (" active" if timeframe == active_timeframe else "")
+        active_note = "Current view" if timeframe == active_timeframe else "Open this evidence window"
+        cards.append(f"""
+        <a class="{esc(classes)}" data-growth-cta="timeframe_evidence_ladder" data-growth-timeframe="{esc(timeframe)}" data-item-id="{esc(top.get('item_id'))}" data-item-rank="{esc(top.get('rank'))}" data-item-category="{esc(top.get('category_id'))}" href="{esc(href)}">
+          <span>{esc(label)} · {esc(window_days)}d</span>
+          <strong>{esc(trend_items)}/{esc(len(rows))}</strong>
+          <p>trend-backed items</p>
+          <small>{esc(active_note)} · WATCHLIST {esc(watchlist_items)} · Top: {esc(clamp_text(top.get('item_name'), 42))} · Store {esc(retail_items)} · TikTok {esc(tiktok_items)}</small>
+        </a>""")
+    if not cards:
+        return ""
+    return f"""
+      <section class="wrap evidence-ladder" data-growth-section="timeframe-evidence-ladder-v1" data-growth-experiment="timeframe-evidence-ladder-v1" aria-labelledby="timeframe-evidence-ladder-{esc(active_timeframe)}">
+        <div class="section-title evidence-ladder-title">
+          <div><span>Evidence window ladder · not a broader trend claim</span><h2 id="timeframe-evidence-ladder-{esc(active_timeframe)}">Evidence window별로 먼저 보기</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <p class="evidence-ladder-note">현재 {esc(active_label)} view가 약할 때도 owner가 바로 떠나지 않도록, 14d/45d/120d/365d coverage를 한눈에 비교합니다. 오래된 published URL은 context일 뿐 weekly movement로 승격하지 않습니다.</p>
+        <div class="evidence-ladder-grid">{''.join(cards)}</div>
+      </section>"""
+
+
 def evidence_focus_watchlist(timeframe: str, rows: list[dict[str, Any]]) -> str:
     """Show which weak items the next evidence loop is actively trying to upgrade.
 
@@ -1680,6 +1737,7 @@ def render_home(data: dict[str, Any]) -> str:
       {return_visitor_panel('weekly')}
       {run_change_snapshot(data, 'weekly', weekly)}
       {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
+      {timeframe_evidence_ladder(data, 'weekly')}
       {evidence_focus_watchlist('weekly', weekly)}
       {owner_quick_picks('weekly', weekly)}
       {owner_brief_panel('weekly', weekly)}
@@ -1887,6 +1945,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {return_visitor_panel(timeframe)}
       {run_change_snapshot(data, timeframe, rows)}
       {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}
+      {timeframe_evidence_ladder(data, timeframe)}
       {evidence_focus_watchlist(timeframe, rows)}
       {owner_quick_picks(timeframe, rows)}
       {owner_brief_panel(timeframe, rows)}

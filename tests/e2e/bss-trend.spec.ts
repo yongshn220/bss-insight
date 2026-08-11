@@ -113,6 +113,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-source-health="tiktok_shop"]')).toContainText('TikTok Shop freshness');
     await expect(page.locator('[data-source-health="tiktok_shop"]')).not.toContainText('Current actor failed; previous capture');
     await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
+    await expect(page.locator('[data-growth-section="timeframe-evidence-ladder-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="timeframe-evidence-ladder-v1"]')).toHaveAttribute('data-growth-experiment', 'timeframe-evidence-ladder-v1');
+    await expect(page.getByRole('heading', { name: 'Evidence window별로 먼저 보기' })).toBeVisible();
+    const ladderCards = page.locator('.evidence-ladder-card');
+    await expect(ladderCards).toHaveCount(4);
+    await expect(ladderCards.first()).toHaveAttribute('data-growth-cta', 'timeframe_evidence_ladder');
+    await expect(ladderCards.first()).toHaveAttribute('href', /utm_medium=evidence_ladder/);
+    await expect(ladderCards.first()).toHaveAttribute('href', /daily-visits-500-timeframe-evidence-ladder/);
+    await expect(ladderCards.first()).toContainText('trend-backed items');
     await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toHaveAttribute('data-growth-experiment', 'evidence-focus-watchlist-v1');
     await expect(page.getByRole('heading', { name: 'Weekly WATCHLIST 근거 보강 대상' })).toBeVisible();
@@ -253,6 +262,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-shortcut-save-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'timeframe-evidence-ladder-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'category-landing-nav-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'top3-leaderboard-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
@@ -266,6 +276,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-feed-subscribe-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-shortcut-save-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('timeframe-evidence-ladder-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('category-landing-nav-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('ranking-main-list-v1'))).toBe(true);
 
@@ -410,6 +421,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'run-change-snapshot-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'timeframe-evidence-ladder-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'engagement-summary-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-list-engagement-context-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'apify-sharded-fallback-v1')).toBe(true);
@@ -510,6 +522,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', `https://gnsresearchhub.vercel.app/assets/share-${label.toLowerCase()}.svg`);
       await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="timeframe-evidence-ladder-v1"]')).toBeVisible();
+      await expect(page.locator('.evidence-ladder-card.active')).toHaveAttribute('data-growth-timeframe', label.toLowerCase());
       await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
@@ -691,6 +705,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'source-evidence-clicks-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-window-transparency-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'evidence-focus-watchlist-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'timeframe-evidence-ladder-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'engagement-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-list-engagement-context-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-attribution-v1')).toBe(true);
@@ -703,6 +718,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'timeframe-evidence-ladder-v1')).toBe(true);
     const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
     expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
     const rssCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1');

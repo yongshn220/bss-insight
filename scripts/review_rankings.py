@@ -32,6 +32,8 @@ PUBLIC_OPS_REVIEW_PATH = PUBLIC_DATA_DIR / "operations_review_public.json"
 PUBLIC_NEXT_LOOP_FOCUS_PATH = PUBLIC_DATA_DIR / "next_loop_focus_public.json"
 
 TIMEFRAME = "weekly"
+TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
+TIMEFRAME_DAYS = {"weekly": 14, "monthly": 45, "quarterly": 120, "yearly": 365}
 MAX_FOCUS_ITEMS = 6
 SITE_BASE = "https://gnsresearchhub.vercel.app"
 
@@ -632,6 +634,36 @@ def weekly_ranking_rows() -> list[dict[str, Any]]:
     return [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else []
 
 
+def timeframe_coverage_summary() -> list[dict[str, Any]]:
+    """Summarize trend/watchlist coverage across ranking windows for growth artifacts."""
+    data = load_json(RANKINGS_PATH, {})
+    rankings = data.get("rankings", {}) if isinstance(data, dict) else {}
+    if not isinstance(rankings, dict):
+        return []
+    summary: list[dict[str, Any]] = []
+    for timeframe in TIMEFRAME_ORDER:
+        rows = rankings.get(timeframe, [])
+        if not isinstance(rows, list):
+            rows = []
+        valid_rows = [row for row in rows if isinstance(row, dict)]
+        trend_rows = [row for row in valid_rows if has_trend_evidence(row)]
+        watchlist_items = sum(
+            1 for row in valid_rows
+            if row.get("momentum") == "watchlist" or not has_trend_evidence(row)
+        )
+        top = trend_rows[0] if trend_rows else (valid_rows[0] if valid_rows else {})
+        summary.append({
+            "timeframe": timeframe,
+            "window_days": TIMEFRAME_DAYS.get(timeframe),
+            "items": len(valid_rows),
+            "trend_items": len(trend_rows),
+            "watchlist_items": watchlist_items,
+            "top_item_id": top.get("item_id") if isinstance(top, dict) else None,
+            "top_item_name": top.get("item_name") if isinstance(top, dict) else None,
+        })
+    return summary
+
+
 def top3_share_drafts(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Build current top-3 SNS drafts from live ranking rows.
 
@@ -711,6 +743,12 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
     now = str(review.get("reviewed_at") or utc_now())
     drafts = top3_share_drafts(rows)
     top3_ids = [str(draft.get("item_id")) for draft in drafts if draft.get("item_id")]
+    coverage_summary = timeframe_coverage_summary()
+    coverage_labels = [
+        f"{item.get('timeframe')}={item.get('trend_items')}/{item.get('items')} trend-backed, WATCHLIST {item.get('watchlist_items')}"
+        for item in coverage_summary
+        if isinstance(item, dict)
+    ]
     metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
     marketing["updated_at"] = now
     marketing.setdefault("goal_id", "daily-visits-500")
@@ -970,6 +1008,28 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel export access is still needed to compare item-evidence-summary section views, source jumps, copy events, and downstream item-detail repeat visits.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "timeframe-evidence-ladder-v1",
+        "status": "live-site-ux-after-build",
+        "objective": "Keep owners engaged when the strict weekly evidence window is thin by showing Weekly/Monthly/Quarterly/Yearly trend-backed and WATCHLIST coverage side by side without broadening weekly claims.",
+        "utm_campaign": "daily-visits-500-timeframe-evidence-ladder",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (timeframe-evidence-ladder-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (timeframe-evidence-ladder-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/monthly.html (timeframe-evidence-ladder-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/quarterly.html (timeframe-evidence-ladder-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/yearly.html (timeframe-evidence-ladder-v1)",
+        ],
+        "tracked_events": [
+            "growth_section_view timeframe-evidence-ladder-v1",
+            "growth_click cta_timeframe_evidence_ladder with utm_medium=evidence_ladder",
+        ],
+        "tracked_quality_metrics": coverage_labels or ["timeframe coverage summary unavailable"],
+        "coverage_summary": coverage_summary,
+        "owner_value": "BSS owners can choose a stricter fresh Weekly view or a broader context window deliberately, reducing black-box score confusion and improving repeat navigation across timeframe pages.",
+        "measurement_need": "GA4/Vercel export access is needed to compare evidence_ladder clicks and downstream timeframe/item-detail entrances against existing tabs and category navigation.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -1027,6 +1087,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-item-detail-trust-cta-after-review",
             "hypothesis": "A compact item-detail trust check with copyable evidence summary should increase source-link clicks, share-safe owner forwards, and repeat item-detail visits because owners can judge trend-backed vs WATCHLIST status before acting.",
             "next_step": "After analytics export access is connected, segment item-evidence-summary section views, item_evidence_summary_copy results, source jumps, source_domain clicks, and downstream owner_share/evidence_summary UTM visits.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "timeframe-evidence-ladder-v1",
+            "status": "active-site-ux-after-review",
+            "hypothesis": "A visible evidence-window ladder should reduce bounce and black-box score confusion when weekly trend coverage is thin by routing owners to Monthly/Quarterly/Yearly context without overclaiming weekly movement.",
+            "next_step": "After analytics export access is connected, compare growth_section_view timeframe-evidence-ladder-v1 and cta_timeframe_evidence_ladder clicks against tab-only navigation and item-detail entrances.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1175,6 +1242,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["detail_page_without_trust_panel", "trend_supply_watchlist_summary_with_copyable_owner_text"],
             "success_metric": "item-evidence-summary section views, source-jump clicks, evidence-summary copy results, source_domain clicks, item-detail shares, and repeat item-detail entrances once analytics export is connected",
             "hypothesis": "BSS owners and reps will trust and share item pages more when each detail page summarizes trend claim status, 14-day recency, supply validation, and watchlist references before the source list.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "timeframe-evidence-ladder-v1",
+            "status": "active-site-ux-after-build",
+            "variants": ["tabs_only_timeframe_navigation", "visible_evidence_window_ladder"],
+            "success_metric": "growth_section_view timeframe-evidence-ladder-v1, cta_timeframe_evidence_ladder clicks, timeframe entrances via utm_medium=evidence_ladder, and repeat item-detail visits once analytics export is connected",
+            "hypothesis": "Showing Weekly/Monthly/Quarterly/Yearly evidence coverage side by side should keep owners engaged during thin weekly evidence periods while preserving evidence discipline and creating measurable cross-window navigation.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {
