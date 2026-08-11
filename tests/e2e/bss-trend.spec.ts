@@ -137,10 +137,19 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(focusResponse.status()).toBeLessThan(400);
     const focusPayload = await focusResponse.json();
     expect(focusPayload.updated_at).toBeTruthy();
+    expect(focusPayload.focus_items?.length).toBeGreaterThanOrEqual(7);
     await expect(page.locator('.focus-note')).toContainText(focusPayload.updated_at);
     const firstFocusItem = focusPayload.focus_items?.[0];
     if (firstFocusItem?.item_name) {
       await expect(focusCards.first()).toContainText(firstFocusItem.item_name);
+    }
+    const collectionNotesResponse = await request.get('/data/collection_notes_public.json');
+    expect(collectionNotesResponse.status()).toBeLessThan(400);
+    const collectionNotes = await collectionNotesResponse.json();
+    const missingPublishedItems = collectionNotes.coverage_gaps?.missing_published_trend_items ?? [];
+    const focusIds = new Set((focusPayload.focus_items ?? []).map((item: any) => item.item_id));
+    if (missingPublishedItems.length > 0 && missingPublishedItems.length <= 8) {
+      expect(missingPublishedItems.every((item: any) => focusIds.has(item.item_id))).toBe(true);
     }
     await expect(page.locator('[data-growth-section="category-landing-nav-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="category-landing-nav-v1"]')).toHaveAttribute('data-growth-experiment', 'category-landing-pages-v1');

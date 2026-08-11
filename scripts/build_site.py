@@ -803,7 +803,7 @@ def evidence_focus_watchlist(timeframe: str, rows: list[dict[str, Any]]) -> str:
     cards = []
     label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
     campaign = f"daily-visits-500-{timeframe}-evidence-focus-watchlist"
-    for item in focus_items[:6]:
+    for item in focus_items[:8]:
         if not isinstance(item, dict):
             continue
         item_id = str(item.get("item_id") or "").strip()

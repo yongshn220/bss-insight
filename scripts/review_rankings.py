@@ -34,7 +34,7 @@ PUBLIC_NEXT_LOOP_FOCUS_PATH = PUBLIC_DATA_DIR / "next_loop_focus_public.json"
 TIMEFRAME = "weekly"
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_DAYS = {"weekly": 14, "monthly": 45, "quarterly": 120, "yearly": 365}
-MAX_FOCUS_ITEMS = 6
+MAX_FOCUS_ITEMS = 8
 SITE_BASE = "https://gnsresearchhub.vercel.app"
 
 
@@ -571,6 +571,18 @@ def focus_candidates(rows: list[dict[str, Any]], collection_notes: dict[str, Any
                 break
         if len(selected) >= MAX_FOCUS_ITEMS:
             break
+
+    # If true all-window published-source gaps fit inside the expanded focus
+    # queue, include the remaining gap items before recency-only WATCHLIST rows.
+    # This keeps a seven-item missing_published_trend list from losing lower-rank
+    # concrete gaps such as drawstring ponytails, 25mm lashes, or elastic melting
+    # bands to higher-rank items that already have older dated evidence.
+    for category in weak_categories:
+        if len(selected) >= MAX_FOCUS_ITEMS:
+            break
+        for entry in gap_by_category.get(category, []):
+            if add_entry(entry, "collection_notes_missing_published_trend") and len(selected) >= MAX_FOCUS_ITEMS:
+                break
 
     # Second pass: original weak-category balancing for weekly gaps/recency gaps.
     for category in weak_categories:
@@ -1333,7 +1345,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "tracked_quality_metrics": [
             "NEXT_LOOP_FOCUS_QUERIES_PER_ITEM default=3",
             "collector chooses exact + owner-context + review/tutorial probes when available",
-            "focus_items=" + ", ".join(focus_item_ids[:6]),
+            "focus_items=" + ", ".join(focus_item_ids[:MAX_FOCUS_ITEMS]),
             f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
         ],
         "owner_value": "Weak item cards get a better chance of collecting dated, item-relevant sources in the next run, which can lower WATCHLIST count without treating generated search URLs as evidence.",
@@ -1350,7 +1362,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "objective": "Prioritize true collection_notes missing published-trend gaps in next_loop_focus before recency-only weekly WATCHLIST items, so the next collector spends probes on items with no captured dated trend URL at all.",
         "tracked_quality_metrics": [
             f"collection_gap_focus_items={len(collection_gap_focus)}/{MAX_FOCUS_ITEMS}",
-            "gap_focus_item_ids=" + ", ".join(str(item.get("item_id")) for item in collection_gap_focus[:6]),
+            "gap_focus_item_ids=" + ", ".join(str(item.get("item_id")) for item in collection_gap_focus[:MAX_FOCUS_ITEMS]),
             f"published_trend_missing_items={len(missing_published_gap_ids(load_json(COLLECTION_NOTES_PATH, {})))}",
             f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
         ],
