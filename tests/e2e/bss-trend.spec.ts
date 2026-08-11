@@ -101,7 +101,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toHaveAttribute('data-growth-experiment', 'run-change-snapshot-v1');
     await expect(page.getByRole('heading', { name: '오늘 다시 볼 이유' })).toBeVisible();
-    await expect(page.getByText('Cached fallback')).toBeVisible();
+    await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]').getByText('Cached fallback')).toBeVisible();
     await expect(page.locator('[data-growth-cta="run_change_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
     await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="evidence-gap-transparency-v1"]')).toHaveAttribute('data-growth-experiment', 'evidence-window-transparency-v1');
@@ -110,9 +110,19 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.getByText('Active trend window')).toBeVisible();
     await expect(page.getByText('365d captured published URLs')).toBeVisible();
     await expect(page.locator('.evidence-snapshot-grid div').filter({ hasText: 'Missing TikTok Shop' }).getByText('0')).toBeVisible();
-    await expect(page.locator('[data-source-health="tiktok_shop"]')).toBeVisible();
-    await expect(page.locator('[data-source-health="tiktok_shop"]')).toContainText('TikTok Shop freshness');
-    await expect(page.locator('[data-source-health="tiktok_shop"]')).not.toContainText('Current actor failed; previous capture');
+    const tiktokSourceHealth = page.locator('[data-source-health="tiktok_shop"]');
+    await expect(tiktokSourceHealth).toBeVisible();
+    await expect(tiktokSourceHealth).toHaveAttribute('data-source-health-status', /.+/);
+    await expect(tiktokSourceHealth).toHaveAttribute('data-fresh-urls', /\d+/);
+    await expect(tiktokSourceHealth).toHaveAttribute('data-cached-urls', /\d+/);
+    await expect(tiktokSourceHealth).toContainText('TikTok Shop freshness');
+    await expect(tiktokSourceHealth).toContainText(/Fresh \d+/);
+    await expect(tiktokSourceHealth).toContainText(/Cached \d+/);
+    await expect(tiktokSourceHealth.locator('.source-health-status')).toBeVisible();
+    const tiktokSourceStatus = await tiktokSourceHealth.getAttribute('data-source-health-status');
+    if (tiktokSourceStatus?.includes('cache')) {
+      await expect(tiktokSourceHealth).toContainText('supply-only');
+    }
     await expect(page.locator('[data-growth-cta="evidence_snapshot_review"]')).toHaveAttribute('href', '/data/operations_review_public.json');
     await expect(page.locator('[data-growth-section="timeframe-evidence-ladder-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="timeframe-evidence-ladder-v1"]')).toHaveAttribute('data-growth-experiment', 'timeframe-evidence-ladder-v1');

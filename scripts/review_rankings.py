@@ -1063,6 +1063,29 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "tiktok-source-health-label-v1",
+        "status": "live-site-trust-ux-after-build",
+        "objective": "Make TikTok Shop source freshness readable at a glance by separating Fresh and Cached counts in the evidence snapshot and labeling cached fallback as supply-only.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (evidence-gap-transparency-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (TikTok Shop freshness cell)",
+            "https://gnsresearchhub.vercel.app/data/collection_notes_public.json",
+        ],
+        "tracked_events": [
+            "growth_section_view evidence-gap-transparency-v1",
+            "growth_click cta_evidence_snapshot_review",
+        ],
+        "tracked_quality_metrics": [
+            f"apify_status={apify.get('status', 'unknown')}",
+            f"fresh_evidence_urls={apify.get('fresh_evidence_urls', 0)}",
+            f"cached_supply_urls={apify.get('cached_evidence_urls', apify.get('partial_cached_evidence_urls', 0))}",
+            "source-health cell exposes data-source-health-status, data-fresh-urls, and data-cached-urls for QA/live smoke checks",
+        ],
+        "owner_value": "BSS owners can see whether TikTok Shop links are fresh social-commerce supply or previous cached supply, reducing black-box score confusion during upstream collector outages.",
+        "measurement_need": "Analytics export is still needed to compare evidence snapshot views/review clicks against item-card/share behavior and repeat visits.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "return-visitor-prompt-v1",
         "status": "live-client-side-ux-after-build",
         "objective": "Encourage repeat BSS owner visits by revealing a concise current-ranking path only after anonymous visitor context shows a later visit.",
@@ -1633,6 +1656,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "tiktok-source-health-label-v1",
+            "status": "active-site-trust-ux-after-review",
+            "hypothesis": "Explicit Fresh/Cached labels in the evidence snapshot will reduce owner confusion when TikTok Shop actor failures require cache fallback, improving trust before source-link or item-card clicks.",
+            "next_step": "After analytics export access is connected, compare evidence-gap section views/review clicks and downstream item-card/share events during fresh vs cached TikTok Shop runs.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "return-visitor-prompt-v1",
             "status": "active-repeat-visit-ux-after-review",
             "hypothesis": "A concise returning-owner prompt should increase current-ranking CTA clicks and repeat visits by showing what to check first after the initial visit.",
@@ -1871,6 +1901,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["retry_actor_every_loop_after_failure", "cache_first_short_cooldown_then_retry"],
             "success_metric": "fewer repeated failed Apify attempts during upstream failures, cache_age_days within policy, fresh_evidence_urls recovery after cooldown, and no unsupported trend claims",
             "hypothesis": "Using a short cooldown after a recent TikTok Shop actor failure should preserve cron/runtime stability and owner trust by labeling cache reuse explicitly while still retrying automatically after cooldown expiry.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "tiktok-source-health-label-v1",
+            "status": "active-site-trust-ux-after-build",
+            "variants": ["ambiguous_fresh_cached_ratio", "explicit_fresh_cached_supply_only_labels"],
+            "success_metric": "evidence-gap section views, evidence_snapshot_review clicks, item-card/source-link engagement, and repeat visits once analytics export is connected",
+            "hypothesis": "BSS owners will trust the ranking more when TikTok Shop freshness clearly says Fresh vs Cached supply-only instead of a ratio that can look like a score.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

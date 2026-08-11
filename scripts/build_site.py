@@ -650,11 +650,27 @@ def tiktok_shop_freshness_cell(health: dict[str, Any], cached_tiktok_count: int)
     else:
         note = f"Status {status}; source health is shown for owner trust"
 
+    status_labels = {
+        "success": "Fresh actor",
+        "success_sharded_after_full_failure": "Fresh via shards",
+        "success_sharded_with_partial_cache": "Partial cache",
+        "success_with_partial_cache": "Partial cache",
+        "failed_using_cache": "Cached fallback",
+        "skipped_recent_failure_using_cache": "Cooldown cache",
+        "success_empty": "Fresh empty",
+        "failed": "Needs recovery",
+        "skipped": "Needs retry",
+    }
+    status_label = status_labels.get(status, status.replace("_", " ").title())
+
     return (
-        f'<div class="source-health-cell {esc(status)}" data-source-health="tiktok_shop">'
-        f'<b>{esc(fresh_urls)}/{esc(cached_urls)}</b>'
+        f'<div class="source-health-cell {esc(status)}" data-source-health="tiktok_shop" '
+        f'data-source-health-status="{esc(status)}" data-fresh-urls="{esc(fresh_urls)}" data-cached-urls="{esc(cached_urls)}">'
+        f'<b aria-label="Fresh TikTok Shop URLs {esc(fresh_urls)}, cached supply-only URLs {esc(cached_urls)}">'
+        f'<span class="source-health-count fresh">Fresh {esc(fresh_urls)}</span>'
+        f'<span class="source-health-count cached">Cached {esc(cached_urls)}</span></b>'
         '<span>TikTok Shop freshness</span>'
-        f'<small>{esc(note)} · total URLs {esc(total_urls)}</small></div>'
+        f'<small><em class="source-health-status">{esc(status_label)}</em> {esc(note)} · total URLs {esc(total_urls)}</small></div>'
     )
 
 
