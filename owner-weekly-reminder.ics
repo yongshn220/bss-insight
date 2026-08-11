@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//GNS Research Hub//BSS Weekly Reminder//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:gns-bss-weekly-owner-ranking@gnsresearchhub.vercel.app
+DTSTAMP:20260811T024751Z
+LAST-MODIFIED:20260811T024751Z
+DTSTART;VALUE=DATE:20260817
+RRULE:FREQ=WEEKLY;COUNT=26
+SUMMARY:GNS BSS weekly item ranking check
+DESCRIPTION:Open the GNS BSS weekly item-ranking dashboard. Lead item: Glue
+ less Pre-Cut HD Lace Wig. Trend-backed 6/44\; WATCHLIST 38. Published URL
+ s drive trend movement\; supply/watchlist links are not trend claims. Das
+ hboard: https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source
+ =calendar&utm_medium=reminder&utm_campaign=daily-visits-500-owner-calenda
+ r-reminder&utm_content=weekly
+URL:https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_source=calen
+ dar&utm_medium=reminder&utm_campaign=daily-visits-500-owner-calendar-remi
+ nder&utm_content=weekly
+END:VEVENT
+END:VCALENDAR

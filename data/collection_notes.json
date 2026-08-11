@@ -1,24 +1,31 @@
 {
-  "generated_at": "2026-08-11T01:30:33.272578Z",
+  "generated_at": "2026-08-11T02:47:51.890567Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "success",
-      "observed_at": "2026-08-11T01:30:33.271700Z",
+      "status": "success_with_partial_cache",
+      "observed_at": "2026-08-11T02:47:51.889608Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 80,
       "expanded_keyword_items": 18,
-      "products_returned": 79,
+      "products_returned": 78,
       "items_with_evidence": 44,
       "evidence_urls": 77,
-      "fresh_evidence_urls": 77,
-      "partial_cached_items": 0,
-      "partial_cached_evidence_urls": 0,
-      "current_actor_status": "success",
-      "cache_policy": "cache not used",
-      "max_results_total": 80
+      "fresh_evidence_urls": 76,
+      "partial_cached_items": 1,
+      "partial_cached_evidence_urls": 1,
+      "current_actor_status": "success_partial",
+      "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
+      "max_results_total": 80,
+      "cache_status": "usable",
+      "cache_path": "data/tiktok_shop_cache.json",
+      "cache_updated_at": "2026-08-11T01:30:33.270532Z",
+      "cache_age_days": 0,
+      "cache_max_age_days": 7,
+      "cached_items": 44,
+      "cached_evidence_urls": 77
     }
   },
   "evidence_totals": {
@@ -27,11 +34,11 @@
     "items_with_published_trend_url": 26,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "items_with_cached_tiktok_shop_url": 0,
-    "verified_urls_total": 301,
-    "published_trend_urls_total": 50,
+    "items_with_cached_tiktok_shop_url": 1,
+    "verified_urls_total": 302,
+    "published_trend_urls_total": 51,
     "retail_product_urls_total": 251,
-    "cached_tiktok_shop_urls_total": 0,
+    "cached_tiktok_shop_urls_total": 1,
     "collection_error_records": 0
   },
   "coverage_gaps": {
@@ -260,6 +267,7 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
+    "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
     "published trend URL gap 18개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }

@@ -17,6 +17,7 @@ COPY_PATHS = [
     "sitemap.xml",
     "manifest.webmanifest",
     "feed.xml",
+    "owner-weekly-reminder.ics",
     "assets",
     "rankings",
     "categories",

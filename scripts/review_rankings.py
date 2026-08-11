@@ -943,6 +943,34 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "owner-calendar-reminder-v1",
+        "status": "live-static-calendar-retention-after-build",
+        "objective": "Give BSS owners/reps a downloadable weekly .ics reminder that brings them back to the ranking without requiring SNS posting or ad spend.",
+        "utm_campaign": "daily-visits-500-owner-calendar-reminder",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/owner-weekly-reminder.ics",
+            "https://gnsresearchhub.vercel.app/index.html (owner-calendar-reminder-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (owner-calendar-reminder-v1)",
+            "https://gnsresearchhub.vercel.app/sitemap.xml",
+        ],
+        "tracked_events": [
+            "growth_section_view owner-calendar-reminder-v1",
+            "growth_click cta_owner_calendar_download with utm_medium=calendar_reminder",
+            "growth_click share_{timeframe}_calendar_copy",
+            "growth_click share_{timeframe}_calendar_message_copy",
+            "growth_share_copy_result share_action={timeframe}_calendar_copy or {timeframe}_calendar_message_copy",
+        ],
+        "tracked_quality_metrics": [
+            "calendar file uses RRULE:FREQ=WEEKLY;COUNT=26",
+            "calendar URL points back with utm_source=calendar&utm_medium=reminder&utm_campaign=daily-visits-500-owner-calendar-reminder",
+            f"calendar_panel_weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"calendar_panel_weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "Owners can save a weekly check-in habit in their calendar; reps can copy a reminder text without claiming new evidence or posting externally.",
+        "measurement_need": "GA4/Vercel export access is still needed to measure calendar_reminder clicks, calendar UTM return visits, and repeat visitor rate centrally.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "owner-5-minute-route-v1",
         "status": "live-site-ux-distribution-after-build",
         "objective": "Compress the ranking into a copy-ready 3-step store-walk route so busy BSS owners/reps can act and share without reading the full leaderboard first.",
@@ -1154,6 +1182,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "owner-calendar-reminder-v1",
+            "status": "active-static-retention-after-review",
+            "hypothesis": "A downloadable weekly .ics reminder should create another measurable return-visit path for busy BSS owners/reps who will not subscribe to RSS or save a PWA shortcut.",
+            "next_step": "After GA4/Vercel export access is connected, compare calendar_reminder clicks, utm_source=calendar return visits, and is_returning_visitor rates against RSS, shortcut, and owner-share paths.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "owner-5-minute-route-v1",
             "status": "active-site-ux-distribution-after-review",
             "hypothesis": "A 3-step store-walk route should increase BSS owner action and share intent versus reading only the full leaderboard because it gives a hair/install pick, a front-end add-on, and a WATCHLIST small-test in one copy-ready block.",
@@ -1318,6 +1353,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["manual_bookmark_without_manifest", "web_manifest_plus_visible_shortcut_copy_cta"],
             "success_metric": "utm_medium=shortcut and utm_source=pwa sessions, shortcut copy/open events, returning-owner visit_count, and repeat ranking entrances once analytics export is connected",
             "hypothesis": "Giving owners/reps an installable shortcut and copyable saved link should reduce friction to reopening the dashboard, supporting repeat visits toward 500/day without external posting permissions.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "owner-calendar-reminder-v1",
+            "status": "active-calendar-retention-after-build",
+            "variants": ["no_calendar_reminder", "weekly_ics_reminder_with_calendar_utm"],
+            "success_metric": "owner-calendar-reminder section views, calendar file downloads/copy events, utm_source=calendar return visits, and repeat visitor rate once analytics export is connected",
+            "hypothesis": "A weekly .ics reminder gives owners/reps a low-friction return path outside SNS and should improve repeat visits toward the 500/day goal once provider measurement is connected.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

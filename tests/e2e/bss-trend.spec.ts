@@ -68,6 +68,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-return-visitor-panel]')).not.toHaveAttribute('data-growth-section', /.+/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/index.html');
     await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/feed.xml');
+    await expect(page.locator('link[rel="alternate"][type="text/calendar"]')).toHaveAttribute('href', 'https://gnsresearchhub.vercel.app/owner-weekly-reminder.ics');
     await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/manifest.webmanifest');
     await expect(page.locator('link[rel="icon"][href="/assets/app-icon.svg"]')).toHaveCount(1);
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#111827');
@@ -195,6 +196,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-cta="owner_shortcut_open"]')).toHaveAttribute('href', /utm_medium=shortcut/);
     await expect(page.locator('[data-growth-share="weekly_shortcut_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-shortcut/);
     await expect(page.locator('[data-growth-cta="owner_shortcut_manifest"]')).toHaveAttribute('href', '/manifest.webmanifest');
+    await expect(page.locator('[data-growth-section="owner-calendar-reminder-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="owner-calendar-reminder-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-calendar-reminder-v1');
+    await expect(page.getByRole('heading', { name: 'Weekly calendar reminder 저장' })).toBeVisible();
+    await expect(page.locator('[data-growth-cta="owner_calendar_download"]')).toHaveAttribute('href', /owner-weekly-reminder\.ics/);
+    await expect(page.locator('[data-growth-cta="owner_calendar_download"]')).toHaveAttribute('href', /utm_medium=calendar_reminder/);
+    await expect(page.locator('[data-growth-share="weekly_calendar_copy"]')).toHaveAttribute('data-copy-url', /owner-weekly-reminder\.ics/);
+    await expect(page.locator('[data-growth-share="weekly_calendar_message_copy"]')).toHaveAttribute('data-copy-text', /BSS weekly ranking reminder/);
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-share-kit-v1');
@@ -273,6 +281,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-shortcut-save-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'owner-calendar-reminder-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'evidence-focus-watchlist-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'timeframe-evidence-ladder-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'category-landing-nav-v1')).toBe(true);
@@ -288,6 +297,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-feed-subscribe-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-shortcut-save-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-calendar-reminder-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('evidence-focus-watchlist-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('timeframe-evidence-ladder-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('category-landing-nav-v1'))).toBe(true);
@@ -398,6 +408,22 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(shortcutEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_shortcut_copy' && event.component_experiment_id === 'owner-shortcut-save-v1' && String(event.href).includes('daily-visits-500-owner-shortcut'))).toBe(true);
     expect(shortcutEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_shortcut_copy' && event.section === 'owner-shortcut-save-v1' && event.component_experiment_id === 'owner-shortcut-save-v1' && String(event.href).includes('daily-visits-500-owner-shortcut'))).toBe(true);
 
+    await page.evaluate(() => {
+      const link = document.querySelector('[data-growth-cta="owner_calendar_download"]') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing owner calendar download link');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const calendarClickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(calendarClickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_calendar_download' && event.component_experiment_id === 'owner-calendar-reminder-v1' && String(event.href).includes('owner-weekly-reminder.ics'))).toBe(true);
+
+    const calendarTextButton = page.locator('[data-growth-share="weekly_calendar_message_copy"]').first();
+    await calendarTextButton.click();
+    await expect(calendarTextButton).toHaveText(/Copied|Text ready/);
+    const calendarEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(calendarEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_calendar_message_copy' && event.component_experiment_id === 'owner-calendar-reminder-v1' && String(event.href).includes('daily-visits-500-owner-calendar-reminder'))).toBe(true);
+    expect(calendarEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_calendar_message_copy' && event.section === 'owner-calendar-reminder-v1' && event.copy_mode === 'brief_text')).toBe(true);
+
     const engagementResult = await page.evaluate(() => {
       const growth = (window as any).__GNS_GROWTH__;
       const summary = growth?.flushEngagementSummary?.('playwright_manual');
@@ -461,6 +487,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
   });
 
   test('category landing pages focus broad store lanes into item-level owner actions', async ({ page }) => {
@@ -560,11 +587,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-feed-subscribe-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-shortcut-save-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="owner-calendar-reminder-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-share$="_owner_brief_copy"]')).toHaveAttribute('data-copy-text', /BSS owner brief/);
       await expect(page.locator('[data-growth-share$="_owner_route_copy"]')).toHaveAttribute('data-copy-text', /5-minute owner route/);
       await expect(page.locator('[data-growth-share$="_owner_route_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-.*-owner-route/);
       await expect(page.locator('[data-growth-share$="_feed_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-feed-subscribe/);
       await expect(page.locator('[data-growth-share$="_shortcut_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-shortcut/);
+      await expect(page.locator('[data-growth-share$="_calendar_message_copy"]')).toHaveAttribute('data-copy-text', /BSS weekly ranking reminder/);
+      await expect(page.locator('[data-growth-cta="owner_calendar_download"]')).toHaveAttribute('href', /daily-visits-500-owner-calendar-reminder/);
       await expect(page.locator('.quick-pick-card').first()).toHaveAttribute('href', new RegExp(`daily-visits-500-${label.toLowerCase()}-owner-quick-picks`));
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
       await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
@@ -747,10 +777,12 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'item-evidence-summary-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-calendar-reminder-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'timeframe-evidence-ladder-v1')).toBe(true);
     const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
     expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
@@ -779,6 +811,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const iconResponse = await request.get('/assets/app-icon.svg');
     expect(iconResponse.status()).toBeLessThan(400);
 
+    const calendarResponse = await request.get('/owner-weekly-reminder.ics');
+    expect(calendarResponse.status()).toBeLessThan(400);
+    const calendar = await calendarResponse.text();
+    const unfoldedCalendar = calendar.replace(/\r?\n[ \t]/g, '');
+    expect(calendar).toContain('BEGIN:VCALENDAR');
+    expect(calendar).toContain('RRULE:FREQ=WEEKLY;COUNT=26');
+    expect(unfoldedCalendar).toContain('daily-visits-500-owner-calendar-reminder');
+    expect(unfoldedCalendar).toContain('utm_source=calendar');
+
     const focusResponse = await request.get('/data/next_loop_focus_public.json');
     expect(focusResponse.status()).toBeLessThan(400);
     const focus = await focusResponse.json();
@@ -801,6 +842,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const sitemap = await sitemapResponse.text();
     expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/index.html</loc>');
     expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/feed.xml</loc>');
+    expect(sitemap).toContain('<loc>https://gnsresearchhub.vercel.app/owner-weekly-reminder.ics</loc>');
     expect(sitemap).toContain('/rankings/weekly.html</loc>');
     expect(sitemap).toContain('/categories/wigs-hair-pieces.html</loc>');
     expect(sitemap).toContain('/items/');

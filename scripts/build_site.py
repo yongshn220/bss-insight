@@ -24,6 +24,7 @@ ROBOTS_PATH = ROOT / "robots.txt"
 SITEMAP_PATH = ROOT / "sitemap.xml"
 FEED_PATH = ROOT / "feed.xml"
 MANIFEST_PATH = ROOT / "manifest.webmanifest"
+CALENDAR_PATH = ROOT / "owner-weekly-reminder.ics"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
@@ -388,6 +389,7 @@ def shell(
   <meta name="gns:growth-experiment" content="hero-growth-cta-v1">
   <link rel="canonical" href="{esc(canonical_url)}">
   <link rel="alternate" type="application/rss+xml" title="BSS Trend Ranking RSS" href="{SITE_BASE}/feed.xml">
+  <link rel="alternate" type="text/calendar" title="BSS Weekly Owner Reminder" href="{SITE_BASE}/owner-weekly-reminder.ics">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/assets/app-icon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#111827">
@@ -1053,6 +1055,88 @@ def write_rss_feed(data: dict[str, Any]) -> str:
     return str(FEED_PATH.relative_to(ROOT))
 
 
+def ics_escape(value: object) -> str:
+    """Escape user-visible text for a minimal RFC 5545 calendar payload."""
+    return (
+        str(value or "")
+        .replace("\\", "\\\\")
+        .replace(";", "\\;")
+        .replace(",", "\\,")
+        .replace("\r\n", "\n")
+        .replace("\r", "\n")
+        .replace("\n", "\\n")
+    )
+
+
+def ics_fold_line(line: str, limit: int = 75) -> str:
+    """Fold long iCalendar content lines with a leading-space continuation."""
+    if len(line) <= limit:
+        return line
+    chunks: list[str] = []
+    remaining = line
+    while len(remaining) > limit:
+        chunks.append(remaining[:limit])
+        remaining = " " + remaining[limit:]
+        limit = 74
+    chunks.append(remaining)
+    return "\r\n".join(chunks)
+
+
+def write_owner_calendar_reminder(data: dict[str, Any]) -> str:
+    """Generate a weekly .ics reminder so owners can build a repeat-visit habit.
+
+    The calendar file is a distribution/retention artifact, not a new evidence
+    source. It points back to the weekly ranking with UTM tags so future provider
+    analytics can separate calendar-driven return visits from RSS, shortcut, and
+    owner-share paths.
+    """
+    generated = generated_datetime(data)
+    start_date = generated.date()
+    days_until_monday = (7 - start_date.weekday()) % 7 or 7
+    first_monday = start_date + dt.timedelta(days=days_until_monday)
+    dtstamp = generated.strftime("%Y%m%dT%H%M%SZ")
+    start_value = first_monday.strftime("%Y%m%d")
+    dashboard_url = growth_campaign_url(
+        "/rankings/weekly.html",
+        source="calendar",
+        medium="reminder",
+        campaign="daily-visits-500-owner-calendar-reminder",
+        utm_content="weekly",
+    )
+    weekly_rows = data.get("rankings", {}).get("weekly", []) if isinstance(data.get("rankings"), dict) else []
+    weekly_rows = [row for row in weekly_rows if isinstance(row, dict)] if isinstance(weekly_rows, list) else []
+    trend_count = sum(1 for row in weekly_rows if has_trend_evidence(row))
+    watchlist_count = sum(1 for row in weekly_rows if not has_trend_evidence(row))
+    lead_name = weekly_rows[0].get("item_name") if weekly_rows else "current BSS item ranking"
+    description = (
+        f"Open the GNS BSS weekly item-ranking dashboard. Lead item: {lead_name}. "
+        f"Trend-backed {trend_count}/{len(weekly_rows)}; WATCHLIST {watchlist_count}. "
+        "Published URLs drive trend movement; supply/watchlist links are not trend claims. "
+        f"Dashboard: {dashboard_url}"
+    )
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//GNS Research Hub//BSS Weekly Reminder//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        "UID:gns-bss-weekly-owner-ranking@gnsresearchhub.vercel.app",
+        f"DTSTAMP:{dtstamp}",
+        f"LAST-MODIFIED:{dtstamp}",
+        f"DTSTART;VALUE=DATE:{start_value}",
+        "RRULE:FREQ=WEEKLY;COUNT=26",
+        "SUMMARY:GNS BSS weekly item ranking check",
+        f"DESCRIPTION:{ics_escape(description)}",
+        f"URL:{dashboard_url}",
+        "END:VEVENT",
+        "END:VCALENDAR",
+        "",
+    ]
+    CALENDAR_PATH.write_text("\r\n".join(ics_fold_line(line) for line in lines), encoding="utf-8")
+    return str(CALENDAR_PATH.relative_to(ROOT))
+
+
 def write_web_manifest(data: dict[str, Any]) -> list[str]:
     """Generate an install/save shortcut manifest for repeat BSS owner visits.
 
@@ -1340,6 +1424,63 @@ def owner_shortcut_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
             <a class="share-action" data-growth-cta="owner_shortcut_open" href="{esc(shortcut_path)}">Open shortcut view</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_shortcut_copy" data-copy-url="{esc(shortcut_url)}">Copy shortcut link</button>
             <a class="share-action" data-growth-cta="owner_shortcut_manifest" href="/manifest.webmanifest">Manifest</a>
+          </div>
+        </article>
+      </section>"""
+
+
+def owner_calendar_reminder_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Visible calendar reminder CTA for repeat weekly owner visits.
+
+    This gives busy BSS owners/reps a non-SNS retention path they can save in a
+    calendar app. It is a growth/distribution experiment only: the reminder uses
+    current evidence labels and never creates a new trend claim.
+    """
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = "daily-visits-500-owner-calendar-reminder"
+    reminder_path = growth_campaign_path(
+        "/owner-weekly-reminder.ics",
+        source="site",
+        medium="calendar_reminder",
+        campaign=campaign,
+        utm_content=timeframe,
+    )
+    reminder_url = absolute_url(reminder_path)
+    dashboard_url = growth_campaign_url(
+        f"/rankings/{timeframe}.html",
+        source="calendar",
+        medium="reminder",
+        campaign=campaign,
+        utm_content=timeframe,
+    )
+    trend_count = sum(1 for row in rows if has_trend_evidence(row))
+    watchlist_count = len(rows) - trend_count
+    top = choose_share_row(rows)
+    top_name = top.get("item_name") if top else "current ranking"
+    copy_text = "\n".join([
+        "BSS weekly ranking reminder:",
+        f"Open {label} dashboard and review Top 3, WATCHLIST, display/risk tips.",
+        f"Current lead item: {top_name}. Trend-backed {trend_count}/{len(rows)}; WATCHLIST {watchlist_count}.",
+        "Rule: published URLs drive trend movement; supply/watchlist links are not trend claims.",
+        f"Dashboard: {dashboard_url}",
+    ])
+    return f"""
+      <section class="wrap owner-feed owner-calendar" data-growth-section="owner-calendar-reminder-v1" data-growth-experiment="owner-calendar-reminder-v1" aria-labelledby="owner-calendar-{esc(timeframe)}">
+        <div class="owner-feed-copy">
+          <span>Repeat visit path · calendar reminder</span>
+          <h2 id="owner-calendar-{esc(timeframe)}">Weekly calendar reminder 저장</h2>
+          <p>500 average daily visits 목표는 owner/reps가 다시 열어보는 습관이 있어야 가능합니다. .ics reminder는 매주 ranking을 확인하도록 calendar에 저장하는 경로이며, UTM으로 calendar-driven return visit을 분리 측정할 준비가 되어 있습니다.</p>
+          <small>{esc(label)} context · trend-backed {esc(trend_count)}/{esc(len(rows))} · WATCHLIST {esc(watchlist_count)} · lead item {esc(top_name)}</small>
+        </div>
+        <article class="owner-feed-card">
+          <strong>Weekly reminder file</strong>
+          <code>{esc(reminder_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-cta="owner_calendar_download" href="{esc(reminder_path)}">Download .ics</a>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_calendar_copy" data-copy-url="{esc(reminder_url)}">Copy calendar link</button>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_calendar_message_copy" data-copy-url="{esc(dashboard_url)}" data-copy-text="{esc(copy_text)}">Copy reminder text</button>
           </div>
         </article>
       </section>"""
@@ -1882,6 +2023,7 @@ def render_home(data: dict[str, Any]) -> str:
       {owner_brief_panel('weekly', weekly)}
       {owner_feed_subscribe_panel('weekly', weekly)}
       {owner_shortcut_panel('weekly', weekly)}
+      {owner_calendar_reminder_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
@@ -2091,6 +2233,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {owner_brief_panel(timeframe, rows)}
       {owner_feed_subscribe_panel(timeframe, data.get("rankings", {}).get("weekly", rows))}
       {owner_shortcut_panel(timeframe, rows)}
+      {owner_calendar_reminder_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
@@ -2259,6 +2402,7 @@ def write_seo_files(data: dict[str, Any], item_ids: set[str], category_ids: set[
     paths: list[tuple[str, str, str]] = [
         ("/index.html", "1.0", "daily"),
         ("/feed.xml", "0.8", "daily"),
+        ("/owner-weekly-reminder.ics", "0.7", "weekly"),
         *[(f"/rankings/{tf}.html", "0.9", "daily") for tf in TIMEFRAME_ORDER],
         *[(f"/categories/{category_id}.html", "0.82", "daily") for category_id in sorted(category_ids) if category_id],
         *[(f"/items/{item_id}.html", "0.72", "weekly") for item_id in sorted(item_ids) if item_id],
@@ -2287,6 +2431,7 @@ def main() -> int:
     data = load_rankings()
     generated_social_cards = write_social_share_cards(data)
     generated_feed = write_rss_feed(data)
+    generated_calendar = write_owner_calendar_reminder(data)
     generated_manifest = write_web_manifest(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
@@ -2302,7 +2447,7 @@ def main() -> int:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
     write_seo_files(data, {str(item_id) for item_id in item_ids if item_id}, category_ids)
-    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
+    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, generated_calendar, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids), "categories": len(category_ids)}, ensure_ascii=False, indent=2))
     return 0
 
