@@ -215,6 +215,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-section="top3-leaderboard-v1"]')).toHaveAttribute('data-growth-experiment', 'ranking-list-engagement-context-v1');
     await expect(page.locator('[data-growth-section="ranking-main-list-v1"]')).toHaveAttribute('data-growth-experiment', 'ranking-list-engagement-context-v1');
     await expect(page.locator('[data-growth-section="monthly-preview-list-v1"]')).toHaveAttribute('data-growth-experiment', 'ranking-list-engagement-context-v1');
+    const homeSectionOrder = await page.locator('[data-growth-section]').evaluateAll((sections) =>
+      sections.map((section) => section.getAttribute('data-growth-section') ?? ''),
+    );
+    const homeSectionIndex = (sectionId: string) => homeSectionOrder.indexOf(sectionId);
+    expect(homeSectionIndex('top3-leaderboard-v1')).toBeGreaterThanOrEqual(0);
+    expect(homeSectionIndex('ranking-main-list-v1')).toBeGreaterThan(homeSectionIndex('top3-leaderboard-v1'));
+    expect(homeSectionIndex('ranking-main-list-v1')).toBeLessThan(homeSectionIndex('category-landing-nav-v1'));
+    expect(homeSectionIndex('ranking-main-list-v1')).toBeLessThan(homeSectionIndex('evidence-gap-transparency-v1'));
+    expect(homeSectionIndex('ranking-main-list-v1')).toBeLessThan(homeSectionIndex('owner-share-kit-v1'));
     await expect(page.locator('.podium-card')).toHaveCount(3);
     await expect(page.locator('.podium-card').first()).toHaveAttribute('data-item-id', /.+/);
     await expect(page.locator('.podium-card').first()).toHaveAttribute('data-item-rank', /\d+/);
@@ -491,6 +500,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);
@@ -795,6 +805,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-first-layout-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'focus-query-diversification-v1')).toBe(true);
@@ -802,6 +813,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-calendar-reminder-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);

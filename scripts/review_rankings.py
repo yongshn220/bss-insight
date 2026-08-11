@@ -346,8 +346,8 @@ def independent_ai_review(
 
     scorecards = {
         "ui_ux": {
-            "score": 88 if image_items == item_count else 82,
-            "reason": "Store-like cards, quick picks, owner brief, and share kits are present; score is capped if any item falls back to a category visual.",
+            "score": 90 if image_items == item_count else 84,
+            "reason": "Ranking-first layout now puts Top 3 and main item cards before support modules; score is capped if any item falls back to a category visual.",
         },
         "structure_architecture": {
             "score": 86,
@@ -1066,7 +1066,33 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel export access is still needed to compare category_page UTM sessions and category_copy_link events before/after category-specific share previews.",
         "last_refreshed_at": now,
     })
-    focus_items = review.get("next_loop_focus_items", []) if isinstance(review.get("next_loop_focus_items"), list) else []
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "ranking-first-layout-v1",
+        "status": "live-site-ux-after-build",
+        "objective": "Move the Top 3 leaderboard and main item ranking immediately after the hero/category chips so busy BSS owners see concrete product picks before growth, evidence, or share tooling panels.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (top3-leaderboard-v1 before evidence/share modules)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (ranking-main-list-v1 before evidence/share modules)",
+            "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+            "https://gnsresearchhub.vercel.app/rankings/quarterly.html",
+            "https://gnsresearchhub.vercel.app/rankings/yearly.html",
+        ],
+        "tracked_events": [
+            "growth_section_view top3-leaderboard-v1 near first content viewport",
+            "growth_section_view ranking-main-list-v1 before evidence/growth modules",
+            "growth_click podium_card and item_card with ranking-list-engagement-context-v1",
+        ],
+        "tracked_quality_metrics": [
+            "home_section_order=top3-leaderboard-v1 -> ranking-main-list-v1 -> monthly-preview-list-v1 -> category-landing-nav-v1 -> evidence/growth/share panels",
+            "timeframe_section_order=top3-leaderboard-v1 -> ranking-main-list-v1 -> run-change/evidence/owner panels",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "This restores the dashboard to a ranking-first experience: owners can scan stock/test items first, then use evidence, focus, share, feed, shortcut, and calendar tools as supporting modules.",
+        "measurement_need": "GA4/Vercel export access is needed to compare scroll depth, first item-card clicks, and share/copy behavior before/after the layout order change.",
+        "last_refreshed_at": now,
+    })
+    focus_items = review.get("next_loop_focus_items", []) if isinstance(review.get("next_loop_focus_items", []), list) else []
     focus_item_ids = [str(item.get("item_id")) for item in focus_items if isinstance(item, dict) and item.get("item_id")]
     supplemental_rows = [
         row for row in rows
@@ -1350,6 +1376,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "next_step": "After analytics export access is connected, compare category_page/category_copy_link UTM sessions and downstream item-card clicks before/after /assets/share-category-{category_id}.svg deployment.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "ranking-first-layout-v1",
+            "status": "active-site-ux-after-review",
+            "hypothesis": "Putting Top 3 and the main item ranking before evidence/growth/share panels should increase first-session item-card clicks and reduce owner confusion because the page behaves like a ranking dashboard instead of a long ops report.",
+            "next_step": "After analytics export access is connected, compare growth_section_view order, first item_card/podium_card clicks, scroll depth, and share/copy events before/after the ranking-first layout change.",
+            "last_refreshed_at": now,
+        })
 
     save_json(MARKETING_BACKLOG_PATH, marketing)
     return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
@@ -1557,6 +1590,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["generic_weekly_share_image_on_category_pages", "store_zone_category_specific_og_twitter_cards"],
             "success_metric": "category_page UTM sessions, category_copy_link/share events, item-card clicks from category pages, and repeat visits once analytics export is connected",
             "hypothesis": "Store-zone-specific social preview cards should make category landing shares more trustworthy and relevant for BSS owners than the generic all-category ranking image.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "ranking-first-layout-v1",
+            "status": "active-site-ux-after-build",
+            "variants": ["ops_panels_before_ranking", "top3_and_main_list_before_supporting_modules"],
+            "success_metric": "first-session podium_card/item_card clicks, ranking-main-list section views, scroll depth to support modules, share/copy events, and repeat visits once analytics export is connected",
+            "hypothesis": "A ranking-first layout should fit busy BSS owner behavior better by showing concrete product picks before secondary evidence, focus, share, feed, shortcut, and calendar panels.",
             "last_refreshed_at": now,
         })
 

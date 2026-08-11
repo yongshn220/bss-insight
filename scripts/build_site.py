@@ -1151,7 +1151,7 @@ def ics_fold_line(line: str, limit: int = 75) -> str:
         remaining = " " + remaining[limit:]
         limit = 74
     chunks.append(remaining)
-    return "\r\n".join(chunks)
+    return "\n".join(chunks)
 
 
 def write_owner_calendar_reminder(data: dict[str, Any]) -> str:
@@ -1205,7 +1205,7 @@ def write_owner_calendar_reminder(data: dict[str, Any]) -> str:
         "END:VCALENDAR",
         "",
     ]
-    CALENDAR_PATH.write_text("\r\n".join(ics_fold_line(line) for line in lines), encoding="utf-8")
+    CALENDAR_PATH.write_text("\n".join(ics_fold_line(line) for line in lines), encoding="utf-8")
     return str(CALENDAR_PATH.relative_to(ROOT))
 
 
@@ -2084,20 +2084,7 @@ def render_home(data: dict[str, Any]) -> str:
         </div>
       </section>
       <div class="wrap">{category_chips(cats, base_path='/rankings/weekly.html')}</div>
-      {category_landing_nav(cats, weekly)}
       {return_visitor_panel('weekly')}
-      {run_change_snapshot(data, 'weekly', weekly)}
-      {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
-      {timeframe_evidence_ladder(data, 'weekly')}
-      {evidence_focus_watchlist('weekly', weekly)}
-      {owner_quick_picks('weekly', weekly)}
-      {owner_action_route('weekly', weekly)}
-      {owner_brief_panel('weekly', weekly)}
-      {owner_feed_subscribe_panel('weekly', weekly)}
-      {owner_shortcut_panel('weekly', weekly)}
-      {owner_calendar_reminder_panel('weekly', weekly)}
-      {share_panel('weekly', weekly)}
-      {owner_share_strip('weekly', weekly)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
         {top_three(weekly)}
@@ -2110,6 +2097,19 @@ def render_home(data: dict[str, Any]) -> str:
         <div class="section-title"><div><span>Monthly leaders</span><h2>월간 흐름</h2></div></div>
         <div class="rank-grid">{''.join(item_card(row, compact=True) for row in monthly[:6])}</div>
       </section>
+      {category_landing_nav(cats, weekly)}
+      {run_change_snapshot(data, 'weekly', weekly)}
+      {evidence_gap_snapshot(weekly, 'weekly', data.get('collection_health', {}))}
+      {timeframe_evidence_ladder(data, 'weekly')}
+      {evidence_focus_watchlist('weekly', weekly)}
+      {owner_quick_picks('weekly', weekly)}
+      {owner_action_route('weekly', weekly)}
+      {owner_brief_panel('weekly', weekly)}
+      {owner_feed_subscribe_panel('weekly', weekly)}
+      {owner_shortcut_panel('weekly', weekly)}
+      {owner_calendar_reminder_panel('weekly', weekly)}
+      {share_panel('weekly', weekly)}
+      {owner_share_strip('weekly', weekly)}
     </main>"""
     return shell(
         "Home",
@@ -2296,6 +2296,14 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       </section>
       <div class="wrap">{category_chips(cats)}</div>
       {return_visitor_panel(timeframe)}
+      <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
+        <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
+        {top_three(rows)}
+      </section>
+      <section class="wrap board" id="all-items" data-growth-section="ranking-main-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
+        <div class="section-title"><div><span>All categories</span><h2>전체 순위</h2></div><em>{len(rows)} items</em></div>
+        <div class="rank-list">{''.join(item_card(row) for row in rows)}</div>
+      </section>
       {run_change_snapshot(data, timeframe, rows)}
       {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}
       {timeframe_evidence_ladder(data, timeframe)}
@@ -2308,14 +2316,6 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {owner_calendar_reminder_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
-      <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
-        <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
-        {top_three(rows)}
-      </section>
-      <section class="wrap board" id="all-items" data-growth-section="ranking-main-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
-        <div class="section-title"><div><span>All categories</span><h2>전체 순위</h2></div><em>{len(rows)} items</em></div>
-        <div class="rank-list">{''.join(item_card(row) for row in rows)}</div>
-      </section>
       <section class="wrap category-stack">{''.join(cat_sections)}</section>
     </main>"""
     ranking_path = f"/rankings/{timeframe}.html"
