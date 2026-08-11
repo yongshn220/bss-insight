@@ -147,7 +147,8 @@ h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.9
 .evidence-snapshot-grid .source-health-cell { background:#f8fbff; }
 .evidence-snapshot-grid .source-health-cell.success { background:#ecfdf3; }
 .evidence-snapshot-grid .source-health-cell.success_with_partial_cache,
-.evidence-snapshot-grid .source-health-cell.failed_using_cache { background:#fff7ed; }
+.evidence-snapshot-grid .source-health-cell.failed_using_cache,
+.evidence-snapshot-grid .source-health-cell.skipped_recent_failure_using_cache { background:#fff7ed; }
 .evidence-snapshot-grid .source-health-cell.failed,
 .evidence-snapshot-grid .source-health-cell.skipped { background:#fef3f2; }
 .evidence-snapshot-grid .source-health-cell b { font-size:22px; }

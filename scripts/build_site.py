@@ -272,10 +272,17 @@ def run_change_snapshot(data: dict[str, Any], timeframe: str, rows: list[dict[st
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
     apify = apify if isinstance(apify, dict) else {}
     fresh_urls = int(apify.get("fresh_evidence_urls") or 0)
-    total_urls = int(apify.get("evidence_urls") or 0)
+    total_urls = int(
+        apify.get("evidence_urls")
+        or apify.get("cached_evidence_urls")
+        or apify.get("partial_cached_evidence_urls")
+        or 0
+    )
+    cached_urls = int(apify.get("cached_evidence_urls") or apify.get("partial_cached_evidence_urls") or 0)
     status = str(apify.get("status") or "unknown")
+    cache_note = f" · cached supply URLs {cached_urls}" if cached_urls else ""
     source_note = (
-        f"TikTok Shop source health: {status} · fresh URLs {fresh_urls}/{total_urls}. "
+        f"TikTok Shop source health: {status} · fresh URLs {fresh_urls}/{total_urls}{cache_note}. "
         "Supply URLs are not trend evidence."
     )
 
@@ -634,6 +641,10 @@ def tiktok_shop_freshness_cell(health: dict[str, Any], cached_tiktok_count: int)
         note = f"Actor success plus {partial_items} cached item(s); cache age {cache_age if cache_age is not None else 'n/a'}d · supply-only"
     elif status == "failed_using_cache":
         note = f"Actor failed; cached TikTok Shop URLs reused as supply-only · cache age {cache_age if cache_age is not None else 'n/a'}d"
+    elif status == "skipped_recent_failure_using_cache":
+        remaining = apify.get("cooldown_remaining_minutes")
+        last_failed = apify.get("last_actor_failure_observed_at") or "previous loop"
+        note = f"Recent actor failure cooldown; cache reused as supply-only · retry in ~{remaining if remaining is not None else 'n/a'}m · last failure {last_failed}"
     elif status in {"failed", "success_empty", "skipped"}:
         note = f"Status {status}; TikTok Shop freshness needs next-run recovery"
     else:

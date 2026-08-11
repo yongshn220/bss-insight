@@ -1277,6 +1277,56 @@ def load_tiktok_shop_cache() -> tuple[dict[str, list[dict[str, Any]]], dict[str,
     }
 
 
+def previous_tiktok_shop_source_health() -> dict[str, Any]:
+    """Read the previous loop's TikTok Shop source-health record, if present."""
+    notes = load_json_file(COLLECTION_NOTES_PATH, {})
+    if not isinstance(notes, dict):
+        return {}
+    source_health_map = notes.get("source_health", {})
+    if not isinstance(source_health_map, dict):
+        return {}
+    apify = source_health_map.get("apify_tiktok_shop", {})
+    return apify if isinstance(apify, dict) else {}
+
+
+def recent_tiktok_actor_failure_state(cooldown_minutes: int) -> dict[str, Any]:
+    """Return cooldown metadata when the previous actor failure is still recent.
+
+    TikTok Shop supply URLs are useful for BSS owners, but repeated full actor +
+    shard failures can burn runtime/quota while returning the same labeled cache.
+    This circuit breaker skips a retry only when a recent failure is already
+    recorded and the caller has a usable cache. It never creates trend evidence.
+    """
+    if cooldown_minutes <= 0:
+        return {}
+    previous = previous_tiktok_shop_source_health()
+    status = str(previous.get("status") or "")
+    failure_statuses = {"failed", "failed_using_cache", "skipped_recent_failure_using_cache"}
+    if status not in failure_statuses:
+        return {}
+    observed = parse_iso_datetime(
+        previous.get("last_actor_failure_observed_at")
+        or previous.get("last_failure_observed_at")
+        or previous.get("observed_at")
+    )
+    if not observed:
+        return {}
+    age_minutes_float = (dt.datetime.now(dt.UTC) - observed).total_seconds() / 60
+    if age_minutes_float < 0 or age_minutes_float > cooldown_minutes:
+        return {}
+    age_minutes = max(0, int(age_minutes_float))
+    return {
+        "last_actor_failure_status": str(previous.get("last_actor_failure_status") or status),
+        "last_actor_failure_observed_at": observed.isoformat().replace("+00:00", "Z"),
+        "last_actor_failure_error_summary": clean_error_summary(
+            previous.get("last_actor_failure_error_summary") or previous.get("error_summary") or ""
+        ),
+        "failure_age_minutes": age_minutes,
+        "cooldown_minutes": cooldown_minutes,
+        "cooldown_remaining_minutes": max(0, cooldown_minutes - age_minutes),
+    }
+
+
 def apify_payload(keywords: list[str], per_query: int, max_total: int) -> dict[str, Any]:
     """Build an Apify TikTok Shop actor payload for a keyword batch."""
     return {
@@ -1443,6 +1493,26 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             # Alias probes must relevance-match the listing title/snippet/vendor.
             rows_by_keyword[key] = (row, idx == 0)
     max_total = int_env("APIFY_TIKTOK_MAX_RESULTS_TOTAL", max(1, len(keywords) * per_query), 1, 250)
+    cached_evidence, cache_meta = load_tiktok_shop_cache()
+    cooldown_minutes = int_env("APIFY_TIKTOK_FAILURE_COOLDOWN_MINUTES", 90, 0, 720)
+    cooldown_state = recent_tiktok_actor_failure_state(cooldown_minutes)
+    if cached_evidence and cooldown_state:
+        set_source_health(
+            "apify_tiktok_shop",
+            "skipped_recent_failure_using_cache",
+            configured=True,
+            enabled=True,
+            attempts=0,
+            keywords_requested=len(keywords),
+            expanded_keyword_items=expanded_keyword_items,
+            max_results_total=max_total,
+            current_actor_status="skipped_recent_failure_cooldown",
+            retry_rule="APIFY_TIKTOK_FAILURE_COOLDOWN_MINUTES controls cache-first cooldown after a recent actor failure; set to 0 to disable.",
+            cache_policy="Recent TikTok Shop actor failure cooldown reused cache as supply fallback only; cached URLs never create trend movement.",
+            **cooldown_state,
+            **cache_meta,
+        )
+        return cached_evidence
     products, last_error, attempts_used = run_apify_tiktok_actor(
         token,
         apify_payload(keywords, per_query, max_total),
@@ -1455,7 +1525,7 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
         products, fallback_meta = apify_sharded_fallback(token, keywords, per_query, max_total, last_error)
         attempts_used += int(fallback_meta.get("shard_attempts") or 0)
     if products is None:
-        cached_evidence, cache_meta = load_tiktok_shop_cache()
+        failure_observed_at = utc_now()
         if cached_evidence:
             set_source_health(
                 "apify_tiktok_shop",
@@ -1468,6 +1538,10 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
                 max_results_total=max_total,
                 current_actor_status="failed",
                 error_summary=clean_error_summary(last_error),
+                last_actor_failure_status="failed_using_cache",
+                last_actor_failure_observed_at=failure_observed_at,
+                last_actor_failure_error_summary=clean_error_summary(last_error),
+                cooldown_minutes=cooldown_minutes,
                 **fallback_meta,
                 retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
                 cache_policy="cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
@@ -1484,6 +1558,10 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             expanded_keyword_items=expanded_keyword_items,
             max_results_total=max_total,
             error_summary=clean_error_summary(last_error),
+            last_actor_failure_status="failed",
+            last_actor_failure_observed_at=failure_observed_at,
+            last_actor_failure_error_summary=clean_error_summary(last_error),
+            cooldown_minutes=cooldown_minutes,
             **fallback_meta,
             retry_rule="APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
             **cache_meta,
@@ -1512,7 +1590,6 @@ def apify_tiktok_shop_evidence(rows: list[dict[str, Any]]) -> dict[str, list[dic
             seen.add(dedupe_key)
             evidence_by_item.setdefault(row["id"], []).append(signal)
     fresh_evidence_urls = sum(len(sources) for sources in evidence_by_item.values())
-    cached_evidence, cache_meta = load_tiktok_shop_cache()
     target_item_ids = [str(row.get("id") or "") for row in rows if row.get("id")]
     missing_item_ids = [item_id for item_id in target_item_ids if item_id not in evidence_by_item]
     partial_cached_items = 0
@@ -1818,6 +1895,9 @@ def collection_next_actions(totals: dict[str, Any], gaps: dict[str, Any] | None 
         )
     elif apify_status == "failed_using_cache":
         actions.append("TikTok Shop actor는 실패했지만 최근 성공 cache를 supply fallback으로 사용했습니다. 다음 run에서 actor/upstream 재시도 후 cache freshness를 갱신해야 합니다.")
+    elif apify_status == "skipped_recent_failure_using_cache":
+        remaining = apify.get("cooldown_remaining_minutes")
+        actions.append(f"TikTok Shop actor 최근 실패 cooldown으로 이번 run은 cache-first supply fallback을 사용했습니다. 약 {remaining if remaining is not None else 'n/a'}분 후 자동 재시도하며, cache URL은 trend evidence가 아닙니다.")
     elif apify_status in {"failed", "success_empty", "skipped"}:
         actions.append("TikTok Shop 수집 상태를 다음 run에서 먼저 확인: actor/upstream throttle이면 재시도, token/enablement 문제면 env 복구.")
     if int(totals.get("items_with_published_trend_url") or 0) < 12:

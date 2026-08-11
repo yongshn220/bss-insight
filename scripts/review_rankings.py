@@ -282,6 +282,8 @@ COLLECTION_DELTA_FIELDS: dict[tuple[str, ...], tuple[str, bool]] = {
     ("evidence_totals", "published_trend_urls_total"): ("published trend URL total", False),
     ("evidence_totals", "items_with_retail_product_url"): ("all-window live product item coverage", False),
     ("evidence_totals", "items_with_tiktok_shop_url"): ("all-window TikTok Shop item coverage", False),
+    ("evidence_totals", "items_with_cached_tiktok_shop_url"): ("all-window cached TikTok Shop item coverage", True),
+    ("evidence_totals", "cached_tiktok_shop_urls_total"): ("cached TikTok Shop supply URL total", True),
     ("evidence_totals", "collection_error_records"): ("collection error records", True),
     ("source_health", "apify_tiktok_shop", "products_returned"): ("TikTok Shop products returned", False),
     ("source_health", "apify_tiktok_shop", "fresh_evidence_urls"): ("fresh TikTok Shop supply URLs", False),
@@ -1033,6 +1035,22 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "apify-failure-cooldown-v1",
+        "status": "live-collector-resilience-after-build",
+        "objective": "Avoid repeated TikTok Shop actor/shard retries immediately after a fresh upstream failure when a same-day cache is already available, while keeping cached URLs labeled supply-only.",
+        "live_location_pattern": "https://gnsresearchhub.vercel.app/data/collection_notes_public.json and evidence snapshot source-health cell",
+        "tracked_quality_metrics": [
+            f"apify_status={apify.get('status', 'unknown')}",
+            f"failure_cooldown_minutes={apify.get('cooldown_minutes', 'default_or_not_active')}",
+            f"cooldown_remaining_minutes={apify.get('cooldown_remaining_minutes', 0)}",
+            f"last_actor_failure_observed_at={apify.get('last_actor_failure_observed_at', '')}",
+            f"cached_fallback_urls={apify.get('cached_evidence_urls', apify.get('partial_cached_evidence_urls', 0))}",
+        ],
+        "owner_value": "The dashboard stays fast and honest during upstream TikTok Shop instability: owners still see cached product availability, but source freshness is visibly marked as recovery work rather than trend evidence.",
+        "measurement_need": "Track whether cooldown runs reduce failed actor time/quota without increasing stale cache age; analytics export is still needed for downstream visit/click impact.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "return-visitor-prompt-v1",
         "status": "live-client-side-ux-after-build",
         "objective": "Encourage repeat BSS owner visits by revealing a concise current-ranking path only after anonymous visitor context shows a later visit.",
@@ -1569,6 +1587,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "apify-failure-cooldown-v1",
+            "status": "active-collection-resilience-after-review",
+            "hypothesis": "A short cache-first cooldown after recent Apify actor failures should reduce repeated failed API runs and preserve dashboard speed, while source-health labeling prevents cached TikTok Shop URLs from being treated as fresh trend evidence.",
+            "next_step": "Compare apify_status, attempts, cooldown_remaining_minutes, cache_age_days, and fresh_evidence_urls on the next two loops; retry automatically after APIFY_TIKTOK_FAILURE_COOLDOWN_MINUTES expires.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "return-visitor-prompt-v1",
             "status": "active-repeat-visit-ux-after-review",
             "hypothesis": "A concise returning-owner prompt should increase current-ranking CTA clicks and repeat visits by showing what to check first after the initial visit.",
@@ -1792,6 +1817,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["full_payload_then_cache", "full_payload_then_bounded_keyword_shards_then_labeled_cache"],
             "success_metric": "fresh TikTok Shop URLs retained, cached fallback URLs minimized, no increase in unsupported trend claims, source-link/item-card engagement once analytics export is connected",
             "hypothesis": "Sharded actor fallback will keep BSS owner item cards current through upstream TikTok Shop collector instability while preserving evidence discipline.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "apify-failure-cooldown-v1",
+            "status": "active-collection-resilience-after-build",
+            "variants": ["retry_actor_every_loop_after_failure", "cache_first_short_cooldown_then_retry"],
+            "success_metric": "fewer repeated failed Apify attempts during upstream failures, cache_age_days within policy, fresh_evidence_urls recovery after cooldown, and no unsupported trend claims",
+            "hypothesis": "Using a short cooldown after a recent TikTok Shop actor failure should preserve cron/runtime stability and owner trust by labeling cache reuse explicitly while still retrying automatically after cooldown expiry.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {
