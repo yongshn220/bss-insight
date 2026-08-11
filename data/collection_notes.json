@@ -1,34 +1,25 @@
 {
-  "generated_at": "2026-08-11T21:34:57.012559Z",
+  "generated_at": "2026-08-11T21:48:18.291524Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "failed_using_cache",
-      "observed_at": "2026-08-11T21:34:57.011688Z",
+      "status": "skipped_recent_failure_using_cache",
+      "observed_at": "2026-08-11T21:48:18.290869Z",
       "configured": true,
       "enabled": true,
-      "attempts": 7,
+      "attempts": 0,
       "keywords_requested": 88,
       "expanded_keyword_items": 22,
       "max_results_total": 88,
-      "current_actor_status": "failed",
-      "error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 3GXnl8H2d1BY5LljM, status: FAILED).\" } }",
+      "current_actor_status": "skipped_recent_failure_cooldown",
+      "retry_rule": "APIFY_TIKTOK_FAILURE_COOLDOWN_MINUTES controls cache-first cooldown after a recent actor failure; set to 0 to disable.",
+      "cache_policy": "Recent TikTok Shop actor failure cooldown reused cache as supply fallback only; cached URLs never create trend movement.",
       "last_actor_failure_status": "failed_using_cache",
       "last_actor_failure_observed_at": "2026-08-11T21:34:57.011584Z",
       "last_actor_failure_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 3GXnl8H2d1BY5LljM, status: FAILED).\" } }",
+      "failure_age_minutes": 13,
       "cooldown_minutes": 90,
-      "full_actor_status": "failed",
-      "full_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 3GXnl8H2d1BY5LljM, status: FAILED).\" } }",
-      "shard_fallback_status": "failed",
-      "shard_size": 20,
-      "shards_requested": 5,
-      "shards_succeeded": 0,
-      "shards_failed": 5,
-      "shard_attempts": 5,
-      "shard_keywords_requested": 88,
-      "shard_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 6DTM8BhB1xYZH2cv0, status: FAILED).\" } } | HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: Acw8laPk2sXdl7lmF, status: FAILED).\" } } | HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: EKymr0aZFFBLBzrkQ, status: FAILED).\" } }",
-      "retry_rule": "APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
-      "cache_policy": "cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
+      "cooldown_remaining_minutes": 77,
       "cache_status": "usable",
       "cache_path": "data/tiktok_shop_cache.json",
       "cache_updated_at": "2026-08-11T20:25:07.150648Z",
@@ -45,8 +36,8 @@
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 44,
-    "verified_urls_total": 377,
-    "published_trend_urls_total": 108,
+    "verified_urls_total": 378,
+    "published_trend_urls_total": 109,
     "retail_product_urls_total": 269,
     "cached_tiktok_shop_urls_total": 85,
     "collection_error_records": 0
@@ -219,7 +210,7 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "TikTok Shop actor는 실패했지만 최근 성공 cache를 supply fallback으로 사용했습니다. 다음 run에서 actor/upstream 재시도 후 cache freshness를 갱신해야 합니다.",
+    "TikTok Shop actor 최근 실패 cooldown으로 이번 run은 cache-first supply fallback을 사용했습니다. 약 77분 후 자동 재시도하며, cache URL은 trend evidence가 아닙니다.",
     "published trend URL gap 7개 item 유지: Lashes & Brows, Wigs & Hair Pieces, Tools & Accessories부터 item-level dated source capture를 보강합니다."
   ]
 }

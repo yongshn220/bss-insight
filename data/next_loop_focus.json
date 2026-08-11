@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-11T21:41:03.087363Z",
+  "updated_at": "2026-08-11T21:49:15.251004Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -292,7 +292,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
