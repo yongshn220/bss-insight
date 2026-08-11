@@ -622,8 +622,21 @@ def persist_review(review: dict[str, Any]) -> dict[str, Any]:
         history = {"runs": []}
     if not isinstance(history.get("runs"), list):
         history["runs"] = []
-    history.setdefault("runs", []).insert(0, review)
-    history["runs"] = history["runs"][:52]
+    runs = [run for run in history.setdefault("runs", []) if isinstance(run, dict)]
+    current_snapshot = str(review.get("source_generated_at") or "")
+    if current_snapshot:
+        runs = [run for run in runs if str(run.get("source_generated_at") or "") != current_snapshot]
+    runs.insert(0, review)
+    cleaned_runs: list[dict[str, Any]] = []
+    seen_snapshots: set[str] = set()
+    for run in runs:
+        snapshot = str(run.get("source_generated_at") or "")
+        if snapshot and snapshot in seen_snapshots:
+            continue
+        if snapshot:
+            seen_snapshots.add(snapshot)
+        cleaned_runs.append(run)
+    history["runs"] = cleaned_runs[:52]
     save_json(OPS_HISTORY_PATH, history)
 
     next_focus = {
@@ -1031,6 +1044,19 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
     })
     focus_items = review.get("next_loop_focus_items", []) if isinstance(review.get("next_loop_focus_items"), list) else []
     focus_item_ids = [str(item.get("item_id")) for item in focus_items if isinstance(item, dict) and item.get("item_id")]
+    supplemental_rows = [
+        row for row in rows
+        if any(
+            isinstance(src, dict) and src.get("discovery_kind") == "supplemental_published_trend_query"
+            for src in (row.get("trend_evidence") or [])
+        )
+    ]
+    supplemental_item_ids = [str(row.get("item_id")) for row in supplemental_rows if row.get("item_id")]
+    supplemental_categories = sorted({
+        str(row.get("category_name") or row.get("category_id"))
+        for row in supplemental_rows
+        if row.get("category_name") or row.get("category_id")
+    })
     ensure_campaign(active_campaigns, {
         "campaign_id": "focus-query-diversification-v1",
         "status": "live-collector-feedback-loop-after-review",
@@ -1043,6 +1069,27 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         ],
         "owner_value": "Weak item cards get a better chance of collecting dated, item-relevant sources in the next run, which can lower WATCHLIST count without treating generated search URLs as evidence.",
         "measurement_need": "Track weekly trend_items/WATCHLIST deltas and later source-link engagement after analytics export access is connected.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "supplemental-trend-query-coverage-v1",
+        "status": "live-collector-quality-after-build",
+        "objective": "Recover dated published URLs for concrete BSS item types whose public demand signals use look/style wording instead of exact SKU phrases, especially Nails and Jewelry.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/data/collection_notes_public.json",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html",
+            "https://gnsresearchhub.vercel.app/categories/jewelry-fashion-accessories.html",
+            "https://gnsresearchhub.vercel.app/categories/nails.html",
+        ],
+        "tracked_quality_metrics": [
+            "SUPPLEMENTAL_TREND_NEWS_QUERIES_PER_ITEM default=3",
+            "supplemental_item_ids=" + ", ".join(supplemental_item_ids[:12]),
+            "supplemental_categories=" + ", ".join(supplemental_categories[:6]),
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "BSS owners get fewer false WATCHLIST cards in accessory-style lanes when actual dated articles exist, while broad search pages and product listings remain non-trend evidence.",
+        "measurement_need": "Analytics export is still needed to compare source-link clicks and item-card/share engagement on newly trend-backed Nails/Jewelry items.",
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
@@ -1065,6 +1112,29 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         ],
         "owner_value": "Traffic and share experiments become easier to measure once analytics export access is connected, reducing guesswork on which BSS owner paths drive repeat visits.",
         "measurement_need": "Still requires GA4 Data API or Vercel Analytics export access to calculate rolling 30-day visits; this run only hardens client-side event capture.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "analytics-provider-health-event-v1",
+        "status": "live-client-side-provider-health-after-build",
+        "objective": "Emit a lightweight growth_provider_ready event so the operator can detect whether GA4, Vercel Analytics queueing, and the production analytics script are available before interpreting growth funnels.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html",
+            "https://gnsresearchhub.vercel.app/assets/growth.js",
+            "https://gnsresearchhub.vercel.app/_vercel/insights/script.js",
+        ],
+        "tracked_events": [
+            "growth_provider_ready status=client_bridge_ready on every page load",
+            "growth_provider_ready status=vercel_script_loaded or vercel_script_error on production hosts",
+            "growth_exposure still follows provider readiness so first-visit attribution is preserved",
+        ],
+        "tracked_quality_metrics": [
+            "Playwright asserts local growth buffer contains growth_provider_ready with ga4_ready=true and vercel_queue_ready=true",
+            "analyticsBridgeStatus() is exposed on window.__GNS_GROWTH__ for smoke checks without reading secrets",
+            "event payload includes vercel_script_path but no token/key values",
+        ],
+        "owner_value": "This does not increase traffic by itself; it makes the 500/day growth loop safer by separating tracking-provider health from actual owner engagement once analytics export access is connected.",
+        "measurement_need": "GA4 Data API or Vercel Analytics export access is still required to read provider-side event counts and rolling 30-day visits.",
         "last_refreshed_at": now,
     })
 
@@ -1138,6 +1208,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "supplemental-trend-query-coverage-v1",
+            "status": "active-collection-quality-after-review",
+            "hypothesis": "Bounded item/look-language published-source probes for concrete Nails/Jewelry SKUs should recover dated evidence that exact SKU queries miss while strict required-term guards prevent broad category overclaims.",
+            "next_step": "Compare supplemental source click events, weekly trend_items/WATCHLIST deltas, and zero-trend category count after analytics export access is connected; continue excluding generated search URLs and supply listings from trend scoring.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "common-event-page-context-v1",
             "status": "active-client-side-provider-ready-after-review",
             "hypothesis": "Adding page_type, timeframe, and page_item_id to every growth event will make ranking vs. item-detail funnels measurable without relying only on path parsing.",
@@ -1149,6 +1226,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-provider-bridge-after-review",
             "hypothesis": "A head-level window.va queue and explicit /_vercel/insights/script.js path should reduce missed first-exposure/share events while preserving local QA stability.",
             "next_step": "After analytics export access is connected, compare Vercel custom event counts against local growth buffer QA for growth_exposure, growth_click, and share/copy events.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "analytics-provider-health-event-v1",
+            "status": "active-provider-health-after-review",
+            "hypothesis": "A growth_provider_ready event and analyticsBridgeStatus() smoke snapshot should help distinguish provider/tag failures from true traffic or CTA performance changes.",
+            "next_step": "After GA4/Vercel export access is connected, alert on missing growth_provider_ready counts before reading funnel metrics for the 500/day goal.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1254,7 +1338,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
         measurement["last_checked_at"] = now
         measurement["provider_checked"] = (
             "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
-            "This run also verifies the head-level window.va queue/bootstrap for first-event capture. "
+            "This run also verifies the head-level window.va queue/bootstrap plus the client-side growth_provider_ready health event for first-event capture. "
             f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
         )
         measurement["rolling_30d_average_daily_visits"] = None
@@ -1301,6 +1385,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {
+            "experiment_id": "supplemental-trend-query-coverage-v1",
+            "status": "active-collection-quality-after-build",
+            "variants": ["exact_sku_news_queries_only", "bounded_item_look_published_queries_for_nails_jewelry"],
+            "success_metric": "weekly trend_items, WATCHLIST count, zero-trend category count, supplemental published source-link engagement, and no increase in unsupported/search evidence claims once analytics export is connected",
+            "hypothesis": "Concrete Nails/Jewelry item types are often covered in public sources through look/style language, so bounded supplemental published-source probes should lower false WATCHLIST gaps while preserving the rule that search URLs and supply listings do not create trend claims.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
             "experiment_id": "common-event-page-context-v1",
             "status": "active-client-side-provider-ready-after-build",
             "variants": ["path_only_event_context", "page_type_timeframe_item_context"],
@@ -1314,6 +1406,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["deferred_growth_js_creates_va_queue", "head_bootstrap_va_queue_plus_growth_js_script_injection"],
             "success_metric": "Vercel Analytics custom event receipt for growth_exposure, growth_click, growth_share_copy_result, and growth_engagement_summary once export access is available",
             "hypothesis": "Creating the Vercel Analytics queue in the document head before deferred growth.js runs should reduce missed first-event risk and make provider-side counts better align with local QA buffers.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "analytics-provider-health-event-v1",
+            "status": "active-provider-health-after-build",
+            "variants": ["silent_provider_health", "growth_provider_ready_event_plus_analyticsBridgeStatus_snapshot"],
+            "success_metric": "growth_provider_ready event presence and provider-side event counts before interpreting growth_click/share/copy funnels once analytics export is available",
+            "hypothesis": "Provider health events should reduce false growth conclusions by showing whether GA4/Vercel bridges were actually ready on each visit before comparing CTA or repeat-visit metrics.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

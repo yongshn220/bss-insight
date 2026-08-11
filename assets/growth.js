@@ -271,6 +271,24 @@
     } catch (_error) {}
   }
 
+  function analyticsBridgePayload(status = 'client_bridge_ready') {
+    const scriptPath = window.__GNS_VERCEL_ANALYTICS_PATH || '/_vercel/insights/script.js';
+    return {
+      type: 'analytics_provider_health',
+      provider: 'analytics_bridge',
+      status,
+      vercel_queue_ready: typeof window.va === 'function',
+      vercel_script_path: scriptPath,
+      vercel_script_present: Boolean(document.querySelector('script[data-gns-vercel-analytics]')),
+      ga4_ready: typeof window.gtag === 'function',
+      plausible_ready: typeof window.plausible === 'function',
+    };
+  }
+
+  function trackAnalyticsBridgeStatus(status = 'client_bridge_ready') {
+    track('growth_provider_ready', analyticsBridgePayload(status));
+  }
+
   function track(eventName, payload = {}) {
     const attribution = getAttribution();
     const visitor = getVisitorContext();
@@ -326,6 +344,8 @@
     script.defer = true;
     script.src = scriptPath;
     script.setAttribute('data-gns-vercel-analytics', 'true');
+    script.addEventListener('load', () => trackAnalyticsBridgeStatus('vercel_script_loaded'), { once: true });
+    script.addEventListener('error', () => trackAnalyticsBridgeStatus('vercel_script_error'), { once: true });
     document.head.appendChild(script);
   }
 
@@ -417,6 +437,7 @@
       source_status: source?.getAttribute('data-growth-source-status') || '',
       source_date_kind: source?.getAttribute('data-growth-source-date-kind') || '',
       source_domain: source?.getAttribute('data-growth-source-domain') || '',
+      source_discovery_kind: source?.getAttribute('data-growth-source-discovery-kind') || '',
     };
   }
 
@@ -599,6 +620,7 @@
       growthSections,
       engagementSnapshot,
       flushEngagementSummary: sendEngagementSummary,
+      analyticsBridgeStatus: () => analyticsBridgePayload('snapshot'),
       track,
     };
     loadVercelAnalyticsIfHosted();
@@ -608,6 +630,7 @@
     installCopyButtons();
     installSectionViewTracking();
     installEngagementSummaryTracking();
+    trackAnalyticsBridgeStatus('client_bridge_ready');
     const sections = growthSections();
     track('growth_exposure', {
       title: trimText(document.title),

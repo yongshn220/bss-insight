@@ -47,6 +47,7 @@ PUBLIC_COLLECTION_FIELDS = [
     "evidence_totals",
     "coverage_gaps",
     "source_cap_policy",
+    "supplemental_trend_query_policy",
     "limitations",
     "next_actions",
 ]

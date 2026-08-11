@@ -2332,9 +2332,16 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
             source_status = src.get("evidence_status") or ("cached_verified_url" if src.get("cache_status") else "unknown")
             source_date_kind = src.get("date_kind") or "unknown"
             source_domain = src.get("domain") or urllib.parse.urlparse(str(src.get("url") or "")).netloc or "unknown"
+            source_discovery_kind = src.get("discovery_kind") or "supply_or_watchlist"
+            discovery_label = {
+                "supplemental_published_trend_query": "Supplemental item/look query",
+                "next_loop_focus_query": "Next-loop focus query",
+                "primary_item_alias": "Primary item query",
+            }.get(str(source_discovery_kind), "")
+            discovery_text = f" · {esc(discovery_label)}" if discovery_label else ""
             source_cards.append(f"""
-            <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer" data-growth-source-layer="{esc(source_layer)}" data-growth-source-kind="{esc(source_kind)}" data-growth-source-type="{esc(source_type)}" data-growth-source-status="{esc(source_status)}" data-growth-source-date-kind="{esc(source_date_kind)}" data-growth-source-domain="{esc(source_domain)}">
-              <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date_label) if date_label else ''}{price}</span>
+            <a class="source-card" href="{esc(src.get('url'))}" target="_blank" rel="noreferrer" data-growth-source-layer="{esc(source_layer)}" data-growth-source-kind="{esc(source_kind)}" data-growth-source-type="{esc(source_type)}" data-growth-source-status="{esc(source_status)}" data-growth-source-date-kind="{esc(source_date_kind)}" data-growth-source-domain="{esc(source_domain)}" data-growth-source-discovery-kind="{esc(source_discovery_kind)}">
+              <span>{esc(src.get('publisher') or src.get('domain') or src.get('source_kind') or src.get('source_type'))}{' · ' + esc(date_label) if date_label else ''}{price}{discovery_text}</span>
               <strong>{esc(title)}</strong>
               <p>{esc(summary)}</p>
             </a>""")

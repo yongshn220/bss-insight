@@ -216,6 +216,79 @@ CATEGORIES: list[dict[str, Any]] = [
 ]
 
 
+# Published-source discovery terms for item types whose customers usually talk in
+# look/style language instead of exact BSS SKU wording. These are NOT search URLs
+# and are not scored by themselves: each query must return a concrete dated
+# article/news URL and still pass evidence_relevance(row, source). The goal is to
+# recover item-level demand evidence for weak Nails/Jewelry lanes without turning
+# broad category search pages into evidence.
+SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
+    "50mm-gold-hoop-earrings": [
+        "gold hoop earrings black women style trend",
+        "large gold hoops fashion trend",
+        "gold hoop earrings trend 2026",
+    ],
+    "rhinestone-stud-earrings-6mm": [
+        "sparkle stud earrings trend",
+        "rhinestone stud earrings trend",
+    ],
+    "a-z-initial-pendant-necklace": [
+        "initial necklace trend 2026",
+        "letter pendant necklace trend",
+        "initial pendant necklace gift trend",
+    ],
+    "gold-stackable-ring-set": [
+        "stackable rings trend 2026",
+        "gold stacking rings trend",
+        "ring stack trend 2026",
+    ],
+    "butterfly-charm-anklet": [
+        "anklet trend 2026",
+        "summer anklet trend 2026",
+    ],
+    "20g-surgical-steel-nose-stud": [
+        "nose piercing jewelry trend 2026",
+        "nose stud trend 2026",
+    ],
+    "14g-belly-button-ring": [
+        "belly button ring trend 2026",
+        "navel piercing jewelry trend 2026",
+    ],
+    "long-coffin-press-on-nails": [
+        "coffin press on nails trend",
+        "press on nails trend 2026",
+    ],
+    "short-square-press-on-nails": [
+        "short press on nails trend",
+        "short square nails trend 2026",
+    ],
+    "rhinestone-nail-charms": [
+        "rhinestone nails trend 2026",
+        "rhinestone nail art trend",
+    ],
+    "chrome-nail-powder": [
+        "metallic chrome nails trend",
+        "chrome powder nails trend",
+        "chrome nails trend 2026",
+    ],
+}
+
+
+SUPPLEMENTAL_TREND_REQUIRED_TERMS: dict[str, list[set[str]]] = {
+    "50mm-gold-hoop-earrings": [{"hoop", "hoops", "huggie", "huggies"}, {"earring", "earrings", "jewelry", "jewellery"}],
+    "rhinestone-stud-earrings-6mm": [{"rhinestone", "sparkle", "sparkly", "diamond", "cz"}, {"stud", "studs", "earring", "earrings"}],
+    "a-z-initial-pendant-necklace": [{"initial", "letter", "personalized", "personalised", "typography"}, {"necklace", "pendant", "jewelry", "jewellery"}],
+    "gold-stackable-ring-set": [{"stack", "stacked", "stackable", "stacking"}, {"ring", "rings"}],
+    "butterfly-charm-anklet": [{"anklet", "anklets", "foot jewelry", "foot jewellery"}],
+    "20g-surgical-steel-nose-stud": [{"nose", "nostril"}, {"stud", "piercing", "piercings", "jewelry", "jewellery"}],
+    "14g-belly-button-ring": [{"belly", "navel"}, {"ring", "piercing", "piercings", "jewelry", "jewellery"}],
+    "long-coffin-press-on-nails": [{"press-on", "press on", "press-on nails", "press ons", "coffin"}, {"nail", "nails", "manicure"}],
+    "short-square-press-on-nails": [{"press-on", "press on", "press-on nails", "press ons", "square"}, {"nail", "nails", "manicure"}],
+    "rhinestone-nail-charms": [{"rhinestone", "sparkle", "sparkly", "3d", "charm", "charms"}, {"nail", "nails", "manicure", "nail art"}],
+    "chrome-nail-powder": [{"chrome", "metallic", "mirror", "powder"}, {"nail", "nails", "manicure", "pedicure"}],
+}
+
+
 def flatten_items() -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for cat in CATEGORIES:
@@ -417,6 +490,51 @@ def next_loop_focus_queries(row: dict[str, Any]) -> list[str]:
         if isinstance(queries, list):
             return prioritized_focus_queries(queries, max_queries)
     return []
+
+
+def supplemental_trend_news_queries(row: dict[str, Any]) -> list[str]:
+    """Return bounded dated-source discovery probes for item/look language.
+
+    These queries are used only against news/article RSS collectors that return a
+    concrete URL plus publish/seen date. They never create watchlist/search URL
+    evidence; every returned source must still pass evidence_relevance and is
+    labeled with discovery_kind for downstream transparency.
+    """
+    max_queries = int_env("SUPPLEMENTAL_TREND_NEWS_QUERIES_PER_ITEM", 3, 0, 4)
+    if max_queries <= 0:
+        return []
+    item_id = str(row.get("id") or "")
+    queries = SUPPLEMENTAL_TREND_NEWS_QUERIES.get(item_id, [])
+    return prioritized_focus_queries(queries, max_queries)
+
+
+def term_present(term: str, hay_text: str, hay_tokens: set[str]) -> bool:
+    """Return true for phrase or token matches used by strict supplemental filtering."""
+    term = term.lower().strip()
+    if not term:
+        return False
+    if " " in term or "-" in term:
+        return term in hay_text
+    return token_matches_word(term, hay_tokens) or term in hay_text
+
+
+def supplemental_source_matches(row: dict[str, Any], source: dict[str, Any]) -> bool:
+    """Apply extra item-specific relevance checks to supplemental published sources.
+
+    The generic evidence_relevance gate is intentionally broad enough for supply
+    listings. Supplemental look/style queries need a second, item-specific guard
+    so a generic "ring" or "nail" article cannot over-promote a concrete BSS SKU.
+    """
+    item_id = str(row.get("id") or "")
+    required_groups = SUPPLEMENTAL_TREND_REQUIRED_TERMS.get(item_id, [])
+    if not required_groups:
+        return True
+    hay_text = " ".join(
+        str(source.get(key, ""))
+        for key in ["title", "snippet", "body", "publisher", "domain"]
+    ).lower()
+    hay_tokens = normalized_word_tokens(hay_text)
+    return all(any(term_present(term, hay_text, hay_tokens) for term in group) for group in required_groups)
 
 
 def focus_item_ids() -> set[str]:
@@ -800,6 +918,18 @@ def google_news_articles(row: dict[str, Any], days: int = 365, limit: int = 5) -
 
 def source_sort_date(source: dict[str, Any]) -> str:
     return str(source.get("published_date") or source.get("observed_date") or source.get("seendate") or "")
+
+
+def source_identity_key(source: dict[str, Any]) -> str:
+    """Return a stable dedupe key across RSS mirrors and direct URLs."""
+    url = str(source.get("url") or "").strip()
+    if is_published_evidence(source):
+        title = re.sub(r"\s+", " ", str(source.get("title") or "").lower()).strip()
+        publisher = re.sub(r"\s+", " ", str(source.get("publisher") or source.get("domain") or "").lower()).strip()
+        date = str(source.get("published_date") or source.get("seendate") or source.get("published") or "").strip()
+        if title and date:
+            return "published::" + "::".join([date[:10], publisher, title[:180]])
+    return "url::" + url if url else ""
 
 
 def is_published_evidence(source: dict[str, Any]) -> bool:
@@ -1370,19 +1500,29 @@ def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     sources = []
     errors = []
 
-    def add_news_results(query_row: dict[str, Any], *, feedback_query: str = "", always_secondary: bool = False) -> None:
+    def add_news_results(
+        query_row: dict[str, Any],
+        *,
+        feedback_query: str = "",
+        discovery_kind: str = "primary_item_alias",
+        always_secondary: bool = False,
+    ) -> None:
         local_sources: list[dict[str, Any]] = []
         # Bing News RSS is the primary public source because it returns concrete article URLs and dates reliably.
         # Google News is secondary and can rate-limit; it is used after weak Bing coverage, and always for
-        # feedback-focus queries because those are intentionally narrow next-loop probes.
+        # feedback/supplemental queries because those are intentionally narrow next-loop or item/look probes.
         for fn in (bing_news_articles,):
             results = fn(query_row, days=365)
             for src in results:
                 if src.get("error"):
                     errors.append(src)
                 else:
+                    if discovery_kind == "supplemental_published_trend_query" and not supplemental_source_matches(query_row, src):
+                        continue
                     if feedback_query:
                         src["feedback_focus_query"] = feedback_query
+                    if discovery_kind:
+                        src["discovery_kind"] = discovery_kind
                     local_sources.append(src)
         if len(local_sources) < 2 or always_secondary:
             for fn in (google_news_articles,):
@@ -1391,23 +1531,41 @@ def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
                     if src.get("error"):
                         errors.append(src)
                     else:
+                        if discovery_kind == "supplemental_published_trend_query" and not supplemental_source_matches(query_row, src):
+                            continue
                         if feedback_query:
                             src["feedback_focus_query"] = feedback_query
+                        if discovery_kind:
+                            src["discovery_kind"] = discovery_kind
                         local_sources.append(src)
         sources.extend(local_sources)
 
     add_news_results(row)
+    for query in supplemental_trend_news_queries(row):
+        supplemental_row = dict(row)
+        supplemental_row["focus_query"] = query
+        add_news_results(
+            supplemental_row,
+            feedback_query=query,
+            discovery_kind="supplemental_published_trend_query",
+            always_secondary=True,
+        )
     for query in next_loop_focus_queries(row):
         focused_row = dict(row)
         focused_row["focus_query"] = query
-        add_news_results(focused_row, feedback_query=query, always_secondary=True)
+        add_news_results(
+            focused_row,
+            feedback_query=query,
+            discovery_kind="next_loop_focus_query",
+            always_secondary=True,
+        )
     sources.extend(retail_product_evidence(row))
     deduped = []
     seen = set()
     for src in sources:
-        url = src.get("url")
-        if url and url not in seen:
-            seen.add(url)
+        key = source_identity_key(src)
+        if key and key not in seen:
+            seen.add(key)
             deduped.append(src)
     deduped.sort(key=source_sort_date, reverse=True)
     # Keep fetch errors only in collection notes, not as evidence. Published URLs
@@ -1614,6 +1772,18 @@ def source_cap_policy() -> dict[str, Any]:
     }
 
 
+def supplemental_trend_query_policy() -> dict[str, Any]:
+    """Expose how supplemental item/look probes are bounded and labeled."""
+    return {
+        "policy_id": "supplemental_item_look_published_query_v1",
+        "mapped_items": len(SUPPLEMENTAL_TREND_NEWS_QUERIES),
+        "max_queries_per_item": int_env("SUPPLEMENTAL_TREND_NEWS_QUERIES_PER_ITEM", 3, 0, 4),
+        "discovery_kind": "supplemental_published_trend_query",
+        "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style language rather than exact SKU wording, especially Nails and Jewelry.",
+        "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL, evidence_relevance passes, and an item-specific required-term guard passes.",
+    }
+
+
 def write_collection_notes(evidence_by_item: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     totals = evidence_collection_totals(evidence_by_item)
     gaps = coverage_gap_summary(evidence_by_item)
@@ -1624,6 +1794,7 @@ def write_collection_notes(evidence_by_item: dict[str, list[dict[str, Any]]]) ->
         "evidence_totals": totals,
         "coverage_gaps": gaps,
         "source_cap_policy": source_cap_policy(),
+        "supplemental_trend_query_policy": supplemental_trend_query_policy(),
         "limitations": [
             "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
             "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",

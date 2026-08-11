@@ -1,27 +1,27 @@
 {
-  "generated_at": "2026-08-11T04:15:00.658257Z",
+  "generated_at": "2026-08-11T07:14:32.257476Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success_with_partial_cache",
-      "observed_at": "2026-08-11T04:15:00.657109Z",
+      "observed_at": "2026-08-11T07:14:32.256476Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
-      "keywords_requested": 80,
-      "expanded_keyword_items": 18,
-      "products_returned": 77,
+      "keywords_requested": 82,
+      "expanded_keyword_items": 19,
+      "products_returned": 78,
       "items_with_evidence": 44,
-      "evidence_urls": 75,
-      "fresh_evidence_urls": 74,
+      "evidence_urls": 78,
+      "fresh_evidence_urls": 77,
       "partial_cached_items": 1,
       "partial_cached_evidence_urls": 1,
       "current_actor_status": "success_partial",
       "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
-      "max_results_total": 80,
+      "max_results_total": 82,
       "cache_status": "usable",
       "cache_path": "data/tiktok_shop_cache.json",
-      "cache_updated_at": "2026-08-11T04:09:06.842227Z",
+      "cache_updated_at": "2026-08-11T05:55:12.198644Z",
       "cache_age_days": 0,
       "cache_max_age_days": 7,
       "cached_items": 44,
@@ -31,19 +31,19 @@
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 26,
+    "items_with_published_trend_url": 31,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 1,
-    "verified_urls_total": 304,
-    "published_trend_urls_total": 56,
-    "retail_product_urls_total": 248,
+    "verified_urls_total": 341,
+    "published_trend_urls_total": 92,
+    "retail_product_urls_total": 249,
     "cached_tiktok_shop_urls_total": 1,
     "collection_error_records": 0
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 18,
+      "published_trend_missing_items": 13,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
       "zero_trend_categories": 0
@@ -57,28 +57,6 @@
         "retail_product_items": 6,
         "tiktok_shop_items": 6,
         "trend_ratio": 0.17,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories",
-        "items": 8,
-        "trend_items": 3,
-        "retail_product_items": 8,
-        "tiktok_shop_items": 8,
-        "trend_ratio": 0.38,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling",
-        "items": 6,
-        "trend_items": 3,
-        "retail_product_items": 6,
-        "tiktok_shop_items": 6,
-        "trend_ratio": 0.5,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -105,13 +83,24 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "nails",
-        "category_name": "Nails",
-        "items": 5,
+        "category_id": "hair-care-styling",
+        "category_name": "Hair Care & Styling",
+        "items": 6,
         "trend_items": 4,
-        "retail_product_items": 5,
-        "tiktok_shop_items": 5,
-        "trend_ratio": 0.8,
+        "retail_product_items": 6,
+        "tiktok_shop_items": 6,
+        "trend_ratio": 0.67,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "jewelry-fashion-accessories",
+        "category_name": "Jewelry & Fashion Accessories",
+        "items": 8,
+        "trend_items": 6,
+        "retail_product_items": 8,
+        "tiktok_shop_items": 8,
+        "trend_ratio": 0.75,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -133,6 +122,17 @@
         "trend_items": 4,
         "retail_product_items": 4,
         "tiktok_shop_items": 4,
+        "trend_ratio": 1.0,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "nails",
+        "category_name": "Nails",
+        "items": 5,
+        "trend_items": 5,
+        "retail_product_items": 5,
+        "tiktok_shop_items": 5,
         "trend_ratio": 1.0,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
@@ -158,12 +158,6 @@
         "category_name": "Hair Care & Styling"
       },
       {
-        "item_id": "lace-melting-spray",
-        "item_name": "Lace Melting Spray",
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling"
-      },
-      {
         "item_id": "braid-foaming-mousse",
         "item_name": "Foaming Mousse for Braids",
         "category_id": "hair-care-styling",
@@ -180,12 +174,6 @@
         "item_name": "Individual Flare Lashes",
         "category_id": "lashes-brows",
         "category_name": "Lashes & Brows"
-      },
-      {
-        "item_id": "rhinestone-nail-charms",
-        "item_name": "Rhinestone Nail Charms",
-        "category_id": "nails",
-        "category_name": "Nails"
       },
       {
         "item_id": "extra-large-satin-bonnet",
@@ -228,24 +216,6 @@
         "item_name": "20G Surgical Steel Nose Stud",
         "category_id": "jewelry-fashion-accessories",
         "category_name": "Jewelry & Fashion Accessories"
-      },
-      {
-        "item_id": "14g-belly-button-ring",
-        "item_name": "14G Belly Button Ring",
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories"
-      },
-      {
-        "item_id": "gold-stackable-ring-set",
-        "item_name": "Gold Stackable Ring Set",
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories"
-      },
-      {
-        "item_id": "butterfly-charm-anklet",
-        "item_name": "Butterfly Charm Anklet",
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories"
       }
     ],
     "missing_tiktok_shop_items": [],
@@ -260,6 +230,14 @@
     "total_pre_tiktok_per_item_cap": 14,
     "purpose": "Keep dated article/post/news URLs in rankings.json before same-day product/listing URLs can fill the per-item cap; supply URLs remain validation only and do not create trend movement."
   },
+  "supplemental_trend_query_policy": {
+    "policy_id": "supplemental_item_look_published_query_v1",
+    "mapped_items": 11,
+    "max_queries_per_item": 3,
+    "discovery_kind": "supplemental_published_trend_query",
+    "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style language rather than exact SKU wording, especially Nails and Jewelry.",
+    "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL, evidence_relevance passes, and an item-specific required-term guard passes."
+  },
   "limitations": [
     "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
     "TikTok Shop product URLs는 social-commerce supply validation이며 published/date-bearing trend claim을 만들지 않습니다.",
@@ -268,6 +246,6 @@
   ],
   "next_actions": [
     "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
-    "published trend URL gap 18개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Hair Care & Styling부터 item-level dated source capture를 보강합니다."
+    "published trend URL gap 13개 item 유지: Tools & Accessories, Lashes & Brows, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }
