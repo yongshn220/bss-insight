@@ -217,10 +217,10 @@ CATEGORIES: list[dict[str, Any]] = [
 
 
 # Published-source discovery terms for item types whose customers usually talk in
-# look/style language instead of exact BSS SKU wording. These are NOT search URLs
-# and are not scored by themselves: each query must return a concrete dated
-# article/news URL and still pass evidence_relevance(row, source). The goal is to
-# recover item-level demand evidence for weak Nails/Jewelry lanes without turning
+# look/style/install language instead of exact BSS SKU wording. These are NOT
+# search URLs and are not scored by themselves: each query must return a concrete
+# dated article/news URL and still pass evidence_relevance(row, source). The goal
+# is to recover item-level demand evidence for weak categories without turning
 # broad category search pages into evidence.
 SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
     "50mm-gold-hoop-earrings": [
@@ -271,6 +271,51 @@ SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
         "chrome powder nails trend",
         "chrome nails trend 2026",
     ],
+    "extra-large-satin-bonnet": [
+        "satin bonnet protective hairstyles trend",
+        "bonnet for braids trend",
+        "satin bonnet hair care trend",
+    ],
+    "24-hour-edge-control-gel": [
+        "strong hold edge control review",
+        "edge control black hair trend",
+        "edge control gel humidity review",
+    ],
+    "durag-wave-cap": [
+        "durag wave cap trend",
+        "silky durag wave cap trend",
+        "durag wave maintenance review",
+    ],
+    "wig-grip-band": [
+        "wig grip band review wig install",
+        "wig grip band glueless wig trend",
+        "non slip wig band review",
+    ],
+    "elastic-melting-band": [
+        "lace melting band wig install trend",
+        "elastic melting band lace wig review",
+        "wig melt band install trend",
+    ],
+    "drawstring-ponytail-extension": [
+        "drawstring ponytail trend",
+        "curly drawstring ponytail hairstyle trend",
+        "drawstring ponytail extension review",
+    ],
+    "braid-foaming-mousse": [
+        "braid mousse trend",
+        "foaming mousse braids trend",
+        "braid mousse knotless braids",
+    ],
+    "25mm-mink-strip-lashes": [
+        "25mm lashes trend",
+        "dramatic strip lashes trend",
+        "mink strip lashes trend",
+    ],
+    "individual-flare-lashes": [
+        "individual flare lashes trend",
+        "individual lashes clusters trend",
+        "lash flares trend",
+    ],
 }
 
 
@@ -286,6 +331,15 @@ SUPPLEMENTAL_TREND_REQUIRED_TERMS: dict[str, list[set[str]]] = {
     "short-square-press-on-nails": [{"press-on", "press on", "press-on nails", "press ons", "square"}, {"nail", "nails", "manicure"}],
     "rhinestone-nail-charms": [{"rhinestone", "sparkle", "sparkly", "3d", "charm", "charms"}, {"nail", "nails", "manicure", "nail art"}],
     "chrome-nail-powder": [{"chrome", "metallic", "mirror", "powder"}, {"nail", "nails", "manicure", "pedicure"}],
+    "extra-large-satin-bonnet": [{"bonnet", "bonnets"}, {"satin", "silk", "protective", "braid", "braids", "curls", "haircare", "hair care", "hair"}],
+    "24-hour-edge-control-gel": [{"edge", "edges"}, {"control", "controls", "gel", "gels"}],
+    "durag-wave-cap": [{"durag", "durags", "wave cap", "wave caps"}],
+    "wig-grip-band": [{"wig", "wigs"}, {"grip", "non slip", "non-slip"}, {"band", "bands"}],
+    "elastic-melting-band": [{"lace", "wig", "wigs"}, {"melt", "melting"}, {"band", "bands"}],
+    "drawstring-ponytail-extension": [{"drawstring"}, {"ponytail", "ponytails"}],
+    "braid-foaming-mousse": [{"mousse", "foam", "foaming"}, {"braid", "braids", "knotless"}],
+    "25mm-mink-strip-lashes": [{"25mm", "dramatic", "mink"}, {"lash", "lashes"}],
+    "individual-flare-lashes": [{"individual", "flare", "flares"}, {"lash", "lashes"}],
 }
 
 
@@ -1779,7 +1833,7 @@ def supplemental_trend_query_policy() -> dict[str, Any]:
         "mapped_items": len(SUPPLEMENTAL_TREND_NEWS_QUERIES),
         "max_queries_per_item": int_env("SUPPLEMENTAL_TREND_NEWS_QUERIES_PER_ITEM", 3, 0, 4),
         "discovery_kind": "supplemental_published_trend_query",
-        "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style language rather than exact SKU wording, especially Nails and Jewelry.",
+        "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style/install language rather than exact SKU wording, especially Nails, Jewelry, Tools/Accessories, and edge-control style support items.",
         "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL, evidence_relevance passes, and an item-specific required-term guard passes.",
     }
 

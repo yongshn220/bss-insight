@@ -1,65 +1,47 @@
 {
-  "generated_at": "2026-08-11T07:14:32.257476Z",
+  "generated_at": "2026-08-11T08:31:40.099046Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "success_with_partial_cache",
-      "observed_at": "2026-08-11T07:14:32.256476Z",
+      "status": "success",
+      "observed_at": "2026-08-11T08:31:40.098225Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 82,
       "expanded_keyword_items": 19,
-      "products_returned": 78,
+      "products_returned": 82,
       "items_with_evidence": 44,
-      "evidence_urls": 78,
-      "fresh_evidence_urls": 77,
-      "partial_cached_items": 1,
-      "partial_cached_evidence_urls": 1,
-      "current_actor_status": "success_partial",
-      "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
-      "max_results_total": 82,
-      "cache_status": "usable",
-      "cache_path": "data/tiktok_shop_cache.json",
-      "cache_updated_at": "2026-08-11T05:55:12.198644Z",
-      "cache_age_days": 0,
-      "cache_max_age_days": 7,
-      "cached_items": 44,
-      "cached_evidence_urls": 79
+      "evidence_urls": 81,
+      "fresh_evidence_urls": 81,
+      "partial_cached_items": 0,
+      "partial_cached_evidence_urls": 0,
+      "current_actor_status": "success",
+      "cache_policy": "cache not used",
+      "max_results_total": 82
     }
   },
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 31,
+    "items_with_published_trend_url": 34,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "items_with_cached_tiktok_shop_url": 1,
-    "verified_urls_total": 341,
-    "published_trend_urls_total": 92,
-    "retail_product_urls_total": 249,
-    "cached_tiktok_shop_urls_total": 1,
+    "items_with_cached_tiktok_shop_url": 0,
+    "verified_urls_total": 356,
+    "published_trend_urls_total": 106,
+    "retail_product_urls_total": 250,
+    "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 13,
+      "published_trend_missing_items": 10,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
       "zero_trend_categories": 0
     },
     "weak_categories": [
-      {
-        "category_id": "tools-accessories",
-        "category_name": "Tools & Accessories",
-        "items": 6,
-        "trend_items": 1,
-        "retail_product_items": 6,
-        "tiktok_shop_items": 6,
-        "trend_ratio": 0.17,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
       {
         "category_id": "lashes-brows",
         "category_name": "Lashes & Brows",
@@ -67,6 +49,17 @@
         "trend_items": 2,
         "retail_product_items": 4,
         "tiktok_shop_items": 4,
+        "trend_ratio": 0.5,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "tools-accessories",
+        "category_name": "Tools & Accessories",
+        "items": 6,
+        "trend_items": 3,
+        "retail_product_items": 6,
+        "tiktok_shop_items": 6,
         "trend_ratio": 0.5,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
@@ -83,17 +76,6 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling",
-        "items": 6,
-        "trend_items": 4,
-        "retail_product_items": 6,
-        "tiktok_shop_items": 6,
-        "trend_ratio": 0.67,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
         "category_id": "jewelry-fashion-accessories",
         "category_name": "Jewelry & Fashion Accessories",
         "items": 8,
@@ -101,6 +83,17 @@
         "retail_product_items": 8,
         "tiktok_shop_items": 8,
         "trend_ratio": 0.75,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "hair-care-styling",
+        "category_name": "Hair Care & Styling",
+        "items": 6,
+        "trend_items": 5,
+        "retail_product_items": 6,
+        "tiktok_shop_items": 6,
+        "trend_ratio": 0.83,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -152,12 +145,6 @@
         "category_name": "Wigs & Hair Pieces"
       },
       {
-        "item_id": "24-hour-edge-control-gel",
-        "item_name": "24 Hour Edge Control Gel",
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling"
-      },
-      {
         "item_id": "braid-foaming-mousse",
         "item_name": "Foaming Mousse for Braids",
         "category_id": "hair-care-styling",
@@ -176,12 +163,6 @@
         "category_name": "Lashes & Brows"
       },
       {
-        "item_id": "extra-large-satin-bonnet",
-        "item_name": "Extra Large Satin Bonnet",
-        "category_id": "tools-accessories",
-        "category_name": "Tools & Accessories"
-      },
-      {
         "item_id": "wig-grip-band",
         "item_name": "Wig Grip Band",
         "category_id": "tools-accessories",
@@ -196,12 +177,6 @@
       {
         "item_id": "rat-tail-comb-metal-pintail",
         "item_name": "Rat Tail Comb with Metal Pintail",
-        "category_id": "tools-accessories",
-        "category_name": "Tools & Accessories"
-      },
-      {
-        "item_id": "durag-wave-cap",
-        "item_name": "Durag / Wave Cap",
         "category_id": "tools-accessories",
         "category_name": "Tools & Accessories"
       },
@@ -232,10 +207,10 @@
   },
   "supplemental_trend_query_policy": {
     "policy_id": "supplemental_item_look_published_query_v1",
-    "mapped_items": 11,
+    "mapped_items": 20,
     "max_queries_per_item": 3,
     "discovery_kind": "supplemental_published_trend_query",
-    "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style language rather than exact SKU wording, especially Nails and Jewelry.",
+    "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style/install language rather than exact SKU wording, especially Nails, Jewelry, Tools/Accessories, and edge-control style support items.",
     "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL, evidence_relevance passes, and an item-specific required-term guard passes."
   },
   "limitations": [
@@ -245,7 +220,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
-    "published trend URL gap 13개 item 유지: Tools & Accessories, Lashes & Brows, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+    "published trend URL gap 10개 item 유지: Lashes & Brows, Tools & Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }

@@ -753,7 +753,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(collection.source_cap_policy?.policy_id).toBe('trend_preserving_verified_source_cap_v1');
     expect(collection.source_cap_policy?.published_first).toBe(true);
     expect(collection.supplemental_trend_query_policy?.policy_id).toBe('supplemental_item_look_published_query_v1');
-    expect(collection.supplemental_trend_query_policy?.mapped_items).toBeGreaterThan(0);
+    expect(collection.supplemental_trend_query_policy?.mapped_items).toBeGreaterThanOrEqual(20);
+    expect(collection.supplemental_trend_query_policy?.purpose).toMatch(/Tools\/Accessories/i);
     expect(collection.supplemental_trend_query_policy?.discipline).toMatch(/Generated search URLs are still non-evidence/i);
 
     const marketingResponse = await request.get('/data/marketing_backlog_public.json');
