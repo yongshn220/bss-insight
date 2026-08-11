@@ -943,6 +943,35 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "owner-5-minute-route-v1",
+        "status": "live-site-ux-distribution-after-build",
+        "objective": "Compress the ranking into a copy-ready 3-step store-walk route so busy BSS owners/reps can act and share without reading the full leaderboard first.",
+        "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-route",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (owner-5-minute-route-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (owner-5-minute-route-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/monthly.html (owner-5-minute-route-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/quarterly.html (owner-5-minute-route-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/yearly.html (owner-5-minute-route-v1)",
+        ],
+        "tracked_events": [
+            "growth_section_view owner-5-minute-route-v1",
+            "growth_click cta_owner_route_item with utm_medium=owner_route",
+            "growth_click cta_owner_route_full_ranking",
+            "growth_click share_{timeframe}_owner_route_copy",
+            "growth_share_copy_result share_action={timeframe}_owner_route_copy",
+        ],
+        "tracked_quality_metrics": [
+            f"weekly_route_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_route_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+            "route cards preserve evidence_status_label so WATCHLIST rows remain small-test only",
+            "route copy links use utm_medium=route_copy and item links use utm_medium=owner_route",
+        ],
+        "owner_value": "Owners/reps get a 5-minute route: one hair/install action, one front-end add-on, and one shrink-aware small test. This creates a practical repeat/share path without inventing trend claims.",
+        "measurement_need": "GA4/Vercel export access is needed to compare owner-route section views, route-copy events, and item-detail entrances against quick-pick and owner-brief modules.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "category-landing-pages-v1",
         "status": "live-static-category-seo-share-pages-after-build",
         "objective": "Create focused category landing pages that keep broad BSS store lanes navigable while ranking only concrete item types inside each lane.",
@@ -1125,6 +1154,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "owner-5-minute-route-v1",
+            "status": "active-site-ux-distribution-after-review",
+            "hypothesis": "A 3-step store-walk route should increase BSS owner action and share intent versus reading only the full leaderboard because it gives a hair/install pick, a front-end add-on, and a WATCHLIST small-test in one copy-ready block.",
+            "next_step": "After analytics export access is connected, compare owner-5-minute-route-v1 section views, owner_route_item clicks, owner_route_copy results, and item-detail entrances against quick-pick and owner-brief components.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "category-landing-pages-v1",
             "status": "active-static-seo-shareability-after-review",
             "hypothesis": "Store-zone category pages should increase organic/search and owner-share entry points because owners can land directly on their relevant BSS lane while still seeing concrete item-level recommendations.",
@@ -1282,6 +1318,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["manual_bookmark_without_manifest", "web_manifest_plus_visible_shortcut_copy_cta"],
             "success_metric": "utm_medium=shortcut and utm_source=pwa sessions, shortcut copy/open events, returning-owner visit_count, and repeat ranking entrances once analytics export is connected",
             "hypothesis": "Giving owners/reps an installable shortcut and copyable saved link should reduce friction to reopening the dashboard, supporting repeat visits toward 500/day without external posting permissions.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "owner-5-minute-route-v1",
+            "status": "active-site-ux-distribution-after-build",
+            "variants": ["full_leaderboard_first", "copy_ready_three_step_store_route"],
+            "success_metric": "growth_section_view owner-5-minute-route-v1, owner_route_item clicks, owner_route_copy results, route_copy UTM sessions, and item-detail entrances once analytics export is connected",
+            "hypothesis": "A 5-minute owner route should convert more busy BSS owners/reps into item-detail visits and shares than asking them to interpret the full ranking first.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

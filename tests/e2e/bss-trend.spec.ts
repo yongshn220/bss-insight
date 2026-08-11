@@ -163,6 +163,17 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(quickPickCards.first()).toHaveAttribute('href', /utm_medium=quick_pick/);
     await expect(quickPickCards.first()).toHaveAttribute('data-growth-cta', 'owner_quick_pick');
     await expect(quickPickCards.first()).toHaveAttribute('data-item-id', /.+/);
+    await expect(page.locator('[data-growth-section="owner-5-minute-route-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="owner-5-minute-route-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-5-minute-route-v1');
+    await expect(page.getByRole('heading', { name: 'Weekly 매장 5분 점검 route' })).toBeVisible();
+    const ownerRouteCards = page.locator('.owner-route-card');
+    await expect(ownerRouteCards).toHaveCount(3);
+    await expect(ownerRouteCards.first()).toHaveAttribute('href', /daily-visits-500-weekly-owner-route/);
+    await expect(ownerRouteCards.first()).toHaveAttribute('href', /utm_medium=owner_route/);
+    await expect(ownerRouteCards.first()).toHaveAttribute('data-growth-cta', 'owner_route_item');
+    await expect(page.locator('[data-growth-share="weekly_owner_route_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-weekly-owner-route/);
+    await expect(page.locator('[data-growth-share="weekly_owner_route_copy"]')).toHaveAttribute('data-copy-text', /5-minute owner route/);
+    await expect(page.locator('[data-growth-cta="owner_route_full_ranking"]')).toHaveAttribute('href', /utm_medium=owner_route/);
     await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Weekly owner에게 바로 보낼 3줄 요약' })).toBeVisible();
     await expect(page.locator('.owner-brief-steps li')).toHaveCount(3);
@@ -258,6 +269,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
     expect(exposure.growthSections.some((section: any) => section.id === 'run-change-snapshot-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
+    expect(exposure.growthSections.some((section: any) => section.id === 'owner-5-minute-route-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-brief-copy-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-shortcut-save-v1')).toBe(true);
@@ -272,6 +284,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'home' && event.timeframe === 'weekly_home' && event.page_item_id === '')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('run-change-snapshot-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-quick-picks-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-5-minute-route-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-brief-copy-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-feed-subscribe-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('owner-shortcut-save-v1'))).toBe(true);
@@ -311,6 +324,22 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const quickPickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(quickPickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_quick_pick' && event.component_experiment_id === 'owner-quick-picks-v1' && event.item_id && String(event.href).includes('utm_medium=quick_pick'))).toBe(true);
+
+    await page.evaluate(() => {
+      const link = document.querySelector('.owner-route-card') as HTMLAnchorElement | null;
+      if (!link) throw new Error('missing owner route card');
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.click();
+    });
+    const ownerRouteEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(ownerRouteEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_route_item' && event.component_experiment_id === 'owner-5-minute-route-v1' && event.item_id && String(event.href).includes('utm_medium=owner_route'))).toBe(true);
+
+    const ownerRouteButton = page.locator('[data-growth-share="weekly_owner_route_copy"]').first();
+    await ownerRouteButton.click();
+    await expect(ownerRouteButton).toHaveText(/Copied|Text ready/);
+    const ownerRouteCopyEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(ownerRouteCopyEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_owner_route_copy' && event.component_experiment_id === 'owner-5-minute-route-v1' && String(event.href).includes('daily-visits-500-weekly-owner-route'))).toBe(true);
+    expect(ownerRouteCopyEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_owner_route_copy' && event.copy_mode === 'brief_text' && event.section === 'owner-5-minute-route-v1')).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('.focus-card') as HTMLAnchorElement | null;
@@ -526,10 +555,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('.evidence-ladder-card.active')).toHaveAttribute('data-growth-timeframe', label.toLowerCase());
       await expect(page.locator('[data-growth-section="evidence-focus-watchlist-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-quick-picks-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="owner-5-minute-route-v1"]')).toBeVisible();
+      await expect(page.locator('[data-growth-section="owner-5-minute-route-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-5-minute-route-v1');
       await expect(page.locator('[data-growth-section="owner-brief-copy-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-feed-subscribe-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-section="owner-shortcut-save-v1"]')).toBeVisible();
       await expect(page.locator('[data-growth-share$="_owner_brief_copy"]')).toHaveAttribute('data-copy-text', /BSS owner brief/);
+      await expect(page.locator('[data-growth-share$="_owner_route_copy"]')).toHaveAttribute('data-copy-text', /5-minute owner route/);
+      await expect(page.locator('[data-growth-share$="_owner_route_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-.*-owner-route/);
       await expect(page.locator('[data-growth-share$="_feed_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-feed-subscribe/);
       await expect(page.locator('[data-growth-share$="_shortcut_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-owner-shortcut/);
       await expect(page.locator('.quick-pick-card').first()).toHaveAttribute('href', new RegExp(`daily-visits-500-${label.toLowerCase()}-owner-quick-picks`));

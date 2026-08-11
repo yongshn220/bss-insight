@@ -1345,6 +1345,144 @@ def owner_shortcut_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def owner_route_pick(
+    rows: list[dict[str, Any]],
+    category_ids: set[str] | None,
+    used_ids: set[str],
+    *,
+    prefer_watchlist: bool = False,
+) -> dict[str, Any] | None:
+    """Pick one concrete item for a compact owner route without broad category ranking.
+
+    This is a UX/distribution helper only. It does not change score order or trend
+    status; it reuses the already-ranked item rows so busy BSS owners can act on
+    a 3-step route before scanning all 44 items.
+    """
+    candidates = [
+        row
+        for row in rows
+        if str(row.get("item_id") or "") not in used_ids
+        and (category_ids is None or str(row.get("category_id") or "") in category_ids)
+    ]
+    if prefer_watchlist:
+        watchlist = [row for row in candidates if not has_trend_evidence(row)]
+        candidates = watchlist or candidates
+    else:
+        trend_backed = [row for row in candidates if has_trend_evidence(row)]
+        candidates = trend_backed or candidates
+    return candidates[0] if candidates else None
+
+
+def owner_action_route(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Three-card, copy-ready route for store owners/reps.
+
+    The dashboard already has deep ranking, quick-picks, feed, and share modules.
+    This panel compresses the current ranking into a practical store-walk route:
+    one hair/install action, one front-end add-on action, and one shrink-aware
+    WATCHLIST/small-test action. It supports the 500/day goal by creating a
+    short, UTM-tagged piece owners/reps can copy and revisit without turning
+    supply-only items into trend claims.
+    """
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-owner-route"
+    route_specs = [
+        {
+            "stage": "Hair / install check",
+            "categories": {"wigs-hair-pieces", "braiding-crochet-hair", "hair-care-styling", "tools-accessories"},
+            "note": "wig, braid, install 동선에서 먼저 보여줄 item",
+            "prefer_watchlist": False,
+        },
+        {
+            "stage": "Front-end add-on",
+            "categories": {"lashes-brows", "nails", "makeup-cosmetics", "jewelry-fashion-accessories"},
+            "note": "checkout/cosmetics impulse zone에서 같이 팔 item",
+            "prefer_watchlist": False,
+        },
+        {
+            "stage": "Small test / watchlist",
+            "categories": None,
+            "note": "trend claim 금지 · 소량 test와 shrink 관리 우선",
+            "prefer_watchlist": True,
+        },
+    ]
+    used_ids: set[str] = set()
+    route_rows: list[tuple[dict[str, Any], dict[str, Any]]] = []
+    for spec in route_specs:
+        row = owner_route_pick(rows, spec["categories"], used_ids, prefer_watchlist=bool(spec["prefer_watchlist"]))
+        if not row:
+            continue
+        used_ids.add(str(row.get("item_id") or ""))
+        route_rows.append((spec, row))
+    if not route_rows:
+        return ""
+
+    cards: list[str] = []
+    copy_lines = [f"{label} BSS 5-minute owner route:"]
+    for index, (spec, row) in enumerate(route_rows, start=1):
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        evidence = evidence_status_label(row)
+        detail_url = growth_campaign_url(
+            f"/items/{item_id}.html",
+            source="site",
+            medium="owner_route",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
+        display = row.get("display_tip") or "front-area test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        copy_lines.append(
+            f"{index}) {spec['stage']}: #{row.get('rank')} {row.get('item_name')} — "
+            f"Display: {display}. Evidence: {evidence}. Risk: {risk}. {detail_url}"
+        )
+        cards.append(f"""
+        <a class="owner-route-card" data-growth-cta="owner_route_item" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="{esc(detail_url)}">
+          <span>{esc(index)} · {esc(spec['stage'])}</span>
+          <strong>#{esc(row.get('rank'))} {esc(row.get('item_name'))}</strong>
+          <p>{esc(clamp_text(display, 128))}</p>
+          <small>{esc(spec['note'])} · {esc(evidence)} · Risk: {esc(clamp_text(risk, 76))}</small>
+        </a>""")
+
+    route_url = growth_campaign_url(
+        f"/rankings/{timeframe}.html",
+        source="owner_share",
+        medium="route_copy",
+        campaign=campaign,
+        utm_content="five_minute_route",
+        utm_term=timeframe,
+    )
+    full_route_path = growth_campaign_path(
+        f"/rankings/{timeframe}.html",
+        source="site",
+        medium="owner_route",
+        campaign=campaign,
+        utm_content="full-ranking",
+        utm_term=timeframe,
+    )
+    copy_lines.append(f"Full route/ranking: {route_url}")
+    copy_text = "\n".join(copy_lines)
+    return f"""
+      <section class="wrap owner-route" data-growth-section="owner-5-minute-route-v1" data-growth-experiment="owner-5-minute-route-v1" aria-labelledby="owner-route-{esc(timeframe)}">
+        <div class="section-title owner-route-title">
+          <div><span>5-minute owner route · copy-ready</span><h2 id="owner-route-{esc(timeframe)}">{esc(label)} 매장 5분 점검 route</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <p class="owner-route-note">Full ranking을 다 읽기 전, owner/reps가 매장 동선을 따라 바로 확인할 3개 item만 압축했습니다. WATCHLIST row는 trend claim이 아니라 small test로 표시합니다.</p>
+        <div class="owner-route-grid">{''.join(cards)}</div>
+        <div class="owner-route-copy">
+          <code>{esc(copy_text)}</code>
+          <div class="share-actions">
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_owner_route_copy" data-copy-url="{esc(route_url)}" data-copy-text="{esc(copy_text)}">Copy 5-minute route</button>
+            <a class="share-action" data-growth-cta="owner_route_full_ranking" href="{esc(full_route_path)}">Open full route</a>
+          </div>
+        </div>
+      </section>"""
+
+
 def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
     """Item-specific top share starters for reps/owners, with UTM and item-level tracking."""
     share_rows = [row for row in rows if has_trend_evidence(row)][:3]
@@ -1740,6 +1878,7 @@ def render_home(data: dict[str, Any]) -> str:
       {timeframe_evidence_ladder(data, 'weekly')}
       {evidence_focus_watchlist('weekly', weekly)}
       {owner_quick_picks('weekly', weekly)}
+      {owner_action_route('weekly', weekly)}
       {owner_brief_panel('weekly', weekly)}
       {owner_feed_subscribe_panel('weekly', weekly)}
       {owner_shortcut_panel('weekly', weekly)}
@@ -1948,6 +2087,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {timeframe_evidence_ladder(data, timeframe)}
       {evidence_focus_watchlist(timeframe, rows)}
       {owner_quick_picks(timeframe, rows)}
+      {owner_action_route(timeframe, rows)}
       {owner_brief_panel(timeframe, rows)}
       {owner_feed_subscribe_panel(timeframe, data.get("rankings", {}).get("weekly", rows))}
       {owner_shortcut_panel(timeframe, rows)}
