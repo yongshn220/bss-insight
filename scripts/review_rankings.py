@@ -175,6 +175,16 @@ def query_variants(row: dict[str, Any]) -> list[str]:
         queries.extend([f'{name} wig install trend', f'{name} natural hair review'])
     elif "braiding" in category or "crochet" in category:
         queries.extend([f'{name} protective style trend', f'{name} knotless braids review'])
+    elif "hair care" in category or "styling" in category:
+        lowered_name = name.lower()
+        if any(term in lowered_name for term in ("wig", "lace", "adhesive", "melting")):
+            queries.extend([f'{name} wig install review', f'{name} lace install trend'])
+        elif any(term in lowered_name for term in ("mousse", "braid")):
+            queries.extend([f'{name} braid maintenance review', f'{name} protective style trend'])
+        elif any(term in lowered_name for term in ("edge", "gel")):
+            queries.extend([f'{name} edge control review', f'{name} black hair styling trend'])
+        else:
+            queries.extend([f'{name} natural hair review', f'{name} beauty supply haul'])
     elif "tools" in category:
         queries.extend([f'{name} wig install accessory review', f'{name} beauty supply accessory'])
     elif "jewelry" in category or "accessories" in category:
@@ -1019,6 +1029,22 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "Analytics export is still needed to compare category_page/category_nav UTM sessions, category_copy_link events, and category ranking card clicks against generic home/ranking entrances.",
         "last_refreshed_at": now,
     })
+    focus_items = review.get("next_loop_focus_items", []) if isinstance(review.get("next_loop_focus_items"), list) else []
+    focus_item_ids = [str(item.get("item_id")) for item in focus_items if isinstance(item, dict) and item.get("item_id")]
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "focus-query-diversification-v1",
+        "status": "live-collector-feedback-loop-after-review",
+        "objective": "Improve the next evidence loop by selecting a diversified set of exact, owner-context, and review/tutorial queries for weak WATCHLIST items instead of only the first generic trend probes.",
+        "tracked_quality_metrics": [
+            "NEXT_LOOP_FOCUS_QUERIES_PER_ITEM default=3",
+            "collector chooses exact + owner-context + review/tutorial probes when available",
+            "focus_items=" + ", ".join(focus_item_ids[:6]),
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "Weak item cards get a better chance of collecting dated, item-relevant sources in the next run, which can lower WATCHLIST count without treating generated search URLs as evidence.",
+        "measurement_need": "Track weekly trend_items/WATCHLIST deltas and later source-link engagement after analytics export access is connected.",
+        "last_refreshed_at": now,
+    })
     ensure_campaign(active_campaigns, {
         "campaign_id": "vercel-analytics-head-bootstrap-v1",
         "status": "live-provider-bridge-after-build",
@@ -1102,6 +1128,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-collection-quality-after-review",
             "hypothesis": "If dated published URLs are preserved ahead of same-day supply listings, shared item pages should look more credible and reduce unsupported WATCHLIST confusion.",
             "next_step": "Track items_with_published_trend_url and source_link clicks after analytics export is connected; do not treat generated search URLs as evidence.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "focus-query-diversification-v1",
+            "status": "active-feedback-loop-collection-quality-after-review",
+            "hypothesis": "Diversifying next_loop_focus probes into exact, owner-context, and review/tutorial queries should improve dated URL discovery for weak BSS item cards without scoring generated search URLs.",
+            "next_step": "Compare previous_loop_follow_up and weekly WATCHLIST deltas after the next refresh; keep query URLs watchlist-only unless a dated item-relevant URL is captured.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1257,6 +1290,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["mixed_recency_cap", "published_first_verified_source_cap"],
             "success_metric": "items_with_published_trend_url, published_trend_urls_total, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
             "hypothesis": "Preserving dated published URLs before same-day supply listings enter the per-item cap should improve evidence trust and reduce avoidable WATCHLIST labeling without counting search URLs as evidence.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "focus-query-diversification-v1",
+            "status": "active-feedback-loop-collection-quality-after-build",
+            "variants": ["first_two_generic_focus_queries", "exact_plus_owner_context_plus_review_queries"],
+            "success_metric": "next-loop weak-item published trend URL gains, weekly WATCHLIST reduction, and source-link engagement once analytics export is connected",
+            "hypothesis": "Diversifying next_loop_focus probes should find more dated item-relevant URLs for weak BSS owner items than repeatedly querying only generic trend phrases, without scoring generated search URLs.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

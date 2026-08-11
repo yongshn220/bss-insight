@@ -1,19 +1,19 @@
 {
-  "generated_at": "2026-08-11T02:47:51.890567Z",
+  "generated_at": "2026-08-11T04:15:00.658257Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success_with_partial_cache",
-      "observed_at": "2026-08-11T02:47:51.889608Z",
+      "observed_at": "2026-08-11T04:15:00.657109Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 80,
       "expanded_keyword_items": 18,
-      "products_returned": 78,
+      "products_returned": 77,
       "items_with_evidence": 44,
-      "evidence_urls": 77,
-      "fresh_evidence_urls": 76,
+      "evidence_urls": 75,
+      "fresh_evidence_urls": 74,
       "partial_cached_items": 1,
       "partial_cached_evidence_urls": 1,
       "current_actor_status": "success_partial",
@@ -21,11 +21,11 @@
       "max_results_total": 80,
       "cache_status": "usable",
       "cache_path": "data/tiktok_shop_cache.json",
-      "cache_updated_at": "2026-08-11T01:30:33.270532Z",
+      "cache_updated_at": "2026-08-11T04:09:06.842227Z",
       "cache_age_days": 0,
       "cache_max_age_days": 7,
       "cached_items": 44,
-      "cached_evidence_urls": 77
+      "cached_evidence_urls": 79
     }
   },
   "evidence_totals": {
@@ -35,9 +35,9 @@
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 1,
-    "verified_urls_total": 302,
-    "published_trend_urls_total": 51,
-    "retail_product_urls_total": 251,
+    "verified_urls_total": 304,
+    "published_trend_urls_total": 56,
+    "retail_product_urls_total": 248,
     "cached_tiktok_shop_urls_total": 1,
     "collection_error_records": 0
   },
@@ -72,17 +72,6 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "wigs-hair-pieces",
-        "category_name": "Wigs & Hair Pieces",
-        "items": 5,
-        "trend_items": 2,
-        "retail_product_items": 5,
-        "tiktok_shop_items": 5,
-        "trend_ratio": 0.4,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
         "category_id": "hair-care-styling",
         "category_name": "Hair Care & Styling",
         "items": 6,
@@ -101,6 +90,28 @@
         "retail_product_items": 4,
         "tiktok_shop_items": 4,
         "trend_ratio": 0.5,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "wigs-hair-pieces",
+        "category_name": "Wigs & Hair Pieces",
+        "items": 5,
+        "trend_items": 3,
+        "retail_product_items": 5,
+        "tiktok_shop_items": 5,
+        "trend_ratio": 0.6,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "nails",
+        "category_name": "Nails",
+        "items": 5,
+        "trend_items": 4,
+        "retail_product_items": 5,
+        "tiktok_shop_items": 5,
+        "trend_ratio": 0.8,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -125,29 +136,12 @@
         "trend_ratio": 1.0,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
-      },
-      {
-        "category_id": "nails",
-        "category_name": "Nails",
-        "items": 5,
-        "trend_items": 5,
-        "retail_product_items": 5,
-        "tiktok_shop_items": 5,
-        "trend_ratio": 1.0,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
       }
     ],
     "missing_published_trend_items": [
       {
         "item_id": "v-part-human-hair-wig",
         "item_name": "V-Part Human Hair Wig",
-        "category_id": "wigs-hair-pieces",
-        "category_name": "Wigs & Hair Pieces"
-      },
-      {
-        "item_id": "synthetic-lace-front-wig",
-        "item_name": "Synthetic Lace Front Wig",
         "category_id": "wigs-hair-pieces",
         "category_name": "Wigs & Hair Pieces"
       },
@@ -186,6 +180,12 @@
         "item_name": "Individual Flare Lashes",
         "category_id": "lashes-brows",
         "category_name": "Lashes & Brows"
+      },
+      {
+        "item_id": "rhinestone-nail-charms",
+        "item_name": "Rhinestone Nail Charms",
+        "category_id": "nails",
+        "category_name": "Nails"
       },
       {
         "item_id": "extra-large-satin-bonnet",
@@ -268,6 +268,6 @@
   ],
   "next_actions": [
     "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
-    "published trend URL gap 18개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+    "published trend URL gap 18개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Hair Care & Styling부터 item-level dated source capture를 보강합니다."
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-11T03:00:58.072536Z",
+  "updated_at": "2026-08-11T04:17:37.075832Z",
   "source_review": "data/operations_review.json",
   "reason": "Generated after Playwright QA from latest ranking strengths/gaps. collect_rankings.py reads this file on the next loop and applies focus queries to weak items.",
   "focus_items": [
@@ -66,7 +66,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -144,43 +144,10 @@
       }
     },
     {
-      "item_id": "wig-adhesive-glue",
-      "item_name": "Wig Adhesive Glue",
-      "category": "Hair Care & Styling",
-      "rank": 9,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Wig Adhesive Glue\" beauty supply trend",
-        "Wig Adhesive Glue 2026 trend",
-        "Wig Adhesive Glue customer review 2026",
-        "\"Wig Adhesive Glue\" black beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
       "item_id": "v-part-human-hair-wig",
       "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"V-Part Human Hair Wig\" beauty supply trend",
@@ -205,6 +172,41 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 3,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "category": "Hair Care & Styling",
+      "rank": 10,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "Wig Adhesive Glue 2026 trend",
+        "Wig Adhesive Glue customer review 2026",
+        "\"Wig Adhesive Glue\" black beauty supply",
+        "Wig Adhesive Glue wig install review",
+        "Wig Adhesive Glue lace install trend"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 12,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,

@@ -339,31 +339,84 @@ def load_next_loop_focus() -> dict[str, Any]:
     return _NEXT_LOOP_FOCUS_CACHE
 
 
+def prioritized_focus_queries(queries: list[Any], max_queries: int) -> list[str]:
+    """Pick a small, diverse set of next-loop probes from review output.
+
+    The review script intentionally writes several query styles per weak item.
+    The collector used to take only the first two, which over-sampled generic
+    `beauty supply trend` / `2026 trend` probes and often skipped the more useful
+    owner-context queries such as `wig install accessory review`, `outfit trend
+    black women`, or `press-on nail trend`. Queries remain probes only: a result
+    must still resolve to a dated, item-relevant URL before it can affect ranking.
+    """
+    if max_queries <= 0:
+        return []
+    cleaned: list[str] = []
+    seen: set[str] = set()
+    for query in queries:
+        if not isinstance(query, str):
+            continue
+        value = " ".join(query.split())
+        key = value.lower()
+        if value and key not in seen:
+            cleaned.append(value)
+            seen.add(key)
+    if len(cleaned) <= max_queries:
+        return cleaned
+
+    selected: list[str] = []
+    selected_keys: set[str] = set()
+
+    def add_first(predicate) -> None:  # type: ignore[no-untyped-def]
+        if len(selected) >= max_queries:
+            return
+        for query in cleaned:
+            key = query.lower()
+            if key in selected_keys:
+                continue
+            if predicate(query.lower()):
+                selected.append(query)
+                selected_keys.add(key)
+                return
+
+    # Keep one exact/name-heavy query for precision, then diversify into action
+    # language and review/tutorial language before filling with generic trend text.
+    add_first(lambda q: '"' in q or " black beauty supply" in q)
+    add_first(lambda q: any(term in q for term in (
+        "install", "protective", "outfit", "black women", "body jewelry", "press-on",
+        "nail design", "beauty supply accessory", "natural hair", "knotless", "diy",
+        "makeup", "haul",
+    )))
+    add_first(lambda q: any(term in q for term in ("review", "tutorial", "customer")))
+    add_first(lambda q: "trend" in q or "2026" in q)
+
+    for query in cleaned:
+        if len(selected) >= max_queries:
+            break
+        key = query.lower()
+        if key not in selected_keys:
+            selected.append(query)
+            selected_keys.add(key)
+    return selected[:max_queries]
+
+
 def next_loop_focus_queries(row: dict[str, Any]) -> list[str]:
-    """Return feedback queries generated after the previous Playwright QA review."""
+    """Return diversified feedback queries generated after the previous QA review."""
     focus = load_next_loop_focus()
-    max_queries = int_env("NEXT_LOOP_FOCUS_QUERIES_PER_ITEM", 2, 0, 6)
+    max_queries = int_env("NEXT_LOOP_FOCUS_QUERIES_PER_ITEM", 3, 0, 6)
     if max_queries <= 0:
         return []
     focus_items = focus.get("focus_items", []) if isinstance(focus, dict) else []
     if not isinstance(focus_items, list):
         return []
     item_id = row.get("id")
-    output: list[str] = []
-    seen: set[str] = set()
     for item in focus_items:
         if not isinstance(item, dict) or item.get("item_id") != item_id:
             continue
         queries = item.get("queries", [])
-        if not isinstance(queries, list):
-            continue
-        for query in queries:
-            if isinstance(query, str) and query.strip() and query not in seen:
-                output.append(query.strip())
-                seen.add(query.strip())
-            if len(output) >= max_queries:
-                return output
-    return output
+        if isinstance(queries, list):
+            return prioritized_focus_queries(queries, max_queries)
+    return []
 
 
 def focus_item_ids() -> set[str]:

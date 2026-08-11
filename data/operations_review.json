@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-11T03:00:58.072536Z",
-  "source_generated_at": "2026-08-11T02:47:51.891122Z",
+  "reviewed_at": "2026-08-11T04:17:37.075832Z",
+  "source_generated_at": "2026-08-11T04:15:00.658801Z",
   "date": "2026-08-11",
   "timeframe": "weekly",
-  "playwright_summary": "16 passed (37.5s); owner-calendar-reminder-v1 + folded iCalendar QA passed",
+  "playwright_summary": "16 passed (38.4s); focus-query-diversification-v1 QA passed",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,20 +15,20 @@
     "watchlist_items": 38
   },
   "collection_health": {
-    "generated_at": "2026-08-11T02:47:51.890567Z",
+    "generated_at": "2026-08-11T04:15:00.658257Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success_with_partial_cache",
-        "observed_at": "2026-08-11T02:47:51.889608Z",
+        "observed_at": "2026-08-11T04:15:00.657109Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 80,
         "expanded_keyword_items": 18,
-        "products_returned": 78,
+        "products_returned": 77,
         "items_with_evidence": 44,
-        "evidence_urls": 77,
-        "fresh_evidence_urls": 76,
+        "evidence_urls": 75,
+        "fresh_evidence_urls": 74,
         "partial_cached_items": 1,
         "partial_cached_evidence_urls": 1,
         "current_actor_status": "success_partial",
@@ -36,11 +36,11 @@
         "max_results_total": 80,
         "cache_status": "usable",
         "cache_path": "data/tiktok_shop_cache.json",
-        "cache_updated_at": "2026-08-11T01:30:33.270532Z",
+        "cache_updated_at": "2026-08-11T04:09:06.842227Z",
         "cache_age_days": 0,
         "cache_max_age_days": 7,
         "cached_items": 44,
-        "cached_evidence_urls": 77
+        "cached_evidence_urls": 79
       }
     },
     "evidence_totals": {
@@ -50,9 +50,9 @@
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 1,
-      "verified_urls_total": 302,
-      "published_trend_urls_total": 51,
-      "retail_product_urls_total": 251,
+      "verified_urls_total": 304,
+      "published_trend_urls_total": 56,
+      "retail_product_urls_total": 248,
       "cached_tiktok_shop_urls_total": 1,
       "collection_error_records": 0
     },
@@ -66,7 +66,7 @@
     },
     "next_actions": [
       "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
-      "published trend URL gap 18개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+      "published trend URL gap 18개 item 유지: Tools & Accessories, Jewelry & Fashion Accessories, Hair Care & Styling부터 item-level dated source capture를 보강합니다."
     ]
   },
   "category_stats": [
@@ -184,7 +184,7 @@
     }
   },
   "material_changes": [
-    "Source health changed: TikTok Shop collector success→success_with_partial_cache"
+    "No material coverage movement versus previous distinct ranking snapshot; measurement pending."
   ],
   "previous_loop_follow_up": [
     {
@@ -251,7 +251,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -271,7 +271,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -372,52 +372,6 @@
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
-      "item_id": "wig-adhesive-glue",
-      "item_name": "Wig Adhesive Glue",
-      "status": "still_needs_focus",
-      "baseline": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "current": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-    },
-    {
       "item_id": "v-part-human-hair-wig",
       "item_name": "V-Part Human Hair Wig",
       "status": "still_needs_focus",
@@ -462,10 +416,56 @@
         "news_magazine": 0
       },
       "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+    },
+    {
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "status": "still_needs_focus",
+      "baseline": {
+        "verified_evidence": 12,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 7,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "current": {
+        "verified_evidence": 12,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 7,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 16 passed (37.5s); owner-calendar-reminder-v1 + folded iCalendar QA passed",
+    "Playwright QA 완료: 16 passed (38.4s); focus-query-diversification-v1 QA passed",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 Lash Bond and Seal, #3 Water Wave Crochet Hair",
     "Evidence separation 유지: published trend URL 보유 item 6개, BSS/marketplace live product URL 보유 item 44개.",
@@ -542,7 +542,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -620,43 +620,10 @@
       }
     },
     {
-      "item_id": "wig-adhesive-glue",
-      "item_name": "Wig Adhesive Glue",
-      "category": "Hair Care & Styling",
-      "rank": 9,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Wig Adhesive Glue\" beauty supply trend",
-        "Wig Adhesive Glue 2026 trend",
-        "Wig Adhesive Glue customer review 2026",
-        "\"Wig Adhesive Glue\" black beauty supply"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
       "item_id": "v-part-human-hair-wig",
       "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 10,
+      "rank": 9,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "queries": [
         "\"V-Part Human Hair Wig\" beauty supply trend",
@@ -681,6 +648,41 @@
         "exact_evidence": 0,
         "item_type_evidence": 0,
         "retail_exact_evidence": 3,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "wig-adhesive-glue",
+      "item_name": "Wig Adhesive Glue",
+      "category": "Hair Care & Styling",
+      "rank": 10,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "queries": [
+        "\"Wig Adhesive Glue\" beauty supply trend",
+        "Wig Adhesive Glue 2026 trend",
+        "Wig Adhesive Glue customer review 2026",
+        "\"Wig Adhesive Glue\" black beauty supply",
+        "Wig Adhesive Glue wig install review",
+        "Wig Adhesive Glue lace install trend"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 12,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
