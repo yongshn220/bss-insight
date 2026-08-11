@@ -1,19 +1,19 @@
 {
-  "generated_at": "2026-08-11T12:16:11.069684Z",
+  "generated_at": "2026-08-11T13:31:03.256338Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-11T12:16:11.068894Z",
+      "observed_at": "2026-08-11T13:31:03.255428Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 82,
       "expanded_keyword_items": 19,
-      "products_returned": 81,
+      "products_returned": 78,
       "items_with_evidence": 44,
-      "evidence_urls": 80,
-      "fresh_evidence_urls": 80,
+      "evidence_urls": 77,
+      "fresh_evidence_urls": 77,
       "partial_cached_items": 0,
       "partial_cached_evidence_urls": 0,
       "current_actor_status": "success",
@@ -24,7 +24,7 @@
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 34,
+    "items_with_published_trend_url": 33,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 0,
@@ -36,7 +36,7 @@
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 10,
+      "published_trend_missing_items": 11,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
       "zero_trend_categories": 0
@@ -76,6 +76,17 @@
         "retail_product_ratio": 1.0
       },
       {
+        "category_id": "hair-care-styling",
+        "category_name": "Hair Care & Styling",
+        "items": 6,
+        "trend_items": 4,
+        "retail_product_items": 6,
+        "tiktok_shop_items": 6,
+        "trend_ratio": 0.67,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
         "category_id": "jewelry-fashion-accessories",
         "category_name": "Jewelry & Fashion Accessories",
         "items": 8,
@@ -83,17 +94,6 @@
         "retail_product_items": 8,
         "tiktok_shop_items": 8,
         "trend_ratio": 0.75,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling",
-        "items": 6,
-        "trend_items": 5,
-        "retail_product_items": 6,
-        "tiktok_shop_items": 6,
-        "trend_ratio": 0.83,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -143,6 +143,12 @@
         "item_name": "Drawstring Ponytail Extension",
         "category_id": "wigs-hair-pieces",
         "category_name": "Wigs & Hair Pieces"
+      },
+      {
+        "item_id": "lace-melting-spray",
+        "item_name": "Lace Melting Spray",
+        "category_id": "hair-care-styling",
+        "category_name": "Hair Care & Styling"
       },
       {
         "item_id": "braid-foaming-mousse",
@@ -220,6 +226,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "published trend URL gap 10개 item 유지: Lashes & Brows, Tools & Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+    "published trend URL gap 11개 item 유지: Lashes & Brows, Tools & Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }

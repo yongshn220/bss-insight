@@ -506,6 +506,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
   });
 
   test('category landing pages focus broad store lanes into item-level owner actions', async ({ page, request }) => {
@@ -748,6 +749,12 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const review = await reviewResponse.json();
     expect(review.metrics?.items).toBeGreaterThan(0);
     expect(review.collection_health?.source_health).toBeTruthy();
+    expect(review.collection_health?.coverage_gap_summary?.published_trend_missing_items).toBeGreaterThanOrEqual(0);
+    expect(review.collection_evidence_deltas).toBeTruthy();
+    const collectionDeltas = Object.values(review.collection_evidence_deltas ?? {}) as any[];
+    if (collectionDeltas.length > 0) {
+      expect(collectionDeltas.some((delta: any) => String(delta.label ?? '').includes('published trend'))).toBe(true);
+    }
     expect(review.independent_ai_review?.review_type).toBe('independent_ai_operator_review');
     expect(review.independent_ai_review?.primary_growth_blockers?.some((blocker: string) => /analytics export/i.test(blocker))).toBe(true);
     expect(review.material_changes?.length).toBeGreaterThan(0);
@@ -810,6 +817,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'focus-query-diversification-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'supplemental-trend-query-coverage-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-calendar-reminder-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
@@ -818,6 +826,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'supplemental-trend-query-coverage-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'timeframe-evidence-ladder-v1')).toBe(true);

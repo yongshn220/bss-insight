@@ -277,11 +277,100 @@ def coverage_change_labels(coverage_deltas: dict[str, dict[str, int]]) -> tuple[
     return improvements, regressions
 
 
-def material_change_notes(coverage_deltas: dict[str, dict[str, int]]) -> list[str]:
+COLLECTION_DELTA_FIELDS: dict[tuple[str, ...], tuple[str, bool]] = {
+    ("evidence_totals", "items_with_published_trend_url"): ("all-window published trend item coverage", False),
+    ("evidence_totals", "published_trend_urls_total"): ("published trend URL total", False),
+    ("evidence_totals", "items_with_retail_product_url"): ("all-window live product item coverage", False),
+    ("evidence_totals", "items_with_tiktok_shop_url"): ("all-window TikTok Shop item coverage", False),
+    ("evidence_totals", "collection_error_records"): ("collection error records", True),
+    ("source_health", "apify_tiktok_shop", "products_returned"): ("TikTok Shop products returned", False),
+    ("source_health", "apify_tiktok_shop", "fresh_evidence_urls"): ("fresh TikTok Shop supply URLs", False),
+    ("source_health", "apify_tiktok_shop", "partial_cached_items"): ("TikTok partial-cache fallback items", True),
+    ("coverage_gap_summary", "published_trend_missing_items"): ("all-window missing published trend items", True),
+}
+
+
+def nested_int(data: dict[str, Any], path: tuple[str, ...]) -> int | None:
+    """Safely read a nested integer metric from collection/review dictionaries."""
+    cursor: Any = data
+    for key in path:
+        if not isinstance(cursor, dict):
+            return None
+        cursor = cursor.get(key)
+    if cursor in (None, ""):
+        return None
+    try:
+        return int(cursor)
+    except Exception:
+        return None
+
+
+def collection_evidence_deltas(
+    current_collection: dict[str, Any],
+    previous_collection: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    """Compare all-window/source-health collection metrics, not only weekly rows.
+
+    Weekly trend_items can stay flat while the collector loses all-window dated
+    coverage or social-commerce freshness. Surfacing those regressions keeps the
+    closed loop from calling a routine refresh an improvement when source quality
+    actually moved backward.
+    """
+    if not isinstance(current_collection, dict) or not isinstance(previous_collection, dict):
+        return {}
+    deltas: dict[str, dict[str, Any]] = {}
+    for path, (label, inverse) in COLLECTION_DELTA_FIELDS.items():
+        current_value = nested_int(current_collection, path)
+        previous_value = nested_int(previous_collection, path)
+        if current_value is None or previous_value is None:
+            continue
+        key = "__".join(path)
+        deltas[key] = {
+            "label": label,
+            "previous": previous_value,
+            "current": current_value,
+            "delta": current_value - previous_value,
+            "inverse": inverse,
+        }
+    return deltas
+
+
+def collection_change_labels(collection_deltas: dict[str, dict[str, Any]]) -> tuple[list[str], list[str]]:
+    """Return (improvements, regressions) for collection/source metrics."""
+    improvements: list[str] = []
+    regressions: list[str] = []
+    if not isinstance(collection_deltas, dict):
+        return improvements, regressions
+    for delta in collection_deltas.values():
+        if not isinstance(delta, dict):
+            continue
+        try:
+            change = int(delta.get("delta") or 0)
+            previous = int(delta.get("previous") or 0)
+            current = int(delta.get("current") or 0)
+        except Exception:
+            continue
+        if change == 0:
+            continue
+        label = str(delta.get("label") or "collection metric")
+        inverse = bool(delta.get("inverse"))
+        note = f"{label} {previous}→{current} ({change:+d})"
+        improved = change < 0 if inverse else change > 0
+        (improvements if improved else regressions).append(note)
+    return improvements, regressions
+
+
+def material_change_notes(
+    coverage_deltas: dict[str, dict[str, int]],
+    collection_deltas: dict[str, dict[str, Any]] | None = None,
+) -> list[str]:
     improvements, regressions = coverage_change_labels(coverage_deltas)
+    collection_improvements, collection_regressions = collection_change_labels(collection_deltas or {})
     notes = []
     notes.extend(f"Improved: {note}" for note in improvements)
+    notes.extend(f"Improved source: {note}" for note in collection_improvements)
     notes.extend(f"Needs recovery: {note}" for note in regressions)
+    notes.extend(f"Needs source recovery: {note}" for note in collection_regressions)
     return notes or ["No material coverage movement versus previous distinct ranking snapshot; measurement pending."]
 
 
@@ -290,6 +379,7 @@ def independent_ai_review(
     cat_stats: list[dict[str, Any]],
     coverage_deltas: dict[str, dict[str, int]],
     collection_notes: dict[str, Any],
+    collection_deltas: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     """Structured operator review beyond baseline counts.
 
@@ -310,10 +400,13 @@ def independent_ai_review(
         if isinstance(stat, dict) and int(stat.get("trend_items") or 0) == 0
     ]
     material_improvements, regressions = coverage_change_labels(coverage_deltas)
+    collection_improvements, collection_regressions = collection_change_labels(collection_deltas)
     evidence_totals = collection_notes.get("evidence_totals", {}) if isinstance(collection_notes, dict) else {}
     source_health = collection_notes.get("source_health", {}) if isinstance(collection_notes, dict) else {}
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
     apify_status = apify.get("status") if isinstance(apify, dict) else "unknown"
+    all_window_published_items = int(evidence_totals.get("items_with_published_trend_url") or 0)
+    all_window_requested_items = int(evidence_totals.get("items_requested") or item_count)
 
     primary_growth_blockers = [
         "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
@@ -323,6 +416,8 @@ def independent_ai_review(
         primary_growth_blockers.append("Zero weekly trend-evidence categories: " + ", ".join(zero_trend_categories[:4]) + ".")
     if regressions:
         primary_growth_blockers.append("Coverage regression detected: " + "; ".join(regressions) + ".")
+    if collection_regressions:
+        primary_growth_blockers.append("Collection evidence/source regression detected: " + "; ".join(collection_regressions[:4]) + ".")
     if apify_status not in {"success", "success_empty", None}:
         primary_growth_blockers.append(f"TikTok Shop collector status requires attention: {apify_status}.")
 
@@ -335,6 +430,8 @@ def independent_ai_review(
         good_points.append(f"Fresh weekly trend evidence exists for {recent_items} item(s), keeping Top 3 from being supply-only.")
     if material_improvements:
         good_points.append("Material coverage progress: " + "; ".join(material_improvements[:3]) + ".")
+    if collection_improvements:
+        good_points.append("Collection/source progress: " + "; ".join(collection_improvements[:3]) + ".")
 
     next_direction = [
         "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
@@ -354,8 +451,8 @@ def independent_ai_review(
             "reason": "Static build/test/deploy pipeline is maintainable and public JSON is sanitized, but ranking/review logic is still concentrated in large Python scripts.",
         },
         "stability_security": {
-            "score": 90 if not regressions else 84,
-            "reason": "Secrets are not exposed and source health is redacted; score drops when source coverage regresses or upstream collectors need recovery.",
+            "score": 90 if not (regressions or collection_regressions) else 84,
+            "reason": "Secrets are not exposed and source health is redacted; score drops when weekly or all-window/source collection coverage regresses.",
         },
         "goal_fit_growth": {
             "score": 70 if trend_items < item_count // 3 else 76,
@@ -368,6 +465,7 @@ def independent_ai_review(
         "good_points": good_points,
         "remaining_issues": [
             f"Published trend evidence coverage is {trend_items}/{item_count}; recent 14d coverage is {recent_items}/{item_count}.",
+            f"All-window published trend URL coverage is {all_window_published_items}/{all_window_requested_items}; this can regress even when weekly rank counts stay flat.",
             f"Zero-trend category count: {len(zero_trend_categories)}.",
             "Traffic progress is measurement pending until a provider reporting credential/export is connected.",
         ],
@@ -530,6 +628,9 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
     source_health = source_health if isinstance(source_health, dict) else {}
     apify_health = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
     apify_health = apify_health if isinstance(apify_health, dict) else {}
+    coverage_gaps = collection_notes.get("coverage_gaps", {}) if isinstance(collection_notes, dict) else {}
+    coverage_gaps = coverage_gaps if isinstance(coverage_gaps, dict) else {}
+    coverage_gap_summary = coverage_gaps.get("summary", {}) if isinstance(coverage_gaps.get("summary"), dict) else {}
     cat_stats = category_stats(rows)
 
     trend_items = sum(1 for row in rows if count(row, "trend_evidence") > 0)
@@ -551,8 +652,20 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
     previous_run = previous_history_run(data.get("generated_at"))
     previous_metrics = previous_run.get("metrics", {}) if isinstance(previous_run, dict) else {}
     coverage_deltas = metric_deltas(current_metrics, previous_metrics if isinstance(previous_metrics, dict) else {})
-    material_changes = material_change_notes(coverage_deltas)
     previous_collection = previous_run.get("collection_health", {}) if isinstance(previous_run, dict) else {}
+    current_collection_health = {
+        "generated_at": collection_notes.get("generated_at"),
+        "source_health": source_health,
+        "evidence_totals": collection_notes.get("evidence_totals", {}),
+        "coverage_gap_summary": coverage_gap_summary,
+        "source_cap_policy": collection_notes.get("source_cap_policy", {}),
+        "next_actions": collection_notes.get("next_actions", []),
+    }
+    collection_delta_map = collection_evidence_deltas(
+        current_collection_health,
+        previous_collection if isinstance(previous_collection, dict) else {},
+    )
+    material_changes = material_change_notes(coverage_deltas, collection_delta_map)
     previous_source_health = previous_collection.get("source_health", {}) if isinstance(previous_collection, dict) else {}
     previous_apify = previous_source_health.get("apify_tiktok_shop", {}) if isinstance(previous_source_health, dict) else {}
     if isinstance(previous_apify, dict) and previous_apify:
@@ -650,21 +763,24 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
         "playwright_summary": playwright_summary,
         "metrics": current_metrics,
         "collection_health": {
-            "generated_at": collection_notes.get("generated_at"),
-            "source_health": source_health,
-            "evidence_totals": collection_notes.get("evidence_totals", {}),
-            "source_cap_policy": collection_notes.get("source_cap_policy", {}),
-            "next_actions": collection_notes.get("next_actions", []),
+            **current_collection_health,
         },
         "category_stats": cat_stats,
         "coverage_deltas": coverage_deltas,
+        "collection_evidence_deltas": collection_delta_map,
         "material_changes": material_changes,
         "previous_loop_follow_up": previous_focus_follow_up(previous_focus, rows_by_id),
         "good_points": good_points,
         "improvement_points": improvement_points,
         "next_loop_focus_items": next_focus_items,
         "qa_focus": qa_focus,
-        "independent_ai_review": independent_ai_review(current_metrics, cat_stats, coverage_deltas, collection_notes),
+        "independent_ai_review": independent_ai_review(
+            current_metrics,
+            cat_stats,
+            coverage_deltas,
+            collection_notes,
+            collection_delta_map,
+        ),
     }
     return review
 
@@ -828,6 +944,8 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         if isinstance(item, dict)
     ]
     metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
+    collection_delta_map = review.get("collection_evidence_deltas", {}) if isinstance(review.get("collection_evidence_deltas"), dict) else {}
+    collection_improvements, collection_regressions = collection_change_labels(collection_delta_map)
     category_ids = sorted({
         str(row.get("category_id") or "")
         for row in rows
@@ -1194,6 +1312,23 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "Compare next run's missing_published_trend_items, weekly trend_items, WATCHLIST count, and focus follow-up status; analytics export is still needed to connect improvements to visits.",
         "last_refreshed_at": now,
     })
+    review_collection_health = review.get("collection_health", {}) if isinstance(review.get("collection_health"), dict) else {}
+    review_evidence_totals = review_collection_health.get("evidence_totals", {}) if isinstance(review_collection_health.get("evidence_totals"), dict) else {}
+    review_gap_summary = review_collection_health.get("coverage_gap_summary", {}) if isinstance(review_collection_health.get("coverage_gap_summary"), dict) else {}
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "collection-evidence-regression-recovery-v1",
+        "status": "live-review-quality-loop-after-build",
+        "objective": "Catch all-window evidence/source regressions that weekly ranking counts can hide, then route the next loop toward recovery before claiming product/share improvement.",
+        "tracked_quality_metrics": [
+            "collection_regressions=" + ("; ".join(collection_regressions[:5]) if collection_regressions else "none"),
+            "collection_improvements=" + ("; ".join(collection_improvements[:5]) if collection_improvements else "none"),
+            f"all_window_published_trend_items={review_evidence_totals.get('items_with_published_trend_url', 'unknown')}",
+            f"published_trend_missing_items={review_gap_summary.get('published_trend_missing_items', 'unknown')}",
+        ],
+        "owner_value": "BSS owners see a more honest dashboard because source-quality setbacks are labeled as recovery work instead of being hidden behind unchanged Top 3 or weekly counts.",
+        "measurement_need": "Analytics export is still required to connect source recovery to owner trust actions such as source-link clicks, item-card clicks, and repeat visits.",
+        "last_refreshed_at": now,
+    })
     ensure_campaign(active_campaigns, {
         "campaign_id": "supplemental-trend-query-coverage-v1",
         "status": "live-collector-quality-after-build",
@@ -1335,6 +1470,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-feedback-loop-prioritization-after-review",
             "hypothesis": "Prioritizing collection_notes missing_published_trend_items should reduce true all-window dated-source gaps faster than ranking-only WATCHLIST focus, while preserving the rule that generated queries are probes only.",
             "next_step": "Compare next run's missing_published_trend_items, focus follow-up improved/still_needs_focus status, weekly trend_items, and WATCHLIST deltas before claiming research progress.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "collection-evidence-regression-recovery-v1",
+            "status": "active-review-quality-loop-after-review",
+            "hypothesis": "Explicitly tracking all-window evidence/source deltas will prevent false-positive improvement reports and focus recovery on lost dated URLs or source freshness before broad growth pushes.",
+            "next_step": "Compare collection_evidence_deltas, missing_published_trend_items, and next_loop_focus follow-up before claiming source-quality progress; analytics export is still needed for traffic impact.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1537,6 +1679,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {
+            "experiment_id": "collection-evidence-regression-recovery-v1",
+            "status": "active-review-quality-loop-after-build",
+            "variants": ["weekly_metrics_only_review", "weekly_plus_all_window_collection_delta_review"],
+            "success_metric": "collection_evidence_deltas recovery, missing_published_trend_items reduction, source-link engagement, and repeat visits once analytics export is connected",
+            "hypothesis": "All-window/source delta review will make the 500/day growth loop safer by detecting lost dated evidence or source freshness even when weekly Top 3 stays unchanged.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
             "experiment_id": "supplemental-trend-query-coverage-v1",
             "status": "active-collection-quality-after-build",
             "variants": ["exact_sku_news_queries_only", "bounded_item_look_published_queries_for_nails_jewelry"],
@@ -1713,6 +1863,7 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
             "metrics",
             "collection_health",
             "coverage_deltas",
+            "collection_evidence_deltas",
             "material_changes",
             "good_points",
             "improvement_points",
