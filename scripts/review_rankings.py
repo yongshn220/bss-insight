@@ -773,6 +773,11 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         if isinstance(item, dict)
     ]
     metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
+    category_ids = sorted({
+        str(row.get("category_id") or "")
+        for row in rows
+        if isinstance(row, dict) and row.get("category_id")
+    })
     marketing["updated_at"] = now
     marketing.setdefault("goal_id", "daily-visits-500")
     marketing.setdefault("status", "active")
@@ -1040,6 +1045,25 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         ],
         "owner_value": "Busy BSS owners can open a store-zone-specific page such as Wigs, Lashes, Nails, or Jewelry and see item-level display/risk/evidence status without scanning all 44 products.",
         "measurement_need": "Analytics export is still needed to compare category_page/category_nav UTM sessions, category_copy_link events, and category ranking card clicks against generic home/ranking entrances.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "category-share-preview-card-v1",
+        "status": "live-static-category-og-twitter-cards-after-build",
+        "objective": "Make focused category landing links render store-zone-specific OG/Twitter preview cards instead of the generic all-category ranking image.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/categories/wigs-hair-pieces.html (og:image share-category-wigs-hair-pieces.svg)",
+            "https://gnsresearchhub.vercel.app/categories/lashes-brows.html (og:image share-category-lashes-brows.svg)",
+            *[f"https://gnsresearchhub.vercel.app/assets/share-category-{category_id}.svg" for category_id in category_ids[:4]],
+        ],
+        "tracked_quality_metrics": [
+            f"category_share_cards={len(category_ids)}",
+            "category page og:image/twitter:image points to /assets/share-category-{category_id}.svg",
+            "share card copy labels category lanes as Concrete item types only and does not rank the category itself",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+        ],
+        "owner_value": "When a BSS owner/reps shares a Wig, Lash, Nail, Tools, or Jewelry lane, the preview now matches that store zone and shows trend/WATCHLIST discipline before the click.",
+        "measurement_need": "GA4/Vercel export access is still needed to compare category_page UTM sessions and category_copy_link events before/after category-specific share previews.",
         "last_refreshed_at": now,
     })
     focus_items = review.get("next_loop_focus_items", []) if isinstance(review.get("next_loop_focus_items"), list) else []
@@ -1319,6 +1343,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "next_step": "After analytics export access is connected, compare utm_medium=category_nav/category_page sessions, category_copy_link events, category-ranking card clicks, and repeat visits against home-page broad ranking entrances.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "category-share-preview-card-v1",
+            "status": "active-static-category-shareability-after-review",
+            "hypothesis": "Category-specific OG/Twitter preview cards should improve owner-share click intent because shared store-zone links show the relevant BSS lane, concrete item leaders, and WATCHLIST discipline instead of a generic all-category image.",
+            "next_step": "After analytics export access is connected, compare category_page/category_copy_link UTM sessions and downstream item-card clicks before/after /assets/share-category-{category_id}.svg deployment.",
+            "last_refreshed_at": now,
+        })
 
     save_json(MARKETING_BACKLOG_PATH, marketing)
     return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
@@ -1518,6 +1549,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["ranking_anchor_only", "store_zone_category_landing_pages"],
             "success_metric": "utm_medium=category_nav/category_page sessions, category_copy_link share events, category ranking-card clicks, and repeat visits once analytics export is connected",
             "hypothesis": "Focused category pages should turn broad BSS store lanes into crawlable/shareable entry points while preserving item-only ranking discipline.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "category-share-preview-card-v1",
+            "status": "active-static-category-shareability-after-build",
+            "variants": ["generic_weekly_share_image_on_category_pages", "store_zone_category_specific_og_twitter_cards"],
+            "success_metric": "category_page UTM sessions, category_copy_link/share events, item-card clicks from category pages, and repeat visits once analytics export is connected",
+            "hypothesis": "Store-zone-specific social preview cards should make category landing shares more trustworthy and relevant for BSS owners than the generic all-category ranking image.",
             "last_refreshed_at": now,
         })
 

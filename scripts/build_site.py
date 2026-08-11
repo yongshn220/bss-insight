@@ -913,6 +913,11 @@ def social_share_card_path(timeframe: str) -> str:
     return f"/assets/share-{timeframe}.svg"
 
 
+def category_share_card_path(category_id: object) -> str:
+    """Return the generated OG/Twitter image path for a category landing page."""
+    return f"/assets/share-category-{category_id}.svg"
+
+
 def svg_text(value: object, limit: int | None = None) -> str:
     """Escape and optionally clamp text for the generated social preview SVG."""
     text = " ".join(str(value or "").split())
@@ -926,7 +931,9 @@ def write_social_share_cards(data: dict[str, Any]) -> list[str]:
 
     Shared ranking links should not depend on a random product image or a text-only
     preview. These static SVGs summarize top items and evidence/watchlist counts
-    from the current ranking snapshot without making any new trend claims.
+    from the current ranking snapshot without making any new trend claims. Category
+    landing pages get their own store-zone preview cards so a shared Wig/Lash/Nail
+    lane does not render with the generic all-category Top 3.
     """
     assets_dir = ROOT / "assets"
     assets_dir.mkdir(exist_ok=True)
@@ -981,6 +988,71 @@ def write_social_share_cards(data: dict[str, Any]) -> list[str]:
 </svg>
 """
         out = assets_dir / f"share-{timeframe}.svg"
+        out.write_text(svg, encoding="utf-8")
+        generated.append(str(out.relative_to(ROOT)))
+
+    weekly_rows = rankings.get("weekly", []) if isinstance(rankings, dict) else []
+    weekly_rows = [row for row in weekly_rows if isinstance(row, dict)] if isinstance(weekly_rows, list) else []
+    rows_by_category: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in weekly_rows:
+        category_id = str(row.get("category_id") or "").strip()
+        if category_id:
+            rows_by_category[category_id].append(row)
+    categories = data.get("categories", []) if isinstance(data.get("categories"), list) else []
+    for category in categories:
+        if not isinstance(category, dict):
+            continue
+        category_id = str(category.get("id") or "").strip()
+        if not category_id:
+            continue
+        rows = rows_by_category.get(category_id, [])
+        if not rows:
+            continue
+        category_name = str(category.get("name") or category_id)
+        store_zone = STORE_ZONE_LABELS.get(category_id, "Store zone")
+        trend_rows = [row for row in rows if has_trend_evidence(row)]
+        leaders = (trend_rows or rows)[:3]
+        trend_items = count_items_with_source(rows, "trend_evidence")
+        watchlist_items = sum(
+            1
+            for row in rows
+            if row.get("momentum") == "watchlist" or source_count(row, "trend_evidence") == 0
+        )
+        leader_lines = []
+        y = 312
+        for row in leaders:
+            evidence = evidence_status_label(row)
+            leader_lines.append(f"""
+  <g transform="translate(82 {y})">
+    <rect width="1036" height="76" rx="22" fill="#ffffff" opacity="0.96"/>
+    <text x="28" y="32" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#171717">#{svg_text(row.get('rank'))} {svg_text(row.get('item_name'), 46)}</text>
+    <text x="28" y="58" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">{svg_text(evidence, 42)} · {svg_text(row.get('momentum'), 20)}</text>
+    <text x="966" y="48" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#171717">{svg_text(row.get('score'))}</text>
+  </g>""")
+            y += 90
+        svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="{svg_text(category_name)} BSS category ranking social preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="0.48" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef6ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1036" cy="116" r="122" fill="#f97316" opacity="0.10"/>
+  <circle cx="128" cy="540" r="150" fill="#0072f5" opacity="0.07"/>
+  <text x="82" y="82" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#f97316" letter-spacing="3">BSS CATEGORY LANE · WEEKLY</text>
+  <text x="82" y="154" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#171717">{svg_text(category_name, 32)}</text>
+  <text x="82" y="208" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#171717">{svg_text(store_zone, 36)}</text>
+  <text x="82" y="246" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#555555">Concrete item types only · category itself is not ranked</text>
+  <text x="82" y="278" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#666666">Trend-backed {trend_items}/{len(rows)} · WATCHLIST {watchlist_items} · Supply URLs stay validation-only</text>
+  {''.join(leader_lines)}
+  <g transform="translate(82 588)">
+    <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Shareable category page · Growth goal 500/day · Generated {svg_text(generated_at, 24)}</text>
+  </g>
+</svg>
+"""
+        out = assets_dir / f"share-category-{category_id}.svg"
         out.write_text(svg, encoding="utf-8")
         generated.append(str(out.relative_to(ROOT)))
     return generated
@@ -2186,7 +2258,7 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
         page_type="category",
         page_path=category_path,
         description=page_description(f"Weekly BSS {cat_name} category item ranking", rows),
-        image_url=social_share_card_path("weekly") if rows else f"/assets/category-{cat_id}.svg",
+        image_url=category_share_card_path(cat_id) if rows else f"/assets/category-{cat_id}.svg",
         json_ld=item_list_json_ld(rows, "weekly", category_path),
     )
 

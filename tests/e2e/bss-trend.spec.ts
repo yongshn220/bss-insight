@@ -498,13 +498,21 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
   });
 
-  test('category landing pages focus broad store lanes into item-level owner actions', async ({ page }) => {
+  test('category landing pages focus broad store lanes into item-level owner actions', async ({ page, request }) => {
     await page.goto('/categories/wigs-hair-pieces.html?utm_source=e2e&utm_medium=category_page&utm_campaign=daily-visits-500-category-landing-pages');
 
     await expect(page).toHaveTitle(/Wigs & Hair Pieces Category · BSS Trend Ranking/);
     await expect(page.locator('body')).toHaveAttribute('data-page-type', 'category');
     await expect(page.getByRole('heading', { name: 'Wigs & Hair Pieces item ranking' })).toBeVisible();
     await expect(page.getByText('Category health')).toBeVisible();
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://gnsresearchhub.vercel.app/assets/share-category-wigs-hair-pieces.svg');
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', 'https://gnsresearchhub.vercel.app/assets/share-category-wigs-hair-pieces.svg');
+    const categoryShareResponse = await request.get('/assets/share-category-wigs-hair-pieces.svg');
+    expect(categoryShareResponse.status()).toBeLessThan(400);
+    const categoryShareSvg = await categoryShareResponse.text();
+    expect(categoryShareSvg).toContain('BSS CATEGORY LANE · WEEKLY');
+    expect(categoryShareSvg).toContain('Wigs &amp; Hair Pieces');
+    expect(categoryShareSvg).toContain('Concrete item types only');
     await expect(page.locator('[data-growth-section="category-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'category-landing-pages-v1');
     await expect(page.locator('[data-growth-section="category-top-items-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="category-owner-test-v1"]')).toBeVisible();
