@@ -130,6 +130,8 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
                 "category": item.get("category"),
                 "rank": item.get("rank"),
                 "reason": item.get("reason"),
+                "focus_source": item.get("focus_source"),
+                "collection_gap": item.get("collection_gap"),
             }
             for item in focus_items
             if isinstance(item, dict)
@@ -176,6 +178,8 @@ def public_next_loop_focus_payload(focus: dict[str, Any]) -> dict[str, Any]:
                 "category": item.get("category"),
                 "rank": item.get("rank"),
                 "reason": item.get("reason"),
+                "focus_source": item.get("focus_source"),
+                "collection_gap": item.get("collection_gap"),
             }
             for item in focus_items
             if isinstance(item, dict)

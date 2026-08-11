@@ -1,31 +1,31 @@
 {
-  "reviewed_at": "2026-08-11T11:06:21.469283Z",
-  "source_generated_at": "2026-08-11T10:57:55.353032Z",
+  "reviewed_at": "2026-08-11T12:21:08.648991Z",
+  "source_generated_at": "2026-08-11T12:16:11.070076Z",
   "date": "2026-08-11",
   "timeframe": "weekly",
-  "playwright_summary": "16 passed (40.2s); ranking-first layout + LF calendar artifact QA passed on desktop/mobile",
+  "playwright_summary": "16 passed (39.4s); coverage gap-first focus QA passed on desktop/mobile",
   "metrics": {
     "items": 44,
     "categories": 8,
-    "trend_items": 13,
-    "recent_trend_items": 13,
+    "trend_items": 14,
+    "recent_trend_items": 14,
     "retail_product_items": 44,
     "tiktok_shop_items": 44,
     "product_image_items": 44,
-    "watchlist_items": 31
+    "watchlist_items": 30
   },
   "collection_health": {
-    "generated_at": "2026-08-11T10:57:55.352612Z",
+    "generated_at": "2026-08-11T12:16:11.069684Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-11T10:57:55.351895Z",
+        "observed_at": "2026-08-11T12:16:11.068894Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 82,
         "expanded_keyword_items": 19,
-        "products_returned": 82,
+        "products_returned": 81,
         "items_with_evidence": 44,
         "evidence_urls": 80,
         "fresh_evidence_urls": 80,
@@ -43,9 +43,9 @@
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 356,
-      "published_trend_urls_total": 107,
-      "retail_product_urls_total": 249,
+      "verified_urls_total": 352,
+      "published_trend_urls_total": 101,
+      "retail_product_urls_total": 251,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
     },
@@ -85,10 +85,10 @@
     {
       "category": "Jewelry & Fashion Accessories",
       "items": 8,
-      "trend_items": 3,
+      "trend_items": 4,
       "retail_items": 8,
       "product_image_items": 8,
-      "trend_ratio": 0.38,
+      "trend_ratio": 0.5,
       "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
@@ -146,13 +146,13 @@
   "coverage_deltas": {
     "trend_items": {
       "previous": 13,
-      "current": 13,
-      "delta": 0
+      "current": 14,
+      "delta": 1
     },
     "recent_trend_items": {
       "previous": 13,
-      "current": 13,
-      "delta": 0
+      "current": 14,
+      "delta": 1
     },
     "retail_product_items": {
       "previous": 44,
@@ -171,12 +171,14 @@
     },
     "watchlist_items": {
       "previous": 31,
-      "current": 31,
-      "delta": 0
+      "current": 30,
+      "delta": -1
     }
   },
   "material_changes": [
-    "No material coverage movement versus previous distinct ranking snapshot; measurement pending."
+    "Improved: published trend item coverage 13→14 (+1)",
+    "Improved: recent trend item coverage 13→14 (+1)",
+    "Improved: WATCHLIST item count 31→30 (-1)"
   ],
   "previous_loop_follow_up": [
     {
@@ -263,7 +265,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -309,7 +311,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
+        "retail_exact_evidence": 4,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -401,7 +403,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -447,7 +449,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -457,153 +459,50 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 16 passed (40.2s); ranking-first layout + LF calendar artifact QA passed on desktop/mobile",
+    "Playwright QA 완료: 16 passed (39.4s); coverage gap-first focus QA passed on desktop/mobile",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-    "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 6mm Rhinestone Stud Earrings, #3 Gold Stackable Ring Set",
-    "Evidence separation 유지: published trend URL 보유 item 13개, BSS/marketplace live product URL 보유 item 44개.",
+    "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 6mm Rhinestone Stud Earrings, #3 Lash Bond and Seal",
+    "Evidence separation 유지: published trend URL 보유 item 14개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
     "TikTok Shop collector health: success, attempts 1, evidence URLs 80."
   ],
   "improvement_points": [
-    "31개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "30개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
     "근거가 가장 약한 category: Braiding & Crochet Hair (trend 1/6, retail 6/6)."
   ],
   "next_loop_focus_items": [
     {
-      "item_id": "human-hair-boho-braiding-bundles",
-      "item_name": "Human Hair Boho Braiding Bundles",
-      "category": "Braiding & Crochet Hair",
-      "rank": 19,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Human Hair Boho Braiding Bundles\" beauty supply trend",
-        "Human Hair Boho Braiding Bundles 2026 trend",
-        "Human Hair Boho Braiding Bundles customer review 2026",
-        "\"Human Hair Boho Braiding Bundles\" black beauty supply",
-        "Human Hair Boho Braiding Bundles protective style trend",
-        "Human Hair Boho Braiding Bundles knotless braids review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 11,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 11,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "synthetic-lace-front-wig",
-      "item_name": "Synthetic Lace Front Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 14,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"Synthetic Lace Front Wig\" beauty supply trend",
-        "Synthetic Lace Front Wig 2026 trend",
-        "Synthetic Lace Front Wig customer review 2026",
-        "\"Synthetic Lace Front Wig\" black beauty supply",
-        "Synthetic Lace Front Wig wig install trend",
-        "Synthetic Lace Front Wig natural hair review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "lace-melting-spray",
-      "item_name": "Lace Melting Spray",
+      "item_id": "braid-foaming-mousse",
+      "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 15,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "rank": 24,
+      "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "focus_source": "collection_notes_missing_published_trend",
+      "collection_gap": "missing_published_trend_url",
       "queries": [
-        "\"Lace Melting Spray\" beauty supply trend",
-        "Lace Melting Spray 2026 trend",
-        "Lace Melting Spray customer review 2026",
-        "\"Lace Melting Spray\" black beauty supply",
-        "Lace Melting Spray wig install review",
-        "Lace Melting Spray lace install trend"
+        "\"Foaming Mousse for Braids\" beauty supply trend",
+        "Foaming Mousse for Braids 2026 trend",
+        "Foaming Mousse for Braids customer review 2026",
+        "\"Foaming Mousse for Braids\" black beauty supply",
+        "Foaming Mousse for Braids braid maintenance review",
+        "Foaming Mousse for Braids protective style trend"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 13,
+        "verified_evidence": 10,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 10,
+        "tiktok_shop_product_evidence": 1,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
-        "unique_domains": 5,
+        "unique_domains": 4,
         "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
+        "unique_retail_domains": 4,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 5,
-        "watchlist_links": 14,
-        "source_layers": 2,
-        "manual_references": 14,
-        "news_magazine": 0
-      }
-    },
-    {
-      "item_id": "13x4-hd-lace-frontal-wig",
-      "item_name": "13x4 HD Lace Frontal Wig",
-      "category": "Wigs & Hair Pieces",
-      "rank": 16,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-      "queries": [
-        "\"13x4 HD Lace Frontal Wig\" beauty supply trend",
-        "13x4 HD Lace Frontal Wig 2026 trend",
-        "13x4 HD Lace Frontal Wig customer review 2026",
-        "\"13x4 HD Lace Frontal Wig\" black beauty supply",
-        "13x4 HD Lace Frontal Wig wig install trend",
-        "13x4 HD Lace Frontal Wig natural hair review"
-      ],
-      "baseline_source_counts": {
-        "verified_evidence": 13,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 5,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 5,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 12,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -614,8 +513,10 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 17,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "rank": 18,
+      "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "focus_source": "collection_notes_missing_published_trend",
+      "collection_gap": "missing_published_trend_url",
       "queries": [
         "\"Wig Grip Band\" beauty supply trend",
         "Wig Grip Band 2026 trend",
@@ -638,7 +539,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 6,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -649,8 +550,10 @@
       "item_id": "v-part-human-hair-wig",
       "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 18,
-      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "rank": 20,
+      "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "focus_source": "collection_notes_missing_published_trend",
+      "collection_gap": "missing_published_trend_url",
       "queries": [
         "\"V-Part Human Hair Wig\" beauty supply trend",
         "V-Part Human Hair Wig 2026 trend",
@@ -673,7 +576,118 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 1,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "gold-braid-cuffs-12-pack",
+      "item_name": "Gold Braid Cuffs 12-Pack",
+      "category": "Jewelry & Fashion Accessories",
+      "rank": 29,
+      "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "focus_source": "collection_notes_missing_published_trend",
+      "collection_gap": "missing_published_trend_url",
+      "queries": [
+        "\"Gold Braid Cuffs 12-Pack\" beauty supply trend",
+        "Gold Braid Cuffs 12-Pack 2026 trend",
+        "Gold Braid Cuffs 12-Pack customer review 2026",
+        "\"Gold Braid Cuffs 12-Pack\" black beauty supply",
+        "Gold Braid Cuffs 12-Pack outfit trend black women",
+        "Gold Braid Cuffs 12-Pack body jewelry trend"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 4,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 4,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 2,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 2,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 16,
+        "source_layers": 2,
+        "manual_references": 16,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "individual-flare-lashes",
+      "item_name": "Individual Flare Lashes",
+      "category": "Lashes & Brows",
+      "rank": 28,
+      "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "focus_source": "collection_notes_missing_published_trend",
+      "collection_gap": "missing_published_trend_url",
+      "queries": [
+        "\"Individual Flare Lashes\" beauty supply trend",
+        "Individual Flare Lashes 2026 trend",
+        "Individual Flare Lashes customer review 2026",
+        "\"Individual Flare Lashes\" black beauty supply",
+        "Individual Flare Lashes DIY lash review",
+        "Individual Flare Lashes lash tutorial trend"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 6,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 6,
+        "tiktok_shop_product_evidence": 1,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 4,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 4,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 3,
+        "watchlist_links": 14,
+        "source_layers": 2,
+        "manual_references": 14,
+        "news_magazine": 0
+      }
+    },
+    {
+      "item_id": "synthetic-lace-front-wig",
+      "item_name": "Synthetic Lace Front Wig",
+      "category": "Wigs & Hair Pieces",
+      "rank": 15,
+      "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+      "focus_source": "weekly_quality_flags",
+      "collection_gap": "weekly_or_recent_evidence_gap",
+      "queries": [
+        "\"Synthetic Lace Front Wig\" beauty supply trend",
+        "Synthetic Lace Front Wig 2026 trend",
+        "Synthetic Lace Front Wig customer review 2026",
+        "\"Synthetic Lace Front Wig\" black beauty supply",
+        "Synthetic Lace Front Wig wig install trend",
+        "Synthetic Lace Front Wig natural hair review"
+      ],
+      "baseline_source_counts": {
+        "verified_evidence": 13,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 13,
+        "tiktok_shop_product_evidence": 3,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 5,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 5,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -690,16 +704,17 @@
     "review_type": "independent_ai_operator_review",
     "primary_growth_blockers": [
       "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
-      "WATCHLIST remains high: 31/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed."
+      "WATCHLIST remains high: 30/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed."
     ],
     "good_points": [
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-      "Fresh weekly trend evidence exists for 13 item(s), keeping Top 3 from being supply-only."
+      "Fresh weekly trend evidence exists for 14 item(s), keeping Top 3 from being supply-only.",
+      "Material coverage progress: published trend item coverage 13→14 (+1); recent trend item coverage 13→14 (+1); WATCHLIST item count 31→30 (-1)."
     ],
     "remaining_issues": [
-      "Published trend evidence coverage is 13/44; recent 14d coverage is 13/44.",
+      "Published trend evidence coverage is 14/44; recent 14d coverage is 14/44.",
       "Zero-trend category count: 0.",
       "Traffic progress is measurement pending until a provider reporting credential/export is connected."
     ],
@@ -722,7 +737,7 @@
         "reason": "Secrets are not exposed and source health is redacted; score drops when source coverage regresses or upstream collectors need recovery."
       },
       "goal_fit_growth": {
-        "score": 70,
+        "score": 76,
         "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
       }
     },

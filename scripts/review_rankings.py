@@ -377,7 +377,29 @@ def independent_ai_review(
     }
 
 
-def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def missing_published_gap_ids(collection_notes: dict[str, Any] | None) -> set[str]:
+    """Return item IDs with no captured published/date-bearing trend URL yet.
+
+    This is stricter than the weekly WATCHLIST view: an item can have older
+    published evidence but no 14-day evidence. For the next-loop research queue,
+    true all-window published-source gaps deserve priority because they are the
+    most likely to keep BSS owners from trusting an item card.
+    """
+    if not isinstance(collection_notes, dict):
+        return set()
+    gaps = collection_notes.get("coverage_gaps", {})
+    gaps = gaps if isinstance(gaps, dict) else {}
+    missing = gaps.get("missing_published_trend_items", [])
+    if not isinstance(missing, list):
+        return set()
+    return {
+        str(item.get("item_id"))
+        for item in missing
+        if isinstance(item, dict) and item.get("item_id")
+    }
+
+
+def focus_candidates(rows: list[dict[str, Any]], collection_notes: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     scored: list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]] = []
     for row in rows:
         flags = item_quality_flags(row)
@@ -396,7 +418,12 @@ def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     # Independent QA lesson: pure rank-based focus kept selecting the same top
     # watchlist lane and missed zero-trend categories such as Jewelry/Nails.
     # Seed next-loop focus with the weakest categories first, then fill by rank.
+    # 2026-08 improvement: prioritize collection_notes true published-source gaps
+    # before recency-only weekly WATCHLIST gaps, because these are the items with
+    # no captured dated trend URL in any evidence window.
+    missing_gap_ids = missing_published_gap_ids(collection_notes)
     by_category: dict[str, list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]]] = defaultdict(list)
+    gap_by_category: dict[str, list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]]] = defaultdict(list)
     category_totals: dict[str, int] = defaultdict(int)
     category_trend: dict[str, int] = defaultdict(int)
     for row in rows:
@@ -408,9 +435,24 @@ def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         _priority, row, _flags = entry
         category = str(row.get("category_name") or row.get("category_id") or "Uncategorized")
         by_category[category].append(entry)
+        if str(row.get("item_id")) in missing_gap_ids:
+            gap_by_category[category].append(entry)
 
     selected: list[tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]]] = []
     selected_ids: set[str] = set()
+    selected_focus_source: dict[str, str] = {}
+
+    def add_entry(entry: tuple[tuple[int, int, int, int, int], dict[str, Any], list[str]], source: str) -> bool:
+        if len(selected) >= MAX_FOCUS_ITEMS:
+            return False
+        item_id = str(entry[1].get("item_id"))
+        if not item_id or item_id in selected_ids:
+            return False
+        selected.append(entry)
+        selected_ids.add(item_id)
+        selected_focus_source[item_id] = source
+        return True
+
     weak_categories = sorted(
         by_category,
         key=lambda category: (
@@ -419,6 +461,18 @@ def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             category,
         ),
     )
+
+    # First pass: one true missing-published-source gap per weak category. This
+    # keeps the next loop from spending every query on items that already have
+    # older evidence while Lashes/Tools/Wigs/Jewelry still have all-window gaps.
+    for category in weak_categories:
+        for entry in gap_by_category.get(category, []):
+            if add_entry(entry, "collection_notes_missing_published_trend"):
+                break
+        if len(selected) >= MAX_FOCUS_ITEMS:
+            break
+
+    # Second pass: original weak-category balancing for weekly gaps/recency gaps.
     for category in weak_categories:
         if len(selected) >= MAX_FOCUS_ITEMS:
             break
@@ -426,28 +480,29 @@ def focus_candidates(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if category_trend.get(category, 0) > 0 and selected:
             continue
         for entry in entries:
-            item_id = str(entry[1].get("item_id"))
-            if item_id not in selected_ids:
-                selected.append(entry)
-                selected_ids.add(item_id)
+            if add_entry(entry, "weekly_quality_flags"):
                 break
     for entry in scored:
         if len(selected) >= MAX_FOCUS_ITEMS:
             break
-        item_id = str(entry[1].get("item_id"))
-        if item_id in selected_ids:
-            continue
-        selected.append(entry)
-        selected_ids.add(item_id)
+        add_entry(entry, "weekly_quality_flags")
 
     focus = []
     for _priority, row, flags in selected[:MAX_FOCUS_ITEMS]:
+        item_id = str(row.get("item_id") or "")
+        focus_source = selected_focus_source.get(item_id, "weekly_quality_flags")
+        is_collection_gap = focus_source == "collection_notes_missing_published_trend"
+        reason_parts = list(flags[:4])
+        if is_collection_gap:
+            reason_parts.insert(0, "collection gap: 전체 evidence window에서 published trend URL 미확보")
         focus.append({
             "item_id": row.get("item_id"),
             "item_name": row.get("item_name"),
             "category": row.get("category_name"),
             "rank": row.get("rank"),
-            "reason": ", ".join(flags[:4]),
+            "reason": ", ".join(reason_parts[:5]),
+            "focus_source": focus_source,
+            "collection_gap": "missing_published_trend_url" if is_collection_gap else "weekly_or_recent_evidence_gap",
             "queries": query_variants(row),
             "baseline_source_counts": row.get("source_counts") or {},
         })
@@ -580,7 +635,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
         f"retail {weakest_category['retail_items']}/{weakest_category['items']})."
     )
 
-    next_focus_items = focus_candidates(rows)
+    next_focus_items = focus_candidates(rows, collection_notes)
     qa_focus = [
         "다음 Playwright QA에서 operations_review.json/next_loop_focus.json 생성 여부를 smoke check에 포함합니다.",
         "ranking card click-through뿐 아니라 top focus item detail page의 source groups와 image metadata를 확인합니다.",
@@ -1121,6 +1176,24 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "Track weekly trend_items/WATCHLIST deltas and later source-link engagement after analytics export access is connected.",
         "last_refreshed_at": now,
     })
+    collection_gap_focus = [
+        item for item in focus_items
+        if isinstance(item, dict) and item.get("focus_source") == "collection_notes_missing_published_trend"
+    ]
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "coverage-gap-first-focus-v1",
+        "status": "live-feedback-loop-prioritization-after-review",
+        "objective": "Prioritize true collection_notes missing published-trend gaps in next_loop_focus before recency-only weekly WATCHLIST items, so the next collector spends probes on items with no captured dated trend URL at all.",
+        "tracked_quality_metrics": [
+            f"collection_gap_focus_items={len(collection_gap_focus)}/{MAX_FOCUS_ITEMS}",
+            "gap_focus_item_ids=" + ", ".join(str(item.get("item_id")) for item in collection_gap_focus[:6]),
+            f"published_trend_missing_items={len(missing_published_gap_ids(load_json(COLLECTION_NOTES_PATH, {})))}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "The next research loop is more likely to turn truly unsupported item cards into evidence-backed owner guidance instead of repeatedly refreshing items that already have older dated evidence.",
+        "measurement_need": "Compare next run's missing_published_trend_items, weekly trend_items, WATCHLIST count, and focus follow-up status; analytics export is still needed to connect improvements to visits.",
+        "last_refreshed_at": now,
+    })
     ensure_campaign(active_campaigns, {
         "campaign_id": "supplemental-trend-query-coverage-v1",
         "status": "live-collector-quality-after-build",
@@ -1255,6 +1328,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-feedback-loop-collection-quality-after-review",
             "hypothesis": "Diversifying next_loop_focus probes into exact, owner-context, and review/tutorial queries should improve dated URL discovery for weak BSS item cards without scoring generated search URLs.",
             "next_step": "Compare previous_loop_follow_up and weekly WATCHLIST deltas after the next refresh; keep query URLs watchlist-only unless a dated item-relevant URL is captured.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "coverage-gap-first-focus-v1",
+            "status": "active-feedback-loop-prioritization-after-review",
+            "hypothesis": "Prioritizing collection_notes missing_published_trend_items should reduce true all-window dated-source gaps faster than ranking-only WATCHLIST focus, while preserving the rule that generated queries are probes only.",
+            "next_step": "Compare next run's missing_published_trend_items, focus follow-up improved/still_needs_focus status, weekly trend_items, and WATCHLIST deltas before claiming research progress.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -1446,6 +1526,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["first_two_generic_focus_queries", "exact_plus_owner_context_plus_review_queries"],
             "success_metric": "next-loop weak-item published trend URL gains, weekly WATCHLIST reduction, and source-link engagement once analytics export is connected",
             "hypothesis": "Diversifying next_loop_focus probes should find more dated item-relevant URLs for weak BSS owner items than repeatedly querying only generic trend phrases, without scoring generated search URLs.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "coverage-gap-first-focus-v1",
+            "status": "active-feedback-loop-prioritization-after-build",
+            "variants": ["ranking_only_weekly_watchlist_focus", "collection_notes_missing_published_gap_first"],
+            "success_metric": "missing_published_trend_items reduction, next-loop focus follow-up improvements, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
+            "hypothesis": "True all-window missing published-source gaps should be prioritized before recency-only gaps so the next collector improves trust blockers that matter most to BSS owners.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {
@@ -1642,6 +1730,8 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
                 "category": item.get("category"),
                 "rank": item.get("rank"),
                 "reason": item.get("reason"),
+                "focus_source": item.get("focus_source"),
+                "collection_gap": item.get("collection_gap"),
             }
             for item in focus_items
             if isinstance(item, dict)
@@ -1676,6 +1766,8 @@ def public_next_loop_focus_payload(next_focus: dict[str, Any]) -> dict[str, Any]
                 "category": item.get("category"),
                 "rank": item.get("rank"),
                 "reason": item.get("reason"),
+                "focus_source": item.get("focus_source"),
+                "collection_gap": item.get("collection_gap"),
             }
             for item in focus_items
             if isinstance(item, dict)
