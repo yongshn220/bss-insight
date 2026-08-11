@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-09T14:05:13.179907Z",
+  "updated_at": "2026-08-11T14:08:14.597916Z",
   "goal_id": "daily-visits-500",
   "status": "active_pending_xurl_install_and_oauth",
   "primary_channel": {
@@ -58,17 +58,19 @@
       "growth_click",
       "growth_share_copy_result",
       "growth_section_view",
-      "growth_engagement_summary"
+      "growth_engagement_summary",
+      "growth_click link_utm_*",
+      "growth_share_copy_result link_utm_*"
     ],
     "utm_source": "x",
     "utm_medium": "organic",
-    "note": "Posting remains draft/approval-only until xurl CLI is installed/authenticated; every approved post URL must include utm_source=x&utm_medium=organic and a campaign id. growth events now include anonymous visitor lifecycle context so future X traffic can be segmented by first-time vs returning owner visits after analytics export is connected.",
+    "note": "Posting remains draft/approval-only until xurl CLI is installed/authenticated; every approved post URL must include utm_source=x&utm_medium=organic and a campaign id. growth events include anonymous visitor lifecycle context and destination link_utm_* fields so future X traffic can be segmented after analytics export is connected.",
     "xurl_status": {
-      "last_checked_at": "2026-08-09T14:05:13.179907Z",
+      "last_checked_at": "2026-08-11T14:08:14.597916Z",
       "cli_available": false,
       "auth_checked": false,
       "posting_status": "blocked_draft_only",
-      "note": "xurl CLI was not found in the cron runtime PATH; no live X post, reply, like, repost, follow, or DM was attempted."
+      "note": "xurl --help and xurl auth status returned command-not-found (exit 127) in the cron runtime PATH; no live X post, reply, like, repost, follow, or DM was attempted. Draft copy remains the safe state."
     }
   }
 }

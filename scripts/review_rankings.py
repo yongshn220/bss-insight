@@ -1442,6 +1442,32 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
 
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "link-destination-utm-context-v1",
+        "status": "live-in-growth-js-after-build",
+        "objective": "Make the growth funnel measurable by adding destination UTM fields to growth_click and growth_share_copy_result events for links and copy buttons.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (assets/growth.js)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (share/copy/CTA events)",
+            "https://gnsresearchhub.vercel.app/items/{item_id}.html (item share and evidence-summary copy events)",
+            "https://gnsresearchhub.vercel.app/categories/{category_id}.html (category share/copy events)",
+        ],
+        "tracked_events": [
+            "growth_click includes link_utm_source/link_utm_medium/link_utm_campaign/link_utm_content/link_utm_term",
+            "growth_click includes link_protocol/link_origin/link_path/destination_origin/destination_path/link_has_utm/link_is_external",
+            "growth_share_copy_result includes the same destination UTM context for data-copy-url buttons",
+            "embedded X intent URL and mailto body URLs are parsed so downstream campaign links remain measurable",
+        ],
+        "tracked_quality_metrics": [
+            "Playwright asserts weekly_top3_copy_link carries link_utm_source=owner_share and campaign=daily-visits-500-weekly-top3-owner-share",
+            "Playwright asserts owner_route_item and owner_route_copy carry owner_route/route_copy destination media",
+            "Playwright asserts focus_watchlist, category_landing, item_evidence_summary, and item_copy_link events carry destination UTM context",
+        ],
+        "owner_value": "No extra UI clutter. This makes it possible to learn which BSS-owner share paths actually create repeat visits once GA4/Vercel event export is connected, instead of treating all clicks as generic dashboard interactions.",
+        "measurement_need": "GA4_PROPERTY_ID plus service credentials or approved Vercel Analytics export/API access is still required to read provider-side link_utm_* event counts and tie them to rolling 30-day visits.",
+        "last_refreshed_at": now,
+    })
+
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
         ensure_experiment(experiment_backlog, {
@@ -1578,6 +1604,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "link-destination-utm-context-v1",
+            "status": "active-client-side-provider-ready-after-review",
+            "hypothesis": "BSS owner growth optimization needs destination-level UTM context on every clicked/copied link so owner_share, X, email, RSS, shortcut, calendar, focus-watchlist, and item-detail share paths can be compared without brittle URL parsing.",
+            "next_step": "After GA4/Vercel export access is connected, compare link_utm_source/medium/campaign on growth_click and growth_share_copy_result against repeat item-detail entrances and rolling 30-day visits; remove or deprioritize channels that do not create returning-owner behavior.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "owner-5-minute-route-v1",
             "status": "active-site-ux-distribution-after-review",
             "hypothesis": "A 3-step store-walk route should increase BSS owner action and share intent versus reading only the full leaderboard because it gives a hair/install pick, a front-end add-on, and a WATCHLIST small-test in one copy-ready block.",
@@ -1624,7 +1657,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
         measurement["last_checked_at"] = now
         measurement["provider_checked"] = (
             "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
-            "This run also verifies the head-level window.va queue/bootstrap plus the client-side growth_provider_ready health event for first-event capture. "
+            "This run also verifies the head-level window.va queue/bootstrap, the client-side growth_provider_ready health event, and destination link_utm_* context on clicked/copied share paths for first-event capture. "
             f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
         )
         measurement["rolling_30d_average_daily_visits"] = None
@@ -1632,7 +1665,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels."
         )
         measurement["interpretation"] = (
-            "Traffic progress cannot be claimed yet. Product/share freshness improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. "
+            "Traffic progress cannot be claimed yet. Product/share freshness and destination-level UTM tracking improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. "
             + " ".join(str(note) for note in material_changes[:2])
         ).strip()
 
@@ -1804,6 +1837,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["no_calendar_reminder", "weekly_ics_reminder_with_calendar_utm"],
             "success_metric": "owner-calendar-reminder section views, calendar file downloads/copy events, utm_source=calendar return visits, and repeat visitor rate once analytics export is connected",
             "hypothesis": "A weekly .ics reminder gives owners/reps a low-friction return path outside SNS and should improve repeat visits toward the 500/day goal once provider measurement is connected.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "link-destination-utm-context-v1",
+            "status": "active-client-side-provider-ready-after-build",
+            "variants": ["click_events_with_visible_href_only", "click_and_copy_events_with_link_destination_utm_fields"],
+            "success_metric": "growth_click and growth_share_copy_result segmented by link_utm_source, link_utm_medium, link_utm_campaign, link_utm_content, destination_path, component_experiment_id, and item_id once analytics export is connected",
+            "hypothesis": "BSS owner growth optimization needs destination-level UTM context on every clicked/copied link so owner_share, X, email, RSS, shortcut, calendar, focus-watchlist, and item-detail share paths can be compared without brittle URL parsing.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

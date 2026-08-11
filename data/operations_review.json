@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-11T13:37:11.867040Z",
+  "reviewed_at": "2026-08-11T14:12:08.379650Z",
   "source_generated_at": "2026-08-11T13:31:03.256765Z",
   "date": "2026-08-11",
   "timeframe": "weekly",
-  "playwright_summary": "16 passed (39.5s); collection evidence delta QA passed on desktop/mobile",
+  "playwright_summary": "npm run test:e2e passed: 16 passed (chromium + mobile-chrome); link-destination UTM tracking assertions passed.",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -523,7 +523,7 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: 16 passed (39.5s); collection evidence delta QA passed on desktop/mobile",
+    "Playwright QA 완료: npm run test:e2e passed: 16 passed (chromium + mobile-chrome); link-destination UTM tracking assertions passed.",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 6mm Rhinestone Stud Earrings, #3 Gold Stackable Ring Set",
     "Evidence separation 유지: published trend URL 보유 item 14개, BSS/marketplace live product URL 보유 item 44개.",

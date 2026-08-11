@@ -482,6 +482,58 @@
     sections.forEach((section) => observer.observe(section));
   }
 
+  function parseTrackingUrl(value) {
+    const text = String(value || '').trim();
+    if (!text) return null;
+    try {
+      const base = `${window.location.origin}${window.location.pathname}`;
+      return new URL(text, base);
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function embeddedShareDestination(clickedUrl) {
+    if (!clickedUrl) return null;
+    const embeddedUrl = clickedUrl.searchParams?.get('url') || clickedUrl.searchParams?.get('u') || '';
+    if (embeddedUrl) return parseTrackingUrl(embeddedUrl);
+    if (clickedUrl.protocol === 'mailto:') {
+      const body = clickedUrl.searchParams?.get('body') || '';
+      const match = body.match(/https?:\/\/[^\s<>"')]+/i);
+      if (match) return parseTrackingUrl(match[0].replace(/[.,;]+$/, ''));
+    }
+    return clickedUrl;
+  }
+
+  function linkDestinationPayload(href) {
+    const clickedUrl = parseTrackingUrl(href);
+    if (!clickedUrl) {
+      return {
+        link_has_utm: false,
+        link_is_external: false,
+      };
+    }
+    const destinationUrl = embeddedShareDestination(clickedUrl) || clickedUrl;
+    const clickedOrigin = clickedUrl.origin === 'null' ? clickedUrl.protocol.replace(':', '') : clickedUrl.origin;
+    const destinationOrigin = destinationUrl.origin === 'null' ? destinationUrl.protocol.replace(':', '') : destinationUrl.origin;
+    const payload = {
+      link_protocol: clickedUrl.protocol.replace(':', ''),
+      link_origin: clickedOrigin,
+      link_path: clickedUrl.pathname || '',
+      link_is_external: clickedUrl.origin !== window.location.origin,
+      destination_origin: destinationOrigin,
+      destination_path: destinationUrl.pathname || '',
+    };
+    let hasUtm = false;
+    UTM_KEYS.forEach((key) => {
+      const value = destinationUrl.searchParams?.get(key) || clickedUrl.searchParams?.get(key) || '';
+      payload[`link_${key}`] = value;
+      if (value) hasUtm = true;
+    });
+    payload.link_has_utm = hasUtm;
+    return payload;
+  }
+
   function labelForClick(target) {
     const context = elementContext(target);
     const share = target.closest('[data-growth-share]');
@@ -489,14 +541,14 @@
       const href = share.getAttribute('href') || share.getAttribute('data-copy-url') || '';
       const text = trimText(share.textContent || share.getAttribute('aria-label') || href);
       const shareAction = share.getAttribute('data-growth-share') || 'unknown';
-      return { type: `share_${shareAction}`, share_action: shareAction, href, text, ...context };
+      return { type: `share_${shareAction}`, share_action: shareAction, href, text, ...linkDestinationPayload(href), ...context };
     }
 
     const link = target.closest('a');
     if (!link) return null;
     const href = link.getAttribute('href') || '';
     const text = trimText(link.textContent || link.getAttribute('aria-label') || href);
-    const label = { href, text, ...context };
+    const label = { href, text, ...linkDestinationPayload(href), ...context };
     if (link.matches('[data-growth-cta]')) return { type: `cta_${link.dataset.growthCta}`, ...label };
     if (link.matches('.rank-hit')) return { type: 'item_card', ...label, item: trimText(link.getAttribute('aria-label')) };
     if (link.matches('.podium-card')) return { type: 'podium_card', ...label };
@@ -553,6 +605,7 @@
         copied,
         copy_mode: button.hasAttribute('data-copy-text') ? 'brief_text' : 'url',
         copy_text_length: copyText.length,
+        ...linkDestinationPayload(url),
         ...context,
       });
     });

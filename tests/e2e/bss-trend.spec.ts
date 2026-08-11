@@ -333,7 +333,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(top3CopyButton).toHaveText(/Copied|Link ready/);
     const top3ShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(top3ShareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_top3_copy_link' && event.item_id)).toBe(true);
+    expect(top3ShareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_top3_copy_link' && event.link_utm_source === 'owner_share' && event.link_utm_medium === 'organic' && event.link_utm_campaign === 'daily-visits-500-weekly-top3-owner-share' && event.link_utm_content)).toBe(true);
     expect(top3ShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_top3_copy_link' && event.section === 'top3-owner-share-strip-v1' && event.component_experiment_id === 'top3-owner-share-strip-v1' && event.section_position && event.item_id)).toBe(true);
+    expect(top3ShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_top3_copy_link' && event.link_has_utm === true && event.link_utm_source === 'owner_share' && event.link_utm_campaign === 'daily-visits-500-weekly-top3-owner-share')).toBe(true);
 
     const copyButton = page.locator('[data-growth-share="weekly_copy_link"]').first();
     await copyButton.click();
@@ -349,7 +351,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       link.click();
     });
     const quickPickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(quickPickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_quick_pick' && event.component_experiment_id === 'owner-quick-picks-v1' && event.item_id && String(event.href).includes('utm_medium=quick_pick'))).toBe(true);
+    expect(quickPickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_quick_pick' && event.component_experiment_id === 'owner-quick-picks-v1' && event.item_id && String(event.href).includes('utm_medium=quick_pick') && event.link_utm_medium === 'quick_pick' && event.link_utm_campaign === 'daily-visits-500-weekly-owner-quick-picks')).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('.owner-route-card') as HTMLAnchorElement | null;
@@ -358,14 +360,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       link.click();
     });
     const ownerRouteEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(ownerRouteEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_route_item' && event.component_experiment_id === 'owner-5-minute-route-v1' && event.item_id && String(event.href).includes('utm_medium=owner_route'))).toBe(true);
+    expect(ownerRouteEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_owner_route_item' && event.component_experiment_id === 'owner-5-minute-route-v1' && event.item_id && String(event.href).includes('utm_medium=owner_route') && event.link_utm_medium === 'owner_route' && event.link_utm_campaign === 'daily-visits-500-weekly-owner-route')).toBe(true);
 
     const ownerRouteButton = page.locator('[data-growth-share="weekly_owner_route_copy"]').first();
     await ownerRouteButton.click();
     await expect(ownerRouteButton).toHaveText(/Copied|Text ready/);
     const ownerRouteCopyEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(ownerRouteCopyEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_owner_route_copy' && event.component_experiment_id === 'owner-5-minute-route-v1' && String(event.href).includes('daily-visits-500-weekly-owner-route'))).toBe(true);
-    expect(ownerRouteCopyEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_owner_route_copy' && event.copy_mode === 'brief_text' && event.section === 'owner-5-minute-route-v1')).toBe(true);
+    expect(ownerRouteCopyEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_owner_route_copy' && event.component_experiment_id === 'owner-5-minute-route-v1' && String(event.href).includes('daily-visits-500-weekly-owner-route') && event.link_utm_source === 'owner_share' && event.link_utm_medium === 'route_copy')).toBe(true);
+    expect(ownerRouteCopyEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_owner_route_copy' && event.copy_mode === 'brief_text' && event.section === 'owner-5-minute-route-v1' && event.link_utm_campaign === 'daily-visits-500-weekly-owner-route')).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('.focus-card') as HTMLAnchorElement | null;
@@ -374,7 +376,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       link.click();
     });
     const focusEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(focusEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_evidence_focus_watchlist' && event.component_experiment_id === 'evidence-focus-watchlist-v1' && event.item_id && String(event.href).includes('utm_medium=focus_watchlist'))).toBe(true);
+    expect(focusEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_evidence_focus_watchlist' && event.component_experiment_id === 'evidence-focus-watchlist-v1' && event.item_id && String(event.href).includes('utm_medium=focus_watchlist') && event.link_utm_medium === 'focus_watchlist')).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('.category-landing-card') as HTMLAnchorElement | null;
@@ -383,7 +385,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       link.click();
     });
     const categoryNavEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(categoryNavEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_category_landing_nav' && event.component_experiment_id === 'category-landing-pages-v1' && event.category_id && String(event.href).includes('utm_medium=category_nav'))).toBe(true);
+    expect(categoryNavEvents.some((event: any) => event.event === 'growth_click' && event.type === 'cta_category_landing_nav' && event.component_experiment_id === 'category-landing-pages-v1' && event.category_id && String(event.href).includes('utm_medium=category_nav') && event.link_utm_campaign === 'daily-visits-500-category-landing-pages')).toBe(true);
 
     await page.evaluate(() => {
       const link = document.querySelector('[data-growth-section="top3-leaderboard-v1"] .podium-card') as HTMLAnchorElement | null;
@@ -506,6 +508,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
   });
 
@@ -693,14 +696,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await evidenceSummaryButton.click();
     await expect(evidenceSummaryButton).toHaveText(/Copied|Text ready/);
     const evidenceSummaryEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(evidenceSummaryEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_evidence_summary_copy' && event.section === 'item-evidence-summary-v1' && event.component_experiment_id === 'item-evidence-summary-v1' && event.copy_mode === 'brief_text')).toBe(true);
+    expect(evidenceSummaryEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_evidence_summary_copy' && event.section === 'item-evidence-summary-v1' && event.component_experiment_id === 'item-evidence-summary-v1' && event.copy_mode === 'brief_text' && event.link_utm_medium === 'evidence_summary')).toBe(true);
     const itemCopyButton = page.locator('[data-growth-share="item_copy_link"]').first();
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_campaign=daily-visits-500-item-detail-share/);
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_content=/);
     await itemCopyButton.click();
     await expect(itemCopyButton).toHaveText(/Copied|Link ready/);
     const itemShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
-    expect(itemShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_copy_link' && event.section === 'item-detail-share-card-v1' && event.component_experiment_id === 'item-detail-share-card-v1')).toBe(true);
+    expect(itemShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_copy_link' && event.section === 'item-detail-share-card-v1' && event.component_experiment_id === 'item-detail-share-card-v1' && event.link_utm_source === 'owner_share' && event.link_utm_campaign === 'daily-visits-500-item-detail-share')).toBe(true);
 
     await page.getByRole('link', { name: /Ranking으로 돌아가기/ }).click();
     await expect(page).toHaveURL(/\/rankings\/weekly\.html$/);
@@ -820,6 +823,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-calendar-reminder-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
@@ -829,6 +833,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'timeframe-evidence-ladder-v1')).toBe(true);
     const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
     expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');
