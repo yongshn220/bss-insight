@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-08-11T14:50:31.409596Z",
+  "generated_at": "2026-08-11T16:17:47.804938Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-11T14:50:31.408863Z",
+      "observed_at": "2026-08-11T16:17:47.804152Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
-      "keywords_requested": 82,
-      "expanded_keyword_items": 19,
-      "products_returned": 82,
+      "keywords_requested": 84,
+      "expanded_keyword_items": 20,
+      "products_returned": 83,
       "items_with_evidence": 44,
-      "evidence_urls": 80,
-      "fresh_evidence_urls": 80,
+      "evidence_urls": 79,
+      "fresh_evidence_urls": 79,
       "partial_cached_items": 0,
       "partial_cached_evidence_urls": 0,
       "current_actor_status": "success",
       "cache_policy": "cache not used",
-      "max_results_total": 82
+      "max_results_total": 84
     }
   },
   "evidence_totals": {
@@ -28,9 +28,9 @@
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 0,
-    "verified_urls_total": 361,
-    "published_trend_urls_total": 107,
-    "retail_product_urls_total": 254,
+    "verified_urls_total": 362,
+    "published_trend_urls_total": 109,
+    "retail_product_urls_total": 253,
     "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },

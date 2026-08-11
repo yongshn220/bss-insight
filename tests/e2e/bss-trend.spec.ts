@@ -528,11 +528,19 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(categoryShareSvg).toContain('Wigs &amp; Hair Pieces');
     expect(categoryShareSvg).toContain('Concrete item types only');
     await expect(page.locator('[data-growth-section="category-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'category-landing-pages-v1');
+    await expect(page.locator('[data-growth-section="category-brief-copy-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="category-brief-copy-v1"]')).toHaveAttribute('data-growth-experiment', 'category-brief-copy-v1');
+    await expect(page.locator('[data-growth-section="category-brief-copy-v1"]')).toHaveAttribute('data-category-id', 'wigs-hair-pieces');
+    await expect(page.getByRole('heading', { name: 'Wigs & Hair Pieces category owner brief' })).toBeVisible();
     await expect(page.locator('[data-growth-section="category-top-items-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="category-owner-test-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="category-ranking-list-v1"]')).toBeVisible();
     await expect(page.locator('#all-items .rank-card')).toHaveCount(5);
     await expect(page.locator('[data-growth-share="category_copy_link"]')).toHaveAttribute('data-copy-url', /daily-visits-500-category-landing-pages/);
+    await expect(page.locator('[data-growth-share="category_brief_copy"]')).toHaveAttribute('data-copy-url', /utm_medium=category_brief/);
+    await expect(page.locator('[data-growth-share="category_brief_copy"]')).toHaveAttribute('data-copy-url', /daily-visits-500-category-brief-copy/);
+    await expect(page.locator('[data-growth-share="category_brief_copy"]')).toHaveAttribute('data-copy-text', /BSS category owner brief/);
+    await expect(page.locator('[data-growth-share="category_brief_copy"]')).toHaveAttribute('data-copy-text', /Display test/);
 
     const categoryContext = await page.evaluate(() => {
       const growth = (window as any).__GNS_GROWTH__;
@@ -544,7 +552,22 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     expect(categoryContext.categoryId).toBe('wigs-hair-pieces');
     expect(categoryContext.sections.some((section: any) => section.id === 'category-share-kit-v1')).toBe(true);
+    expect(categoryContext.sections.some((section: any) => section.id === 'category-brief-copy-v1')).toBe(true);
     expect(categoryContext.events.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'category' && event.timeframe === 'weekly_category' && event.page_category_id === 'wigs-hair-pieces')).toBe(true);
+
+    await page.locator('[data-growth-section="category-brief-copy-v1"]').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() =>
+      ((window as any).__GNS_GROWTH__?.events?.() ?? []).some(
+        (event: any) => event.event === 'growth_section_view' && event.section === 'category-brief-copy-v1' && event.category_id === 'wigs-hair-pieces',
+      ),
+    );
+
+    const categoryBriefButton = page.locator('[data-growth-share="category_brief_copy"]');
+    await categoryBriefButton.click();
+    await expect(categoryBriefButton).toHaveText(/Copied|Text ready/);
+    const briefEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(briefEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_category_brief_copy' && event.component_experiment_id === 'category-brief-copy-v1' && event.category_id === 'wigs-hair-pieces' && event.link_utm_medium === 'category_brief' && event.link_utm_campaign === 'daily-visits-500-category-brief-copy')).toBe(true);
+    expect(briefEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'category_brief_copy' && event.copy_mode === 'brief_text' && event.category_id === 'wigs-hair-pieces' && event.link_utm_medium === 'category_brief' && event.copy_text_length > 180)).toBe(true);
 
     const copyButton = page.locator('[data-growth-share="category_copy_link"]');
     await copyButton.click();

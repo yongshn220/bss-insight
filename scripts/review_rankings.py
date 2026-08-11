@@ -1221,6 +1221,34 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "category-brief-copy-v1",
+        "status": "live-category-page-copy-ready-brief-after-build",
+        "objective": "Give every store-zone category landing page a copy-ready owner brief with top item display tests, risk cautions, and trend-backed/WATCHLIST status so reps can share a category without writing new copy.",
+        "utm_campaign": "daily-visits-500-category-brief-copy",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/categories/wigs-hair-pieces.html (category-brief-copy-v1)",
+            "https://gnsresearchhub.vercel.app/categories/lashes-brows.html (category-brief-copy-v1)",
+            "https://gnsresearchhub.vercel.app/categories/nails.html (category-brief-copy-v1)",
+            "https://gnsresearchhub.vercel.app/categories/jewelry-fashion-accessories.html (category-brief-copy-v1)",
+        ],
+        "tracked_events": [
+            "growth_section_view category-brief-copy-v1",
+            "growth_click share_category_brief_copy",
+            "growth_share_copy_result share_action=category_brief_copy copy_mode=brief_text",
+            "growth_click share_category_brief_email",
+        ],
+        "tracked_quality_metrics": [
+            f"category_brief_pages={len(category_ids)}",
+            "category brief copy links use utm_source=owner_share&utm_medium=category_brief&utm_campaign=daily-visits-500-category-brief-copy",
+            "brief copy includes store zone, trend-backed count, WATCHLIST count, display test, risk, and evidence_status_label",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "A busy BSS owner or GNS rep can copy one share-safe category brief for Wigs, Lashes, Nails, Jewelry, etc.; it is practical without turning the broad category itself into a ranked trend.",
+        "measurement_need": "GA4/Vercel export access is needed to compare category_brief copy/email events, category_page UTM sessions, and downstream item-card clicks against generic category links.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "category-share-preview-card-v1",
         "status": "live-static-category-og-twitter-cards-after-build",
         "objective": "Make focused category landing links render store-zone-specific OG/Twitter preview cards instead of the generic all-category ranking image.",
@@ -1625,6 +1653,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "category-brief-copy-v1",
+            "status": "active-category-page-copy-ready-after-review",
+            "hypothesis": "Copy-ready category briefs should increase rep/owner sharing of store-zone pages because they package the top concrete items, display tests, risk cautions, and WATCHLIST status into one share-safe text block.",
+            "next_step": "After analytics export access is connected, compare category_brief_copy and category_brief_email events, category_brief UTM sessions, and downstream item-card clicks against generic category_copy_link behavior.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "category-share-preview-card-v1",
             "status": "active-static-category-shareability-after-review",
             "hypothesis": "Category-specific OG/Twitter preview cards should improve owner-share click intent because shared store-zone links show the relevant BSS lane, concrete item leaders, and WATCHLIST discipline instead of a generic all-category image.",
@@ -1861,6 +1896,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["ranking_anchor_only", "store_zone_category_landing_pages"],
             "success_metric": "utm_medium=category_nav/category_page sessions, category_copy_link share events, category ranking-card clicks, and repeat visits once analytics export is connected",
             "hypothesis": "Focused category pages should turn broad BSS store lanes into crawlable/shareable entry points while preserving item-only ranking discipline.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "category-brief-copy-v1",
+            "status": "active-category-page-copy-ready-after-build",
+            "variants": ["category_url_only_share", "copy_ready_store_zone_owner_brief"],
+            "success_metric": "growth_section_view category-brief-copy-v1, category_brief_copy/email events, category_brief UTM sessions, item-card clicks from category pages, and repeat visits once analytics export is connected",
+            "hypothesis": "Category pages should convert more sharing and repeat visits when each store-zone page offers a one-click brief with concrete item display/risk/evidence labels instead of only a URL.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

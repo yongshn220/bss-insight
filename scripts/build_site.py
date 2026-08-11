@@ -1416,6 +1416,103 @@ def owner_brief_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def category_owner_brief_panel(category: dict[str, Any], rows: list[dict[str, Any]]) -> str:
+    """Copy-ready category brief for store-zone landing pages.
+
+    Category pages are strong SEO/share entry points, but a category URL alone is
+    still extra work for a busy BSS owner or rep. This panel turns one store lane
+    into a short, share-safe owner brief with display/risk/evidence labels. It
+    does not create new claims: trend-backed vs WATCHLIST status comes directly
+    from the already-ranked item rows.
+    """
+    if not rows:
+        return ""
+    cat_id = str(category.get("id") or "").strip()
+    if not cat_id:
+        return ""
+    cat_name = str(category.get("name") or cat_id)
+    store_zone = STORE_ZONE_LABELS.get(cat_id, "Store zone")
+    trend_rows = [row for row in rows if has_trend_evidence(row)]
+    watchlist_items = len(rows) - len(trend_rows)
+    campaign = "daily-visits-500-category-brief-copy"
+    category_path = f"/categories/{cat_id}.html"
+    brief_url = growth_campaign_url(
+        category_path,
+        source="owner_share",
+        medium="category_brief",
+        campaign=campaign,
+        utm_content=cat_id,
+        utm_term="weekly",
+    )
+    email_url = growth_campaign_url(
+        category_path,
+        source="email",
+        medium="owner_forward",
+        campaign=campaign,
+        utm_content=cat_id,
+        utm_term="weekly",
+    )
+
+    selected_rows: list[dict[str, Any]] = []
+    used_item_ids: set[str] = set()
+    for row in trend_rows[:2]:
+        item_id = str(row.get("item_id") or "")
+        if item_id and item_id not in used_item_ids:
+            selected_rows.append(row)
+            used_item_ids.add(item_id)
+    for row in rows:
+        if len(selected_rows) >= 3:
+            break
+        item_id = str(row.get("item_id") or "")
+        if item_id and item_id not in used_item_ids:
+            selected_rows.append(row)
+            used_item_ids.add(item_id)
+    brief_lines = [
+        f"{cat_name} BSS category owner brief:",
+        f"Store zone: {store_zone}. Trend-backed {len(trend_rows)}/{len(rows)}; WATCHLIST {watchlist_items}.",
+        "Rule: this category page ranks concrete item types only; the category itself is not a trend claim.",
+    ]
+    step_cards: list[str] = []
+    for index, row in enumerate(selected_rows, start=1):
+        item_name = row.get("item_name") or "BSS item"
+        display = row.get("display_tip") or "front-area display test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        evidence = evidence_status_label(row)
+        step_label = "Trend-backed test" if has_trend_evidence(row) else "WATCHLIST small test"
+        brief_lines.append(
+            f"{index}) #{row.get('rank')} {item_name}. Display test: {display}. "
+            f"Evidence: {evidence}. Risk: {risk}."
+        )
+        step_cards.append(f"""
+          <li>
+            <span>{esc(step_label)}</span>
+            <strong>#{esc(row.get('rank'))} {esc(item_name)}</strong>
+            <p>{esc(clamp_text(display, 126))}</p>
+            <small>{esc(evidence)} · Risk: {esc(clamp_text(risk, 78))}</small>
+          </li>""")
+    brief_lines.append(f"Category page: {brief_url}")
+    brief_text = "\n".join(brief_lines)
+    mailto = "mailto:?" + urllib.parse.urlencode({
+        "subject": f"{cat_name} BSS category owner brief",
+        "body": brief_text.replace(brief_url, email_url),
+    })
+    return f"""
+      <section class="wrap owner-brief category-brief" data-growth-section="category-brief-copy-v1" data-growth-experiment="category-brief-copy-v1" data-category-id="{esc(cat_id)}" aria-labelledby="category-brief-{esc(cat_id)}">
+        <div class="section-title owner-brief-title">
+          <div><span>Category owner brief · copy-ready</span><h2 id="category-brief-{esc(cat_id)}">{esc(cat_name)} category owner brief</h2></div>
+          <em>{esc(campaign)}</em>
+        </div>
+        <ol class="owner-brief-steps">{''.join(step_cards)}</ol>
+        <div class="owner-brief-copybox">
+          <code>{esc(brief_text)}</code>
+          <div class="share-actions">
+            <button class="share-action" type="button" data-growth-share="category_brief_copy" data-copy-url="{esc(brief_url)}" data-copy-text="{esc(brief_text)}">Copy category brief</button>
+            <a class="share-action" data-growth-share="category_brief_email" href="{esc(mailto)}">Email brief</a>
+          </div>
+        </div>
+      </section>"""
+
+
 def owner_feed_subscribe_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
     """Visible repeat-visit CTA for the weekly RSS/feed distribution path.
 
@@ -2238,6 +2335,7 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
           </div>
         </article>
       </section>
+      {category_owner_brief_panel(category, rows)}
       <section class="wrap block" data-growth-section="category-top-items-v1" data-growth-experiment="category-landing-pages-v1">
         <div class="section-title"><div><span>{esc(cat_name)}</span><h2>Top item signals</h2></div><em>{esc(len(trend_rows))}/{esc(len(rows))} trend-backed</em></div>
         {top_cards}
