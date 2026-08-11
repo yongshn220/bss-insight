@@ -1,19 +1,19 @@
 {
-  "generated_at": "2026-08-11T13:31:03.256338Z",
+  "generated_at": "2026-08-11T14:50:31.409596Z",
   "date": "2026-08-11",
   "source_health": {
     "apify_tiktok_shop": {
       "status": "success",
-      "observed_at": "2026-08-11T13:31:03.255428Z",
+      "observed_at": "2026-08-11T14:50:31.408863Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
       "keywords_requested": 82,
       "expanded_keyword_items": 19,
-      "products_returned": 78,
+      "products_returned": 82,
       "items_with_evidence": 44,
-      "evidence_urls": 77,
-      "fresh_evidence_urls": 77,
+      "evidence_urls": 80,
+      "fresh_evidence_urls": 80,
       "partial_cached_items": 0,
       "partial_cached_evidence_urls": 0,
       "current_actor_status": "success",
@@ -24,19 +24,19 @@
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 33,
+    "items_with_published_trend_url": 37,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
     "items_with_cached_tiktok_shop_url": 0,
-    "verified_urls_total": 352,
-    "published_trend_urls_total": 101,
-    "retail_product_urls_total": 251,
+    "verified_urls_total": 361,
+    "published_trend_urls_total": 107,
+    "retail_product_urls_total": 254,
     "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 11,
+      "published_trend_missing_items": 7,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
       "zero_trend_categories": 0
@@ -54,17 +54,6 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "tools-accessories",
-        "category_name": "Tools & Accessories",
-        "items": 6,
-        "trend_items": 3,
-        "retail_product_items": 6,
-        "tiktok_shop_items": 6,
-        "trend_ratio": 0.5,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
         "category_id": "wigs-hair-pieces",
         "category_name": "Wigs & Hair Pieces",
         "items": 5,
@@ -76,8 +65,8 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling",
+        "category_id": "tools-accessories",
+        "category_name": "Tools & Accessories",
         "items": 6,
         "trend_items": 4,
         "retail_product_items": 6,
@@ -87,13 +76,13 @@
         "retail_product_ratio": 1.0
       },
       {
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories",
-        "items": 8,
-        "trend_items": 6,
-        "retail_product_items": 8,
-        "tiktok_shop_items": 8,
-        "trend_ratio": 0.75,
+        "category_id": "hair-care-styling",
+        "category_name": "Hair Care & Styling",
+        "items": 6,
+        "trend_items": 5,
+        "retail_product_items": 6,
+        "tiktok_shop_items": 6,
+        "trend_ratio": 0.83,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -104,6 +93,17 @@
         "trend_items": 6,
         "retail_product_items": 6,
         "tiktok_shop_items": 6,
+        "trend_ratio": 1.0,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
+      {
+        "category_id": "jewelry-fashion-accessories",
+        "category_name": "Jewelry & Fashion Accessories",
+        "items": 8,
+        "trend_items": 8,
+        "retail_product_items": 8,
+        "tiktok_shop_items": 8,
         "trend_ratio": 1.0,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
@@ -145,12 +145,6 @@
         "category_name": "Wigs & Hair Pieces"
       },
       {
-        "item_id": "lace-melting-spray",
-        "item_name": "Lace Melting Spray",
-        "category_id": "hair-care-styling",
-        "category_name": "Hair Care & Styling"
-      },
-      {
         "item_id": "braid-foaming-mousse",
         "item_name": "Foaming Mousse for Braids",
         "category_id": "hair-care-styling",
@@ -179,24 +173,6 @@
         "item_name": "Elastic Melting Band",
         "category_id": "tools-accessories",
         "category_name": "Tools & Accessories"
-      },
-      {
-        "item_id": "rat-tail-comb-metal-pintail",
-        "item_name": "Rat Tail Comb with Metal Pintail",
-        "category_id": "tools-accessories",
-        "category_name": "Tools & Accessories"
-      },
-      {
-        "item_id": "gold-braid-cuffs-12-pack",
-        "item_name": "Gold Braid Cuffs 12-Pack",
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories"
-      },
-      {
-        "item_id": "20g-surgical-steel-nose-stud",
-        "item_name": "20G Surgical Steel Nose Stud",
-        "category_id": "jewelry-fashion-accessories",
-        "category_name": "Jewelry & Fashion Accessories"
       }
     ],
     "missing_tiktok_shop_items": [],
@@ -213,11 +189,11 @@
   },
   "supplemental_trend_query_policy": {
     "policy_id": "supplemental_item_look_published_query_v1",
-    "mapped_items": 20,
+    "mapped_items": 24,
     "max_queries_per_item": 3,
     "discovery_kind": "supplemental_published_trend_query",
     "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style/install language rather than exact SKU wording, especially Nails, Jewelry, Tools/Accessories, and edge-control style support items.",
-    "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL, evidence_relevance passes, and an item-specific required-term guard passes."
+    "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL and it passes either normal evidence_relevance or a strict item-specific required-term guard."
   },
   "limitations": [
     "collection notes는 source/API health와 URL coverage 진단용이며, 검색 URL을 evidence로 승격하지 않습니다.",
@@ -226,6 +202,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "published trend URL gap 11개 item 유지: Lashes & Brows, Tools & Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+    "published trend URL gap 7개 item 유지: Lashes & Brows, Wigs & Hair Pieces, Tools & Accessories부터 item-level dated source capture를 보강합니다."
   ]
 }

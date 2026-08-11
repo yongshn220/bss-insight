@@ -219,9 +219,10 @@ CATEGORIES: list[dict[str, Any]] = [
 # Published-source discovery terms for item types whose customers usually talk in
 # look/style/install language instead of exact BSS SKU wording. These are NOT
 # search URLs and are not scored by themselves: each query must return a concrete
-# dated article/news URL and still pass evidence_relevance(row, source). The goal
-# is to recover item-level demand evidence for weak categories without turning
-# broad category search pages into evidence.
+# dated article/news URL and pass either normal item relevance or the stricter
+# item-specific supplemental required-term guard. The goal is to recover
+# item-level demand evidence for weak categories without turning broad category
+# search pages into evidence.
 SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
     "50mm-gold-hoop-earrings": [
         "gold hoop earrings black women style trend",
@@ -249,6 +250,7 @@ SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
     "20g-surgical-steel-nose-stud": [
         "nose piercing jewelry trend 2026",
         "nose stud trend 2026",
+        "nostril piercing stud jewelry review",
     ],
     "14g-belly-button-ring": [
         "belly button ring trend 2026",
@@ -286,6 +288,11 @@ SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
         "silky durag wave cap trend",
         "durag wave maintenance review",
     ],
+    "v-part-human-hair-wig": [
+        "v part wig natural hair review",
+        "leave out wig trend",
+        "v part wig install trend",
+    ],
     "wig-grip-band": [
         "wig grip band review wig install",
         "wig grip band glueless wig trend",
@@ -296,10 +303,25 @@ SUPPLEMENTAL_TREND_NEWS_QUERIES: dict[str, list[str]] = {
         "elastic melting band lace wig review",
         "wig melt band install trend",
     ],
+    "lace-melting-spray": [
+        "lace melting spray wig install review",
+        "lace melt spray glueless wig trend",
+        "wig melting spray lace install trend",
+    ],
+    "rat-tail-comb-metal-pintail": [
+        "rat tail comb parting braids review",
+        "metal pintail comb wig install trend",
+        "parting comb braids tool review",
+    ],
     "drawstring-ponytail-extension": [
         "drawstring ponytail trend",
         "curly drawstring ponytail hairstyle trend",
         "drawstring ponytail extension review",
+    ],
+    "gold-braid-cuffs-12-pack": [
+        "gold braid cuffs protective style trend",
+        "braid cuffs hair jewelry review",
+        "hair cuffs for braids trend",
     ],
     "braid-foaming-mousse": [
         "braid mousse trend",
@@ -334,9 +356,13 @@ SUPPLEMENTAL_TREND_REQUIRED_TERMS: dict[str, list[set[str]]] = {
     "extra-large-satin-bonnet": [{"bonnet", "bonnets"}, {"satin", "silk", "protective", "braid", "braids", "curls", "haircare", "hair care", "hair"}],
     "24-hour-edge-control-gel": [{"edge", "edges"}, {"control", "controls", "gel", "gels"}],
     "durag-wave-cap": [{"durag", "durags", "wave cap", "wave caps"}],
+    "v-part-human-hair-wig": [{"v-part", "v part", "leave out", "leave-out"}, {"wig", "wigs"}],
     "wig-grip-band": [{"wig", "wigs"}, {"grip", "non slip", "non-slip"}, {"band", "bands"}],
     "elastic-melting-band": [{"lace", "wig", "wigs"}, {"melt", "melting"}, {"band", "bands"}],
+    "lace-melting-spray": [{"lace", "wig", "wigs"}, {"melt", "melting", "meltdown"}, {"spray", "sprays"}],
+    "rat-tail-comb-metal-pintail": [{"rat tail", "rat-tail", "pintail", "metal tail", "parting"}, {"comb", "combs"}],
     "drawstring-ponytail-extension": [{"drawstring"}, {"ponytail", "ponytails"}],
+    "gold-braid-cuffs-12-pack": [{"braid", "braids", "loc", "locs", "hair"}, {"cuff", "cuffs", "jewelry", "jewellery"}],
     "braid-foaming-mousse": [{"mousse", "foam", "foaming"}, {"braid", "braids", "knotless"}],
     "25mm-mink-strip-lashes": [{"25mm", "dramatic", "mink"}, {"lash", "lashes"}],
     "individual-flare-lashes": [{"individual", "flare", "flares"}, {"lash", "lashes"}],
@@ -551,8 +577,9 @@ def supplemental_trend_news_queries(row: dict[str, Any]) -> list[str]:
 
     These queries are used only against news/article RSS collectors that return a
     concrete URL plus publish/seen date. They never create watchlist/search URL
-    evidence; every returned source must still pass evidence_relevance and is
-    labeled with discovery_kind for downstream transparency.
+    evidence; every returned source must still pass normal item relevance or the
+    strict supplemental required-term guard and is labeled with discovery_kind
+    for downstream transparency.
     """
     max_queries = int_env("SUPPLEMENTAL_TREND_NEWS_QUERIES_PER_ITEM", 3, 0, 4)
     if max_queries <= 0:
@@ -835,6 +862,25 @@ def evidence_match(row: dict[str, Any], source: dict[str, Any]) -> bool:
     return False
 
 
+def published_signal_match(row: dict[str, Any], source: dict[str, Any]) -> bool:
+    """Accept a dated published URL only when item relevance is explicit.
+
+    Primary item queries still use the normal phrase/token relevance gate. For
+    supplemental look/style/install probes, allow a second strict required-term
+    gate so concrete BSS items such as V-Part wigs, lace melting spray, braid
+    cuffs, or rat-tail combs are not permanently missed just because public
+    articles use owner/look language instead of exact SKU wording. Generated
+    queries remain probes only; this function only runs after a concrete dated
+    URL has been captured.
+    """
+    if evidence_match(row, source):
+        return True
+    if row.get("supplemental_probe") and supplemental_source_matches(row, source):
+        source["evidence_relevance"] = "supplemental_required_terms"
+        return True
+    return False
+
+
 def canonical_news_url(url: str) -> str:
     parsed = urllib.parse.urlparse(url)
     if "bing.com" in parsed.netloc and "apiclick" in parsed.path:
@@ -905,7 +951,7 @@ def bing_news_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> 
             "image_source": source if image_url else "",
             "evidence_status": "verified_url",
         }
-        if is_within_days(signal, days) and evidence_match(row, signal):
+        if is_within_days(signal, days) and published_signal_match(row, signal):
             articles.append(signal)
     return articles
 
@@ -949,7 +995,7 @@ def gdelt_articles(row: dict[str, Any], days: int = 365, limit: int = 8) -> list
             "snippet": html.unescape(article.get("socialimage") or article.get("language") or ""),
             "evidence_status": "verified_url",
         }
-        if evidence_match(row, signal):
+        if published_signal_match(row, signal):
             articles.append(signal)
     return articles
 
@@ -965,7 +1011,7 @@ def google_news_articles(row: dict[str, Any], days: int = 365, limit: int = 5) -
             continue
         result = dict(result)
         result["evidence_status"] = "verified_url"
-        if evidence_match(row, result):
+        if published_signal_match(row, result):
             articles.append(result)
     return articles
 
@@ -1598,6 +1644,7 @@ def collect_verified_evidence(row: dict[str, Any]) -> list[dict[str, Any]]:
     for query in supplemental_trend_news_queries(row):
         supplemental_row = dict(row)
         supplemental_row["focus_query"] = query
+        supplemental_row["supplemental_probe"] = True
         add_news_results(
             supplemental_row,
             feedback_query=query,
@@ -1834,7 +1881,7 @@ def supplemental_trend_query_policy() -> dict[str, Any]:
         "max_queries_per_item": int_env("SUPPLEMENTAL_TREND_NEWS_QUERIES_PER_ITEM", 3, 0, 4),
         "discovery_kind": "supplemental_published_trend_query",
         "purpose": "Recover dated article/news URLs for concrete BSS item types when public sources use look/style/install language rather than exact SKU wording, especially Nails, Jewelry, Tools/Accessories, and edge-control style support items.",
-        "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL, evidence_relevance passes, and an item-specific required-term guard passes.",
+        "discipline": "Generated search URLs are still non-evidence. Supplemental queries score only if the collector captures a concrete dated URL and it passes either normal evidence_relevance or a strict item-specific required-term guard.",
     }
 
 
