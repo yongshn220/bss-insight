@@ -1,31 +1,31 @@
 {
-  "reviewed_at": "2026-08-13T11:43:38.772299Z",
-  "source_generated_at": "2026-08-13T11:31:16.034874Z",
+  "reviewed_at": "2026-08-13T13:00:11.094864Z",
+  "source_generated_at": "2026-08-13T12:57:30.098372Z",
   "date": "2026-08-13",
   "timeframe": "weekly",
-  "playwright_summary": "npm run test:e2e passed: 16 passed (chromium + mobile-chrome) after native-mobile-share-v1",
+  "playwright_summary": "npm run test:e2e passed: 16 passed (chromium + mobile-chrome) after measured-traffic-review-v1 final QA",
   "metrics": {
     "items": 44,
     "categories": 8,
-    "trend_items": 12,
-    "recent_trend_items": 12,
+    "trend_items": 11,
+    "recent_trend_items": 11,
     "retail_product_items": 44,
     "tiktok_shop_items": 44,
     "product_image_items": 44,
-    "watchlist_items": 32
+    "watchlist_items": 33
   },
   "collection_health": {
-    "generated_at": "2026-08-13T11:31:16.034494Z",
+    "generated_at": "2026-08-13T12:57:30.097985Z",
     "source_health": {
       "apify_tiktok_shop": {
         "status": "success",
-        "observed_at": "2026-08-13T11:31:16.033683Z",
+        "observed_at": "2026-08-13T12:57:30.097051Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 86,
         "expanded_keyword_items": 21,
-        "products_returned": 85,
+        "products_returned": 86,
         "items_with_evidence": 44,
         "evidence_urls": 83,
         "fresh_evidence_urls": 83,
@@ -43,8 +43,8 @@
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
       "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 386,
-      "published_trend_urls_total": 119,
+      "verified_urls_total": 384,
+      "published_trend_urls_total": 117,
       "retail_product_urls_total": 267,
       "cached_tiktok_shop_urls_total": 0,
       "collection_error_records": 0
@@ -91,10 +91,10 @@
     {
       "category": "Jewelry & Fashion Accessories",
       "items": 8,
-      "trend_items": 4,
+      "trend_items": 3,
       "retail_items": 8,
       "product_image_items": 8,
-      "trend_ratio": 0.5,
+      "trend_ratio": 0.38,
       "retail_ratio": 1.0,
       "product_image_ratio": 1.0
     },
@@ -149,16 +149,256 @@
       "product_image_ratio": 1.0
     }
   ],
+  "traffic_measurement": {
+    "status": "measured",
+    "measurement_source": "vercel_web_analytics_rest_api",
+    "project_name": "gns_research_hub",
+    "project_context_status": "project_lookup_success",
+    "window_days": 30,
+    "since": "2026-07-14T13:00:06.067062Z",
+    "until": "2026-08-13T13:00:06.067062Z",
+    "rolling_30d_average_daily_visits": 0.27,
+    "average_daily_pageviews": 0.43,
+    "target_average_daily_visits": 500,
+    "gap_to_target_average_daily_visits": 499.73,
+    "target_progress_percent": 0.054,
+    "period_unique_visitors": 8,
+    "period_pageviews": 13,
+    "daily_visitor_sum": 8,
+    "daily_pageview_sum": 13,
+    "daily_rows": [
+      {
+        "timestamp": "2026-07-14T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-15T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-16T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-17T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-18T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-19T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-20T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-21T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-22T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-23T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-24T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-25T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-26T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-27T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-28T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-29T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-30T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-07-31T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-01T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-02T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-03T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-04T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-05T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-06T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-07T00:00:00.000Z",
+        "visitors": 3,
+        "pageviews": 3
+      },
+      {
+        "timestamp": "2026-08-08T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      },
+      {
+        "timestamp": "2026-08-09T00:00:00.000Z",
+        "visitors": 1,
+        "pageviews": 1
+      },
+      {
+        "timestamp": "2026-08-10T00:00:00.000Z",
+        "visitors": 1,
+        "pageviews": 1
+      },
+      {
+        "timestamp": "2026-08-11T00:00:00.000Z",
+        "visitors": 1,
+        "pageviews": 1
+      },
+      {
+        "timestamp": "2026-08-12T00:00:00.000Z",
+        "visitors": 2,
+        "pageviews": 7
+      },
+      {
+        "timestamp": "2026-08-13T00:00:00.000Z",
+        "visitors": 0,
+        "pageviews": 0
+      }
+    ],
+    "top_paths": [
+      {
+        "requestPath": "/",
+        "visitors": 8,
+        "pageviews": 8
+      },
+      {
+        "requestPath": "/rankings/weekly.html",
+        "visitors": 2,
+        "pageviews": 2
+      },
+      {
+        "requestPath": "/items/chrome-nail-powder.html",
+        "visitors": 1,
+        "pageviews": 1
+      },
+      {
+        "requestPath": "/items/rhinestone-stud-earrings-6mm.html",
+        "visitors": 1,
+        "pageviews": 2
+      }
+    ],
+    "top_referrers": [
+      {
+        "referrerHostname": "",
+        "visitors": 8,
+        "pageviews": 13
+      }
+    ],
+    "device_breakdown": [
+      {
+        "deviceType": "desktop",
+        "visitors": 4,
+        "pageviews": 8
+      },
+      {
+        "deviceType": "mobile",
+        "visitors": 3,
+        "pageviews": 4
+      },
+      {
+        "deviceType": "",
+        "visitors": 1,
+        "pageviews": 1
+      }
+    ],
+    "query_errors": {
+      "daily": null,
+      "requestPath": null,
+      "referrerHostname": null,
+      "deviceType": null,
+      "utmSource": {
+        "http_status": 402,
+        "code": "payment_required",
+        "message": "UTM dimensions require an Enterprise plan or the Web Analytics Plus add-on."
+      },
+      "customEvents": {
+        "http_status": 402,
+        "code": "payment_required",
+        "message": "Accessing Analytics custom events requires an Enterprise or Pro plan."
+      }
+    },
+    "utm_breakdown_status": "blocked_or_unavailable: payment_required",
+    "custom_event_status": "blocked_or_unavailable: payment_required",
+    "note": "Visits/pageviews are measured centrally. Custom event and some UTM breakdown endpoints may require Vercel Pro/Enterprise or GA4 Data API access for component funnel analysis."
+  },
   "coverage_deltas": {
     "trend_items": {
       "previous": 12,
-      "current": 12,
-      "delta": 0
+      "current": 11,
+      "delta": -1
     },
     "recent_trend_items": {
       "previous": 12,
-      "current": 12,
-      "delta": 0
+      "current": 11,
+      "delta": -1
     },
     "retail_product_items": {
       "previous": 44,
@@ -177,23 +417,23 @@
     },
     "watchlist_items": {
       "previous": 32,
-      "current": 32,
-      "delta": 0
+      "current": 33,
+      "delta": 1
     }
   },
   "collection_evidence_deltas": {
     "evidence_totals__items_with_published_trend_url": {
       "label": "all-window published trend item coverage",
-      "previous": 38,
+      "previous": 39,
       "current": 39,
-      "delta": 1,
+      "delta": 0,
       "inverse": false
     },
     "evidence_totals__published_trend_urls_total": {
       "label": "published trend URL total",
-      "previous": 118,
-      "current": 119,
-      "delta": 1,
+      "previous": 119,
+      "current": 117,
+      "delta": -2,
       "inverse": false
     },
     "evidence_totals__items_with_retail_product_url": {
@@ -233,16 +473,16 @@
     },
     "source_health__apify_tiktok_shop__products_returned": {
       "label": "TikTok Shop products returned",
-      "previous": 86,
-      "current": 85,
-      "delta": -1,
+      "previous": 85,
+      "current": 86,
+      "delta": 1,
       "inverse": false
     },
     "source_health__apify_tiktok_shop__fresh_evidence_urls": {
       "label": "fresh TikTok Shop supply URLs",
-      "previous": 84,
+      "previous": 83,
       "current": 83,
-      "delta": -1,
+      "delta": 0,
       "inverse": false
     },
     "source_health__apify_tiktok_shop__partial_cached_items": {
@@ -254,18 +494,18 @@
     },
     "coverage_gap_summary__published_trend_missing_items": {
       "label": "all-window missing published trend items",
-      "previous": 6,
+      "previous": 5,
       "current": 5,
-      "delta": -1,
+      "delta": 0,
       "inverse": true
     }
   },
   "material_changes": [
-    "Improved source: all-window published trend item coverage 38→39 (+1)",
-    "Improved source: published trend URL total 118→119 (+1)",
-    "Improved source: all-window missing published trend items 6→5 (-1)",
-    "Needs source recovery: TikTok Shop products returned 86→85 (-1)",
-    "Needs source recovery: fresh TikTok Shop supply URLs 84→83 (-1)"
+    "Improved source: TikTok Shop products returned 85→86 (+1)",
+    "Needs recovery: published trend item coverage 12→11 (-1)",
+    "Needs recovery: recent trend item coverage 12→11 (-1)",
+    "Needs recovery: WATCHLIST item count 32→33 (+1)",
+    "Needs source recovery: published trend URL total 119→117 (-2)"
   ],
   "previous_loop_follow_up": [
     {
@@ -378,7 +618,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -398,7 +638,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -424,7 +664,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -444,7 +684,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -608,7 +848,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -628,7 +868,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -638,16 +878,18 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: npm run test:e2e passed: 16 passed (chromium + mobile-chrome) after native-mobile-share-v1",
+    "Playwright QA 완료: npm run test:e2e passed: 16 passed (chromium + mobile-chrome) after measured-traffic-review-v1 final QA",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 6mm Rhinestone Stud Earrings, #3 Lash Bond and Seal",
-    "Evidence separation 유지: published trend URL 보유 item 12개, BSS/marketplace live product URL 보유 item 44개.",
+    "Evidence separation 유지: published trend URL 보유 item 11개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
     "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
     "TikTok Shop collector health: success, attempts 1, evidence URLs 83."
   ],
   "improvement_points": [
-    "32개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "33개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+    "이전 run 대비 coverage regression 감지: published trend item 12→11 (-1); recent trend item 12→11 (-1). 다음 loop에서는 source outage/collector query/retail suggest coverage를 우선 확인해야 합니다.",
+    "WATCHLIST item이 이전 run 대비 증가했습니다: 32→33 (+1). trend claim 확대보다 근거 보강이 우선입니다.",
     "근거가 가장 약한 category: Braiding & Crochet Hair (trend 1/6, retail 6/6)."
   ],
   "next_loop_focus_items": [
@@ -655,7 +897,7 @@
       "item_id": "braid-foaming-mousse",
       "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 20,
+      "rank": 19,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -692,7 +934,7 @@
       "item_id": "wig-grip-band",
       "item_name": "Wig Grip Band",
       "category": "Tools & Accessories",
-      "rank": 14,
+      "rank": 13,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -729,7 +971,7 @@
       "item_id": "v-part-human-hair-wig",
       "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 16,
+      "rank": 15,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -755,7 +997,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -766,7 +1008,7 @@
       "item_id": "individual-flare-lashes",
       "item_name": "Individual Flare Lashes",
       "category": "Lashes & Brows",
-      "rank": 25,
+      "rank": 24,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -792,7 +1034,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 8,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -803,7 +1045,7 @@
       "item_id": "elastic-melting-band",
       "item_name": "Elastic Melting Band",
       "category": "Tools & Accessories",
-      "rank": 28,
+      "rank": 27,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -840,7 +1082,7 @@
       "item_id": "synthetic-lace-front-wig",
       "item_name": "Synthetic Lace Front Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 13,
+      "rank": 12,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "weekly_quality_flags",
       "collection_gap": "weekly_or_recent_evidence_gap",
@@ -877,7 +1119,7 @@
       "item_id": "wig-adhesive-glue",
       "item_name": "Wig Adhesive Glue",
       "category": "Hair Care & Styling",
-      "rank": 15,
+      "rank": 14,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "weekly_quality_flags",
       "collection_gap": "weekly_or_recent_evidence_gap",
@@ -914,7 +1156,7 @@
       "item_id": "drawstring-ponytail-extension",
       "item_name": "Drawstring Ponytail Extension",
       "category": "Wigs & Hair Pieces",
-      "rank": 17,
+      "rank": 16,
       "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "weekly_quality_flags",
       "collection_gap": "weekly_or_recent_evidence_gap",
@@ -940,7 +1182,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -956,25 +1198,27 @@
   "independent_ai_review": {
     "review_type": "independent_ai_operator_review",
     "primary_growth_blockers": [
-      "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
-      "WATCHLIST remains high: 32/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
-      "Collection evidence/source regression detected: TikTok Shop products returned 86→85 (-1); fresh TikTok Shop supply URLs 84→83 (-1)."
+      "Measured traffic is far below the standing goal: 0.27/day vs 500/day (gap 499.73/day). Distribution and repeat-visit conversion remain the main growth blocker.",
+      "Component funnel analytics export is still blocked/gated: custom_event_status=blocked_or_unavailable: payment_required, utm_breakdown_status=blocked_or_unavailable: payment_required. Need GA4 Data API reporting access or Vercel custom-event/UTM export to compare owner-share, message, RSS, shortcut, calendar, category, and item-detail paths.",
+      "WATCHLIST remains high: 33/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
+      "Coverage regression detected: published trend item coverage 12→11 (-1); recent trend item coverage 12→11 (-1); WATCHLIST item count 32→33 (+1).",
+      "Collection evidence/source regression detected: published trend URL total 119→117 (-2)."
     ],
     "good_points": [
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-      "Fresh weekly trend evidence exists for 12 item(s), keeping Top 3 from being supply-only.",
-      "Collection/source progress: all-window published trend item coverage 38→39 (+1); published trend URL total 118→119 (+1); all-window missing published trend items 6→5 (-1)."
+      "Fresh weekly trend evidence exists for 11 item(s), keeping Top 3 from being supply-only.",
+      "Collection/source progress: TikTok Shop products returned 85→86 (+1)."
     ],
     "remaining_issues": [
-      "Published trend evidence coverage is 12/44; recent 14d coverage is 12/44.",
+      "Published trend evidence coverage is 11/44; recent 14d coverage is 11/44.",
       "All-window published trend URL coverage is 39/44; this can regress even when weekly rank counts stay flat.",
       "Zero-trend category count: 0.",
-      "Traffic progress is measurement pending until a provider reporting credential/export is connected."
+      "Traffic is measured at 0.27/day against the 500/day target, but component/UTM funnel export remains blocked."
     ],
     "next_direction": [
-      "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
+      "Use the measured Vercel visit baseline to prioritize distribution tests, and connect GA4 Data API or Vercel custom-event/UTM export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
       "Prioritize dated item-level source capture for Wigs, Tools, Nails, and Jewelry before expanding broad category claims.",
       "Keep product/listing alias probes strict: recover missing supply URLs, but never promote those URLs into trend movement without a dated post/article/listing signal."
     ],
@@ -995,6 +1239,14 @@
         "score": 70,
         "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
       }
+    },
+    "traffic_measurement_status": {
+      "status": "measured",
+      "rolling_30d_average_daily_visits": 0.27,
+      "target_average_daily_visits": 500,
+      "gap_to_target_average_daily_visits": 499.73,
+      "custom_event_status": "blocked_or_unavailable: payment_required",
+      "utm_breakdown_status": "blocked_or_unavailable: payment_required"
     },
     "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only."
   }

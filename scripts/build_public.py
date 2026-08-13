@@ -32,6 +32,7 @@ PUBLIC_REVIEW_FIELDS = [
     "playwright_summary",
     "metrics",
     "collection_health",
+    "traffic_measurement",
     "coverage_deltas",
     "collection_evidence_deltas",
     "material_changes",

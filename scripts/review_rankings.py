@@ -650,6 +650,7 @@ def independent_ai_review(
     coverage_deltas: dict[str, dict[str, int]],
     collection_notes: dict[str, Any],
     collection_deltas: dict[str, dict[str, Any]],
+    visit_measurement: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Structured operator review beyond baseline counts.
 
@@ -678,10 +679,39 @@ def independent_ai_review(
     all_window_published_items = int(evidence_totals.get("items_with_published_trend_url") or 0)
     all_window_requested_items = int(evidence_totals.get("items_requested") or item_count)
 
-    primary_growth_blockers = [
-        "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
-        f"WATCHLIST remains high: {watchlist_items}/{item_count} weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
-    ]
+    visit_measurement = visit_measurement if isinstance(visit_measurement, dict) else {}
+    visits_measured = visit_measurement.get("status") == "measured"
+    avg_visits = visit_measurement.get("rolling_30d_average_daily_visits") if visits_measured else None
+    target_visits = visit_measurement.get("target_average_daily_visits") or VISIT_GOAL_TARGET
+    gap_to_target = visit_measurement.get("gap_to_target_average_daily_visits")
+    custom_event_status = str(visit_measurement.get("custom_event_status") or "unknown")
+    utm_breakdown_status = str(visit_measurement.get("utm_breakdown_status") or "unknown")
+
+    if visits_measured:
+        primary_growth_blockers = [
+            (
+                f"Measured traffic is far below the standing goal: {avg_visits}/day vs {target_visits}/day "
+                f"(gap {gap_to_target}/day). Distribution and repeat-visit conversion remain the main growth blocker."
+            ),
+            f"WATCHLIST remains high: {watchlist_items}/{item_count} weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
+        ]
+        if custom_event_status != "available" or utm_breakdown_status != "available":
+            primary_growth_blockers.insert(
+                1,
+                (
+                    "Component funnel analytics export is still blocked/gated: "
+                    f"custom_event_status={custom_event_status}, utm_breakdown_status={utm_breakdown_status}. "
+                    "Need GA4 Data API reporting access or Vercel custom-event/UTM export to compare owner-share, message, RSS, shortcut, calendar, category, and item-detail paths."
+                ),
+            )
+    else:
+        primary_growth_blockers = [
+            (
+                "Central visit measurement is unavailable in this runtime, so rolling 30-day average daily visits cannot be calculated. "
+                "Component conversion rates also need GA4 Data API or Vercel custom-event/UTM analytics export."
+            ),
+            f"WATCHLIST remains high: {watchlist_items}/{item_count} weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
+        ]
     if zero_trend_categories:
         primary_growth_blockers.append("Zero weekly trend-evidence categories: " + ", ".join(zero_trend_categories[:4]) + ".")
     if regressions:
@@ -704,7 +734,12 @@ def independent_ai_review(
         good_points.append("Collection/source progress: " + "; ".join(collection_improvements[:3]) + ".")
 
     next_direction = [
-        "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
+        (
+            "Use the measured Vercel visit baseline to prioritize distribution tests, and connect GA4 Data API or Vercel custom-event/UTM export so "
+            "growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal."
+            if visits_measured else
+            "Connect Vercel Web Analytics reporting or GA4 Data API so rolling 30-day visits, growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal."
+        ),
         "Prioritize dated item-level source capture for Wigs, Tools, Nails, and Jewelry before expanding broad category claims.",
         "Keep product/listing alias probes strict: recover missing supply URLs, but never promote those URLs into trend movement without a dated post/article/listing signal.",
     ]
@@ -737,10 +772,22 @@ def independent_ai_review(
             f"Published trend evidence coverage is {trend_items}/{item_count}; recent 14d coverage is {recent_items}/{item_count}.",
             f"All-window published trend URL coverage is {all_window_published_items}/{all_window_requested_items}; this can regress even when weekly rank counts stay flat.",
             f"Zero-trend category count: {len(zero_trend_categories)}.",
-            "Traffic progress is measurement pending until a provider reporting credential/export is connected.",
+            (
+                f"Traffic is measured at {avg_visits}/day against the 500/day target, but component/UTM funnel export remains blocked."
+                if visits_measured else
+                "Traffic progress is measurement pending until a provider reporting credential/export is connected."
+            ),
         ],
         "next_direction": next_direction,
         "scorecards": scorecards,
+        "traffic_measurement_status": {
+            "status": visit_measurement.get("status") or "unavailable",
+            "rolling_30d_average_daily_visits": avg_visits,
+            "target_average_daily_visits": target_visits,
+            "gap_to_target_average_daily_visits": gap_to_target,
+            "custom_event_status": custom_event_status,
+            "utm_breakdown_status": utm_breakdown_status,
+        },
         "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only.",
     }
 
@@ -943,6 +990,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
         "source_cap_policy": collection_notes.get("source_cap_policy", {}),
         "next_actions": collection_notes.get("next_actions", []),
     }
+    visit_measurement = measure_vercel_web_analytics()
     collection_delta_map = collection_evidence_deltas(
         current_collection_health,
         previous_collection if isinstance(previous_collection, dict) else {},
@@ -1048,6 +1096,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
             **current_collection_health,
         },
         "category_stats": cat_stats,
+        "traffic_measurement": visit_measurement,
         "coverage_deltas": coverage_deltas,
         "collection_evidence_deltas": collection_delta_map,
         "material_changes": material_changes,
@@ -1062,6 +1111,7 @@ def build_review(playwright_summary: str) -> dict[str, Any]:
             coverage_deltas,
             collection_notes,
             collection_delta_map,
+            visit_measurement,
         ),
     }
     return review
@@ -2125,7 +2175,8 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
     metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
     material_changes = review.get("material_changes", []) if isinstance(review.get("material_changes"), list) else []
     top3_ids = marketing_summary.get("top3_item_ids", []) if isinstance(marketing_summary, dict) else []
-    visit_measurement = measure_vercel_web_analytics()
+    review_visit_measurement = review.get("traffic_measurement", {}) if isinstance(review.get("traffic_measurement"), dict) else {}
+    visit_measurement = review_visit_measurement if review_visit_measurement.get("status") else measure_vercel_web_analytics()
     measured = visit_measurement.get("status") == "measured"
     avg_visits = visit_measurement.get("rolling_30d_average_daily_visits") if measured else None
     goal["updated_at"] = now
@@ -2198,14 +2249,17 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
 
     needs = goal.setdefault("needs_user_permission_or_credentials", [])
     if isinstance(needs, list):
+        measurement_need_names = {
+            "vercel_analytics_export_or_api_access",
+            "ga4_property_id_with_data_api_viewer_access",
+            "ga4_data_api_property_or_service_credentials",
+            "vercel_pro_or_custom_event_export_access",
+        }
         replacement_needs = [
             need for need in needs
             if not (
                 isinstance(need, dict)
-                and need.get("need") in {
-                    "vercel_analytics_export_or_api_access",
-                    "ga4_property_id_with_data_api_viewer_access",
-                }
+                and need.get("need") in measurement_need_names
             )
         ]
         replacement_needs.append({
@@ -2216,7 +2270,17 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "need": "vercel_pro_or_custom_event_export_access",
             "why": "The Vercel REST API returns basic visits/pageviews, but custom event and some UTM breakdown queries are plan/API gated in this runtime. Needed to compare owner-share, WhatsApp/SMS, RSS, shortcut, calendar, category, and item-detail funnel performance toward 500/day."
         })
-        goal["needs_user_permission_or_credentials"] = replacement_needs
+        deduped_needs: list[dict[str, Any]] = []
+        seen_need_names: set[str] = set()
+        for need in replacement_needs:
+            if not isinstance(need, dict):
+                continue
+            need_name = str(need.get("need") or "").strip()
+            if not need_name or need_name in seen_need_names:
+                continue
+            seen_need_names.add(need_name)
+            deduped_needs.append(need)
+        goal["needs_user_permission_or_credentials"] = deduped_needs
 
     experiments = goal.setdefault("initial_experiments", [])
     if isinstance(experiments, list):
@@ -2516,6 +2580,7 @@ def public_review_payload(review: dict[str, Any]) -> dict[str, Any]:
             "playwright_summary",
             "metrics",
             "collection_health",
+            "traffic_measurement",
             "coverage_deltas",
             "collection_evidence_deltas",
             "material_changes",
