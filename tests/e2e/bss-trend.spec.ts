@@ -156,6 +156,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const collectionNotesResponse = await request.get('/data/collection_notes_public.json');
     expect(collectionNotesResponse.status()).toBeLessThan(400);
     const collectionNotes = await collectionNotesResponse.json();
+    const apifyNotes = collectionNotes.source_health?.apify_tiktok_shop ?? {};
+    const liveCachedAttr = await tiktokSourceHealth.getAttribute('data-cached-urls');
+    if (apifyNotes.partial_cached_evidence_urls !== undefined) {
+      expect(Number(liveCachedAttr)).toBe(Number(apifyNotes.partial_cached_evidence_urls));
+      if (Number(apifyNotes.cached_evidence_urls ?? 0) !== Number(apifyNotes.partial_cached_evidence_urls ?? 0)) {
+        expect(Number(liveCachedAttr)).not.toBe(Number(apifyNotes.cached_evidence_urls ?? 0));
+      }
+    }
     const missingPublishedItems = collectionNotes.coverage_gaps?.missing_published_trend_items ?? [];
     const focusIds = new Set((focusPayload.focus_items ?? []).map((item: any) => item.item_id));
     if (missingPublishedItems.length > 0 && missingPublishedItems.length <= 8) {

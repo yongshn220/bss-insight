@@ -63,6 +63,28 @@ def count(row: dict[str, Any], key: str) -> int:
         return 0
 
 
+def safe_int(value: object, default: int = 0) -> int:
+    """Parse a non-sensitive integer metric without exposing raw env/secrets."""
+    try:
+        candidate = default if value in (None, "") else value
+        return int(candidate)  # type: ignore[arg-type]
+    except Exception:
+        return default
+
+
+def current_tiktok_cached_urls(apify: dict[str, Any], fallback: int = 0) -> int:
+    """Return current-run cached TikTok Shop fallback URLs, not cache inventory."""
+    if not isinstance(apify, dict):
+        return max(0, fallback)
+    partial = apify.get("partial_cached_evidence_urls")
+    if partial not in (None, ""):
+        return max(0, safe_int(partial, fallback))
+    status = str(apify.get("status") or "")
+    if status in {"failed_using_cache", "skipped_recent_failure_using_cache"}:
+        return max(0, safe_int(apify.get("cached_evidence_urls"), fallback))
+    return max(0, fallback)
+
+
 def has_trend_evidence(row: dict[str, Any]) -> bool:
     """Return true only when the ranking row has published/date-bearing trend evidence."""
     return bool(count(row, "trend_evidence") or count(row, "news_magazine"))
@@ -1031,6 +1053,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
     source_health = ((review.get("collection_health") or {}).get("source_health") or {}) if isinstance(review.get("collection_health"), dict) else {}
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
     apify = apify if isinstance(apify, dict) else {}
+    apify_current_cached_urls = current_tiktok_cached_urls(apify)
     ensure_campaign(active_campaigns, {
         "campaign_id": "apify-sharded-fallback-v1",
         "status": "live-in-collector-resilience-after-build",
@@ -1039,7 +1062,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "tracked_quality_metrics": [
             f"apify_status={apify.get('status', 'unknown')}",
             f"fresh_evidence_urls={apify.get('fresh_evidence_urls', 0)}",
-            f"cached_fallback_urls={apify.get('cached_evidence_urls', apify.get('partial_cached_evidence_urls', 0))}",
+            f"cached_fallback_urls={apify_current_cached_urls}",
             f"shard_fallback_status={apify.get('shard_fallback_status', 'not_used')}",
         ],
         "owner_value": "BSS owners keep current product/listing context during upstream actor instability, while cached URLs remain explicitly labeled supply-only and never create trend movement.",
@@ -1056,7 +1079,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             f"failure_cooldown_minutes={apify.get('cooldown_minutes', 'default_or_not_active')}",
             f"cooldown_remaining_minutes={apify.get('cooldown_remaining_minutes', 0)}",
             f"last_actor_failure_observed_at={apify.get('last_actor_failure_observed_at', '')}",
-            f"cached_fallback_urls={apify.get('cached_evidence_urls', apify.get('partial_cached_evidence_urls', 0))}",
+            f"cached_fallback_urls={apify_current_cached_urls}",
         ],
         "owner_value": "The dashboard stays fast and honest during upstream TikTok Shop instability: owners still see cached product availability, but source freshness is visibly marked as recovery work rather than trend evidence.",
         "measurement_need": "Track whether cooldown runs reduce failed actor time/quota without increasing stale cache age; analytics export is still needed for downstream visit/click impact.",
@@ -1078,7 +1101,9 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "tracked_quality_metrics": [
             f"apify_status={apify.get('status', 'unknown')}",
             f"fresh_evidence_urls={apify.get('fresh_evidence_urls', 0)}",
-            f"cached_supply_urls={apify.get('cached_evidence_urls', apify.get('partial_cached_evidence_urls', 0))}",
+            f"cached_supply_urls={apify_current_cached_urls}",
+            "cache_inventory_urls="
+            f"{apify.get('cached_evidence_urls', 0)} (available fallback pool; not current usage)",
             "source-health cell exposes data-source-health-status, data-fresh-urls, and data-cached-urls for QA/live smoke checks",
         ],
         "owner_value": "BSS owners can see whether TikTok Shop links are fresh social-commerce supply or previous cached supply, reducing black-box score confusion during upstream collector outages.",

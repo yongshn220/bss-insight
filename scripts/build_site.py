@@ -149,6 +149,36 @@ def source_count(row: dict[str, Any], key: str) -> int:
         return 0
 
 
+def safe_int(value: object, default: int = 0) -> int:
+    """Parse a non-sensitive numeric source-health metric safely."""
+    try:
+        candidate = default if value in (None, "") else value
+        return int(candidate)  # type: ignore[arg-type]
+    except Exception:
+        return default
+
+
+def current_tiktok_cached_urls(apify: dict[str, Any], fallback: int = 0) -> int:
+    """Return the current-run cached TikTok Shop URL count, not the cache-pool size.
+
+    ``cached_evidence_urls`` is the reusable cache inventory. During partial-cache
+    success runs, the owner-facing page should show only
+    ``partial_cached_evidence_urls`` as current fallback usage; otherwise a run
+    with 2 cached fallback URLs can look like it used the entire 85-URL cache.
+    Full-cache failure/cooldown runs still use ``cached_evidence_urls`` because in
+    that case the cache pool is the active supply fallback.
+    """
+    if not isinstance(apify, dict):
+        return max(0, fallback)
+    partial = apify.get("partial_cached_evidence_urls")
+    if partial not in (None, ""):
+        return max(0, safe_int(partial, fallback))
+    status = str(apify.get("status") or "")
+    if status in {"failed_using_cache", "skipped_recent_failure_using_cache"}:
+        return max(0, safe_int(apify.get("cached_evidence_urls"), fallback))
+    return max(0, fallback)
+
+
 def previous_history_rows(current_generated_at: object, timeframe: str) -> list[dict[str, Any]]:
     """Return the latest prior rows for the same timeframe, excluding the current snapshot."""
     history = load_ranking_history()
@@ -271,14 +301,14 @@ def run_change_snapshot(data: dict[str, Any], timeframe: str, rows: list[dict[st
     source_health = health.get("source_health", {}) if isinstance(health.get("source_health"), dict) else {}
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
     apify = apify if isinstance(apify, dict) else {}
-    fresh_urls = int(apify.get("fresh_evidence_urls") or 0)
-    total_urls = int(
+    fresh_urls = safe_int(apify.get("fresh_evidence_urls"))
+    total_urls = safe_int(
         apify.get("evidence_urls")
-        or apify.get("cached_evidence_urls")
         or apify.get("partial_cached_evidence_urls")
+        or apify.get("cached_evidence_urls")
         or 0
     )
-    cached_urls = int(apify.get("cached_evidence_urls") or apify.get("partial_cached_evidence_urls") or 0)
+    cached_urls = current_tiktok_cached_urls(apify)
     status = str(apify.get("status") or "unknown")
     cache_note = f" · cached supply URLs {cached_urls}" if cached_urls else ""
     source_note = (
@@ -622,10 +652,10 @@ def tiktok_shop_freshness_cell(health: dict[str, Any], cached_tiktok_count: int)
         return ""
 
     status = str(apify.get("status") or "unknown")
-    fresh_urls = int(apify.get("fresh_evidence_urls") or 0)
-    total_urls = int(apify.get("evidence_urls") or apify.get("cached_evidence_urls") or cached_tiktok_count or 0)
-    cached_urls = int(apify.get("partial_cached_evidence_urls") or 0) or cached_tiktok_count
-    partial_items = int(apify.get("partial_cached_items") or 0)
+    fresh_urls = safe_int(apify.get("fresh_evidence_urls"))
+    total_urls = safe_int(apify.get("evidence_urls") or apify.get("cached_evidence_urls") or cached_tiktok_count)
+    cached_urls = current_tiktok_cached_urls(apify, cached_tiktok_count)
+    partial_items = safe_int(apify.get("partial_cached_items"))
     cache_age = apify.get("cache_age_days")
     attempts = apify.get("attempts")
 
