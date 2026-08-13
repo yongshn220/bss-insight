@@ -1,6 +1,1252 @@
 {
   "runs": [
     {
+      "reviewed_at": "2026-08-13T23:33:51.436350Z",
+      "source_generated_at": "2026-08-13T23:29:30.736378Z",
+      "date": "2026-08-13",
+      "timeframe": "weekly",
+      "playwright_summary": "16 passed (47.5s)",
+      "metrics": {
+        "items": 44,
+        "categories": 8,
+        "trend_items": 10,
+        "recent_trend_items": 10,
+        "retail_product_items": 44,
+        "tiktok_shop_items": 44,
+        "product_image_items": 44,
+        "watchlist_items": 34
+      },
+      "collection_health": {
+        "generated_at": "2026-08-13T23:29:30.735981Z",
+        "source_health": {
+          "apify_tiktok_shop": {
+            "status": "success",
+            "observed_at": "2026-08-13T23:29:30.735069Z",
+            "configured": true,
+            "enabled": true,
+            "attempts": 1,
+            "keywords_requested": 86,
+            "expanded_keyword_items": 21,
+            "products_returned": 83,
+            "items_with_evidence": 44,
+            "evidence_urls": 81,
+            "fresh_evidence_urls": 81,
+            "partial_cached_items": 0,
+            "partial_cached_evidence_urls": 0,
+            "current_actor_status": "success",
+            "cache_policy": "cache not used",
+            "max_results_total": 86
+          }
+        },
+        "evidence_totals": {
+          "items_requested": 44,
+          "items_with_any_verified_url": 44,
+          "items_with_published_trend_url": 39,
+          "items_with_retail_product_url": 44,
+          "items_with_tiktok_shop_url": 44,
+          "items_with_cached_tiktok_shop_url": 0,
+          "verified_urls_total": 373,
+          "published_trend_urls_total": 118,
+          "retail_product_urls_total": 255,
+          "cached_tiktok_shop_urls_total": 0,
+          "collection_error_records": 0
+        },
+        "coverage_gap_summary": {
+          "published_trend_missing_items": 5,
+          "tiktok_shop_missing_items": 0,
+          "retail_product_missing_items": 0,
+          "zero_trend_categories": 0
+        },
+        "source_cap_policy": {
+          "policy_id": "trend_preserving_verified_source_cap_v1",
+          "published_first": true,
+          "published_per_item_cap": 8,
+          "retail_per_item_cap": 10,
+          "total_pre_tiktok_per_item_cap": 14,
+          "purpose": "Keep dated article/post/news URLs in rankings.json before same-day product/listing URLs can fill the per-item cap; supply URLs remain validation only and do not create trend movement."
+        },
+        "next_actions": [
+          "published trend URL gap 5개 item 유지: Tools & Accessories, Lashes & Brows, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+        ]
+      },
+      "category_stats": [
+        {
+          "category": "Braiding & Crochet Hair",
+          "items": 6,
+          "trend_items": 1,
+          "retail_items": 6,
+          "product_image_items": 6,
+          "trend_ratio": 0.17,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Hair Care & Styling",
+          "items": 6,
+          "trend_items": 1,
+          "retail_items": 6,
+          "product_image_items": 6,
+          "trend_ratio": 0.17,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Jewelry & Fashion Accessories",
+          "items": 8,
+          "trend_items": 2,
+          "retail_items": 8,
+          "product_image_items": 8,
+          "trend_ratio": 0.25,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Lashes & Brows",
+          "items": 4,
+          "trend_items": 2,
+          "retail_items": 4,
+          "product_image_items": 4,
+          "trend_ratio": 0.5,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Makeup & Cosmetics",
+          "items": 4,
+          "trend_items": 1,
+          "retail_items": 4,
+          "product_image_items": 4,
+          "trend_ratio": 0.25,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Nails",
+          "items": 5,
+          "trend_items": 1,
+          "retail_items": 5,
+          "product_image_items": 5,
+          "trend_ratio": 0.2,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Tools & Accessories",
+          "items": 6,
+          "trend_items": 1,
+          "retail_items": 6,
+          "product_image_items": 6,
+          "trend_ratio": 0.17,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        },
+        {
+          "category": "Wigs & Hair Pieces",
+          "items": 5,
+          "trend_items": 1,
+          "retail_items": 5,
+          "product_image_items": 5,
+          "trend_ratio": 0.2,
+          "retail_ratio": 1.0,
+          "product_image_ratio": 1.0
+        }
+      ],
+      "traffic_measurement": {
+        "status": "measured",
+        "measurement_source": "vercel_web_analytics_rest_api",
+        "project_name": "gns_research_hub",
+        "project_context_status": "project_lookup_success",
+        "window_days": 30,
+        "since": "2026-07-14T23:33:48.551379Z",
+        "until": "2026-08-13T23:33:48.551379Z",
+        "rolling_30d_average_daily_visits": 0.27,
+        "average_daily_pageviews": 0.43,
+        "target_average_daily_visits": 500,
+        "gap_to_target_average_daily_visits": 499.73,
+        "target_progress_percent": 0.054,
+        "period_unique_visitors": 8,
+        "period_pageviews": 13,
+        "daily_visitor_sum": 8,
+        "daily_pageview_sum": 13,
+        "daily_rows": [
+          {
+            "timestamp": "2026-07-14T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-15T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-16T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-17T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-18T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-19T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-20T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-21T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-22T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-23T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-24T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-25T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-26T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-27T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-28T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-29T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-30T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-07-31T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-01T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-02T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-03T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-04T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-05T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-06T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-07T00:00:00.000Z",
+            "visitors": 3,
+            "pageviews": 3
+          },
+          {
+            "timestamp": "2026-08-08T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          },
+          {
+            "timestamp": "2026-08-09T00:00:00.000Z",
+            "visitors": 1,
+            "pageviews": 1
+          },
+          {
+            "timestamp": "2026-08-10T00:00:00.000Z",
+            "visitors": 1,
+            "pageviews": 1
+          },
+          {
+            "timestamp": "2026-08-11T00:00:00.000Z",
+            "visitors": 1,
+            "pageviews": 1
+          },
+          {
+            "timestamp": "2026-08-12T00:00:00.000Z",
+            "visitors": 2,
+            "pageviews": 7
+          },
+          {
+            "timestamp": "2026-08-13T00:00:00.000Z",
+            "visitors": 0,
+            "pageviews": 0
+          }
+        ],
+        "top_paths": [
+          {
+            "requestPath": "/",
+            "visitors": 8,
+            "pageviews": 8
+          },
+          {
+            "requestPath": "/rankings/weekly.html",
+            "visitors": 2,
+            "pageviews": 2
+          },
+          {
+            "requestPath": "/items/chrome-nail-powder.html",
+            "visitors": 1,
+            "pageviews": 1
+          },
+          {
+            "requestPath": "/items/rhinestone-stud-earrings-6mm.html",
+            "visitors": 1,
+            "pageviews": 2
+          }
+        ],
+        "top_referrers": [
+          {
+            "referrerHostname": "",
+            "visitors": 8,
+            "pageviews": 13
+          }
+        ],
+        "device_breakdown": [
+          {
+            "deviceType": "desktop",
+            "visitors": 4,
+            "pageviews": 8
+          },
+          {
+            "deviceType": "mobile",
+            "visitors": 3,
+            "pageviews": 4
+          },
+          {
+            "deviceType": "",
+            "visitors": 1,
+            "pageviews": 1
+          }
+        ],
+        "query_errors": {
+          "daily": null,
+          "requestPath": null,
+          "referrerHostname": null,
+          "deviceType": null,
+          "utmSource": {
+            "http_status": 402,
+            "code": "payment_required",
+            "message": "UTM dimensions require an Enterprise plan or the Web Analytics Plus add-on."
+          },
+          "customEvents": {
+            "http_status": 402,
+            "code": "payment_required",
+            "message": "Accessing Analytics custom events requires an Enterprise or Pro plan."
+          }
+        },
+        "utm_breakdown_status": "blocked_or_unavailable: payment_required",
+        "custom_event_status": "blocked_or_unavailable: payment_required",
+        "note": "Visits/pageviews are measured centrally. Custom event and some UTM breakdown endpoints may require Vercel Pro/Enterprise or GA4 Data API access for component funnel analysis."
+      },
+      "coverage_deltas": {
+        "trend_items": {
+          "previous": 10,
+          "current": 10,
+          "delta": 0
+        },
+        "recent_trend_items": {
+          "previous": 10,
+          "current": 10,
+          "delta": 0
+        },
+        "retail_product_items": {
+          "previous": 44,
+          "current": 44,
+          "delta": 0
+        },
+        "tiktok_shop_items": {
+          "previous": 44,
+          "current": 44,
+          "delta": 0
+        },
+        "product_image_items": {
+          "previous": 44,
+          "current": 44,
+          "delta": 0
+        },
+        "watchlist_items": {
+          "previous": 34,
+          "current": 34,
+          "delta": 0
+        }
+      },
+      "collection_evidence_deltas": {
+        "evidence_totals__items_with_published_trend_url": {
+          "label": "all-window published trend item coverage",
+          "previous": 39,
+          "current": 39,
+          "delta": 0,
+          "inverse": false
+        },
+        "evidence_totals__published_trend_urls_total": {
+          "label": "published trend URL total",
+          "previous": 118,
+          "current": 118,
+          "delta": 0,
+          "inverse": false
+        },
+        "evidence_totals__items_with_retail_product_url": {
+          "label": "all-window live product item coverage",
+          "previous": 44,
+          "current": 44,
+          "delta": 0,
+          "inverse": false
+        },
+        "evidence_totals__items_with_tiktok_shop_url": {
+          "label": "all-window TikTok Shop item coverage",
+          "previous": 44,
+          "current": 44,
+          "delta": 0,
+          "inverse": false
+        },
+        "evidence_totals__items_with_cached_tiktok_shop_url": {
+          "label": "all-window cached TikTok Shop item coverage",
+          "previous": 0,
+          "current": 0,
+          "delta": 0,
+          "inverse": true
+        },
+        "evidence_totals__cached_tiktok_shop_urls_total": {
+          "label": "cached TikTok Shop supply URL total",
+          "previous": 0,
+          "current": 0,
+          "delta": 0,
+          "inverse": true
+        },
+        "evidence_totals__collection_error_records": {
+          "label": "collection error records",
+          "previous": 0,
+          "current": 0,
+          "delta": 0,
+          "inverse": true
+        },
+        "source_health__apify_tiktok_shop__products_returned": {
+          "label": "TikTok Shop products returned",
+          "previous": 85,
+          "current": 83,
+          "delta": -2,
+          "inverse": false
+        },
+        "source_health__apify_tiktok_shop__fresh_evidence_urls": {
+          "label": "fresh TikTok Shop supply URLs",
+          "previous": 84,
+          "current": 81,
+          "delta": -3,
+          "inverse": false
+        },
+        "source_health__apify_tiktok_shop__partial_cached_items": {
+          "label": "TikTok partial-cache fallback items",
+          "previous": 0,
+          "current": 0,
+          "delta": 0,
+          "inverse": true
+        },
+        "coverage_gap_summary__published_trend_missing_items": {
+          "label": "all-window missing published trend items",
+          "previous": 5,
+          "current": 5,
+          "delta": 0,
+          "inverse": true
+        }
+      },
+      "material_changes": [
+        "Needs source recovery: TikTok Shop products returned 85→83 (-2)",
+        "Needs source recovery: fresh TikTok Shop supply URLs 84→81 (-3)"
+      ],
+      "previous_loop_follow_up": [
+        {
+          "item_id": "braid-foaming-mousse",
+          "item_name": "Foaming Mousse for Braids",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 11,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 11,
+            "tiktok_shop_product_evidence": 2,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 4,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 4,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 4,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 11,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 11,
+            "tiktok_shop_product_evidence": 2,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 4,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 4,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 4,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "wig-grip-band",
+          "item_name": "Wig Grip Band",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 6,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 6,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "v-part-human-hair-wig",
+          "item_name": "V-Part Human Hair Wig",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 1,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 1,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "individual-flare-lashes",
+          "item_name": "Individual Flare Lashes",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 11,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 11,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 7,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 11,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 11,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 7,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "elastic-melting-band",
+          "item_name": "Elastic Melting Band",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 5,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 5,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 2,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 2,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 1,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 5,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 5,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 2,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 2,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 1,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "lace-melting-spray",
+          "item_name": "Lace Melting Spray",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 5,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 5,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "wig-adhesive-glue",
+          "item_name": "Wig Adhesive Glue",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 9,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 9,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        },
+        {
+          "item_id": "synthetic-lace-front-wig",
+          "item_name": "Synthetic Lace Front Wig",
+          "status": "still_needs_focus",
+          "baseline": {
+            "verified_evidence": 12,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 12,
+            "tiktok_shop_product_evidence": 2,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 4,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "current": {
+            "verified_evidence": 12,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 12,
+            "tiktok_shop_product_evidence": 2,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 4,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          },
+          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+        }
+      ],
+      "good_points": [
+        "Playwright QA 완료: 16 passed (47.5s)",
+        "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
+        "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 6mm Rhinestone Stud Earrings, #3 A-Z Initial Pendant Necklace",
+        "Evidence separation 유지: published trend URL 보유 item 10개, BSS/marketplace live product URL 보유 item 44개.",
+        "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
+        "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
+        "TikTok Shop collector health: success, attempts 1, evidence URLs 81."
+      ],
+      "improvement_points": [
+        "34개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
+        "근거가 가장 약한 category: Braiding & Crochet Hair (trend 1/6, retail 6/6)."
+      ],
+      "next_loop_focus_items": [
+        {
+          "item_id": "braid-foaming-mousse",
+          "item_name": "Foaming Mousse for Braids",
+          "category": "Hair Care & Styling",
+          "rank": 16,
+          "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "collection_notes_missing_published_trend",
+          "collection_gap": "missing_published_trend_url",
+          "queries": [
+            "\"Foaming Mousse for Braids\" beauty supply trend",
+            "Foaming Mousse for Braids 2026 trend",
+            "Foaming Mousse for Braids customer review 2026",
+            "\"Foaming Mousse for Braids\" black beauty supply",
+            "Foaming Mousse for Braids braid maintenance review",
+            "Foaming Mousse for Braids protective style trend"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 11,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 11,
+            "tiktok_shop_product_evidence": 2,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 4,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 4,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 4,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "wig-grip-band",
+          "item_name": "Wig Grip Band",
+          "category": "Tools & Accessories",
+          "rank": 12,
+          "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "collection_notes_missing_published_trend",
+          "collection_gap": "missing_published_trend_url",
+          "queries": [
+            "\"Wig Grip Band\" beauty supply trend",
+            "Wig Grip Band 2026 trend",
+            "Wig Grip Band customer review 2026",
+            "\"Wig Grip Band\" black beauty supply",
+            "Wig Grip Band wig install accessory review",
+            "Wig Grip Band beauty supply accessory"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 6,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "v-part-human-hair-wig",
+          "item_name": "V-Part Human Hair Wig",
+          "category": "Wigs & Hair Pieces",
+          "rank": 14,
+          "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "collection_notes_missing_published_trend",
+          "collection_gap": "missing_published_trend_url",
+          "queries": [
+            "\"V-Part Human Hair Wig\" beauty supply trend",
+            "V-Part Human Hair Wig 2026 trend",
+            "V-Part Human Hair Wig customer review 2026",
+            "\"V-Part Human Hair Wig\" black beauty supply",
+            "V-Part Human Hair Wig wig install trend",
+            "V-Part Human Hair Wig natural hair review"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 1,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "individual-flare-lashes",
+          "item_name": "Individual Flare Lashes",
+          "category": "Lashes & Brows",
+          "rank": 19,
+          "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "collection_notes_missing_published_trend",
+          "collection_gap": "missing_published_trend_url",
+          "queries": [
+            "\"Individual Flare Lashes\" beauty supply trend",
+            "Individual Flare Lashes 2026 trend",
+            "Individual Flare Lashes customer review 2026",
+            "\"Individual Flare Lashes\" black beauty supply",
+            "Individual Flare Lashes DIY lash review",
+            "Individual Flare Lashes lash tutorial trend"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 11,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 11,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 7,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "elastic-melting-band",
+          "item_name": "Elastic Melting Band",
+          "category": "Tools & Accessories",
+          "rank": 25,
+          "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "collection_notes_missing_published_trend",
+          "collection_gap": "missing_published_trend_url",
+          "queries": [
+            "\"Elastic Melting Band\" beauty supply trend",
+            "Elastic Melting Band 2026 trend",
+            "Elastic Melting Band customer review 2026",
+            "\"Elastic Melting Band\" black beauty supply",
+            "Elastic Melting Band wig install accessory review",
+            "Elastic Melting Band beauty supply accessory"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 5,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 5,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 2,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 2,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 1,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "lace-melting-spray",
+          "item_name": "Lace Melting Spray",
+          "category": "Hair Care & Styling",
+          "rank": 11,
+          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "weekly_quality_flags",
+          "collection_gap": "weekly_or_recent_evidence_gap",
+          "queries": [
+            "\"Lace Melting Spray\" beauty supply trend",
+            "Lace Melting Spray 2026 trend",
+            "Lace Melting Spray customer review 2026",
+            "\"Lace Melting Spray\" black beauty supply",
+            "Lace Melting Spray wig install review",
+            "Lace Melting Spray lace install trend"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 5,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "wig-adhesive-glue",
+          "item_name": "Wig Adhesive Glue",
+          "category": "Hair Care & Styling",
+          "rank": 13,
+          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "weekly_quality_flags",
+          "collection_gap": "weekly_or_recent_evidence_gap",
+          "queries": [
+            "\"Wig Adhesive Glue\" beauty supply trend",
+            "Wig Adhesive Glue 2026 trend",
+            "Wig Adhesive Glue customer review 2026",
+            "\"Wig Adhesive Glue\" black beauty supply",
+            "Wig Adhesive Glue wig install review",
+            "Wig Adhesive Glue lace install trend"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 13,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 13,
+            "tiktok_shop_product_evidence": 3,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 9,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        },
+        {
+          "item_id": "synthetic-lace-front-wig",
+          "item_name": "Synthetic Lace Front Wig",
+          "category": "Wigs & Hair Pieces",
+          "rank": 15,
+          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
+          "focus_source": "weekly_quality_flags",
+          "collection_gap": "weekly_or_recent_evidence_gap",
+          "queries": [
+            "\"Synthetic Lace Front Wig\" beauty supply trend",
+            "Synthetic Lace Front Wig 2026 trend",
+            "Synthetic Lace Front Wig customer review 2026",
+            "\"Synthetic Lace Front Wig\" black beauty supply",
+            "Synthetic Lace Front Wig wig install trend",
+            "Synthetic Lace Front Wig natural hair review"
+          ],
+          "baseline_source_counts": {
+            "verified_evidence": 12,
+            "trend_evidence": 0,
+            "recent_trend_evidence": 0,
+            "recent_evidence": 0,
+            "retail_product_evidence": 12,
+            "tiktok_shop_product_evidence": 2,
+            "cached_tiktok_shop_product_evidence": 0,
+            "article_evidence": 0,
+            "unique_domains": 5,
+            "unique_trend_domains": 0,
+            "unique_retail_domains": 5,
+            "exact_evidence": 0,
+            "item_type_evidence": 0,
+            "retail_exact_evidence": 4,
+            "watchlist_links": 14,
+            "source_layers": 2,
+            "manual_references": 14,
+            "news_magazine": 0
+          }
+        }
+      ],
+      "qa_focus": [
+        "다음 Playwright QA에서 operations_review.json/next_loop_focus.json 생성 여부를 smoke check에 포함합니다.",
+        "ranking card click-through뿐 아니라 top focus item detail page의 source groups와 image metadata를 확인합니다.",
+        "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
+      ],
+      "independent_ai_review": {
+        "review_type": "independent_ai_operator_review",
+        "primary_growth_blockers": [
+          "Measured traffic is far below the standing goal: 0.27/day vs 500/day (gap 499.73/day). Distribution and repeat-visit conversion remain the main growth blocker.",
+          "Component funnel analytics export is still blocked/gated: custom_event_status=blocked_or_unavailable: payment_required, utm_breakdown_status=blocked_or_unavailable: payment_required. Need GA4 Data API reporting access or Vercel custom-event/UTM export to compare owner-share, message, RSS, shortcut, calendar, category, and item-detail paths.",
+          "WATCHLIST remains high: 34/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
+          "Collection evidence/source regression detected: TikTok Shop products returned 85→83 (-2); fresh TikTok Shop supply URLs 84→81 (-3)."
+        ],
+        "good_points": [
+          "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
+          "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
+          "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
+          "Fresh weekly trend evidence exists for 10 item(s), keeping Top 3 from being supply-only."
+        ],
+        "remaining_issues": [
+          "Published trend evidence coverage is 10/44; recent 14d coverage is 10/44.",
+          "All-window published trend URL coverage is 39/44; this can regress even when weekly rank counts stay flat.",
+          "Zero-trend category count: 0.",
+          "Traffic is measured at 0.27/day against the 500/day target, but component/UTM funnel export remains blocked."
+        ],
+        "next_direction": [
+          "Use the measured Vercel visit baseline to prioritize distribution tests, and connect GA4 Data API or Vercel custom-event/UTM export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
+          "Prioritize dated item-level source capture for Wigs, Tools, Nails, and Jewelry before expanding broad category claims.",
+          "Keep product/listing alias probes strict: recover missing supply URLs, but never promote those URLs into trend movement without a dated post/article/listing signal."
+        ],
+        "scorecards": {
+          "ui_ux": {
+            "score": 90,
+            "reason": "Ranking-first layout now puts Top 3 and main item cards before support modules; score is capped if any item falls back to a category visual."
+          },
+          "structure_architecture": {
+            "score": 86,
+            "reason": "Static build/test/deploy pipeline is maintainable and public JSON is sanitized, but ranking/review logic is still concentrated in large Python scripts."
+          },
+          "stability_security": {
+            "score": 84,
+            "reason": "Secrets are not exposed and source health is redacted; score drops when weekly or all-window/source collection coverage regresses."
+          },
+          "goal_fit_growth": {
+            "score": 70,
+            "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
+          }
+        },
+        "traffic_measurement_status": {
+          "status": "measured",
+          "rolling_30d_average_daily_visits": 0.27,
+          "target_average_daily_visits": 500,
+          "gap_to_target_average_daily_visits": 499.73,
+          "custom_event_status": "blocked_or_unavailable: payment_required",
+          "utm_breakdown_status": "blocked_or_unavailable: payment_required"
+        },
+        "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only."
+      }
+    },
+    {
       "reviewed_at": "2026-08-13T22:08:46.236541Z",
       "source_generated_at": "2026-08-13T22:07:43.788859Z",
       "date": "2026-08-13",
@@ -45644,739 +46890,6 @@
           "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
           "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
           "Fresh weekly trend evidence exists for 8 item(s), keeping Top 3 from being supply-only."
-        ],
-        "remaining_issues": [
-          "Published trend evidence coverage is 8/44; recent 14d coverage is 8/44.",
-          "Zero-trend category count: 4.",
-          "Traffic progress is measurement pending until a provider reporting credential/export is connected."
-        ],
-        "next_direction": [
-          "Connect GA4 Data API or Vercel Analytics export so growth_section_view, growth_engagement_summary, growth_click, and share/copy events can be tied to the 500/day visit goal.",
-          "Prioritize dated item-level source capture for Wigs, Tools, Nails, and Jewelry before expanding broad category claims.",
-          "Keep product/listing alias probes strict: recover missing supply URLs, but never promote those URLs into trend movement without a dated post/article/listing signal."
-        ],
-        "scorecards": {
-          "ui_ux": {
-            "score": 88,
-            "reason": "Store-like cards, quick picks, owner brief, and share kits are present; score is capped if any item falls back to a category visual."
-          },
-          "structure_architecture": {
-            "score": 86,
-            "reason": "Static build/test/deploy pipeline is maintainable and public JSON is sanitized, but ranking/review logic is still concentrated in large Python scripts."
-          },
-          "stability_security": {
-            "score": 90,
-            "reason": "Secrets are not exposed and source health is redacted; score drops when source coverage regresses or upstream collectors need recovery."
-          },
-          "goal_fit_growth": {
-            "score": 70,
-            "reason": "Growth instrumentation and share paths are active, but analytics export is missing and most weekly items are still WATCHLIST."
-          }
-        },
-        "discipline": "Generated search/watchlist links are not scoring evidence. BSS/wholesale/TikTok Shop product URLs validate supply/actionability only."
-      }
-    },
-    {
-      "reviewed_at": "2026-08-09T06:58:57.250508Z",
-      "source_generated_at": "2026-08-09T06:53:52.087140Z",
-      "date": "2026-08-09",
-      "timeframe": "weekly",
-      "playwright_summary": "12 passed (25.8s); marketing-draft-freshness-v1 and watchlist delta logic updated",
-      "metrics": {
-        "items": 44,
-        "categories": 8,
-        "trend_items": 8,
-        "recent_trend_items": 8,
-        "retail_product_items": 44,
-        "tiktok_shop_items": 44,
-        "product_image_items": 44,
-        "watchlist_items": 36
-      },
-      "collection_health": {
-        "generated_at": "2026-08-09T06:53:52.086858Z",
-        "source_health": {
-          "apify_tiktok_shop": {
-            "status": "success_with_partial_cache",
-            "observed_at": "2026-08-09T06:53:52.085971Z",
-            "configured": true,
-            "enabled": true,
-            "attempts": 1,
-            "keywords_requested": 82,
-            "expanded_keyword_items": 19,
-            "products_returned": 80,
-            "items_with_evidence": 44,
-            "evidence_urls": 80,
-            "fresh_evidence_urls": 79,
-            "partial_cached_items": 1,
-            "partial_cached_evidence_urls": 1,
-            "current_actor_status": "success_partial",
-            "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
-            "max_results_total": 82,
-            "cache_status": "usable",
-            "cache_path": "data/tiktok_shop_cache.json",
-            "cache_updated_at": "2026-08-09T05:40:34.070483Z",
-            "cache_age_days": 0,
-            "cache_max_age_days": 7,
-            "cached_items": 44,
-            "cached_evidence_urls": 80
-          }
-        },
-        "evidence_totals": {
-          "items_requested": 44,
-          "items_with_any_verified_url": 44,
-          "items_with_published_trend_url": 24,
-          "items_with_retail_product_url": 44,
-          "items_with_tiktok_shop_url": 44,
-          "items_with_cached_tiktok_shop_url": 1,
-          "verified_urls_total": 299,
-          "published_trend_urls_total": 45,
-          "retail_product_urls_total": 254,
-          "cached_tiktok_shop_urls_total": 1,
-          "collection_error_records": 0
-        },
-        "next_actions": [
-          "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
-          "published trend URL gap 20개 item 유지: Wigs & Hair Pieces, Tools & Accessories, Jewelry & Fashion Accessories부터 item-level dated source capture를 보강합니다.",
-          "zero-trend category 유지: Wigs & Hair Pieces. 다음 run은 broad category가 아니라 item-level dated URL capture를 우선합니다."
-        ]
-      },
-      "category_stats": [
-        {
-          "category": "Braiding & Crochet Hair",
-          "items": 6,
-          "trend_items": 2,
-          "retail_items": 6,
-          "product_image_items": 6,
-          "trend_ratio": 0.33,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Hair Care & Styling",
-          "items": 6,
-          "trend_items": 2,
-          "retail_items": 6,
-          "product_image_items": 6,
-          "trend_ratio": 0.33,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Jewelry & Fashion Accessories",
-          "items": 8,
-          "trend_items": 0,
-          "retail_items": 8,
-          "product_image_items": 8,
-          "trend_ratio": 0.0,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Lashes & Brows",
-          "items": 4,
-          "trend_items": 2,
-          "retail_items": 4,
-          "product_image_items": 4,
-          "trend_ratio": 0.5,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Makeup & Cosmetics",
-          "items": 4,
-          "trend_items": 2,
-          "retail_items": 4,
-          "product_image_items": 4,
-          "trend_ratio": 0.5,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Nails",
-          "items": 5,
-          "trend_items": 0,
-          "retail_items": 5,
-          "product_image_items": 5,
-          "trend_ratio": 0.0,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Tools & Accessories",
-          "items": 6,
-          "trend_items": 0,
-          "retail_items": 6,
-          "product_image_items": 6,
-          "trend_ratio": 0.0,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        },
-        {
-          "category": "Wigs & Hair Pieces",
-          "items": 5,
-          "trend_items": 0,
-          "retail_items": 5,
-          "product_image_items": 5,
-          "trend_ratio": 0.0,
-          "retail_ratio": 1.0,
-          "product_image_ratio": 1.0
-        }
-      ],
-      "coverage_deltas": {
-        "trend_items": {
-          "previous": 7,
-          "current": 8,
-          "delta": 1
-        },
-        "recent_trend_items": {
-          "previous": 7,
-          "current": 8,
-          "delta": 1
-        },
-        "retail_product_items": {
-          "previous": 44,
-          "current": 44,
-          "delta": 0
-        },
-        "tiktok_shop_items": {
-          "previous": 44,
-          "current": 44,
-          "delta": 0
-        },
-        "product_image_items": {
-          "previous": 44,
-          "current": 44,
-          "delta": 0
-        },
-        "watchlist_items": {
-          "previous": 37,
-          "current": 36,
-          "delta": -1
-        }
-      },
-      "material_changes": [
-        "Improved: published trend item coverage 7→8 (+1)",
-        "Improved: recent trend item coverage 7→8 (+1)",
-        "Improved: WATCHLIST item count 37→36 (-1)"
-      ],
-      "previous_loop_follow_up": [
-        {
-          "item_id": "rhinestone-stud-earrings-6mm",
-          "item_name": "6mm Rhinestone Stud Earrings",
-          "status": "still_needs_focus",
-          "baseline": {
-            "verified_evidence": 6,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 6,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 2,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 2,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 0,
-            "watchlist_links": 16,
-            "source_layers": 2,
-            "manual_references": 16,
-            "news_magazine": 0
-          },
-          "current": {
-            "verified_evidence": 6,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 6,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 2,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 2,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 0,
-            "watchlist_links": 16,
-            "source_layers": 2,
-            "manual_references": 16,
-            "news_magazine": 0
-          },
-          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-        },
-        {
-          "item_id": "wig-grip-band",
-          "item_name": "Wig Grip Band",
-          "status": "still_needs_focus",
-          "baseline": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 6,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "current": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 6,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-        },
-        {
-          "item_id": "rhinestone-nail-charms",
-          "item_name": "Rhinestone Nail Charms",
-          "status": "still_needs_focus",
-          "baseline": {
-            "verified_evidence": 6,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 6,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 4,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 4,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 1,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "current": {
-            "verified_evidence": 6,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 6,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 4,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 4,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 1,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-        },
-        {
-          "item_id": "synthetic-lace-front-wig",
-          "item_name": "Synthetic Lace Front Wig",
-          "status": "still_needs_focus",
-          "baseline": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 5,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "current": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 5,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-        },
-        {
-          "item_id": "lace-melting-spray",
-          "item_name": "Lace Melting Spray",
-          "status": "still_needs_focus",
-          "baseline": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 4,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "current": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 4,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-        },
-        {
-          "item_id": "wig-adhesive-glue",
-          "item_name": "Wig Adhesive Glue",
-          "status": "still_needs_focus",
-          "baseline": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 9,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "current": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 9,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          },
-          "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
-        }
-      ],
-      "good_points": [
-        "Playwright QA 완료: 12 passed (25.8s); marketing-draft-freshness-v1 and watchlist delta logic updated",
-        "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
-        "Top 3가 item-level로 정렬되었습니다: #1 Rosemary Mint Scalp Oil, #2 Lash Bond and Seal, #3 Human Hair Boho Braiding Bundles",
-        "Evidence separation 유지: published trend URL 보유 item 8개, BSS/marketplace live product URL 보유 item 44개.",
-        "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
-        "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
-      ],
-      "improvement_points": [
-        "36개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-        "TikTok Shop collector health: status=success_with_partial_cache attempts=1. 다음 run에서 source outage/actor upstream 상태를 먼저 확인해야 합니다. (no error summary)",
-        "근거가 가장 약한 category: Jewelry & Fashion Accessories (trend 0/8, retail 8/8)."
-      ],
-      "next_loop_focus_items": [
-        {
-          "item_id": "rhinestone-stud-earrings-6mm",
-          "item_name": "6mm Rhinestone Stud Earrings",
-          "category": "Jewelry & Fashion Accessories",
-          "rank": 22,
-          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-          "queries": [
-            "\"6mm Rhinestone Stud Earrings\" beauty supply trend",
-            "6mm Rhinestone Stud Earrings 2026 trend",
-            "6mm Rhinestone Stud Earrings customer review 2026",
-            "\"6mm Rhinestone Stud Earrings\" black beauty supply",
-            "6mm Rhinestone Stud Earrings outfit trend black women",
-            "6mm Rhinestone Stud Earrings body jewelry trend"
-          ],
-          "baseline_source_counts": {
-            "verified_evidence": 6,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 6,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 2,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 2,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 0,
-            "watchlist_links": 16,
-            "source_layers": 2,
-            "manual_references": 16,
-            "news_magazine": 0
-          }
-        },
-        {
-          "item_id": "wig-grip-band",
-          "item_name": "Wig Grip Band",
-          "category": "Tools & Accessories",
-          "rank": 11,
-          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-          "queries": [
-            "\"Wig Grip Band\" beauty supply trend",
-            "Wig Grip Band 2026 trend",
-            "Wig Grip Band customer review 2026",
-            "\"Wig Grip Band\" black beauty supply",
-            "Wig Grip Band wig install accessory review",
-            "Wig Grip Band beauty supply accessory"
-          ],
-          "baseline_source_counts": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 6,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          }
-        },
-        {
-          "item_id": "rhinestone-nail-charms",
-          "item_name": "Rhinestone Nail Charms",
-          "category": "Nails",
-          "rank": 23,
-          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-          "queries": [
-            "\"Rhinestone Nail Charms\" beauty supply trend",
-            "Rhinestone Nail Charms 2026 trend",
-            "Rhinestone Nail Charms customer review 2026",
-            "\"Rhinestone Nail Charms\" black beauty supply",
-            "Rhinestone Nail Charms press-on nail trend",
-            "Rhinestone Nail Charms nail design review"
-          ],
-          "baseline_source_counts": {
-            "verified_evidence": 6,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 6,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 4,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 4,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 1,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          }
-        },
-        {
-          "item_id": "synthetic-lace-front-wig",
-          "item_name": "Synthetic Lace Front Wig",
-          "category": "Wigs & Hair Pieces",
-          "rank": 9,
-          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-          "queries": [
-            "\"Synthetic Lace Front Wig\" beauty supply trend",
-            "Synthetic Lace Front Wig 2026 trend",
-            "Synthetic Lace Front Wig customer review 2026",
-            "\"Synthetic Lace Front Wig\" black beauty supply",
-            "Synthetic Lace Front Wig wig install trend",
-            "Synthetic Lace Front Wig natural hair review"
-          ],
-          "baseline_source_counts": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 5,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          }
-        },
-        {
-          "item_id": "lace-melting-spray",
-          "item_name": "Lace Melting Spray",
-          "category": "Hair Care & Styling",
-          "rank": 10,
-          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-          "queries": [
-            "\"Lace Melting Spray\" beauty supply trend",
-            "Lace Melting Spray 2026 trend",
-            "Lace Melting Spray customer review 2026",
-            "\"Lace Melting Spray\" black beauty supply"
-          ],
-          "baseline_source_counts": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 4,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          }
-        },
-        {
-          "item_id": "wig-adhesive-glue",
-          "item_name": "Wig Adhesive Glue",
-          "category": "Hair Care & Styling",
-          "rank": 12,
-          "reason": "published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
-          "queries": [
-            "\"Wig Adhesive Glue\" beauty supply trend",
-            "Wig Adhesive Glue 2026 trend",
-            "Wig Adhesive Glue customer review 2026",
-            "\"Wig Adhesive Glue\" black beauty supply"
-          ],
-          "baseline_source_counts": {
-            "verified_evidence": 13,
-            "trend_evidence": 0,
-            "recent_trend_evidence": 0,
-            "recent_evidence": 0,
-            "retail_product_evidence": 13,
-            "tiktok_shop_product_evidence": 3,
-            "cached_tiktok_shop_product_evidence": 0,
-            "article_evidence": 0,
-            "unique_domains": 5,
-            "unique_trend_domains": 0,
-            "unique_retail_domains": 5,
-            "exact_evidence": 0,
-            "item_type_evidence": 0,
-            "retail_exact_evidence": 9,
-            "watchlist_links": 14,
-            "source_layers": 2,
-            "manual_references": 14,
-            "news_magazine": 0
-          }
-        }
-      ],
-      "qa_focus": [
-        "다음 Playwright QA에서 operations_review.json/next_loop_focus.json 생성 여부를 smoke check에 포함합니다.",
-        "ranking card click-through뿐 아니라 top focus item detail page의 source groups와 image metadata를 확인합니다.",
-        "mobile viewport에서 category chip/sticky nav가 review/focus 변경 후에도 깨지지 않는지 확인합니다."
-      ],
-      "independent_ai_review": {
-        "review_type": "independent_ai_operator_review",
-        "primary_growth_blockers": [
-          "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
-          "WATCHLIST remains high: 36/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
-          "Zero weekly trend-evidence categories: Jewelry & Fashion Accessories, Nails, Tools & Accessories, Wigs & Hair Pieces.",
-          "TikTok Shop collector status requires attention: success_with_partial_cache."
-        ],
-        "good_points": [
-          "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
-          "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
-          "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-          "Fresh weekly trend evidence exists for 8 item(s), keeping Top 3 from being supply-only.",
-          "Material coverage progress: published trend item coverage 7→8 (+1); recent trend item coverage 7→8 (+1); WATCHLIST item count 37→36 (-1)."
         ],
         "remaining_issues": [
           "Published trend evidence coverage is 8/44; recent 14d coverage is 8/44.",

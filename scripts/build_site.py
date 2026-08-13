@@ -504,6 +504,7 @@ def shell(
     <div class="wrap navline">
       <a class="brand" href="/index.html"><span class="brand-dot"></span>BSS Trend Ranking</a>
       <nav class="tabs">{nav(active)}</nav>
+      <a class="topbar-owner-start" data-growth-cta="owner_start_nav" data-growth-experiment="owner-start-hub-v1" href="/owner-start.html?utm_source=site&utm_medium=topbar_start&utm_campaign=daily-visits-500-owner-start">Owner Start</a>
     </div>
   </header>
   {body}

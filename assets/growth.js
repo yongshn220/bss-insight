@@ -755,6 +755,17 @@
       visible_growth_sections: sections.map((section) => section.id).join(','),
       visible_growth_section_count: sections.length,
     });
+    const ownerStartNav = document.querySelector('[data-growth-cta="owner_start_nav"]');
+    if (ownerStartNav) {
+      track('growth_nav_cta_ready', {
+        type: 'nav_cta_ready',
+        cta: 'owner_start_nav',
+        component_experiment_id: 'owner-start-hub-v1',
+        href: ownerStartNav.getAttribute('href') || '',
+        text: trimText(ownerStartNav.textContent || ''),
+        ...linkDestinationPayload(ownerStartNav.getAttribute('href') || ''),
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

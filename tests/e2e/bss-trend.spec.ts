@@ -108,6 +108,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-share="weekly_hero_owner_native_share"]')).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
     await expect(page.locator('[data-growth-cta="owner_start_hero"]')).toHaveAttribute('href', /owner-start\.html/);
     await expect(page.locator('[data-growth-cta="owner_start_hero"]')).toHaveAttribute('href', /daily-visits-500-owner-start/);
+    await expect(page.locator('[data-growth-cta="owner_start_nav"]')).toHaveAttribute('href', /owner-start\.html/);
+    await expect(page.locator('[data-growth-cta="owner_start_nav"]')).toHaveAttribute('href', /utm_medium=topbar_start/);
+    await expect(page.locator('[data-growth-cta="owner_start_nav"]')).toHaveAttribute('data-growth-experiment', 'owner-start-hub-v1');
     const ownerStartResponse = await request.get('/owner-start.html');
     expect(ownerStartResponse.status()).toBeLessThan(400);
     const ownerStartHtml = await ownerStartResponse.text();
@@ -410,6 +413,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('timeframe-evidence-ladder-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('category-landing-nav-v1'))).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && String(event.visible_growth_sections).includes('ranking-main-list-v1'))).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_nav_cta_ready' && event.cta === 'owner_start_nav' && event.component_experiment_id === 'owner-start-hub-v1' && event.link_utm_medium === 'topbar_start' && event.link_utm_campaign === 'daily-visits-500-owner-start')).toBe(true);
 
     await page.locator('[data-growth-section="owner-quick-picks-v1"]').scrollIntoViewIfNeeded();
     await page.waitForFunction(() =>

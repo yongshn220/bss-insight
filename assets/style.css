@@ -35,6 +35,8 @@ a { color: inherit; text-decoration: none; }
 .tabs a { padding:8px 14px; border-radius:999px; color:#555; font-size:14px; font-weight:500; }
 .tabs a.active { background:#171717; color:#fff; }
 .tabs a:hover:not(.active) { background:#fff; color:#171717; }
+.topbar-owner-start { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:0 12px; border-radius:999px; background:#fff7ed; color:#9a3412; box-shadow:rgba(154,52,18,.18) 0 0 0 1px; font-size:13px; font-weight:800; white-space:nowrap; }
+.topbar-owner-start:hover { background:#ffedd5; color:#7c2d12; }
 
 .hero { padding: 56px 0 28px; display:grid; grid-template-columns: minmax(0, 1fr) 280px; gap:32px; align-items:end; }
 .hero.compact { padding-top:38px; }

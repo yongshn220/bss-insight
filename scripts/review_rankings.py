@@ -1379,10 +1379,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "live_locations": [
             "https://gnsresearchhub.vercel.app/owner-start.html",
             "https://gnsresearchhub.vercel.app/index.html (owner_start_hero CTA)",
+            "https://gnsresearchhub.vercel.app/index.html and generated pages (.topbar-owner-start persistent CTA)",
             "https://gnsresearchhub.vercel.app/sitemap.xml",
             "https://gnsresearchhub.vercel.app/manifest.webmanifest",
         ],
         "tracked_events": [
+            "growth_nav_cta_ready cta=owner_start_nav with utm_medium=topbar_start",
+            "growth_click cta_owner_start_nav with utm_medium=topbar_start",
             "growth_section_view owner-start-page-v1 / owner-start-route-v1 / owner-start-category-lanes-v1 / owner-start-share-actions-v1",
             "growth_click cta_owner_start_hero with utm_medium=hero_start",
             "growth_click cta_owner_start_route_item with owner_start_* UTM mediums",
@@ -1395,6 +1398,7 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             f"owner_start_weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
             f"owner_start_weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
             f"owner_start_lead_item_id={lead_item_id}",
+            "topbar-owner-start persistent CTA is visible on generated pages and uses utm_medium=topbar_start",
             "owner-start.html uses current weekly ranked rows and evidence_status_label only; no new trend claims",
         ],
         "owner_value": "A busy owner who receives one link does not have to understand every growth/share module first; they can open three concrete item tests, then choose a store-zone category lane or print/share sheet.",
@@ -2774,7 +2778,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "experiment_id": "owner-start-hub-v1",
             "status": "active-first-visit-owner-start-after-build",
             "variants": ["full_dashboard_first", "3_minute_owner_start_route"],
-            "success_metric": "owner-start page visits, cta_owner_start_hero clicks, owner_start_route_item clicks, owner_start_category clicks, owner_start copy/share events, and downstream ranking/category/item visits once GA4 or Vercel export access is connected",
+            "success_metric": "owner-start page visits, topbar owner_start_nav ready/click events, cta_owner_start_hero clicks, owner_start_route_item clicks, owner_start_category clicks, owner_start copy/share events, and downstream ranking/category/item visits once GA4 or Vercel export access is connected",
             "hypothesis": "A first-visit owner-start page should reduce homepage overload and convert low traffic sessions into concrete route/category/share actions without changing ranking score or creating unsupported trend claims.",
             "last_refreshed_at": now,
         })
