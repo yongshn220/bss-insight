@@ -1538,11 +1538,41 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "tracked_quality_metrics": [
             "calendar file uses RRULE:FREQ=WEEKLY;COUNT=26",
             "calendar URL points back with utm_source=calendar&utm_medium=reminder&utm_campaign=daily-visits-500-owner-calendar-reminder",
-            f"calendar_panel_weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"calendar_panel_weekly_trend_items={metrics.get('trend_items', 'unknown')}",
             f"calendar_panel_weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
         ],
         "owner_value": "Owners can save a weekly check-in habit in their calendar; reps can copy a reminder text without claiming new evidence or posting externally.",
         "measurement_need": "GA4/Vercel export access is still needed to measure calendar_reminder clicks, calendar UTM return visits, and repeat visitor rate centrally.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "owner-print-sheet-v1",
+        "status": "live-static-print-share-sheet-after-build",
+        "objective": "Create a print/screenshot-friendly one-page owner handout so reps and BSS owners can share Top 3, 5-minute route, and category lanes without SNS credentials.",
+        "utm_campaign": "daily-visits-500-owner-print-sheet",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/owner-share-sheet.html",
+            "https://gnsresearchhub.vercel.app/index.html (owner-print-sheet-v1)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (owner-print-sheet-v1)",
+            "https://gnsresearchhub.vercel.app/sitemap.xml",
+        ],
+        "tracked_events": [
+            "growth_section_view owner-print-sheet-v1",
+            "growth_section_view owner-print-sheet-page-v1",
+            "growth_click cta_owner_print_sheet_open with utm_medium=print_sheet",
+            "growth_click cta_owner_print_sheet_item with utm_medium=owner_handout",
+            "growth_click cta_owner_print_sheet_category with utm_medium=category_lane",
+            "growth_share_copy_result share_action={timeframe}_owner_print_sheet_copy",
+            "growth_share_copy_result share_action=owner_print_sheet_copy or owner_print_route_copy",
+        ],
+        "tracked_quality_metrics": [
+            "owner-share-sheet.html summarizes Top 3, 5-minute route, category lanes, and evidence rule",
+            "all owner sheet links use daily-visits-500-owner-print-sheet with print_sheet/owner_handout/category_lane UTMs",
+            f"print_sheet_weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"print_sheet_weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "BSS owners who prefer printed handouts, screenshots, or rep leave-behinds get one concise action sheet while WATCHLIST and supply-only rules remain visible.",
+        "measurement_need": "GA4/Vercel export access is needed to compare print_sheet/owner_handout/category_lane visits and copy events against SMS, WhatsApp, RSS, shortcut, calendar, category, and item-detail paths.",
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
@@ -2100,6 +2130,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "owner-print-sheet-v1",
+            "status": "active-static-offline-share-after-review",
+            "hypothesis": "A one-page print/screenshot owner handout should make rep visits and owner forwarding more practical than dashboard-only sharing, especially when X posting is unavailable.",
+            "next_step": "After analytics export access is connected, compare print_sheet/owner_handout/category_lane UTM sessions and owner_print_sheet copy events against SMS, WhatsApp, RSS, shortcut, and calendar paths.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "link-destination-utm-context-v1",
             "status": "active-client-side-provider-ready-after-review",
             "hypothesis": "BSS owner growth optimization needs destination-level UTM context on every clicked/copied link so owner_share, X, email, RSS, shortcut, calendar, focus-watchlist, and item-detail share paths can be compared without brittle URL parsing.",
@@ -2482,6 +2519,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["no_calendar_reminder", "weekly_ics_reminder_with_calendar_utm"],
             "success_metric": "owner-calendar-reminder section views, calendar file downloads/copy events, utm_source=calendar return visits, and repeat visitor rate once analytics export is connected",
             "hypothesis": "A weekly .ics reminder gives owners/reps a low-friction return path outside SNS and should improve repeat visits toward the 500/day goal once provider measurement is connected.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "owner-print-sheet-v1",
+            "status": "active-offline-share-sheet-after-build",
+            "variants": ["dashboard_only_owner_sharing", "print_screenshot_owner_handout_with_utm_links"],
+            "success_metric": "owner-print-sheet section views, owner-share-sheet page visits, print_sheet/owner_handout/category_lane UTM sessions, owner_print_sheet copy events, and repeat item-detail entrances once analytics export is connected",
+            "hypothesis": "A print/screenshot-friendly handout should create practical offline and rep-distribution visits without external SNS credentials while preserving evidence discipline.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

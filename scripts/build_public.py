@@ -13,6 +13,7 @@ PUBLIC = ROOT / "public"
 
 COPY_PATHS = [
     "index.html",
+    "owner-share-sheet.html",
     "robots.txt",
     "sitemap.xml",
     "manifest.webmanifest",

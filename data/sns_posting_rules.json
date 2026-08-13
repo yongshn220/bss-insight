@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-11T14:08:14.597916Z",
+  "updated_at": "2026-08-13T14:17:45.890721Z",
   "goal_id": "daily-visits-500",
   "status": "active_pending_xurl_install_and_oauth",
   "primary_channel": {
@@ -66,11 +66,11 @@
     "utm_medium": "organic",
     "note": "Posting remains draft/approval-only until xurl CLI is installed/authenticated; every approved post URL must include utm_source=x&utm_medium=organic and a campaign id. growth events include anonymous visitor lifecycle context and destination link_utm_* fields so future X traffic can be segmented after analytics export is connected.",
     "xurl_status": {
-      "last_checked_at": "2026-08-11T14:08:14.597916Z",
+      "last_checked_at": "2026-08-13T14:17:45.890721Z",
       "cli_available": false,
       "auth_checked": false,
       "posting_status": "blocked_draft_only",
-      "note": "xurl --help and xurl auth status returned command-not-found (exit 127) in the cron runtime PATH; no live X post, reply, like, repost, follow, or DM was attempted. Draft copy remains the safe state."
+      "note": "xurl --help check returned command-not-found in the 2026-08-13 cron runtime PATH; xurl auth status could not run because the CLI is missing. No live X post, reply, like, repost, follow, or DM was attempted. Draft copy remains the safe state."
     }
   }
 }

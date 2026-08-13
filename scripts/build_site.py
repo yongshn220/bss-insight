@@ -26,6 +26,7 @@ SITEMAP_PATH = ROOT / "sitemap.xml"
 FEED_PATH = ROOT / "feed.xml"
 MANIFEST_PATH = ROOT / "manifest.webmanifest"
 CALENDAR_PATH = ROOT / "owner-weekly-reminder.ics"
+OWNER_SHARE_SHEET_PATH = ROOT / "owner-share-sheet.html"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
@@ -1941,6 +1942,55 @@ def owner_calendar_reminder_panel(timeframe: str, rows: list[dict[str, Any]]) ->
       </section>"""
 
 
+def owner_print_sheet_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """Visible print/share-sheet CTA for offline rep and owner distribution.
+
+    Many BSS owners still act from a printed sheet, screenshot, or rep handout.
+    This panel creates a measurable, UTM-tagged path to a one-page owner sheet
+    without requiring SNS credentials and without making new trend claims.
+    """
+    if not rows:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = "daily-visits-500-owner-print-sheet"
+    sheet_path = growth_campaign_path(
+        "/owner-share-sheet.html",
+        source="site",
+        medium="print_sheet",
+        campaign=campaign,
+        utm_content=timeframe,
+    )
+    sheet_url = absolute_url(sheet_path)
+    trend_count = sum(1 for row in rows if has_trend_evidence(row))
+    watchlist_count = len(rows) - trend_count
+    lead = choose_share_row(rows)
+    lead_name = lead.get("item_name") if lead else "current ranking"
+    copy_text = "\n".join([
+        f"{label} BSS owner print/share sheet:",
+        f"Lead item: {lead_name}. Trend-backed {trend_count}/{len(rows)}; WATCHLIST {watchlist_count}.",
+        "Use this one-page sheet for a quick store-floor review, rep visit, or owner screenshot.",
+        "Rule: published URLs drive trend movement; supply/watchlist links are not trend claims.",
+        f"Sheet: {sheet_url}",
+    ])
+    return f"""
+      <section class="wrap owner-feed owner-print-kit" data-growth-section="owner-print-sheet-v1" data-growth-experiment="owner-print-sheet-v1" aria-labelledby="owner-print-sheet-{esc(timeframe)}">
+        <div class="owner-feed-copy">
+          <span>Offline / rep share path · print sheet</span>
+          <h2 id="owner-print-sheet-{esc(timeframe)}">{esc(label)} owner print/share sheet</h2>
+          <p>Store owner가 긴 dashboard를 다시 읽지 않아도 Top 3, 5-minute route, category links를 한 장으로 저장·프린트·스크린샷할 수 있게 만든 distribution CTA입니다. 모든 링크는 print_sheet UTM으로 측정 준비되어 있고, WATCHLIST는 evidence insufficient로 유지합니다.</p>
+          <small>{esc(label)} context · trend-backed {esc(trend_count)}/{esc(len(rows))} · WATCHLIST {esc(watchlist_count)} · lead item {esc(lead_name)}</small>
+        </div>
+        <article class="owner-feed-card">
+          <strong>One-page owner sheet</strong>
+          <code>{esc(sheet_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-cta="owner_print_sheet_open" href="{esc(sheet_path)}">Open sheet</a>
+            <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_owner_print_sheet_copy" data-copy-url="{esc(sheet_url)}" data-copy-text="{esc(copy_text)}">Copy sheet text</button>
+          </div>
+        </article>
+      </section>"""
+
+
 def owner_route_pick(
     rows: list[dict[str, Any]],
     category_ids: set[str] | None,
@@ -2077,6 +2127,178 @@ def owner_action_route(timeframe: str, rows: list[dict[str, Any]]) -> str:
           </div>
         </div>
       </section>"""
+
+
+def render_owner_share_sheet(data: dict[str, Any]) -> str:
+    """Render a print/screenshot-friendly one-page BSS owner handout.
+
+    This is a growth distribution artifact, not a new ranking methodology. It
+    reuses the current weekly item rows and preserves the evidence discipline:
+    trend-backed labels require dated/published URLs, while supply/watchlist links
+    remain validation/follow-up only.
+    """
+    weekly = [
+        row for row in data.get("rankings", {}).get("weekly", [])
+        if isinstance(row, dict)
+    ]
+    cats = [cat for cat in data.get("categories", []) if isinstance(cat, dict)]
+    trend_rows = [row for row in weekly if has_trend_evidence(row)]
+    leaders = (trend_rows or weekly)[:3]
+    trend_count = len(trend_rows)
+    watchlist_count = len(weekly) - trend_count
+    generated = data.get("generated_at") or data.get("date") or ""
+    campaign = "daily-visits-500-owner-print-sheet"
+    sheet_url = growth_campaign_url(
+        "/owner-share-sheet.html",
+        source="owner_share",
+        medium="print_sheet",
+        campaign=campaign,
+        utm_content="sheet-copy",
+        utm_term="weekly",
+    )
+
+    leader_cards: list[str] = []
+    for row in leaders:
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        detail_path = growth_campaign_path(
+            f"/items/{item_id}.html",
+            source="print_sheet",
+            medium="owner_handout",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term="weekly",
+        )
+        leader_cards.append(f"""
+        <a class="print-sheet-card" data-growth-cta="owner_print_sheet_item" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="{esc(detail_path)}">
+          <span>#{esc(row.get('rank'))} · {esc(row.get('category_name'))}</span>
+          <strong>{esc(row.get('item_name'))}</strong>
+          <p>{esc(clamp_text(row.get('display_tip'), 128))}</p>
+          <small>{esc(evidence_status_label(row))} · Risk: {esc(clamp_text(row.get('risk'), 82))}</small>
+        </a>""")
+
+    route_specs = [
+        ("Hair/install", {"wigs-hair-pieces", "braiding-crochet-hair", "hair-care-styling", "tools-accessories"}, False),
+        ("Front add-on", {"lashes-brows", "nails", "makeup-cosmetics", "jewelry-fashion-accessories"}, False),
+        ("Small WATCHLIST test", None, True),
+    ]
+    used_ids: set[str] = set()
+    route_cards: list[str] = []
+    route_copy_lines = ["Weekly BSS owner print sheet route:"]
+    for index, (label, category_ids, prefer_watchlist) in enumerate(route_specs, start=1):
+        row = owner_route_pick(weekly, category_ids, used_ids, prefer_watchlist=prefer_watchlist)
+        if not row:
+            continue
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        used_ids.add(item_id)
+        detail_url = growth_campaign_url(
+            f"/items/{item_id}.html",
+            source="print_sheet",
+            medium="owner_route",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term="weekly",
+        )
+        display = row.get("display_tip") or "front-area test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        evidence = evidence_status_label(row)
+        route_copy_lines.append(f"{index}) {label}: #{row.get('rank')} {row.get('item_name')}. Display: {display}. Evidence: {evidence}. Risk: {risk}. {detail_url}")
+        route_cards.append(f"""
+        <article class="print-route-card" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}">
+          <span>{esc(index)} · {esc(label)}</span>
+          <strong>{esc(row.get('item_name'))}</strong>
+          <p>{esc(clamp_text(display, 112))}</p>
+          <small>{esc(evidence)} · Risk: {esc(clamp_text(risk, 78))}</small>
+        </article>""")
+
+    category_cards: list[str] = []
+    for cat in cats:
+        cat_id = str(cat.get("id") or "").strip()
+        if not cat_id:
+            continue
+        rows = rows_for_category(weekly, cat_id)
+        if not rows:
+            continue
+        cat_trend = sum(1 for row in rows if has_trend_evidence(row))
+        top = next((row for row in rows if has_trend_evidence(row)), rows[0])
+        cat_path = growth_campaign_path(
+            f"/categories/{cat_id}.html",
+            source="print_sheet",
+            medium="category_lane",
+            campaign=campaign,
+            utm_content=cat_id,
+            utm_term="weekly",
+        )
+        category_cards.append(f"""
+        <a class="print-category-card" data-growth-cta="owner_print_sheet_category" data-category-id="{esc(cat_id)}" href="{esc(cat_path)}">
+          <span>{esc(STORE_ZONE_LABELS.get(cat_id, 'Store zone'))}</span>
+          <strong>{esc(cat.get('name'))}</strong>
+          <p>Top item: #{esc(top.get('rank'))} {esc(top.get('item_name'))}</p>
+          <small>{esc(cat_trend)}/{esc(len(rows))} trend-backed · {esc(len(rows) - cat_trend)} WATCHLIST</small>
+        </a>""")
+
+    route_copy_lines.append(f"Full sheet: {sheet_url}")
+    route_copy = "\n".join(route_copy_lines)
+    body = f"""
+    <main class="print-sheet-page">
+      <section class="hero wrap compact print-sheet-hero" data-growth-section="owner-print-sheet-page-v1" data-growth-experiment="owner-print-sheet-v1">
+        <div class="hero-copy">
+          <a class="back no-print" href="/index.html">← Dashboard로 돌아가기</a>
+          <p class="eyebrow">Owner handout · print/screenshot ready</p>
+          <h1>Weekly BSS owner print/share sheet</h1>
+          <p class="lead">바쁜 Beauty Supply Store owner가 한 장으로 Top 3, 5-minute route, category lane을 확인하도록 만든 distribution page입니다. 이 page는 새 trend claim을 만들지 않고 current weekly ranking만 요약합니다.</p>
+          <div class="hero-actions no-print" aria-label="Print sheet actions">
+            <a class="primary-action" data-growth-cta="owner_print_sheet_weekly" href="/rankings/weekly.html?utm_source=print_sheet&utm_medium=dashboard_return&utm_campaign={esc(campaign)}">Weekly dashboard 보기</a>
+            <button class="secondary-action" type="button" data-growth-share="owner_print_sheet_copy" data-copy-url="{esc(sheet_url)}" data-copy-text="{esc(route_copy)}">Copy sheet text</button>
+          </div>
+        </div>
+        <div class="hero-panel print-sheet-summary">
+          <span>Sheet health</span>
+          <strong>{esc(data.get('date'))}</strong>
+          <small>Generated {esc(generated)}</small>
+          <div class="data-health" aria-label="Print sheet data health">
+            <div><b>{esc(len(weekly))}</b><span>Items</span></div>
+            <div><b>{esc(trend_count)}</b><span>Trend-backed</span></div>
+            <div><b>{esc(watchlist_count)}</b><span>WATCHLIST</span></div>
+            <div><b>{esc(len(cats))}</b><span>Categories</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="wrap print-sheet-section" data-growth-section="print-sheet-leaders-v1" data-growth-experiment="owner-print-sheet-v1">
+        <div class="section-title"><div><span>Top 3 · evidence-backed first</span><h2>Owner가 먼저 볼 item</h2></div><em>Search links are watchlist only</em></div>
+        <div class="print-sheet-grid">{''.join(leader_cards)}</div>
+      </section>
+      <section class="wrap print-sheet-section" data-growth-section="print-sheet-route-v1" data-growth-experiment="owner-print-sheet-v1">
+        <div class="section-title"><div><span>5-minute route</span><h2>매장 동선대로 3개만 점검</h2></div><em>{esc(campaign)}</em></div>
+        <div class="print-route-grid">{''.join(route_cards)}</div>
+        <div class="owner-brief-copybox no-print">
+          <code>{esc(route_copy)}</code>
+          <div class="share-actions"><button class="share-action" type="button" data-growth-share="owner_print_route_copy" data-copy-url="{esc(sheet_url)}" data-copy-text="{esc(route_copy)}">Copy route text</button></div>
+        </div>
+      </section>
+      <section class="wrap print-sheet-section" data-growth-section="print-sheet-category-lanes-v1" data-growth-experiment="owner-print-sheet-v1">
+        <div class="section-title"><div><span>Category lane links</span><h2>Store zone별로 바로 열기</h2></div><em>Category itself is not ranked</em></div>
+        <div class="print-category-grid">{''.join(category_cards)}</div>
+      </section>
+      <section class="wrap print-sheet-rule" data-growth-section="print-sheet-evidence-rule-v1" data-growth-experiment="owner-print-sheet-v1">
+        <strong>Evidence rule</strong>
+        <p>Published/date-bearing URLs drive trend movement. BSS/wholesale/TikTok Shop product URLs validate supply only. Generated search/watchlist links are follow-up leads and never scoring evidence.</p>
+        <code>{esc(sheet_url)}</code>
+      </section>
+    </main>"""
+    return shell(
+        "Owner Print Sheet",
+        body,
+        active="weekly",
+        page_type="owner_share_sheet",
+        page_path="/owner-share-sheet.html",
+        description=page_description("Print-ready Weekly BSS owner handout", weekly),
+        image_url=social_share_card_path("weekly") if weekly else None,
+        json_ld=item_list_json_ld(weekly, "weekly", "/owner-share-sheet.html"),
+    )
 
 
 def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
@@ -2566,6 +2788,7 @@ def render_home(data: dict[str, Any]) -> str:
       {owner_feed_subscribe_panel('weekly', weekly)}
       {owner_shortcut_panel('weekly', weekly)}
       {owner_calendar_reminder_panel('weekly', weekly)}
+      {owner_print_sheet_panel('weekly', weekly)}
       {share_panel('weekly', weekly)}
       {owner_share_strip('weekly', weekly)}
     </main>"""
@@ -2773,6 +2996,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {owner_feed_subscribe_panel(timeframe, data.get("rankings", {}).get("weekly", rows))}
       {owner_shortcut_panel(timeframe, rows)}
       {owner_calendar_reminder_panel(timeframe, rows)}
+      {owner_print_sheet_panel(timeframe, rows)}
       {share_panel(timeframe, rows)}
       {owner_share_strip(timeframe, rows)}
       <section class="wrap category-stack">{''.join(cat_sections)}</section>
@@ -2939,6 +3163,7 @@ def write_seo_files(data: dict[str, Any], item_ids: set[str], category_ids: set[
     category_ids = category_ids or set()
     paths: list[tuple[str, str, str]] = [
         ("/index.html", "1.0", "daily"),
+        ("/owner-share-sheet.html", "0.86", "daily"),
         ("/feed.xml", "0.8", "daily"),
         ("/owner-weekly-reminder.ics", "0.7", "weekly"),
         *[(f"/rankings/{tf}.html", "0.9", "daily") for tf in TIMEFRAME_ORDER],
@@ -2972,6 +3197,7 @@ def main() -> int:
     generated_calendar = write_owner_calendar_reminder(data)
     generated_manifest = write_web_manifest(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
+    OWNER_SHARE_SHEET_PATH.write_text(render_owner_share_sheet(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
         (RANKINGS_DIR / f"{tf}.html").write_text(render_timeframe(data, tf), encoding="utf-8")
     category_ids = set()
@@ -2985,7 +3211,7 @@ def main() -> int:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
     write_seo_files(data, {str(item_id) for item_id in item_ids if item_id}, category_ids)
-    generated = ["index.html", "robots.txt", "sitemap.xml", generated_feed, generated_calendar, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
+    generated = ["index.html", "owner-share-sheet.html", "robots.txt", "sitemap.xml", generated_feed, generated_calendar, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids), "categories": len(category_ids)}, ensure_ascii=False, indent=2))
     return 0
 
