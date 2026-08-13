@@ -4,6 +4,7 @@
   const GOAL_ID = 'daily-visits-500';
   const EXPERIMENT_ID = 'hero-growth-cta-v1';
   const RETURN_VISITOR_EXPERIMENT_ID = 'return-visitor-prompt-v1';
+  const EVENT_SCHEMA_VERSION = 'growth-event-schema-v2';
   const STORAGE_PREFIX = 'gns_growth';
   const EVENT_KEY = `${STORAGE_PREFIX}:events`;
   const VARIANT_KEY = `${STORAGE_PREFIX}:${EXPERIMENT_ID}:variant`;
@@ -275,11 +276,14 @@
     const scriptPath = window.__GNS_VERCEL_ANALYTICS_PATH || '/_vercel/insights/script.js';
     return {
       type: 'analytics_provider_health',
+      event_schema_version: EVENT_SCHEMA_VERSION,
       provider: 'analytics_bridge',
       status,
       vercel_queue_ready: typeof window.va === 'function',
+      vercel_queue_depth: Array.isArray(window.vaq) ? window.vaq.length : 0,
       vercel_script_path: scriptPath,
       vercel_script_present: Boolean(document.querySelector('script[data-gns-vercel-analytics]')),
+      data_layer_ready: Array.isArray(window.dataLayer),
       ga4_ready: typeof window.gtag === 'function',
       plausible_ready: typeof window.plausible === 'function',
     };
@@ -296,6 +300,8 @@
       event: eventName,
       ts: safeNow(),
       goal_id: GOAL_ID,
+      event_schema_version: EVENT_SCHEMA_VERSION,
+      tracking_runtime: 'assets/growth.js',
       experiment_id: EXPERIMENT_ID,
       variant: window.__GNS_GROWTH__?.variant || 'unknown',
       session_id: getSessionId(),
@@ -309,6 +315,8 @@
       timeframe: pageTimeframe(),
       page_category_id: pageCategoryId(),
       page_item_id: pageItemId(),
+      client_language: navigator.language || '',
+      client_timezone_offset_minutes: new Date().getTimezoneOffset(),
       referrer: document.referrer || '',
       landing_path: attribution.landing_path || '',
       first_referrer: attribution.first?.referrer || '',
@@ -662,6 +670,7 @@
       goalId: GOAL_ID,
       targetAverageDailyVisits: 500,
       experimentId: EXPERIMENT_ID,
+      eventSchemaVersion: EVENT_SCHEMA_VERSION,
       variant,
       sessionId,
       visitorId: visitor.visitor_id,

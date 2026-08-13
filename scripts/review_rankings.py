@@ -1480,21 +1480,22 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
     })
     ensure_campaign(active_campaigns, {
         "campaign_id": "analytics-provider-health-event-v1",
-        "status": "live-client-side-provider-health-after-build",
-        "objective": "Emit a lightweight growth_provider_ready event so the operator can detect whether GA4, Vercel Analytics queueing, and the production analytics script are available before interpreting growth funnels.",
+        "status": "live-client-side-provider-health-and-schema-v2-after-build",
+        "objective": "Emit a lightweight growth_provider_ready event plus a stable growth-event-schema-v2 marker so the operator can detect whether GA4, Vercel Analytics queueing, and the production analytics script are available before interpreting growth funnels.",
         "live_locations": [
             "https://gnsresearchhub.vercel.app/index.html",
             "https://gnsresearchhub.vercel.app/assets/growth.js",
             "https://gnsresearchhub.vercel.app/_vercel/insights/script.js",
         ],
         "tracked_events": [
-            "growth_provider_ready status=client_bridge_ready on every page load",
+            "growth_provider_ready status=client_bridge_ready on every page load with event_schema_version=growth-event-schema-v2",
             "growth_provider_ready status=vercel_script_loaded or vercel_script_error on production hosts",
-            "growth_exposure still follows provider readiness so first-visit attribution is preserved",
+            "growth_exposure/growth_click/growth_share_copy_result all carry event_schema_version and tracking_runtime for provider export QA",
         ],
         "tracked_quality_metrics": [
-            "Playwright asserts local growth buffer contains growth_provider_ready with ga4_ready=true and vercel_queue_ready=true",
+            "Playwright asserts local growth buffer contains growth_provider_ready with ga4_ready=true, vercel_queue_ready=true, and event_schema_version=growth-event-schema-v2",
             "analyticsBridgeStatus() is exposed on window.__GNS_GROWTH__ for smoke checks without reading secrets",
+            "analyticsBridgeStatus() now includes vercel_queue_depth and data_layer_ready so provider bootstrap can be audited without dashboard credentials",
             "event payload includes vercel_script_path but no token/key values",
         ],
         "owner_value": "This does not increase traffic by itself; it makes the 500/day growth loop safer by separating tracking-provider health from actual owner engagement once analytics export access is connected.",
@@ -1818,7 +1819,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
         measurement["last_checked_at"] = now
         measurement["provider_checked"] = (
             "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
-            "This run also verifies the head-level window.va queue/bootstrap, the client-side growth_provider_ready health event, destination link_utm_* context on clicked/copied share paths, and direct-message/SMS owner share events for first-event capture. "
+            "This run also verifies the head-level window.va queue/bootstrap, the client-side growth_provider_ready health event, event_schema_version=growth-event-schema-v2 on local/provider-bound events, destination link_utm_* context on clicked/copied share paths, and direct-message/SMS owner share events for first-event capture. "
             f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
         )
         measurement["rolling_30d_average_daily_visits"] = None
@@ -1826,7 +1827,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels."
         )
         measurement["interpretation"] = (
-            "Traffic progress cannot be claimed yet. Product/share freshness and destination-level UTM tracking improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. "
+            "Traffic progress cannot be claimed yet. Product/share freshness, destination-level UTM tracking, and event-schema/provider-health QA improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. "
             + " ".join(str(note) for note in material_changes[:2])
         ).strip()
 
@@ -1909,7 +1910,7 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "status": "active-provider-health-after-build",
             "variants": ["silent_provider_health", "growth_provider_ready_event_plus_analyticsBridgeStatus_snapshot"],
             "success_metric": "growth_provider_ready event presence and provider-side event counts before interpreting growth_click/share/copy funnels once analytics export is available",
-            "hypothesis": "Provider health events should reduce false growth conclusions by showing whether GA4/Vercel bridges were actually ready on each visit before comparing CTA or repeat-visit metrics.",
+            "hypothesis": "Provider health events with event_schema_version=growth-event-schema-v2 should reduce false growth conclusions by showing whether GA4/Vercel bridges were actually ready on each visit before comparing CTA or repeat-visit metrics.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

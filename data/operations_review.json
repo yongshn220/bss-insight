@@ -1,9 +1,9 @@
 {
-  "reviewed_at": "2026-08-13T04:25:54.682069Z",
-  "source_generated_at": "2026-08-13T04:24:58.223146Z",
+  "reviewed_at": "2026-08-13T05:50:53.117954Z",
+  "source_generated_at": "2026-08-13T05:49:51.775566Z",
   "date": "2026-08-13",
   "timeframe": "weekly",
-  "playwright_summary": "npm run refresh passed at 2026-08-13T04:24:58Z; npm run test:e2e passed: 16 passed (chromium + mobile-chrome) with current-run TikTok cached-count assertion.",
+  "playwright_summary": "npm run test:e2e passed: 16 passed (43.4s)",
   "metrics": {
     "items": 44,
     "categories": 8,
@@ -15,25 +15,32 @@
     "watchlist_items": 32
   },
   "collection_health": {
-    "generated_at": "2026-08-13T04:24:58.222745Z",
+    "generated_at": "2026-08-13T05:49:51.775205Z",
     "source_health": {
       "apify_tiktok_shop": {
-        "status": "success",
-        "observed_at": "2026-08-13T04:24:58.221866Z",
+        "status": "success_with_partial_cache",
+        "observed_at": "2026-08-13T05:49:51.774290Z",
         "configured": true,
         "enabled": true,
         "attempts": 1,
         "keywords_requested": 88,
         "expanded_keyword_items": 22,
-        "products_returned": 88,
+        "products_returned": 85,
         "items_with_evidence": 44,
-        "evidence_urls": 86,
-        "fresh_evidence_urls": 86,
-        "partial_cached_items": 0,
-        "partial_cached_evidence_urls": 0,
-        "current_actor_status": "success",
-        "cache_policy": "cache not used",
-        "max_results_total": 88
+        "evidence_urls": 85,
+        "fresh_evidence_urls": 83,
+        "partial_cached_items": 2,
+        "partial_cached_evidence_urls": 2,
+        "current_actor_status": "success_partial",
+        "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
+        "max_results_total": 88,
+        "cache_status": "usable",
+        "cache_path": "data/tiktok_shop_cache.json",
+        "cache_updated_at": "2026-08-13T05:36:47.258245Z",
+        "cache_age_days": 0,
+        "cache_max_age_days": 7,
+        "cached_items": 44,
+        "cached_evidence_urls": 84
       }
     },
     "evidence_totals": {
@@ -42,11 +49,11 @@
       "items_with_published_trend_url": 37,
       "items_with_retail_product_url": 44,
       "items_with_tiktok_shop_url": 44,
-      "items_with_cached_tiktok_shop_url": 0,
-      "verified_urls_total": 381,
-      "published_trend_urls_total": 111,
-      "retail_product_urls_total": 270,
-      "cached_tiktok_shop_urls_total": 0,
+      "items_with_cached_tiktok_shop_url": 2,
+      "verified_urls_total": 379,
+      "published_trend_urls_total": 110,
+      "retail_product_urls_total": 269,
+      "cached_tiktok_shop_urls_total": 2,
       "collection_error_records": 0
     },
     "coverage_gap_summary": {
@@ -64,6 +71,7 @@
       "purpose": "Keep dated article/post/news URLs in rankings.json before same-day product/listing URLs can fill the per-item cap; supply URLs remain validation only and do not create trend movement."
     },
     "next_actions": [
+      "TikTok Shop actor는 성공했지만 2개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
       "published trend URL gap 7개 item 유지: Lashes & Brows, Wigs & Hair Pieces, Tools & Accessories부터 item-level dated source capture를 보강합니다."
     ]
   },
@@ -151,14 +159,14 @@
   ],
   "coverage_deltas": {
     "trend_items": {
-      "previous": 13,
+      "previous": 12,
       "current": 12,
-      "delta": -1
+      "delta": 0
     },
     "recent_trend_items": {
-      "previous": 13,
+      "previous": 12,
       "current": 12,
-      "delta": -1
+      "delta": 0
     },
     "retail_product_items": {
       "previous": 44,
@@ -176,9 +184,9 @@
       "delta": 0
     },
     "watchlist_items": {
-      "previous": 31,
+      "previous": 32,
       "current": 32,
-      "delta": 1
+      "delta": 0
     }
   },
   "collection_evidence_deltas": {
@@ -191,9 +199,9 @@
     },
     "evidence_totals__published_trend_urls_total": {
       "label": "published trend URL total",
-      "previous": 110,
-      "current": 111,
-      "delta": 1,
+      "previous": 111,
+      "current": 110,
+      "delta": -1,
       "inverse": false
     },
     "evidence_totals__items_with_retail_product_url": {
@@ -212,16 +220,16 @@
     },
     "evidence_totals__items_with_cached_tiktok_shop_url": {
       "label": "all-window cached TikTok Shop item coverage",
-      "previous": 2,
-      "current": 0,
-      "delta": -2,
+      "previous": 0,
+      "current": 2,
+      "delta": 2,
       "inverse": true
     },
     "evidence_totals__cached_tiktok_shop_urls_total": {
       "label": "cached TikTok Shop supply URL total",
-      "previous": 2,
-      "current": 0,
-      "delta": -2,
+      "previous": 0,
+      "current": 2,
+      "delta": 2,
       "inverse": true
     },
     "evidence_totals__collection_error_records": {
@@ -233,23 +241,23 @@
     },
     "source_health__apify_tiktok_shop__products_returned": {
       "label": "TikTok Shop products returned",
-      "previous": 84,
-      "current": 88,
-      "delta": 4,
+      "previous": 88,
+      "current": 85,
+      "delta": -3,
       "inverse": false
     },
     "source_health__apify_tiktok_shop__fresh_evidence_urls": {
       "label": "fresh TikTok Shop supply URLs",
-      "previous": 81,
-      "current": 86,
-      "delta": 5,
+      "previous": 86,
+      "current": 83,
+      "delta": -3,
       "inverse": false
     },
     "source_health__apify_tiktok_shop__partial_cached_items": {
       "label": "TikTok partial-cache fallback items",
-      "previous": 2,
-      "current": 0,
-      "delta": -2,
+      "previous": 0,
+      "current": 2,
+      "delta": 2,
       "inverse": true
     },
     "coverage_gap_summary__published_trend_missing_items": {
@@ -261,16 +269,13 @@
     }
   },
   "material_changes": [
-    "Improved source: published trend URL total 110→111 (+1)",
-    "Improved source: all-window cached TikTok Shop item coverage 2→0 (-2)",
-    "Improved source: cached TikTok Shop supply URL total 2→0 (-2)",
-    "Improved source: TikTok Shop products returned 84→88 (+4)",
-    "Improved source: fresh TikTok Shop supply URLs 81→86 (+5)",
-    "Improved source: TikTok partial-cache fallback items 2→0 (-2)",
-    "Needs recovery: published trend item coverage 13→12 (-1)",
-    "Needs recovery: recent trend item coverage 13→12 (-1)",
-    "Needs recovery: WATCHLIST item count 31→32 (+1)",
-    "Improved: TikTok Shop cache fallback recovered 2→0 item(s); fresh URLs 81→86"
+    "Needs source recovery: published trend URL total 111→110 (-1)",
+    "Needs source recovery: all-window cached TikTok Shop item coverage 0→2 (+2)",
+    "Needs source recovery: cached TikTok Shop supply URL total 0→2 (+2)",
+    "Needs source recovery: TikTok Shop products returned 88→85 (-3)",
+    "Needs source recovery: fresh TikTok Shop supply URLs 86→83 (-3)",
+    "Needs source recovery: TikTok partial-cache fallback items 0→2 (+2)",
+    "Source health changed: TikTok Shop collector success→success_with_partial_cache"
   ],
   "previous_loop_follow_up": [
     {
@@ -357,7 +362,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -390,12 +395,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 13,
+        "verified_evidence": 12,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 5,
@@ -403,7 +408,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -414,7 +419,7 @@
     {
       "item_id": "individual-flare-lashes",
       "item_name": "Individual Flare Lashes",
-      "status": "still_needs_focus",
+      "status": "improved",
       "baseline": {
         "verified_evidence": 10,
         "trend_evidence": 0,
@@ -436,12 +441,12 @@
         "news_magazine": 0
       },
       "current": {
-        "verified_evidence": 10,
+        "verified_evidence": 11,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 10,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 11,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 5,
@@ -449,13 +454,13 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
+      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
     },
     {
       "item_id": "elastic-melting-band",
@@ -475,7 +480,7 @@
         "unique_retail_domains": 2,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -495,7 +500,7 @@
         "unique_retail_domains": 2,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -521,7 +526,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 7,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -541,7 +546,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -552,28 +557,8 @@
     {
       "item_id": "25mm-mink-strip-lashes",
       "item_name": "25mm Mink Strip Lashes",
-      "status": "improved",
+      "status": "still_needs_focus",
       "baseline": {
-        "verified_evidence": 1,
-        "trend_evidence": 0,
-        "recent_trend_evidence": 0,
-        "recent_evidence": 0,
-        "retail_product_evidence": 1,
-        "tiktok_shop_product_evidence": 1,
-        "cached_tiktok_shop_product_evidence": 0,
-        "article_evidence": 0,
-        "unique_domains": 1,
-        "unique_trend_domains": 0,
-        "unique_retail_domains": 1,
-        "exact_evidence": 0,
-        "item_type_evidence": 0,
-        "retail_exact_evidence": 0,
-        "watchlist_links": 14,
-        "source_layers": 1,
-        "manual_references": 14,
-        "news_magazine": 0
-      },
-      "current": {
         "verified_evidence": 3,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
@@ -593,7 +578,27 @@
         "manual_references": 14,
         "news_magazine": 0
       },
-      "note": "이전 loop focus 후 근거 수가 개선되었습니다."
+      "current": {
+        "verified_evidence": 2,
+        "trend_evidence": 0,
+        "recent_trend_evidence": 0,
+        "recent_evidence": 0,
+        "retail_product_evidence": 2,
+        "tiktok_shop_product_evidence": 2,
+        "cached_tiktok_shop_product_evidence": 0,
+        "article_evidence": 0,
+        "unique_domains": 1,
+        "unique_trend_domains": 0,
+        "unique_retail_domains": 1,
+        "exact_evidence": 0,
+        "item_type_evidence": 0,
+        "retail_exact_evidence": 0,
+        "watchlist_links": 14,
+        "source_layers": 1,
+        "manual_references": 14,
+        "news_magazine": 0
+      },
+      "note": "아직 근거 보강이 필요합니다. 다음 loop focus에 유지할 수 있습니다."
     },
     {
       "item_id": "synthetic-lace-front-wig",
@@ -633,7 +638,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -643,18 +648,16 @@
     }
   ],
   "good_points": [
-    "Playwright QA 완료: npm run refresh passed at 2026-08-13T04:24:58Z; npm run test:e2e passed: 16 passed (chromium + mobile-chrome) with current-run TikTok cached-count assertion.",
+    "Playwright QA 완료: npm run test:e2e passed: 16 passed (43.4s)",
     "44개 item / 8개 category ranking이 production build 기준으로 생성되었습니다.",
     "Top 3가 item-level로 정렬되었습니다: #1 Glueless Pre-Cut HD Lace Wig, #2 Chrome Nail Powder, #3 6mm Rhinestone Stud Earrings",
     "Evidence separation 유지: published trend URL 보유 item 12개, BSS/marketplace live product URL 보유 item 44개.",
     "TikTok Shop/marketplace supply signal이 44개 item에 붙어 social-commerce availability 확인이 강화되었습니다.",
-    "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다.",
-    "TikTok Shop collector health: success, attempts 1, evidence URLs 86."
+    "상품/출처 이미지가 44개 item에 연결되어 text-only dashboard 위험을 줄였습니다."
   ],
   "improvement_points": [
     "32개 item은 아직 published trend URL이 부족해 WATCHLIST 성격이 강합니다. trend claim으로 과장하지 말고 post/listing/thread 단위 근거를 추가 수집해야 합니다.",
-    "이전 run 대비 coverage regression 감지: published trend item 13→12 (-1); recent trend item 13→12 (-1). 다음 loop에서는 source outage/collector query/retail suggest coverage를 우선 확인해야 합니다.",
-    "WATCHLIST item이 이전 run 대비 증가했습니다: 31→32 (+1). trend claim 확대보다 근거 보강이 우선입니다.",
+    "TikTok Shop collector health: status=success_with_partial_cache attempts=1. 다음 run에서 source outage/actor upstream 상태를 먼저 확인해야 합니다. (no error summary)",
     "근거가 가장 약한 category: Braiding & Crochet Hair (trend 1/6, retail 6/6)."
   ],
   "next_loop_focus_items": [
@@ -662,7 +665,7 @@
       "item_id": "braid-foaming-mousse",
       "item_name": "Foaming Mousse for Braids",
       "category": "Hair Care & Styling",
-      "rank": 18,
+      "rank": 17,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -725,7 +728,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -733,20 +736,20 @@
       }
     },
     {
-      "item_id": "v-part-human-hair-wig",
-      "item_name": "V-Part Human Hair Wig",
+      "item_id": "drawstring-ponytail-extension",
+      "item_name": "Drawstring Ponytail Extension",
       "category": "Wigs & Hair Pieces",
       "rank": 16,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
       "queries": [
-        "\"V-Part Human Hair Wig\" beauty supply trend",
-        "V-Part Human Hair Wig 2026 trend",
-        "V-Part Human Hair Wig customer review 2026",
-        "\"V-Part Human Hair Wig\" black beauty supply",
-        "V-Part Human Hair Wig wig install trend",
-        "V-Part Human Hair Wig natural hair review"
+        "\"Drawstring Ponytail Extension\" beauty supply trend",
+        "Drawstring Ponytail Extension 2026 trend",
+        "Drawstring Ponytail Extension customer review 2026",
+        "\"Drawstring Ponytail Extension\" black beauty supply",
+        "Drawstring Ponytail Extension wig install trend",
+        "Drawstring Ponytail Extension natural hair review"
       ],
       "baseline_source_counts": {
         "verified_evidence": 13,
@@ -762,7 +765,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 3,
+        "retail_exact_evidence": 8,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -773,7 +776,7 @@
       "item_id": "individual-flare-lashes",
       "item_name": "Individual Flare Lashes",
       "category": "Lashes & Brows",
-      "rank": 25,
+      "rank": 23,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -786,12 +789,12 @@
         "Individual Flare Lashes lash tutorial trend"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 10,
+        "verified_evidence": 11,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 10,
-        "tiktok_shop_product_evidence": 2,
+        "retail_product_evidence": 11,
+        "tiktok_shop_product_evidence": 3,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 5,
@@ -799,7 +802,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 6,
+        "retail_exact_evidence": 5,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -836,7 +839,7 @@
         "unique_retail_domains": 2,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 2,
+        "retail_exact_evidence": 1,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -844,28 +847,28 @@
       }
     },
     {
-      "item_id": "drawstring-ponytail-extension",
-      "item_name": "Drawstring Ponytail Extension",
+      "item_id": "v-part-human-hair-wig",
+      "item_name": "V-Part Human Hair Wig",
       "category": "Wigs & Hair Pieces",
-      "rank": 17,
+      "rank": 18,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
       "queries": [
-        "\"Drawstring Ponytail Extension\" beauty supply trend",
-        "Drawstring Ponytail Extension 2026 trend",
-        "Drawstring Ponytail Extension customer review 2026",
-        "\"Drawstring Ponytail Extension\" black beauty supply",
-        "Drawstring Ponytail Extension wig install trend",
-        "Drawstring Ponytail Extension natural hair review"
+        "\"V-Part Human Hair Wig\" beauty supply trend",
+        "V-Part Human Hair Wig 2026 trend",
+        "V-Part Human Hair Wig customer review 2026",
+        "\"V-Part Human Hair Wig\" black beauty supply",
+        "V-Part Human Hair Wig wig install trend",
+        "V-Part Human Hair Wig natural hair review"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 13,
+        "verified_evidence": 12,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 13,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 12,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 5,
@@ -873,7 +876,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 7,
+        "retail_exact_evidence": 2,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -884,7 +887,7 @@
       "item_id": "25mm-mink-strip-lashes",
       "item_name": "25mm Mink Strip Lashes",
       "category": "Lashes & Brows",
-      "rank": 34,
+      "rank": 35,
       "reason": "collection gap: 전체 evidence window에서 published trend URL 미확보, published trend URL 부족, 최근 14일 발행 근거 부족, source/domain 다양성 낮음, WATCHLIST 상태 유지",
       "focus_source": "collection_notes_missing_published_trend",
       "collection_gap": "missing_published_trend_url",
@@ -897,12 +900,12 @@
         "25mm Mink Strip Lashes lash tutorial trend"
       ],
       "baseline_source_counts": {
-        "verified_evidence": 3,
+        "verified_evidence": 2,
         "trend_evidence": 0,
         "recent_trend_evidence": 0,
         "recent_evidence": 0,
-        "retail_product_evidence": 3,
-        "tiktok_shop_product_evidence": 3,
+        "retail_product_evidence": 2,
+        "tiktok_shop_product_evidence": 2,
         "cached_tiktok_shop_product_evidence": 0,
         "article_evidence": 0,
         "unique_domains": 1,
@@ -910,7 +913,7 @@
         "unique_retail_domains": 1,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 1,
+        "retail_exact_evidence": 0,
         "watchlist_links": 14,
         "source_layers": 1,
         "manual_references": 14,
@@ -947,7 +950,7 @@
         "unique_retail_domains": 5,
         "exact_evidence": 0,
         "item_type_evidence": 0,
-        "retail_exact_evidence": 4,
+        "retail_exact_evidence": 3,
         "watchlist_links": 14,
         "source_layers": 2,
         "manual_references": 14,
@@ -965,14 +968,14 @@
     "primary_growth_blockers": [
       "Central analytics export is still unavailable, so rolling 30-day average daily visits and component conversion rates cannot be calculated in this runtime.",
       "WATCHLIST remains high: 32/44 weekly items lack published/date-bearing trend evidence and should not be marketed as trend-backed.",
-      "Coverage regression detected: published trend item coverage 13→12 (-1); recent trend item coverage 13→12 (-1); WATCHLIST item count 31→32 (+1)."
+      "Collection evidence/source regression detected: published trend URL total 111→110 (-1); all-window cached TikTok Shop item coverage 0→2 (+2); cached TikTok Shop supply URL total 0→2 (+2); TikTok Shop products returned 88→85 (-3).",
+      "TikTok Shop collector status requires attention: success_with_partial_cache."
     ],
     "good_points": [
       "Item specificity preserved: 44 concrete BSS item types across 8 store-like categories.",
       "Supply/actionability coverage: retail 44/44, TikTok Shop 44/44, product images 44/44.",
       "Search/watchlist URLs remain separated from scoring evidence; published URLs drive trend movement only.",
-      "Fresh weekly trend evidence exists for 12 item(s), keeping Top 3 from being supply-only.",
-      "Collection/source progress: published trend URL total 110→111 (+1); all-window cached TikTok Shop item coverage 2→0 (-2); cached TikTok Shop supply URL total 2→0 (-2)."
+      "Fresh weekly trend evidence exists for 12 item(s), keeping Top 3 from being supply-only."
     ],
     "remaining_issues": [
       "Published trend evidence coverage is 12/44; recent 14d coverage is 12/44.",

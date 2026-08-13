@@ -322,8 +322,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.attribution.first.utm_campaign).toBe('daily-visits-500');
     expect(exposure.analyticsBridgeStatus.provider).toBe('analytics_bridge');
     expect(exposure.analyticsBridgeStatus.status).toBe('snapshot');
+    expect(exposure.analyticsBridgeStatus.event_schema_version).toBe('growth-event-schema-v2');
     expect(exposure.analyticsBridgeStatus.vercel_queue_ready).toBe(true);
     expect(exposure.analyticsBridgeStatus.vercel_script_path).toBe('/_vercel/insights/script.js');
+    expect(exposure.analyticsBridgeStatus.data_layer_ready).toBe(true);
     expect(exposure.analyticsBridgeStatus.ga4_ready).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'run-change-snapshot-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'owner-quick-picks-v1')).toBe(true);
@@ -338,7 +340,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(exposure.growthSections.some((section: any) => section.id === 'top3-leaderboard-v1')).toBe(true);
     expect(exposure.growthSections.some((section: any) => section.id === 'ranking-main-list-v1')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.utm_campaign === 'daily-visits-500')).toBe(true);
-    expect(exposure.events.some((event: any) => event.event === 'growth_provider_ready' && event.provider === 'analytics_bridge' && event.status === 'client_bridge_ready' && event.vercel_queue_ready === true && event.ga4_ready === true && event.utm_campaign === 'daily-visits-500')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_provider_ready' && event.provider === 'analytics_bridge' && event.status === 'client_bridge_ready' && event.vercel_queue_ready === true && event.ga4_ready === true && event.event_schema_version === 'growth-event-schema-v2' && event.utm_campaign === 'daily-visits-500')).toBe(true);
+    expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.event_schema_version === 'growth-event-schema-v2' && event.tracking_runtime === 'assets/growth.js' && event.client_language)).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.first_utm_source === 'e2e')).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.visitor_id === exposure.visitorId && event.visit_count >= 1 && event.is_returning_visitor === false)).toBe(true);
     expect(exposure.events.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'home' && event.timeframe === 'weekly_home' && event.page_item_id === '')).toBe(true);
