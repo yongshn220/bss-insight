@@ -242,6 +242,12 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const printSheetHtml = await printSheetResponse.text();
     expect(printSheetHtml).toContain('Weekly BSS owner print/share sheet');
     expect(printSheetHtml).toContain('owner-print-sheet-page-v1');
+    expect(printSheetHtml).toContain('data-growth-share="owner_print_sheet_sms_draft"');
+    expect(printSheetHtml).toContain('data-growth-share="owner_print_sheet_whatsapp_draft"');
+    expect(printSheetHtml).toContain('data-growth-share="owner_print_sheet_native_share"');
+    expect(printSheetHtml).toContain('data-native-share="true"');
+    expect(printSheetHtml).toContain('utm_source=native_share');
+    expect(printSheetHtml).toContain('SMS/WhatsApp/Phone share');
     await expect(page.locator('.share-kit')).toBeVisible();
     await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="owner-share-kit-v1"]')).toHaveAttribute('data-growth-experiment', 'owner-share-kit-v1');
@@ -547,9 +553,30 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const printSheetButton = page.locator('[data-growth-share="weekly_owner_print_sheet_copy"]').first();
     await printSheetButton.click();
     await expect(printSheetButton).toHaveText(/Copied|Text ready/);
+    const printSheetSmsDraft = page.locator('[data-growth-share="owner_print_sheet_sms_draft"]').first();
+    await expect(printSheetSmsDraft).toHaveAttribute('href', /^sms:/);
+    await printSheetSmsDraft.evaluate((element) => {
+      element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      (element as HTMLAnchorElement).click();
+    });
+    const printSheetWhatsappDraft = page.locator('[data-growth-share="owner_print_sheet_whatsapp_draft"]').first();
+    await expect(printSheetWhatsappDraft).toHaveAttribute('href', /^https:\/\/wa\.me\/\?text=/);
+    await printSheetWhatsappDraft.evaluate((element) => {
+      element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      (element as HTMLAnchorElement).click();
+    });
+    const printSheetNativeButton = page.locator('[data-growth-share="owner_print_sheet_native_share"]').first();
+    await expect(printSheetNativeButton).toHaveAttribute('data-native-share', 'true');
+    await expect(printSheetNativeButton).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
+    await printSheetNativeButton.click();
+    await expect(printSheetNativeButton).toHaveText(/Shared|Copied|Text ready/);
     const printSheetEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(printSheetEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_owner_print_sheet_copy' && event.component_experiment_id === 'owner-print-sheet-v1' && String(event.href).includes('daily-visits-500-owner-print-sheet'))).toBe(true);
     expect(printSheetEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_owner_print_sheet_copy' && event.section === 'owner-print-sheet-v1' && event.link_utm_medium === 'print_sheet')).toBe(true);
+    expect(printSheetEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_owner_print_sheet_sms_draft' && event.component_experiment_id === 'owner-print-sheet-v1' && event.link_utm_source === 'message' && event.link_utm_medium === 'direct' && event.link_utm_campaign === 'daily-visits-500-owner-print-sheet')).toBe(true);
+    expect(printSheetEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_owner_print_sheet_whatsapp_draft' && event.component_experiment_id === 'owner-print-sheet-v1' && event.link_utm_source === 'message' && event.link_utm_medium === 'direct' && event.link_utm_campaign === 'daily-visits-500-owner-print-sheet')).toBe(true);
+    expect(printSheetEvents.some((event: any) => event.event === 'growth_native_share_result' && event.share_action === 'owner_print_sheet_native_share' && event.section === 'owner-print-sheet-v1' && event.link_utm_source === 'native_share' && event.link_utm_medium === 'mobile')).toBe(true);
+    expect(printSheetEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'owner_print_sheet_native_share' && event.section === 'owner-print-sheet-v1' && event.link_utm_medium === 'mobile')).toBe(true);
 
     const engagementResult = await page.evaluate(() => {
       const growth = (window as any).__GNS_GROWTH__;

@@ -43,7 +43,7 @@ a { color: inherit; text-decoration: none; }
 h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.94; letter-spacing:-.075em; font-weight:700; }
 .lead { margin:18px 0 0; max-width:760px; color:#4d4d4d; font-size:18px; line-height:1.65; }
 .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
-.primary-action, .secondary-action { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 16px; border-radius:999px; font-weight:700; font-size:14px; transition:transform .16s ease, box-shadow .16s ease, background .16s ease; }
+.primary-action, .secondary-action { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 16px; border:0; border-radius:999px; font:700 14px 'Geist', system-ui, sans-serif; cursor:pointer; transition:transform .16s ease, box-shadow .16s ease, background .16s ease; text-align:center; }
 .primary-action { background:#171717; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.16); }
 .secondary-action { background:#fff; color:#171717; box-shadow:rgba(0,0,0,.1) 0 0 0 1px; }
 .primary-action:hover, .secondary-action:hover { transform:translateY(-1px); box-shadow:rgba(0,0,0,.16) 0 8px 28px -12px, rgba(0,0,0,.1) 0 0 0 1px; }

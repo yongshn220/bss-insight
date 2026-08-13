@@ -1988,6 +1988,20 @@ def owner_print_sheet_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
         utm_content=timeframe,
     )
     sheet_url = absolute_url(sheet_path)
+    message_url = growth_campaign_url(
+        "/owner-share-sheet.html",
+        source="message",
+        medium="direct",
+        campaign=campaign,
+        utm_content=f"{timeframe}-sheet-direct",
+    )
+    native_url = growth_campaign_url(
+        "/owner-share-sheet.html",
+        source="native_share",
+        medium="mobile",
+        campaign=campaign,
+        utm_content=f"{timeframe}-sheet-native",
+    )
     trend_count = sum(1 for row in rows if has_trend_evidence(row))
     watchlist_count = len(rows) - trend_count
     lead = choose_share_row(rows)
@@ -1995,16 +2009,20 @@ def owner_print_sheet_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
     copy_text = "\n".join([
         f"{label} BSS owner print/share sheet:",
         f"Lead item: {lead_name}. Trend-backed {trend_count}/{len(rows)}; WATCHLIST {watchlist_count}.",
-        "Use this one-page sheet for a quick store-floor review, rep visit, or owner screenshot.",
+        "Use this one-page sheet for a quick store-floor review, rep visit, owner screenshot, or mobile direct share.",
         "Rule: published URLs drive trend movement; supply/watchlist links are not trend claims.",
         f"Sheet: {sheet_url}",
     ])
+    message_copy = copy_text.replace(sheet_url, message_url)
+    native_copy = copy_text.replace(sheet_url, native_url)
+    sms_intent = sms_intent_url(message_copy)
+    whatsapp_intent = whatsapp_intent_url(message_copy)
     return f"""
       <section class="wrap owner-feed owner-print-kit" data-growth-section="owner-print-sheet-v1" data-growth-experiment="owner-print-sheet-v1" aria-labelledby="owner-print-sheet-{esc(timeframe)}">
         <div class="owner-feed-copy">
           <span>Offline / rep share path · print sheet</span>
           <h2 id="owner-print-sheet-{esc(timeframe)}">{esc(label)} owner print/share sheet</h2>
-          <p>Store owner가 긴 dashboard를 다시 읽지 않아도 Top 3, 5-minute route, category links를 한 장으로 저장·프린트·스크린샷할 수 있게 만든 distribution CTA입니다. 모든 링크는 print_sheet UTM으로 측정 준비되어 있고, WATCHLIST는 evidence insufficient로 유지합니다.</p>
+          <p>Store owner가 긴 dashboard를 다시 읽지 않아도 Top 3, 5-minute route, category links를 한 장으로 저장·프린트·스크린샷할 수 있게 만든 distribution CTA입니다. SMS/WhatsApp/Phone share도 user-initiated draft로 준비되어 있고, WATCHLIST는 evidence insufficient로 유지합니다.</p>
           <small>{esc(label)} context · trend-backed {esc(trend_count)}/{esc(len(rows))} · WATCHLIST {esc(watchlist_count)} · lead item {esc(lead_name)}</small>
         </div>
         <article class="owner-feed-card">
@@ -2012,6 +2030,9 @@ def owner_print_sheet_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
           <code>{esc(sheet_url)}</code>
           <div class="share-actions">
             <a class="share-action" data-growth-cta="owner_print_sheet_open" href="{esc(sheet_path)}">Open sheet</a>
+            <a class="share-action" data-growth-share="owner_print_sheet_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="share-action" data-growth-share="owner_print_sheet_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            {native_share_button("owner_print_sheet_native_share", url=native_url, text=native_copy, title=f"{label} BSS owner print/share sheet")}
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_owner_print_sheet_copy" data-copy-url="{esc(sheet_url)}" data-copy-text="{esc(copy_text)}">Copy sheet text</button>
           </div>
         </article>
@@ -2269,6 +2290,26 @@ def render_owner_share_sheet(data: dict[str, Any]) -> str:
 
     route_copy_lines.append(f"Full sheet: {sheet_url}")
     route_copy = "\n".join(route_copy_lines)
+    sheet_message_url = growth_campaign_url(
+        "/owner-share-sheet.html",
+        source="message",
+        medium="direct",
+        campaign=campaign,
+        utm_content="sheet-direct",
+        utm_term="weekly",
+    )
+    sheet_native_url = growth_campaign_url(
+        "/owner-share-sheet.html",
+        source="native_share",
+        medium="mobile",
+        campaign=campaign,
+        utm_content="sheet-native",
+        utm_term="weekly",
+    )
+    route_message_copy = route_copy.replace(sheet_url, sheet_message_url)
+    route_native_copy = route_copy.replace(sheet_url, sheet_native_url)
+    sms_intent = sms_intent_url(route_message_copy)
+    whatsapp_intent = whatsapp_intent_url(route_message_copy)
     body = f"""
     <main class="print-sheet-page">
       <section class="hero wrap compact print-sheet-hero" data-growth-section="owner-print-sheet-page-v1" data-growth-experiment="owner-print-sheet-v1">
@@ -2276,9 +2317,12 @@ def render_owner_share_sheet(data: dict[str, Any]) -> str:
           <a class="back no-print" href="/index.html">← Dashboard로 돌아가기</a>
           <p class="eyebrow">Owner handout · print/screenshot ready</p>
           <h1>Weekly BSS owner print/share sheet</h1>
-          <p class="lead">바쁜 Beauty Supply Store owner가 한 장으로 Top 3, 5-minute route, category lane을 확인하도록 만든 distribution page입니다. 이 page는 새 trend claim을 만들지 않고 current weekly ranking만 요약합니다.</p>
+          <p class="lead">바쁜 Beauty Supply Store owner가 한 장으로 Top 3, 5-minute route, category lane을 확인하도록 만든 distribution page입니다. 이 page는 새 trend claim을 만들지 않고 current weekly ranking만 요약합니다. SMS/WhatsApp/Phone share 버튼은 모두 user-initiated draft이며 UTM으로 direct-share path를 측정합니다.</p>
           <div class="hero-actions no-print" aria-label="Print sheet actions">
             <a class="primary-action" data-growth-cta="owner_print_sheet_weekly" href="/rankings/weekly.html?utm_source=print_sheet&utm_medium=dashboard_return&utm_campaign={esc(campaign)}">Weekly dashboard 보기</a>
+            <a class="secondary-action" data-growth-share="owner_print_sheet_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="secondary-action" data-growth-share="owner_print_sheet_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            <button class="secondary-action" type="button" data-growth-share="owner_print_sheet_native_share" data-native-share="true" data-native-share-url="{esc(sheet_native_url)}" data-native-share-text="{esc(route_native_copy)}" data-native-share-title="Weekly BSS owner print/share sheet">Phone share</button>
             <button class="secondary-action" type="button" data-growth-share="owner_print_sheet_copy" data-copy-url="{esc(sheet_url)}" data-copy-text="{esc(route_copy)}">Copy sheet text</button>
           </div>
         </div>

@@ -1,64 +1,58 @@
 {
-  "generated_at": "2026-08-13T14:30:53.124891Z",
+  "generated_at": "2026-08-13T16:08:15.561066Z",
   "date": "2026-08-13",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "failed_using_cache",
-      "observed_at": "2026-08-13T14:30:53.123948Z",
+      "status": "success",
+      "observed_at": "2026-08-13T16:08:15.560196Z",
       "configured": true,
       "enabled": true,
-      "attempts": 7,
+      "attempts": 1,
       "keywords_requested": 86,
       "expanded_keyword_items": 21,
-      "max_results_total": 86,
-      "current_actor_status": "failed",
-      "error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: wMB13njxDtmw1xJJc, status: FAILED).\" } }",
-      "last_actor_failure_status": "failed_using_cache",
-      "last_actor_failure_observed_at": "2026-08-13T14:30:53.123903Z",
-      "last_actor_failure_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: wMB13njxDtmw1xJJc, status: FAILED).\" } }",
-      "cooldown_minutes": 90,
-      "full_actor_status": "failed",
-      "full_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: wMB13njxDtmw1xJJc, status: FAILED).\" } }",
-      "shard_fallback_status": "failed",
-      "shard_size": 20,
-      "shards_requested": 5,
-      "shards_succeeded": 0,
-      "shards_failed": 5,
-      "shard_attempts": 5,
-      "shard_keywords_requested": 86,
-      "shard_error_summary": "HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: I3js3vyG6apa9Cg7a, status: FAILED).\" } } | HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: 5IuFU7BhSgLX9SpPI, status: FAILED).\" } } | HTTP 400 Bad Request: { \"error\": { \"type\": \"run-failed\", \"message\": \"Actor run did not succeed (run ID: FriZ7qeE9p0REBtUB, status: FAILED).\" } }",
-      "retry_rule": "APIFY_TIKTOK_MAX_ATTEMPTS controls re-runs after transient upstream/risk-control failures.",
-      "cache_policy": "cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
-      "cache_status": "usable",
-      "cache_path": "data/tiktok_shop_cache.json",
-      "cache_updated_at": "2026-08-13T12:57:30.095912Z",
-      "cache_age_days": 0,
-      "cache_max_age_days": 7,
-      "cached_items": 44,
-      "cached_evidence_urls": 83
+      "products_returned": 84,
+      "items_with_evidence": 44,
+      "evidence_urls": 82,
+      "fresh_evidence_urls": 82,
+      "partial_cached_items": 0,
+      "partial_cached_evidence_urls": 0,
+      "current_actor_status": "success",
+      "cache_policy": "cache not used",
+      "max_results_total": 86
     }
   },
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 39,
+    "items_with_published_trend_url": 38,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "items_with_cached_tiktok_shop_url": 44,
-    "verified_urls_total": 386,
-    "published_trend_urls_total": 119,
-    "retail_product_urls_total": 267,
-    "cached_tiktok_shop_urls_total": 83,
+    "items_with_cached_tiktok_shop_url": 0,
+    "verified_urls_total": 380,
+    "published_trend_urls_total": 114,
+    "retail_product_urls_total": 266,
+    "cached_tiktok_shop_urls_total": 0,
     "collection_error_records": 0
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 5,
+      "published_trend_missing_items": 6,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
       "zero_trend_categories": 0
     },
     "weak_categories": [
+      {
+        "category_id": "lashes-brows",
+        "category_name": "Lashes & Brows",
+        "items": 4,
+        "trend_items": 2,
+        "retail_product_items": 4,
+        "tiktok_shop_items": 4,
+        "trend_ratio": 0.5,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
       {
         "category_id": "tools-accessories",
         "category_name": "Tools & Accessories",
@@ -67,17 +61,6 @@
         "retail_product_items": 6,
         "tiktok_shop_items": 6,
         "trend_ratio": 0.67,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
-        "category_id": "lashes-brows",
-        "category_name": "Lashes & Brows",
-        "items": 4,
-        "trend_items": 3,
-        "retail_product_items": 4,
-        "tiktok_shop_items": 4,
-        "trend_ratio": 0.75,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -162,6 +145,12 @@
         "category_name": "Hair Care & Styling"
       },
       {
+        "item_id": "25mm-mink-strip-lashes",
+        "item_name": "25mm Mink Strip Lashes",
+        "category_id": "lashes-brows",
+        "category_name": "Lashes & Brows"
+      },
+      {
         "item_id": "individual-flare-lashes",
         "item_name": "Individual Flare Lashes",
         "category_id": "lashes-brows",
@@ -207,7 +196,6 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "TikTok Shop actor는 실패했지만 최근 성공 cache를 supply fallback으로 사용했습니다. 다음 run에서 actor/upstream 재시도 후 cache freshness를 갱신해야 합니다.",
-    "published trend URL gap 5개 item 유지: Tools & Accessories, Lashes & Brows, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+    "published trend URL gap 6개 item 유지: Lashes & Brows, Tools & Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }
