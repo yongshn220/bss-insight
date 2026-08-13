@@ -98,6 +98,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     );
     expect(hasGa4InlineConfig).toBe(true);
     await expect(page.locator('[data-growth-cta="primary"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="hero-owner-share-nudge-v1"]')).toBeVisible();
+    await expect(page.locator('[data-growth-section="hero-owner-share-nudge-v1"]')).toHaveAttribute('data-growth-experiment', 'hero-owner-share-nudge-v1');
+    await expect(page.locator('[data-growth-cta="hero_owner_nudge_item"]')).toHaveAttribute('href', /utm_medium=hero_owner_nudge/);
+    await expect(page.locator('[data-growth-cta="hero_owner_nudge_item"]')).toHaveAttribute('href', /daily-visits-500-weekly-hero-owner-share-nudge/);
+    await expect(page.locator('[data-growth-share="weekly_hero_owner_text_copy"]')).toHaveAttribute('data-copy-url', /utm_source=message/);
+    await expect(page.locator('[data-growth-share="weekly_hero_owner_text_copy"]')).toHaveAttribute('data-copy-text', /BSS owner quick text/);
+    await expect(page.locator('[data-growth-share="weekly_hero_owner_native_share"]')).toHaveAttribute('data-native-share', 'true');
+    await expect(page.locator('[data-growth-share="weekly_hero_owner_native_share"]')).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
     await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toHaveAttribute('data-growth-experiment', 'run-change-snapshot-v1');
     await expect(page.getByRole('heading', { name: '오늘 다시 볼 이유' })).toBeVisible();
@@ -649,6 +657,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'basic-analytics-measurement-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-item-click-attribution-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'hero-owner-share-nudge-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);

@@ -1,47 +1,65 @@
 {
-  "generated_at": "2026-08-13T17:46:33.284109Z",
+  "generated_at": "2026-08-13T19:00:24.996276Z",
   "date": "2026-08-13",
   "source_health": {
     "apify_tiktok_shop": {
-      "status": "success",
-      "observed_at": "2026-08-13T17:46:33.283268Z",
+      "status": "success_with_partial_cache",
+      "observed_at": "2026-08-13T19:00:24.995149Z",
       "configured": true,
       "enabled": true,
       "attempts": 1,
-      "keywords_requested": 88,
-      "expanded_keyword_items": 22,
-      "products_returned": 86,
+      "keywords_requested": 86,
+      "expanded_keyword_items": 21,
+      "products_returned": 83,
       "items_with_evidence": 44,
-      "evidence_urls": 84,
-      "fresh_evidence_urls": 84,
-      "partial_cached_items": 0,
-      "partial_cached_evidence_urls": 0,
-      "current_actor_status": "success",
-      "cache_policy": "cache not used",
-      "max_results_total": 88
+      "evidence_urls": 83,
+      "fresh_evidence_urls": 82,
+      "partial_cached_items": 1,
+      "partial_cached_evidence_urls": 1,
+      "current_actor_status": "success_partial",
+      "cache_policy": "Partial cached TikTok Shop URLs are supply fallback only and are labeled; they never create trend movement.",
+      "max_results_total": 86,
+      "cache_status": "usable",
+      "cache_path": "data/tiktok_shop_cache.json",
+      "cache_updated_at": "2026-08-13T17:46:33.282064Z",
+      "cache_age_days": 0,
+      "cache_max_age_days": 7,
+      "cached_items": 44,
+      "cached_evidence_urls": 84
     }
   },
   "evidence_totals": {
     "items_requested": 44,
     "items_with_any_verified_url": 44,
-    "items_with_published_trend_url": 39,
+    "items_with_published_trend_url": 38,
     "items_with_retail_product_url": 44,
     "items_with_tiktok_shop_url": 44,
-    "items_with_cached_tiktok_shop_url": 0,
-    "verified_urls_total": 384,
-    "published_trend_urls_total": 116,
-    "retail_product_urls_total": 268,
-    "cached_tiktok_shop_urls_total": 0,
+    "items_with_cached_tiktok_shop_url": 1,
+    "verified_urls_total": 387,
+    "published_trend_urls_total": 120,
+    "retail_product_urls_total": 267,
+    "cached_tiktok_shop_urls_total": 1,
     "collection_error_records": 0
   },
   "coverage_gaps": {
     "summary": {
-      "published_trend_missing_items": 5,
+      "published_trend_missing_items": 6,
       "tiktok_shop_missing_items": 0,
       "retail_product_missing_items": 0,
       "zero_trend_categories": 0
     },
     "weak_categories": [
+      {
+        "category_id": "lashes-brows",
+        "category_name": "Lashes & Brows",
+        "items": 4,
+        "trend_items": 2,
+        "retail_product_items": 4,
+        "tiktok_shop_items": 4,
+        "trend_ratio": 0.5,
+        "tiktok_shop_ratio": 1.0,
+        "retail_product_ratio": 1.0
+      },
       {
         "category_id": "tools-accessories",
         "category_name": "Tools & Accessories",
@@ -50,17 +68,6 @@
         "retail_product_items": 6,
         "tiktok_shop_items": 6,
         "trend_ratio": 0.67,
-        "tiktok_shop_ratio": 1.0,
-        "retail_product_ratio": 1.0
-      },
-      {
-        "category_id": "lashes-brows",
-        "category_name": "Lashes & Brows",
-        "items": 4,
-        "trend_items": 3,
-        "retail_product_items": 4,
-        "tiktok_shop_items": 4,
-        "trend_ratio": 0.75,
         "tiktok_shop_ratio": 1.0,
         "retail_product_ratio": 1.0
       },
@@ -145,6 +152,12 @@
         "category_name": "Hair Care & Styling"
       },
       {
+        "item_id": "25mm-mink-strip-lashes",
+        "item_name": "25mm Mink Strip Lashes",
+        "category_id": "lashes-brows",
+        "category_name": "Lashes & Brows"
+      },
+      {
         "item_id": "individual-flare-lashes",
         "item_name": "Individual Flare Lashes",
         "category_id": "lashes-brows",
@@ -190,6 +203,7 @@
     "error_summary에는 token/key 값을 저장하지 않도록 redaction을 적용합니다."
   ],
   "next_actions": [
-    "published trend URL gap 5개 item 유지: Tools & Accessories, Lashes & Brows, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
+    "TikTok Shop actor는 성공했지만 1개 item이 이번 dataset에서 빠져 최근 cache를 supply fallback으로 표시했습니다. 다음 run에서 해당 item의 fresh listing capture를 재확인합니다.",
+    "published trend URL gap 6개 item 유지: Lashes & Brows, Tools & Accessories, Wigs & Hair Pieces부터 item-level dated source capture를 보강합니다."
   ]
 }

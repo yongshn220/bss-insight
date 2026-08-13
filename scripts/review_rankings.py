@@ -1346,6 +1346,32 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             },
         })
 
+    lead_item_id = top3_ids[0] if top3_ids else "none"
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "hero-owner-share-nudge-v1",
+        "status": "live-homepage-first-viewport-after-build",
+        "objective": "Move one evidence-backed owner/reps share action into the first viewport so low-traffic sessions can copy or open an item before scrolling to deeper share modules.",
+        "utm_campaign": "daily-visits-500-weekly-hero-owner-share-nudge",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (hero-owner-share-nudge-v1)",
+        ],
+        "tracked_events": [
+            "growth_section_view hero-owner-share-nudge-v1",
+            "growth_click cta_hero_owner_nudge_item with utm_medium=hero_owner_nudge",
+            "growth_click share_weekly_hero_owner_text_copy",
+            "growth_share_copy_result share_action=weekly_hero_owner_text_copy",
+            "growth_native_share_result share_action=weekly_hero_owner_native_share",
+        ],
+        "tracked_quality_metrics": [
+            f"lead_item_id={lead_item_id}",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            "owner quick text uses evidence_status_label and does not create new trend claims",
+        ],
+        "owner_value": "A busy BSS owner or GNS rep can immediately open/copy the current lead item with display/risk/evidence status without finding the lower share kit.",
+        "measurement_need": "GA4 Data API or Vercel custom-event export is needed to compare hero-owner-share-nudge exposures/copy/open events against deeper owner-share-kit and top3 share modules.",
+        "last_refreshed_at": now,
+    })
+
     source_health = ((review.get("collection_health") or {}).get("source_health") or {}) if isinstance(review.get("collection_health"), dict) else {}
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
     apify = apify if isinstance(apify, dict) else {}
@@ -2668,6 +2694,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["generic_weekly_share_image_on_category_pages", "store_zone_category_specific_og_twitter_cards"],
             "success_metric": "category_page UTM sessions, category_copy_link/share events, item-card clicks from category pages, and repeat visits once analytics export is connected",
             "hypothesis": "Store-zone-specific social preview cards should make category landing shares more trustworthy and relevant for BSS owners than the generic all-category ranking image.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "hero-owner-share-nudge-v1",
+            "status": "active-homepage-distribution-after-build",
+            "variants": ["share_actions_below_ranking_modules", "first_viewport_owner_quick_text_and_item_open"],
+            "success_metric": "growth_section_view hero-owner-share-nudge-v1, cta_hero_owner_nudge_item clicks, weekly_hero_owner_text_copy results, native share results, and resulting item-detail/repeat visits once analytics export is connected",
+            "hypothesis": "Putting one evidence-backed, copy-ready owner message in the homepage first viewport should improve distribution from very low traffic sessions without hiding evidence limits or relying on external SNS posting.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

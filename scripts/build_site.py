@@ -1666,6 +1666,75 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
       </section>"""
 
 
+def hero_owner_share_nudge(timeframe: str, rows: list[dict[str, Any]]) -> str:
+    """First-viewport owner/reps share prompt for the current evidence-backed lead.
+
+    Traffic measurement now shows the main growth blocker is distribution, not just
+    instrumentation. This nudge keeps the ranking-first hero intact but gives a
+    busy rep/owner one copyable, UTM-tagged item message before they scroll into
+    the deeper share kits. It reuses the already-ranked row and evidence label, so
+    it does not create any new trend claim.
+    """
+    row = choose_share_row(rows)
+    if not row:
+        return ""
+    item_id = str(row.get("item_id") or "").strip()
+    if not item_id:
+        return ""
+    label = TIMEFRAME_LABELS.get(timeframe, timeframe.title())
+    campaign = f"daily-visits-500-{timeframe}-hero-owner-share-nudge"
+    item_path = f"/items/{item_id}.html"
+    open_path = growth_campaign_path(
+        item_path,
+        source="site",
+        medium="hero_owner_nudge",
+        campaign=campaign,
+        utm_content=item_id,
+        utm_term=timeframe,
+    )
+    message_url = growth_campaign_url(
+        item_path,
+        source="message",
+        medium="direct",
+        campaign=campaign,
+        utm_content=item_id,
+        utm_term=timeframe,
+    )
+    native_url = growth_campaign_url(
+        item_path,
+        source="native_share",
+        medium="mobile",
+        campaign=campaign,
+        utm_content=item_id,
+        utm_term=timeframe,
+    )
+    item_name = row.get("item_name") or "BSS item"
+    display = row.get("display_tip") or "front-area display test"
+    risk = row.get("risk") or "track sell-through and shrink"
+    evidence = evidence_status_label(row)
+    owner_text = owner_direct_message_text(
+        prefix=f"{label} BSS owner quick text",
+        item_name=f"#{row.get('rank')} {item_name}",
+        display=display,
+        risk=risk,
+        evidence=evidence,
+        url=message_url,
+    )
+    native_text = owner_text.replace(message_url, native_url).replace("owner quick text", "mobile quick share")
+    return f"""
+          <aside class="hero-owner-nudge" data-growth-section="hero-owner-share-nudge-v1" data-growth-experiment="hero-owner-share-nudge-v1" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" aria-labelledby="hero-owner-nudge-{esc(timeframe)}">
+            <span>오늘 보낼 owner quick text</span>
+            <h2 id="hero-owner-nudge-{esc(timeframe)}">#{esc(row.get('rank'))} {esc(item_name)}</h2>
+            <p>Display: {esc(clamp_text(display, 112))}</p>
+            <small>{esc(evidence)} · Risk: {esc(clamp_text(risk, 92))}</small>
+            <div class="hero-owner-nudge-actions">
+              <a class="primary-action" data-growth-cta="hero_owner_nudge_item" href="{esc(open_path)}">Item detail 열기</a>
+              <button class="secondary-action" type="button" data-growth-share="{esc(timeframe)}_hero_owner_text_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(owner_text)}">Copy owner text</button>
+              <button class="secondary-action" type="button" data-growth-share="{esc(timeframe)}_hero_owner_native_share" data-native-share="true" data-native-share-url="{esc(native_url)}" data-native-share-text="{esc(native_text)}" data-native-share-title="{esc(label)} BSS owner quick text: {esc(item_name)}">Phone share</button>
+            </div>
+          </aside>"""
+
+
 def owner_brief_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
     """One-copy owner brief for reps/owners to forward without writing copy by hand."""
     if not rows:
@@ -2845,6 +2914,7 @@ def render_home(data: dict[str, Any]) -> str:
             <a class="primary-action" data-growth-cta="primary" href="/rankings/weekly.html?utm_source=site&utm_medium=hero&utm_campaign=daily-visits-500">Weekly ranking 보기</a>
             <a class="secondary-action" data-growth-cta="secondary" href="/rankings/weekly.html#all-items">Evidence / watchlist 보기</a>
           </div>
+          {hero_owner_share_nudge('weekly', weekly)}
         </div>
         <div class="hero-panel">
           <span>Latest run</span>
