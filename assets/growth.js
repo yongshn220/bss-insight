@@ -59,6 +59,7 @@
     const match = path.match(/\/rankings\/(weekly|monthly|quarterly|yearly)\.html$/i);
     if (match) return match[1].toLowerCase();
     if (/\/categories\/[^/]+\.html$/i.test(path)) return 'weekly_category';
+    if (/\/owner-start\.html$/i.test(path)) return 'owner_start';
     if (/\/owner-share-sheet\.html$/i.test(path)) return 'weekly_print_sheet';
     if (/\/(index\.html)?$/i.test(path)) return 'weekly_home';
     return '';

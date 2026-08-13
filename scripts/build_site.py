@@ -27,6 +27,7 @@ FEED_PATH = ROOT / "feed.xml"
 MANIFEST_PATH = ROOT / "manifest.webmanifest"
 CALENDAR_PATH = ROOT / "owner-weekly-reminder.ics"
 OWNER_SHARE_SHEET_PATH = ROOT / "owner-share-sheet.html"
+OWNER_START_PATH = ROOT / "owner-start.html"
 
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_LABELS = {"weekly": "Weekly", "monthly": "Monthly", "quarterly": "Quarterly", "yearly": "Yearly"}
@@ -1572,6 +1573,13 @@ def write_web_manifest(data: dict[str, Any]) -> list[str]:
                 "url": "/feed.xml?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-feed-subscribe",
                 "icons": [{"src": "/assets/app-icon.svg", "sizes": "512x512", "type": "image/svg+xml"}],
             },
+            {
+                "name": "3-minute owner start",
+                "short_name": "Owner Start",
+                "description": "Open the first-visit route with weekly floor test, category lanes, and share actions.",
+                "url": "/owner-start.html?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-start",
+                "icons": [{"src": "/assets/app-icon.svg", "sizes": "512x512", "type": "image/svg+xml"}],
+            },
         ],
     }
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -2899,6 +2907,230 @@ def top_three(rows: list[dict[str, Any]], timeframe: str = "weekly") -> str:
     return '<section class="podium">' + ''.join(cards) + '</section>'
 
 
+def owner_start_route_rows(rows: list[dict[str, Any]]) -> list[tuple[dict[str, Any], dict[str, Any]]]:
+    """Pick three concrete item rows for the first-visit owner start page.
+
+    This is a routing/UX helper only. It reuses the current ranking and evidence
+    labels; it does not change score, rank, or WATCHLIST status.
+    """
+    route_specs = [
+        {
+            "stage": "1 · Floor test",
+            "categories": {"wigs-hair-pieces", "braiding-crochet-hair", "hair-care-styling", "tools-accessories"},
+            "note": "wig/braid/install 동선에서 먼저 확인할 evidence-backed item",
+            "medium": "owner_start_floor_test",
+            "prefer_watchlist": False,
+        },
+        {
+            "stage": "2 · Front add-on",
+            "categories": {"lashes-brows", "nails", "makeup-cosmetics", "jewelry-fashion-accessories"},
+            "note": "checkout/cosmetics 주변 impulse add-on 후보",
+            "medium": "owner_start_front_add_on",
+            "prefer_watchlist": False,
+        },
+        {
+            "stage": "3 · Small WATCHLIST test",
+            "categories": None,
+            "note": "trend claim 금지 · 소량/직원 시야/shrink 관리 우선",
+            "medium": "owner_start_watchlist_test",
+            "prefer_watchlist": True,
+        },
+    ]
+    used_ids: set[str] = set()
+    selected: list[tuple[dict[str, Any], dict[str, Any]]] = []
+    for spec in route_specs:
+        row = owner_route_pick(rows, spec["categories"], used_ids, prefer_watchlist=bool(spec["prefer_watchlist"]))
+        if not row:
+            continue
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        used_ids.add(item_id)
+        selected.append((spec, row))
+    return selected
+
+
+def render_owner_start_page(data: dict[str, Any]) -> str:
+    """Render a first-visit route page for low-friction owner onboarding.
+
+    Traffic is measured but still very low, so the growth bottleneck is not only
+    data quality; first-time visitors need a simpler route than a full dashboard.
+    This page is a distribution/UX artifact that links into existing ranking,
+    category, print-sheet, and item-detail surfaces with UTM context. It preserves
+    evidence discipline by using only current ranked rows and evidence labels.
+    """
+    weekly = [
+        row for row in data.get("rankings", {}).get("weekly", [])
+        if isinstance(row, dict)
+    ]
+    cats = [cat for cat in data.get("categories", []) if isinstance(cat, dict)]
+    trend_rows = [row for row in weekly if has_trend_evidence(row)]
+    watchlist_count = len(weekly) - len(trend_rows)
+    generated = str(data.get("generated_at") or data.get("date") or "")
+    campaign = "daily-visits-500-owner-start"
+    start_url = growth_campaign_url(
+        "/owner-start.html",
+        source="owner_share",
+        medium="organic",
+        campaign=campaign,
+        utm_content="start-page",
+        utm_term="weekly",
+    )
+    message_url = growth_campaign_url(
+        "/owner-start.html",
+        source="message",
+        medium="direct",
+        campaign=campaign,
+        utm_content="owner-start-direct",
+        utm_term="weekly",
+    )
+    native_url = growth_campaign_url(
+        "/owner-start.html",
+        source="native_share",
+        medium="mobile",
+        campaign=campaign,
+        utm_content="owner-start-native",
+        utm_term="weekly",
+    )
+    weekly_path = growth_campaign_path(
+        "/rankings/weekly.html",
+        source="site",
+        medium="owner_start_weekly",
+        campaign=campaign,
+        utm_content="full-ranking",
+        utm_term="weekly",
+    )
+    sheet_path = growth_campaign_path(
+        "/owner-share-sheet.html",
+        source="site",
+        medium="owner_start_sheet",
+        campaign=campaign,
+        utm_content="print-sheet",
+        utm_term="weekly",
+    )
+    route_pairs = owner_start_route_rows(weekly)
+    lead = route_pairs[0][1] if route_pairs else choose_share_row(weekly)
+    lead_name = lead.get("item_name") if isinstance(lead, dict) else "current weekly ranking"
+    copy_text = "\n".join([
+        "BSS 3-minute owner start:",
+        f"1) Open weekly route. Lead item: {lead_name}.",
+        f"2) Trend-backed {len(trend_rows)}/{len(weekly)}; WATCHLIST {watchlist_count}. Keep WATCHLIST as small tests only.",
+        "3) Pick one floor test, one front add-on, and one category lane before scanning all 44 items.",
+        "Rule: published URLs drive trend movement; supply/watchlist links are not trend claims.",
+        f"Start page: {message_url}",
+    ])
+    native_text = copy_text.replace(message_url, native_url)
+    sms_intent = sms_intent_url(copy_text)
+    whatsapp_intent = whatsapp_intent_url(copy_text)
+
+    route_cards: list[str] = []
+    for spec, row in route_pairs:
+        item_id = str(row.get("item_id") or "").strip()
+        detail_path = growth_campaign_path(
+            f"/items/{item_id}.html",
+            source="site",
+            medium=str(spec.get("medium") or "owner_start_item"),
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term="weekly",
+        )
+        route_cards.append(f"""
+        <a class="owner-start-card" data-growth-cta="owner_start_route_item" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="{esc(detail_path)}">
+          <span>{esc(spec.get('stage'))}</span>
+          <strong>#{esc(row.get('rank'))} {esc(row.get('item_name'))}</strong>
+          <p>{esc(clamp_text(row.get('display_tip'), 130))}</p>
+          <small>{esc(spec.get('note'))} · {esc(evidence_status_label(row))} · Risk: {esc(clamp_text(row.get('risk'), 80))}</small>
+        </a>""")
+
+    category_cards: list[str] = []
+    for cat in cats:
+        cat_id = str(cat.get("id") or "").strip()
+        if not cat_id:
+            continue
+        cat_rows = rows_for_category(weekly, cat_id)
+        if not cat_rows:
+            continue
+        cat_trend = sum(1 for row in cat_rows if has_trend_evidence(row))
+        top = next((row for row in cat_rows if has_trend_evidence(row)), cat_rows[0])
+        cat_path = growth_campaign_path(
+            f"/categories/{cat_id}.html",
+            source="site",
+            medium="owner_start_category",
+            campaign=campaign,
+            utm_content=cat_id,
+            utm_term="weekly",
+        )
+        category_cards.append(f"""
+        <a class="owner-start-card compact" data-growth-cta="owner_start_category" data-category-id="{esc(cat_id)}" data-item-id="{esc(top.get('item_id'))}" data-item-rank="{esc(top.get('rank'))}" data-item-category="{esc(cat_id)}" href="{esc(cat_path)}">
+          <span>{esc(STORE_ZONE_LABELS.get(cat_id, 'Store zone'))}</span>
+          <strong>{esc(cat.get('name'))}</strong>
+          <p>Lead: #{esc(top.get('rank'))} {esc(top.get('item_name'))}</p>
+          <small>{esc(cat_trend)}/{esc(len(cat_rows))} trend-backed · {esc(len(cat_rows) - cat_trend)} WATCHLIST</small>
+        </a>""")
+
+    body = f"""
+    <main>
+      <section class="hero wrap compact owner-start-hero" data-growth-section="owner-start-page-v1" data-growth-experiment="owner-start-hub-v1" aria-labelledby="owner-start-title">
+        <div class="hero-copy">
+          <a class="back" href="/index.html">← Dashboard로 돌아가기</a>
+          <p class="eyebrow">First visit route · BSS owner start</p>
+          <h1 id="owner-start-title">3-minute BSS owner start</h1>
+          <p class="lead">처음 방문한 Beauty Supply Store owner/reps가 긴 dashboard를 읽기 전에 무엇을 눌러야 하는지 정리한 시작 page입니다. 여기의 card는 새 trend claim을 만들지 않고 current weekly ranking, category lane, owner share sheet로만 연결합니다.</p>
+          <div class="hero-actions" aria-label="Owner start actions">
+            <a class="primary-action" data-growth-cta="owner_start_weekly" href="{esc(weekly_path)}">Weekly full ranking</a>
+            <a class="secondary-action" data-growth-cta="owner_start_sheet" href="{esc(sheet_path)}">Print/share sheet</a>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <span>Owner start health</span>
+          <strong>{esc(len(trend_rows))}/{esc(len(weekly))}</strong>
+          <small>trend-backed weekly items · WATCHLIST {esc(watchlist_count)} · {esc(generated)}</small>
+          <div class="growth-goal"><span>Growth path</span><strong>500/day</strong><small>starter page UTM: {esc(campaign)}</small></div>
+        </div>
+      </section>
+      <section class="wrap owner-start-section" data-growth-section="owner-start-route-v1" data-growth-experiment="owner-start-hub-v1" aria-labelledby="owner-start-route">
+        <div class="section-title"><div><span>First three clicks</span><h2 id="owner-start-route">먼저 볼 3개 item route</h2></div><em>{esc(campaign)}</em></div>
+        <p class="owner-start-note">한 개는 floor/display test, 한 개는 front-end add-on, 한 개는 WATCHLIST small test로 분리했습니다. WATCHLIST는 trend가 아니라 소량/직원 시야/shrink 관리 test입니다.</p>
+        <div class="owner-start-grid">{''.join(route_cards)}</div>
+      </section>
+      <section class="wrap owner-start-section" data-growth-section="owner-start-category-lanes-v1" data-growth-experiment="owner-start-hub-v1" aria-labelledby="owner-start-categories">
+        <div class="section-title"><div><span>Store-zone landing lanes</span><h2 id="owner-start-categories">내 매장 zone부터 보기</h2></div><em>category is navigation, not rank</em></div>
+        <p class="owner-start-note">Category 자체를 trend로 말하지 않습니다. 각 lane은 그 안의 concrete item type만 보여주며, owner가 Wigs/Lashes/Nails/Jewelry 같은 관심 zone으로 바로 들어가게 돕습니다.</p>
+        <div class="owner-start-grid categories">{''.join(category_cards)}</div>
+      </section>
+      <section class="wrap owner-start-section owner-start-share" data-growth-section="owner-start-share-actions-v1" data-growth-experiment="owner-start-hub-v1" aria-labelledby="owner-start-share">
+        <div>
+          <span>Share / save starter</span>
+          <h2 id="owner-start-share">Owner에게 이 시작 page 바로 보내기</h2>
+          <p>외부 SNS 자동 게시 없이 SMS/Kakao, WhatsApp draft, Phone share, copy로만 전달합니다. 모든 link는 UTM이 붙어 GA4/Vercel export 연결 후 owner-start funnel을 분리 측정할 수 있습니다.</p>
+        </div>
+        <article class="share-card">
+          <p class="share-eyebrow">Owner start link</p>
+          <h3>{esc(lead_name)}</h3>
+          <p>Trend-backed {esc(len(trend_rows))}/{esc(len(weekly))} · WATCHLIST {esc(watchlist_count)}</p>
+          <code>{esc(start_url)}</code>
+          <div class="share-actions">
+            <a class="share-action" data-growth-share="owner_start_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="share-action" data-growth-share="owner_start_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            {native_share_button("owner_start_native_share", url=native_url, text=native_text, title="BSS 3-minute owner start")}
+            <button class="share-action" type="button" data-growth-share="owner_start_copy" data-copy-url="{esc(start_url)}">Copy start link</button>
+            <button class="share-action" type="button" data-growth-share="owner_start_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(copy_text)}">Copy SMS/Kakao text</button>
+          </div>
+        </article>
+      </section>
+    </main>"""
+    return shell(
+        "Owner Start",
+        body,
+        active="weekly",
+        page_type="owner_start",
+        page_path="/owner-start.html",
+        description=page_description("3-minute BSS owner start route", weekly),
+        image_url=social_share_card_path("weekly") if weekly else None,
+        json_ld=item_list_json_ld([row for _spec, row in route_pairs] or weekly[:3], "weekly", "/owner-start.html"),
+    )
+
+
 def render_home(data: dict[str, Any]) -> str:
     weekly = data.get("rankings", {}).get("weekly", [])
     monthly = data.get("rankings", {}).get("monthly", [])
@@ -2913,6 +3145,7 @@ def render_home(data: dict[str, Any]) -> str:
           <div class="hero-actions" aria-label="Growth actions">
             <a class="primary-action" data-growth-cta="primary" href="/rankings/weekly.html?utm_source=site&utm_medium=hero&utm_campaign=daily-visits-500">Weekly ranking 보기</a>
             <a class="secondary-action" data-growth-cta="secondary" href="/rankings/weekly.html#all-items">Evidence / watchlist 보기</a>
+            <a class="secondary-action" data-growth-cta="owner_start_hero" href="/owner-start.html?utm_source=site&utm_medium=hero_start&utm_campaign=daily-visits-500-owner-start">3-minute owner start</a>
           </div>
           {hero_owner_share_nudge('weekly', weekly)}
         </div>
@@ -3369,6 +3602,7 @@ def write_seo_files(data: dict[str, Any], item_ids: set[str], category_ids: set[
     category_ids = category_ids or set()
     paths: list[tuple[str, str, str]] = [
         ("/index.html", "1.0", "daily"),
+        ("/owner-start.html", "0.92", "daily"),
         ("/owner-share-sheet.html", "0.86", "daily"),
         ("/feed.xml", "0.8", "daily"),
         ("/owner-weekly-reminder.ics", "0.7", "weekly"),
@@ -3403,6 +3637,7 @@ def main() -> int:
     generated_calendar = write_owner_calendar_reminder(data)
     generated_manifest = write_web_manifest(data)
     (ROOT / "index.html").write_text(render_home(data), encoding="utf-8")
+    OWNER_START_PATH.write_text(render_owner_start_page(data), encoding="utf-8")
     OWNER_SHARE_SHEET_PATH.write_text(render_owner_share_sheet(data), encoding="utf-8")
     for tf in TIMEFRAME_ORDER:
         (RANKINGS_DIR / f"{tf}.html").write_text(render_timeframe(data, tf), encoding="utf-8")
@@ -3417,7 +3652,7 @@ def main() -> int:
         if item_id:
             (ITEMS_DIR / f"{item_id}.html").write_text(render_item_detail(data, item_id), encoding="utf-8")
     write_seo_files(data, {str(item_id) for item_id in item_ids if item_id}, category_ids)
-    generated = ["index.html", "owner-share-sheet.html", "robots.txt", "sitemap.xml", generated_feed, generated_calendar, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
+    generated = ["index.html", "owner-start.html", "owner-share-sheet.html", "robots.txt", "sitemap.xml", generated_feed, generated_calendar, *generated_manifest, *generated_social_cards] + [f"rankings/{tf}.html" for tf in TIMEFRAME_ORDER] + [f"categories/{category_id}.html" for category_id in sorted(category_ids)]
     print(json.dumps({"site_root": str(ROOT), "generated": generated, "items": len(item_ids), "categories": len(category_ids)}, ensure_ascii=False, indent=2))
     return 0
 

@@ -48,6 +48,19 @@
           "type": "image/svg+xml"
         }
       ]
+    },
+    {
+      "name": "3-minute owner start",
+      "short_name": "Owner Start",
+      "description": "Open the first-visit route with weekly floor test, category lanes, and share actions.",
+      "url": "/owner-start.html?utm_source=pwa&utm_medium=shortcut&utm_campaign=daily-visits-500-owner-start",
+      "icons": [
+        {
+          "src": "/assets/app-icon.svg",
+          "sizes": "512x512",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }

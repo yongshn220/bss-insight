@@ -106,6 +106,17 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-share="weekly_hero_owner_text_copy"]')).toHaveAttribute('data-copy-text', /BSS owner quick text/);
     await expect(page.locator('[data-growth-share="weekly_hero_owner_native_share"]')).toHaveAttribute('data-native-share', 'true');
     await expect(page.locator('[data-growth-share="weekly_hero_owner_native_share"]')).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
+    await expect(page.locator('[data-growth-cta="owner_start_hero"]')).toHaveAttribute('href', /owner-start\.html/);
+    await expect(page.locator('[data-growth-cta="owner_start_hero"]')).toHaveAttribute('href', /daily-visits-500-owner-start/);
+    const ownerStartResponse = await request.get('/owner-start.html');
+    expect(ownerStartResponse.status()).toBeLessThan(400);
+    const ownerStartHtml = await ownerStartResponse.text();
+    expect(ownerStartHtml).toContain('3-minute BSS owner start');
+    expect(ownerStartHtml).toContain('owner-start-page-v1');
+    expect(ownerStartHtml).toContain('owner-start-hub-v1');
+    expect(ownerStartHtml).toContain('data-growth-share="owner_start_sms_draft"');
+    expect(ownerStartHtml).toContain('data-growth-share="owner_start_native_share"');
+    expect(ownerStartHtml).toContain('daily-visits-500-owner-start');
     await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toBeVisible();
     await expect(page.locator('[data-growth-section="run-change-snapshot-v1"]')).toHaveAttribute('data-growth-experiment', 'run-change-snapshot-v1');
     await expect(page.getByRole('heading', { name: '오늘 다시 볼 이유' })).toBeVisible();

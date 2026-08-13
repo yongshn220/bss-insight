@@ -1371,6 +1371,36 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4 Data API or Vercel custom-event export is needed to compare hero-owner-share-nudge exposures/copy/open events against deeper owner-share-kit and top3 share modules.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "owner-start-hub-v1",
+        "status": "live-first-visit-owner-start-page-after-build",
+        "objective": "Give first-time BSS owners/reps a simple 3-minute route before the full dashboard: one floor test, one front-end add-on, category lanes, and copy/share actions.",
+        "utm_campaign": "daily-visits-500-owner-start",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/owner-start.html",
+            "https://gnsresearchhub.vercel.app/index.html (owner_start_hero CTA)",
+            "https://gnsresearchhub.vercel.app/sitemap.xml",
+            "https://gnsresearchhub.vercel.app/manifest.webmanifest",
+        ],
+        "tracked_events": [
+            "growth_section_view owner-start-page-v1 / owner-start-route-v1 / owner-start-category-lanes-v1 / owner-start-share-actions-v1",
+            "growth_click cta_owner_start_hero with utm_medium=hero_start",
+            "growth_click cta_owner_start_route_item with owner_start_* UTM mediums",
+            "growth_click cta_owner_start_category with utm_medium=owner_start_category",
+            "growth_share_copy_result share_action=owner_start_copy or owner_start_message_copy",
+            "growth_click share_owner_start_sms_draft / share_owner_start_whatsapp_draft",
+            "growth_native_share_result share_action=owner_start_native_share",
+        ],
+        "tracked_quality_metrics": [
+            f"owner_start_weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"owner_start_weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+            f"owner_start_lead_item_id={lead_item_id}",
+            "owner-start.html uses current weekly ranked rows and evidence_status_label only; no new trend claims",
+        ],
+        "owner_value": "A busy owner who receives one link does not have to understand every growth/share module first; they can open three concrete item tests, then choose a store-zone category lane or print/share sheet.",
+        "measurement_need": "GA4 Data API or Vercel custom-event/UTM export is needed to compare owner-start page visits, route clicks, category clicks, and direct-share actions against generic homepage/ranking entrances.",
+        "last_refreshed_at": now,
+    })
 
     source_health = ((review.get("collection_health") or {}).get("source_health") or {}) if isinstance(review.get("collection_health"), dict) else {}
     apify = source_health.get("apify_tiktok_shop", {}) if isinstance(source_health, dict) else {}
@@ -2738,6 +2768,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["category_x_email_copy_only", "category_sms_whatsapp_native_and_message_copy"],
             "success_metric": "category_message_copy, category_sms_draft, category_whatsapp_draft, category_native_share/native result events, daily-visits-500-category-direct-mobile-share UTM sessions, category page repeat visits, and downstream item-card clicks once analytics export is connected",
             "hypothesis": "Store-zone category pages should travel farther when a BSS owner or rep can forward the exact Wig/Lash/Nail/Jewelry lane by direct message or phone share, while copy keeps the rule that the category itself is not a trend claim.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "owner-start-hub-v1",
+            "status": "active-first-visit-owner-start-after-build",
+            "variants": ["full_dashboard_first", "3_minute_owner_start_route"],
+            "success_metric": "owner-start page visits, cta_owner_start_hero clicks, owner_start_route_item clicks, owner_start_category clicks, owner_start copy/share events, and downstream ranking/category/item visits once GA4 or Vercel export access is connected",
+            "hypothesis": "A first-visit owner-start page should reduce homepage overload and convert low traffic sessions into concrete route/category/share actions without changing ranking score or creating unsupported trend claims.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

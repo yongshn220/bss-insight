@@ -5,13 +5,13 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 UID:gns-bss-weekly-owner-ranking@gnsresearchhub.vercel.app
-DTSTAMP:20260813T203136Z
-LAST-MODIFIED:20260813T203136Z
+DTSTAMP:20260813T220743Z
+LAST-MODIFIED:20260813T220743Z
 DTSTART;VALUE=DATE:20260817
 RRULE:FREQ=WEEKLY;COUNT=26
 SUMMARY:GNS BSS weekly item ranking check
 DESCRIPTION:Open the GNS BSS weekly item-ranking dashboard. Lead item: Glue
- less Pre-Cut HD Lace Wig. Trend-backed 11/44\; WATCHLIST 33. Published UR
+ less Pre-Cut HD Lace Wig. Trend-backed 10/44\; WATCHLIST 34. Published UR
  Ls drive trend movement\; supply/watchlist links are not trend claims. Da
  shboard: https://gnsresearchhub.vercel.app/rankings/weekly.html?utm_sourc
  e=calendar&utm_medium=reminder&utm_campaign=daily-visits-500-owner-calend
