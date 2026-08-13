@@ -1601,6 +1601,32 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel export access is still needed to compare utm_source=message sessions, SMS draft clicks, message copy events, and return visits against owner_share, X, email, RSS, shortcut, and calendar channels.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "whatsapp-owner-share-v1",
+        "status": "live-site-whatsapp-draft-after-build",
+        "objective": "Add WhatsApp draft links to ranking, Top 3, and item detail share modules so BSS owners/reps get another common direct-message distribution path without auto-posting or external credentials.",
+        "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-share, daily-visits-500-{timeframe}-top3-owner-share, and daily-visits-500-item-detail-share",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (weekly_whatsapp_draft and weekly_top3_whatsapp_draft)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (WhatsApp draft share actions)",
+            "https://gnsresearchhub.vercel.app/items/{item_id}.html (item_whatsapp_draft)",
+        ],
+        "tracked_events": [
+            "growth_click share_{timeframe}_whatsapp_draft with embedded UTM parsed from wa.me text",
+            "growth_click share_{timeframe}_top3_whatsapp_draft with item_id context",
+            "growth_click share_item_whatsapp_draft on item detail pages",
+        ],
+        "tracked_quality_metrics": [
+            "WhatsApp links use https://wa.me/?text=... and remain user-initiated drafts only",
+            "Embedded owner links use utm_source=message&utm_medium=direct so WhatsApp can be compared against SMS/Kakao copy and owner_share links",
+            "Playwright asserts WhatsApp draft links and parsed link_utm_* event context",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "Adds a practical mobile-forward path for owners/reps who use WhatsApp groups or one-to-one messages, while preserving draft-only guardrails and evidence-status copy.",
+        "measurement_need": "GA4/Vercel export access is still needed to compare utm_source=message sessions and WhatsApp draft click events against SMS/Kakao, owner_share, X, email, RSS, shortcut, and calendar paths.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -1763,6 +1789,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-site-direct-share-after-review",
             "hypothesis": "SMS/Kakao-ready copy should create more practical owner/reps distribution than X/email-only drafts because many BSS owners respond to direct short messages and no external posting credentials are required.",
             "next_step": "After analytics export access is connected, compare utm_source=message sessions, share_*_message_copy results, sms_draft clicks, and return visits against owner_share/x/email/RSS/shortcut/calendar channels.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "whatsapp-owner-share-v1",
+            "status": "active-site-whatsapp-draft-after-review",
+            "hypothesis": "WhatsApp draft links should improve practical owner/reps distribution in direct-message groups while remaining user-initiated and credential-free, especially for mobile-forward BSS owner sharing.",
+            "next_step": "After analytics export access is connected, compare share_*_whatsapp_draft clicks and utm_source=message sessions against SMS/Kakao copy, owner_share, X, email, RSS, shortcut, and calendar channels.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -2039,6 +2072,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["x_email_copy_only", "sms_kakao_direct_message_copy_with_utm"],
             "success_metric": "utm_source=message sessions, share_*_message_copy results, sms_draft clicks, item-detail entrances, and returning-owner visits once analytics export is connected",
             "hypothesis": "SMS/Kakao-ready direct message copy should improve practical distribution to BSS owners and reps while remaining draft/copy-only and evidence-safe without external SNS credentials.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "whatsapp-owner-share-v1",
+            "status": "active-site-whatsapp-draft-after-build",
+            "variants": ["sms_kakao_direct_message_only", "sms_kakao_plus_whatsapp_draft_with_utm"],
+            "success_metric": "share_*_whatsapp_draft clicks, utm_source=message sessions, item-detail entrances, and returning-owner visits once analytics export is connected",
+            "hypothesis": "Adding WhatsApp draft links gives owners/reps a mobile group-share path without auto-posting, improving distribution options toward the 500/day visit goal while preserving evidence-safe message copy.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

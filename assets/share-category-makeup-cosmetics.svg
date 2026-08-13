@@ -13,15 +13,21 @@
   <text x="82" y="154" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#171717">Makeup &amp; Cosmetics</text>
   <text x="82" y="208" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#171717">Lip / eye cosmetics bay</text>
   <text x="82" y="246" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#555555">Concrete item types only · category itself is not ranked</text>
-  <text x="82" y="278" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#666666">Trend-backed 1/4 · WATCHLIST 3 · Supply URLs stay validation-only</text>
+  <text x="82" y="278" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#666666">Trend-backed 2/4 · WATCHLIST 2 · Supply URLs stay validation-only</text>
   
   <g transform="translate(82 312)">
     <rect width="1036" height="76" rx="22" fill="#ffffff" opacity="0.96"/>
-    <text x="28" y="32" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#171717">#11 Waterproof Black Eyeliner Pencil</text>
+    <text x="28" y="32" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#171717">#9 Deep Shade Setting Powder</text>
+    <text x="28" y="58" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">1 published trend URL(s) · new_shift</text>
+    <text x="966" y="48" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#171717">54</text>
+  </g>
+  <g transform="translate(82 402)">
+    <rect width="1036" height="76" rx="22" fill="#ffffff" opacity="0.96"/>
+    <text x="28" y="32" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#171717">#12 Waterproof Black Eyeliner Pencil</text>
     <text x="28" y="58" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">1 published trend URL(s) · stable</text>
     <text x="966" y="48" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#171717">59</text>
   </g>
   <g transform="translate(82 588)">
-    <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Shareable category page · Growth goal 500/day · Generated 2026-08-13T07:01:10.190…</text>
+    <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Shareable category page · Growth goal 500/day · Generated 2026-08-13T08:49:27.311…</text>
   </g>
 </svg>

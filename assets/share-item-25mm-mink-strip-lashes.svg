@@ -11,7 +11,7 @@
   <circle cx="118" cy="548" r="150" fill="#0072f5" opacity="0.07"/>
   <text x="82" y="80" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#0072f5" letter-spacing="3">BSS ITEM DETAIL · WEEKLY</text>
   <text x="82" y="148" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#171717">25mm Mink Strip Lashes</text>
-  <text x="82" y="194" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#555555">Lashes &amp; Brows · Rank #35 · Score 39</text>
+  <text x="82" y="194" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#555555">Lashes &amp; Brows · Rank #36 · Score 39</text>
   <g transform="translate(82 226)">
     <rect width="1036" height="82" rx="24" fill="#fff7ed"/>
     <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="800" fill="#f97316">Evidence status</text>
@@ -48,5 +48,5 @@
     <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#9a3412">Watchlist links</text>
     <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#9a3412">14</text>
   </g>
-  <text x="82" y="590" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Item detail share card · Growth goal 500/day · Generated 2026-08-13T07:01:10.190… · gnsresearchhub.vercel.app</text>
+  <text x="82" y="590" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Item detail share card · Growth goal 500/day · Generated 2026-08-13T08:49:27.311… · gnsresearchhub.vercel.app</text>
 </svg>

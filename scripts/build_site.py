@@ -906,6 +906,11 @@ def sms_intent_url(message: str) -> str:
     return "sms:?" + urllib.parse.urlencode({"body": message})
 
 
+def whatsapp_intent_url(message: str) -> str:
+    """Return a user-initiated WhatsApp draft link; the site never auto-posts."""
+    return "https://wa.me/?" + urllib.parse.urlencode({"text": message})
+
+
 def owner_direct_message_text(
     *,
     item_name: object,
@@ -1492,6 +1497,7 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
         url=message_url,
     )
     sms_intent = sms_intent_url(message_text)
+    whatsapp_intent = whatsapp_intent_url(message_text)
     return f"""
       <section class="wrap share-kit" data-growth-section="owner-share-kit-v1" data-growth-experiment="owner-share-kit-v1" aria-labelledby="share-kit-{esc(timeframe)}">
         <div>
@@ -1509,6 +1515,7 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
             <a class="share-action" data-growth-share="{esc(timeframe)}_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_email_forward" href="{esc(mailto)}">Email draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_copy_link" data-copy-url="{esc(owner_url)}">Copy owner link</button>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
@@ -2057,6 +2064,7 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
             url=message_url,
         )
         sms_intent = sms_intent_url(message_text)
+        whatsapp_intent = whatsapp_intent_url(message_text)
         cards.append(f"""
         <article class="top-share-card" data-item-id="{esc(item_id)}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}">
           <span>{esc(label)} share starter · #{esc(row.get('rank'))}</span>
@@ -2069,6 +2077,7 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_email_forward" href="{esc(mailto)}">Email draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="share-action" data-growth-share="{esc(timeframe)}_top3_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
@@ -2256,6 +2265,7 @@ def item_share_panel(row: dict[str, Any]) -> str:
         url=message_url,
     )
     sms_intent = sms_intent_url(message_text)
+    whatsapp_intent = whatsapp_intent_url(message_text)
     return f"""
       <section class="wrap share-kit item-share-kit" data-growth-section="item-detail-share-card-v1" data-growth-experiment="item-detail-share-card-v1" aria-labelledby="item-share-{esc(item_id)}">
         <div>
@@ -2273,6 +2283,7 @@ def item_share_panel(row: dict[str, Any]) -> str:
             <a class="share-action" data-growth-share="item_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="item_email_forward" href="{esc(mailto)}">Email draft</a>
             <a class="share-action" data-growth-share="item_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="share-action" data-growth-share="item_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
             <button class="share-action" type="button" data-growth-share="item_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
             <button class="share-action" type="button" data-growth-share="item_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
