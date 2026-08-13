@@ -12,8 +12,11 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import subprocess
+import urllib.error
 import urllib.parse
+import urllib.request
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -30,12 +33,17 @@ MARKETING_BACKLOG_PATH = DATA_DIR / "marketing_backlog.json"
 GROWTH_GOAL_PATH = DATA_DIR / "growth_goal.json"
 PUBLIC_OPS_REVIEW_PATH = PUBLIC_DATA_DIR / "operations_review_public.json"
 PUBLIC_NEXT_LOOP_FOCUS_PATH = PUBLIC_DATA_DIR / "next_loop_focus_public.json"
+SECRET_ENV_PATHS = [Path("/opt/data/.hermes/.env"), ROOT / ".env", ROOT / ".env.local"]
 
 TIMEFRAME = "weekly"
 TIMEFRAME_ORDER = ["weekly", "monthly", "quarterly", "yearly"]
 TIMEFRAME_DAYS = {"weekly": 14, "monthly": 45, "quarterly": 120, "yearly": 365}
 MAX_FOCUS_ITEMS = 8
 SITE_BASE = "https://gnsresearchhub.vercel.app"
+VERCEL_API_BASE = "https://api.vercel.com"
+VERCEL_PROJECT_NAME = "gns_research_hub"
+VISIT_GOAL_TARGET = 500
+VISIT_GOAL_WINDOW_DAYS = 30
 
 
 def utc_now() -> str:
@@ -54,6 +62,26 @@ def load_json(path: Path, default: Any) -> Any:
 def save_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def env_value(name: str) -> str:
+    """Read a secret/config value without echoing it to logs or reports."""
+    if os.environ.get(name):
+        return str(os.environ[name]).strip()
+    for env_path in SECRET_ENV_PATHS:
+        if not env_path.exists():
+            continue
+        try:
+            for line in env_path.read_text(encoding="utf-8").splitlines():
+                raw = line.strip()
+                if not raw or raw.startswith("#") or "=" not in raw:
+                    continue
+                key, value = raw.split("=", 1)
+                if key.strip() == name:
+                    return value.strip().strip('"').strip("'")
+        except OSError:
+            continue
+    return ""
 
 
 def count(row: dict[str, Any], key: str) -> int:
@@ -104,6 +132,224 @@ def growth_campaign_url(path: str, *, source: str, medium: str, campaign: str, *
         if value not in (None, ""):
             params[key] = str(value)
     return f"{SITE_BASE}{path}?{urllib.parse.urlencode(params)}"
+
+
+def api_error_payload(exc: urllib.error.HTTPError) -> dict[str, Any]:
+    """Return a small, secret-free HTTP error payload for measurement artifacts."""
+    try:
+        raw = exc.read(1000).decode("utf-8", errors="replace")
+    except Exception:
+        raw = ""
+    message = raw[:280]
+    code = "http_error"
+    try:
+        parsed = json.loads(raw)
+        error = parsed.get("error", {}) if isinstance(parsed, dict) else {}
+        if isinstance(error, dict):
+            code = str(error.get("code") or code)
+            message = str(error.get("message") or message)[:280]
+    except Exception:
+        pass
+    return {"http_status": exc.code, "code": code, "message": message}
+
+
+def vercel_api_get(path: str, params: dict[str, Any], token: str) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Call the Vercel REST API and return (json, error) without leaking tokens."""
+    query = urllib.parse.urlencode({key: value for key, value in params.items() if value not in (None, "")})
+    url = f"{VERCEL_API_BASE}{path}" + (f"?{query}" if query else "")
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "User-Agent": "GNSResearchHubCron/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=25) as response:
+            payload = json.loads(response.read().decode("utf-8", errors="replace"))
+        return payload if isinstance(payload, dict) else {}, None
+    except urllib.error.HTTPError as exc:
+        return None, api_error_payload(exc)
+    except Exception as exc:
+        return None, {"code": type(exc).__name__, "message": str(exc)[:280]}
+
+
+def discover_vercel_project_context(token: str) -> dict[str, Any]:
+    """Find the Vercel project/team context from env or project listing."""
+    project_id = env_value("VERCEL_ANALYTICS_PROJECT_ID") or env_value("VERCEL_PROJECT_ID")
+    team_id = env_value("VERCEL_TEAM_ID") or env_value("VERCEL_ORG_ID")
+    project_name = env_value("VERCEL_PROJECT_NAME") or VERCEL_PROJECT_NAME
+    if project_id and team_id:
+        return {"status": "env_configured", "project_id": project_id, "team_id": team_id, "project_name": project_name}
+
+    payload, error = vercel_api_get("/v9/projects", {"limit": 100}, token)
+    if error:
+        return {"status": "project_lookup_failed", "error": error, "project_name": project_name}
+    projects = payload.get("projects", []) if isinstance(payload, dict) else []
+    if not isinstance(projects, list):
+        projects = []
+    for project in projects:
+        if not isinstance(project, dict):
+            continue
+        if project.get("name") == project_name:
+            return {
+                "status": "project_lookup_success",
+                "project_id": project.get("id") or project_id,
+                "team_id": project.get("accountId") or project.get("teamId") or team_id,
+                "project_name": project_name,
+            }
+    return {"status": "project_not_found", "project_name": project_name}
+
+
+def sum_metric(rows: Any, key: str) -> int:
+    if not isinstance(rows, list):
+        return 0
+    total = 0
+    for row in rows:
+        if isinstance(row, dict):
+            total += safe_int(row.get(key))
+    return total
+
+
+def top_rows(rows: Any, keys: list[str], limit: int = 5) -> list[dict[str, Any]]:
+    if not isinstance(rows, list):
+        return []
+    cleaned: list[dict[str, Any]] = []
+    for row in rows[:limit]:
+        if not isinstance(row, dict):
+            continue
+        cleaned.append({key: row.get(key) for key in keys if key in row})
+    return cleaned
+
+
+def vercel_group_query(
+    token: str,
+    project_id: str,
+    team_id: str,
+    since: str,
+    until: str,
+    by: str,
+    limit: int = 100,
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    payload, error = vercel_api_get(
+        "/v1/query/web-analytics/visits/aggregate",
+        {
+            "projectId": project_id,
+            "teamId": team_id,
+            "since": since,
+            "until": until,
+            "limit": limit,
+            "by": by,
+        },
+        token,
+    )
+    if error:
+        return [], error
+    rows = payload.get("data", []) if isinstance(payload, dict) else []
+    return [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else [], None
+
+
+def measure_vercel_web_analytics() -> dict[str, Any]:
+    """Measure the 500/day goal through Vercel Web Analytics when token access exists.
+
+    Basic visits/pageviews are available on the current project via the Vercel REST
+    API. Custom events and some UTM dimensions can be plan-gated; those blockers
+    are recorded separately instead of treating the whole measurement as pending.
+    """
+    token = env_value("VERCEL_TOKEN")
+    if not token:
+        return {
+            "status": "blocked_missing_vercel_token",
+            "measurement_source": "vercel_web_analytics_rest_api",
+            "message": "VERCEL_TOKEN is unavailable in this runtime, so Vercel Web Analytics visits cannot be queried.",
+        }
+
+    context = discover_vercel_project_context(token)
+    project_id = str(context.get("project_id") or "")
+    team_id = str(context.get("team_id") or "")
+    if not project_id or not team_id:
+        return {
+            "status": "blocked_missing_project_context",
+            "measurement_source": "vercel_web_analytics_rest_api",
+            "project_context": context,
+            "message": "Could not resolve Vercel project_id/team_id for the gns_research_hub project.",
+        }
+
+    now = dt.datetime.now(dt.UTC)
+    since_dt = now - dt.timedelta(days=VISIT_GOAL_WINDOW_DAYS)
+    since = since_dt.isoformat().replace("+00:00", "Z")
+    until = now.isoformat().replace("+00:00", "Z")
+    base_params = {"projectId": project_id, "teamId": team_id, "since": since, "until": until}
+
+    count_payload, count_error = vercel_api_get("/v1/query/web-analytics/visits/count", base_params, token)
+    if count_error:
+        return {
+            "status": "blocked_visits_count_error",
+            "measurement_source": "vercel_web_analytics_rest_api",
+            "project_context": {"status": context.get("status"), "project_name": context.get("project_name")},
+            "window_days": VISIT_GOAL_WINDOW_DAYS,
+            "since": since,
+            "until": until,
+            "error": count_error,
+        }
+
+    daily_rows, daily_error = vercel_group_query(token, project_id, team_id, since, until, "day", 100)
+    path_rows, path_error = vercel_group_query(token, project_id, team_id, since, until, "requestPath", 12)
+    referrer_rows, referrer_error = vercel_group_query(token, project_id, team_id, since, until, "referrerHostname", 12)
+    device_rows, device_error = vercel_group_query(token, project_id, team_id, since, until, "deviceType", 12)
+    utm_rows, utm_error = vercel_group_query(token, project_id, team_id, since, until, "utmSource", 12)
+    event_payload, event_error = vercel_api_get(
+        "/v1/query/web-analytics/events/aggregate",
+        {**base_params, "limit": 20, "by": "eventName"},
+        token,
+    )
+
+    count_data = count_payload.get("data", {}) if isinstance(count_payload, dict) else {}
+    count_data = count_data if isinstance(count_data, dict) else {}
+    daily_visitor_sum = sum_metric(daily_rows, "visitors")
+    daily_pageview_sum = sum_metric(daily_rows, "pageviews")
+    period_unique_visitors = safe_int(count_data.get("visitors"))
+    period_pageviews = safe_int(count_data.get("pageviews"))
+    if daily_visitor_sum <= 0 and period_unique_visitors:
+        daily_visitor_sum = period_unique_visitors
+    if daily_pageview_sum <= 0 and period_pageviews:
+        daily_pageview_sum = period_pageviews
+
+    average_daily_visits = round(daily_visitor_sum / VISIT_GOAL_WINDOW_DAYS, 2)
+    average_daily_pageviews = round(daily_pageview_sum / VISIT_GOAL_WINDOW_DAYS, 2)
+    return {
+        "status": "measured",
+        "measurement_source": "vercel_web_analytics_rest_api",
+        "project_name": context.get("project_name") or VERCEL_PROJECT_NAME,
+        "project_context_status": context.get("status"),
+        "window_days": VISIT_GOAL_WINDOW_DAYS,
+        "since": since,
+        "until": until,
+        "rolling_30d_average_daily_visits": average_daily_visits,
+        "average_daily_pageviews": average_daily_pageviews,
+        "target_average_daily_visits": VISIT_GOAL_TARGET,
+        "gap_to_target_average_daily_visits": round(max(0, VISIT_GOAL_TARGET - average_daily_visits), 2),
+        "target_progress_percent": round((average_daily_visits / VISIT_GOAL_TARGET) * 100, 3) if VISIT_GOAL_TARGET else 0,
+        "period_unique_visitors": period_unique_visitors,
+        "period_pageviews": period_pageviews,
+        "daily_visitor_sum": daily_visitor_sum,
+        "daily_pageview_sum": daily_pageview_sum,
+        "daily_rows": top_rows(daily_rows, ["timestamp", "visitors", "pageviews"], 40),
+        "top_paths": top_rows(path_rows, ["requestPath", "visitors", "pageviews"], 8),
+        "top_referrers": top_rows(referrer_rows, ["referrerHostname", "visitors", "pageviews"], 8),
+        "device_breakdown": top_rows(device_rows, ["deviceType", "visitors", "pageviews"], 8),
+        "query_errors": {
+            "daily": daily_error,
+            "requestPath": path_error,
+            "referrerHostname": referrer_error,
+            "deviceType": device_error,
+            "utmSource": utm_error,
+            "customEvents": event_error,
+        },
+        "utm_breakdown_status": "available" if not utm_error else f"blocked_or_unavailable: {utm_error.get('code')}",
+        "custom_event_status": "available" if not event_error else f"blocked_or_unavailable: {event_error.get('code')}",
+        "note": "Visits/pageviews are measured centrally. Custom event and some UTM breakdown endpoints may require Vercel Pro/Enterprise or GA4 Data API access for component funnel analysis.",
+    }
 
 
 def item_quality_flags(row: dict[str, Any]) -> list[str]:
@@ -1846,23 +2092,98 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
     metrics = review.get("metrics", {}) if isinstance(review.get("metrics"), dict) else {}
     material_changes = review.get("material_changes", []) if isinstance(review.get("material_changes"), list) else []
     top3_ids = marketing_summary.get("top3_item_ids", []) if isinstance(marketing_summary, dict) else []
+    visit_measurement = measure_vercel_web_analytics()
+    measured = visit_measurement.get("status") == "measured"
+    avg_visits = visit_measurement.get("rolling_30d_average_daily_visits") if measured else None
     goal["updated_at"] = now
     measurement = goal.setdefault("measurement_status", {})
     if isinstance(measurement, dict):
         measurement["last_checked_at"] = now
-        measurement["provider_checked"] = (
-            "Live Vercel Web Analytics script and GA4 tag are provider-ready, but central visit export is unavailable in this runtime. "
-            "This run also verifies the head-level window.va queue/bootstrap, the client-side growth_provider_ready health event, event_schema_version=growth-event-schema-v2 on local/provider-bound events, destination link_utm_* context on clicked/copied share paths, and direct-message/SMS owner share events for first-event capture. "
-            f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
+        measurement["vercel_web_analytics"] = visit_measurement
+        measurement["rolling_30d_average_daily_visits"] = avg_visits
+        if measured:
+            measurement["provider_checked"] = (
+                "Vercel Web Analytics REST API is now connected for central visit/pageview measurement. "
+                f"Measured rolling {visit_measurement.get('window_days', VISIT_GOAL_WINDOW_DAYS)}d average_daily_visits={avg_visits}, "
+                f"period_unique_visitors={visit_measurement.get('period_unique_visitors')}, period_pageviews={visit_measurement.get('period_pageviews')}. "
+                "GA4 tag and Vercel client bridge remain provider-ready; component custom-event and some UTM breakdowns are still plan/API gated unless GA4 Data API access or Vercel custom-event export is connected. "
+                f"Ranking/review metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')}) and regenerated top3 marketing drafts {top3_ids}."
+            )
+            measurement["raw_result"] = (
+                f"Vercel Web Analytics visits/count: rolling_{VISIT_GOAL_WINDOW_DAYS}d_average_daily_visits={avg_visits}; "
+                f"period_unique_visitors={visit_measurement.get('period_unique_visitors')}; "
+                f"period_pageviews={visit_measurement.get('period_pageviews')}; "
+                f"target_progress={visit_measurement.get('target_progress_percent')}%; "
+                f"top_paths={visit_measurement.get('top_paths')}."
+            )
+            measurement["interpretation"] = (
+                f"Traffic is now measured, but the hub is still far below the 500/day target: {avg_visits}/day vs 500/day "
+                f"(gap {visit_measurement.get('gap_to_target_average_daily_visits')}/day). "
+                "This run therefore treats distribution/channel measurement and owner-share conversion as the main growth blocker, not just instrumentation. "
+                + " ".join(str(note) for note in material_changes[:2])
+            ).strip()
+        else:
+            measurement["provider_checked"] = (
+                "Attempted Vercel Web Analytics REST API measurement, but visit totals could not be read in this runtime. "
+                "Client-side Vercel/GA4 instrumentation remains provider-ready. "
+                f"Measurement status={visit_measurement.get('status')}; ranking metrics refreshed (weekly trend_items={metrics.get('trend_items')}, watchlist_items={metrics.get('watchlist_items')})."
+            )
+            measurement["raw_result"] = (
+                "measurement pending: Vercel visits API failed or project context was unavailable; GA4_PROPERTY_ID plus service-account reporting access can also provide central rolling 30-day visits. "
+                f"vercel_measurement_status={visit_measurement.get('status')}"
+            )
+            measurement["interpretation"] = (
+                "Traffic progress cannot be claimed because central visit totals are unavailable. "
+                "Keep client-side/provider-ready instrumentation healthy and connect GA4 Data API or Vercel Analytics reporting access. "
+                + " ".join(str(note) for note in material_changes[:2])
+            ).strip()
+        measurement["component_funnel_status"] = (
+            "custom events/UTM source breakdown measured" if measured and visit_measurement.get("custom_event_status") == "available"
+            else "basic visits measured; custom event and/or UTM source breakdown still blocked by Vercel plan/API or needs GA4 Data API export"
         )
-        measurement["rolling_30d_average_daily_visits"] = None
-        measurement["raw_result"] = (
-            "measurement pending: GA4_PROPERTY_ID plus service-account reporting access or approved Vercel Analytics export/API is still required to calculate rolling 30-day visits and component funnels."
+
+    permissions = goal.setdefault("current_permissions", {})
+    if isinstance(permissions, dict):
+        permissions["can_use_vercel_web_analytics"] = True
+        permissions["can_read_vercel_basic_web_analytics"] = bool(measured)
+        permissions["can_read_vercel_custom_event_analytics"] = bool(
+            measured and visit_measurement.get("custom_event_status") == "available"
         )
-        measurement["interpretation"] = (
-            "Traffic progress cannot be claimed yet. Product/share freshness, destination-level UTM tracking, and event-schema/provider-health QA improved, while visit totals remain unavailable until GA4 Data API or Vercel Analytics export access is connected. "
-            + " ".join(str(note) for note in material_changes[:2])
-        ).strip()
+        permissions["can_read_ga4_data_api"] = bool(
+            env_value("GA4_PROPERTY_ID") and (env_value("GOOGLE_APPLICATION_CREDENTIALS") or env_value("GA4_SERVICE_ACCOUNT_JSON"))
+        )
+
+    providers = goal.setdefault("analytics_providers", {})
+    if isinstance(providers, dict):
+        vercel_provider = providers.setdefault("vercel_web_analytics", {})
+        if isinstance(vercel_provider, dict):
+            vercel_provider["status"] = "enabled-basic-reporting-api" if measured else "enabled-client-script-only"
+            vercel_provider["reporting_api_status"] = "basic_visits_measured" if measured else str(visit_measurement.get("status"))
+            vercel_provider["custom_event_api_status"] = str(visit_measurement.get("custom_event_status") or "unknown")
+            vercel_provider["utm_breakdown_status"] = str(visit_measurement.get("utm_breakdown_status") or "unknown")
+            vercel_provider["last_basic_measurement_at"] = now
+
+    needs = goal.setdefault("needs_user_permission_or_credentials", [])
+    if isinstance(needs, list):
+        replacement_needs = [
+            need for need in needs
+            if not (
+                isinstance(need, dict)
+                and need.get("need") in {
+                    "vercel_analytics_export_or_api_access",
+                    "ga4_property_id_with_data_api_viewer_access",
+                }
+            )
+        ]
+        replacement_needs.append({
+            "need": "ga4_property_id_with_data_api_viewer_access",
+            "why": "Basic Vercel visits are now measurable, but GA4 Data API property ID plus service-account reporting access is still needed to read growth_exposure, growth_section_view, growth_click, growth_share_copy_result, and engagement-summary funnels centrally."
+        })
+        replacement_needs.append({
+            "need": "vercel_pro_or_custom_event_export_access",
+            "why": "The Vercel REST API returns basic visits/pageviews, but custom event and some UTM breakdown queries are plan/API gated in this runtime. Needed to compare owner-share, WhatsApp/SMS, RSS, shortcut, calendar, category, and item-detail funnel performance toward 500/day."
+        })
+        goal["needs_user_permission_or_credentials"] = replacement_needs
 
     experiments = goal.setdefault("initial_experiments", [])
     if isinstance(experiments, list):
@@ -1944,6 +2265,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["silent_provider_health", "growth_provider_ready_event_plus_analyticsBridgeStatus_snapshot"],
             "success_metric": "growth_provider_ready event presence and provider-side event counts before interpreting growth_click/share/copy funnels once analytics export is available",
             "hypothesis": "Provider health events with event_schema_version=growth-event-schema-v2 should reduce false growth conclusions by showing whether GA4/Vercel bridges were actually ready on each visit before comparing CTA or repeat-visit metrics.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "basic-analytics-measurement-v1",
+            "status": "active-basic-visit-measurement-after-build",
+            "variants": ["provider_ready_only", "vercel_rest_api_basic_visits_plus_visible_dashboard_panel"],
+            "success_metric": "rolling_30d_average_daily_visits, period_unique_visitors, pageviews, top_paths, and gap_to_500/day from Vercel Web Analytics REST API; component funnels still require GA4 Data API or Vercel custom-event export",
+            "hypothesis": "Showing real measured traffic on the dashboard and in public JSON will keep growth operations honest and shift the next loop from generic instrumentation to concrete distribution and owner-share conversion work.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

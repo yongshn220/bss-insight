@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 RANKINGS_PATH = DATA_DIR / "rankings.json"
 NEXT_LOOP_FOCUS_PATH = DATA_DIR / "next_loop_focus.json"
+GROWTH_GOAL_PATH = DATA_DIR / "growth_goal.json"
 RANKING_HISTORY_PATH = DATA_DIR / "ranking_history.json"
 RANKINGS_DIR = ROOT / "rankings"
 ITEMS_DIR = ROOT / "items"
@@ -129,6 +130,57 @@ def load_next_loop_focus() -> dict[str, Any]:
     except (OSError, UnicodeDecodeError, json.JSONDecodeError):
         return {}
     return loaded if isinstance(loaded, dict) else {}
+
+
+def load_growth_goal() -> dict[str, Any]:
+    """Load the current 500/day measurement artifact for owner-visible growth context."""
+    if not GROWTH_GOAL_PATH.exists():
+        return {}
+    try:
+        loaded = json.loads(GROWTH_GOAL_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return {}
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def growth_goal_measurement_panel() -> str:
+    """Render the latest central visit measurement without exposing credentials."""
+    goal = load_growth_goal()
+    measurement = goal.get("measurement_status", {}) if isinstance(goal, dict) else {}
+    if not isinstance(measurement, dict):
+        measurement = {}
+    vercel = measurement.get("vercel_web_analytics", {})
+    if not isinstance(vercel, dict):
+        vercel = {}
+    target = (goal.get("primary_goal", {}) if isinstance(goal.get("primary_goal"), dict) else {}).get("target") or 500
+    avg = measurement.get("rolling_30d_average_daily_visits")
+    checked_at = str(measurement.get("last_checked_at") or goal.get("updated_at") or "").replace("T", " ").replace("Z", " UTC")
+    status = str(vercel.get("status") or "measurement pending")
+    visitors = vercel.get("period_unique_visitors")
+    pageviews = vercel.get("period_pageviews")
+    progress = vercel.get("target_progress_percent")
+    custom_status = str(vercel.get("custom_event_status") or measurement.get("component_funnel_status") or "component funnel pending")
+    if isinstance(avg, (int, float)):
+        avg_label = f"{float(avg):.2f}/day"
+        target_label = f"target {safe_int(target, 500)} daily visits"
+        progress_label = f"{progress}%" if progress not in (None, "") else "measured"
+        body = (
+            f"<strong>{esc(avg_label)}</strong>"
+            f"<span>{esc(target_label)} · {esc(progress_label)} progress</span>"
+            f"<small>30d visitors {esc(visitors)} · pageviews {esc(pageviews)} · checked {esc(checked_at)}</small>"
+        )
+    else:
+        body = (
+            "<strong>measurement pending</strong>"
+            "<span>Need central analytics export for rolling 30-day visits.</span>"
+            f"<small>checked {esc(checked_at) if checked_at else 'not checked'}</small>"
+        )
+    return f"""
+          <div class="growth-measurement" aria-label="Growth measurement" data-growth-section="growth-measurement-v1" data-growth-experiment="basic-analytics-measurement-v1" data-measurement-status="{esc(status)}">
+            <span class="health-label">Measured traffic</span>
+            {body}
+            <small class="muted">Basic visits: {esc(status)} · Funnels/UTM: {esc(custom_status)}</small>
+          </div>"""
 
 
 def load_ranking_history() -> dict[str, Any]:
@@ -2412,6 +2464,7 @@ def render_home(data: dict[str, Any]) -> str:
             <strong>500/day</strong>
             <small>rolling 30-day visits</small>
           </div>
+          {growth_goal_measurement_panel()}
           <span class="health-label">Data health</span>
           {data_health_panel(weekly)}
         </div>

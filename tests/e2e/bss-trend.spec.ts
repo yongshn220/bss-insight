@@ -555,7 +555,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const goal = await goalResponse.json();
     expect(goal.primary_goal?.target).toBe(500);
     expect(goal.analytics_providers?.ga4?.measurement_id).toBe('G-SW7HBY6WRE');
-    expect(goal.analytics_providers?.vercel_web_analytics?.status).toBe('enabled');
+    expect(String(goal.analytics_providers?.vercel_web_analytics?.status ?? '')).toMatch(/^enabled/);
+    expect(goal.measurement_status?.rolling_30d_average_daily_visits).not.toBeNull();
+    expect(goal.measurement_status?.vercel_web_analytics?.status).toBe('measured');
     expect(goal.sns_strategy?.tool).toBe('xurl');
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'hero-growth-cta-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'utm-attribution-persistence-v1')).toBe(true);
@@ -573,6 +575,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-attribution-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'basic-analytics-measurement-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
