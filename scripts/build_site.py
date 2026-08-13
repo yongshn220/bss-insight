@@ -604,15 +604,16 @@ def owner_action_panel(row: dict[str, Any], compact: bool = False) -> str:
     ) + '</div>'
 
 
-def item_card(row: dict[str, Any], compact: bool = False) -> str:
-    item_url = f"/items/{esc(row.get('item_id'))}.html"
+def item_card(row: dict[str, Any], compact: bool = False, timeframe: str = "weekly") -> str:
+    item_id = str(row.get("item_id") or "").strip()
+    item_url = ranking_item_link(item_id, timeframe, "ranking_card") if item_id else "#"
     desc = row.get("reason_summary", "")
     evidence_class = "has-trend" if (row.get("source_counts", {}).get("trend_evidence") or row.get("source_counts", {}).get("news_magazine")) else "watchlist-only"
     if compact and len(desc) > 150:
         desc = desc[:147] + "…"
     return f"""
     <article class="rank-card {esc(evidence_class)}" data-item-id="{esc(row.get('item_id'))}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}">
-      <a class="rank-hit" href="{item_url}" aria-label="View {esc(row.get('item_name'))}"></a>
+      <a class="rank-hit" href="{esc(item_url)}" aria-label="View {esc(row.get('item_name'))}"></a>
       <div class="rank-num">#{esc(row.get('rank'))}</div>
       {image_tag(row, 'rank-img')}
       <div class="rank-main">
@@ -653,6 +654,29 @@ def growth_campaign_path(path: str, *, source: str, medium: str, campaign: str, 
         if value not in (None, ""):
             params[key] = str(value)
     return f"{path}?{urllib.parse.urlencode(params)}"
+
+
+def ranking_item_link(item_id: str, timeframe: str, medium: str) -> str:
+    """UTM-tag internal item-detail clicks without changing evidence claims.
+
+    Core podium/ranking cards are the highest-intent owner navigation path. Adding
+    UTM context here lets future GA4/Vercel exports separate plain page loads from
+    ranking-card-driven item-detail visits toward the 500/day goal. This is
+    measurement/distribution metadata only; it does not alter ranking score,
+    source counts, or trend/WATCHLIST status.
+    """
+    item_id = str(item_id or "").strip()
+    if not item_id:
+        return "#"
+    normalized_timeframe = str(timeframe or "weekly").strip() or "weekly"
+    return growth_campaign_path(
+        f"/items/{item_id}.html",
+        source="site",
+        medium=medium,
+        campaign=f"daily-visits-500-{normalized_timeframe}-ranking-item-clicks",
+        utm_content=item_id,
+        utm_term=normalized_timeframe,
+    )
 
 
 def rows_for_category(rows: list[dict[str, Any]], category_id: object) -> list[dict[str, Any]]:
@@ -2781,7 +2805,7 @@ def item_evidence_summary_panel(row: dict[str, Any]) -> str:
       </section>"""
 
 
-def top_three(rows: list[dict[str, Any]]) -> str:
+def top_three(rows: list[dict[str, Any]], timeframe: str = "weekly") -> str:
     trend_rows = [row for row in rows if has_trend_evidence(row)]
     if not trend_rows:
         return """
@@ -2791,8 +2815,10 @@ def top_three(rows: list[dict[str, Any]]) -> str:
         </section>"""
     cards = []
     for row in trend_rows[:3]:
+        item_id = str(row.get("item_id") or "").strip()
+        item_url = ranking_item_link(item_id, timeframe, "podium_card") if item_id else "#"
         cards.append(f"""
-        <a class="podium-card" data-item-id="{esc(row.get('item_id'))}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="/items/{esc(row.get('item_id'))}.html">
+        <a class="podium-card" data-item-id="{esc(row.get('item_id'))}" data-item-rank="{esc(row.get('rank'))}" data-item-category="{esc(row.get('category_id'))}" href="{esc(item_url)}">
           {image_tag(row, 'podium-img')}
           <span class="podium-rank">#{esc(row.get('rank'))}</span>
           <div>
@@ -2838,15 +2864,15 @@ def render_home(data: dict[str, Any]) -> str:
       {return_visitor_panel('weekly')}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Weekly leaders</span><h2>이번 주 Top 3</h2></div><a href="/rankings/weekly.html">전체 보기</a></div>
-        {top_three(weekly)}
+        {top_three(weekly, 'weekly')}
       </section>
       <section class="wrap board" data-growth-section="ranking-main-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Weekly ranking</span><h2>Top item list</h2></div><a href="/rankings/monthly.html">Monthly 보기</a></div>
-        <div class="rank-list">{''.join(item_card(row, compact=True) for row in weekly[:12])}</div>
+        <div class="rank-list">{''.join(item_card(row, compact=True, timeframe='weekly') for row in weekly[:12])}</div>
       </section>
       <section class="wrap board secondary-board" data-growth-section="monthly-preview-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Monthly leaders</span><h2>월간 흐름</h2></div></div>
-        <div class="rank-grid">{''.join(item_card(row, compact=True) for row in monthly[:6])}</div>
+        <div class="rank-grid">{''.join(item_card(row, compact=True, timeframe='monthly') for row in monthly[:6])}</div>
       </section>
       {category_landing_nav(cats, weekly)}
       {run_change_snapshot(data, 'weekly', weekly)}
@@ -2920,7 +2946,7 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
             f"Link: {owner_url}"
         ),
     })
-    top_cards = top_three(rows)
+    top_cards = top_three(rows, 'weekly')
     if not rows:
         top_cards = """
         <section class="empty-state">
@@ -3001,7 +3027,7 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
       </section>
       <section class="wrap board" id="all-items" data-growth-section="category-ranking-list-v1" data-growth-experiment="category-landing-pages-v1">
         <div class="section-title"><div><span>Concrete item types only</span><h2>{esc(cat_name)} 전체 item</h2></div><a href="{esc(ranking_anchor)}">Weekly ranking anchor</a></div>
-        <div class="rank-list">{''.join(item_card(row) for row in rows)}</div>
+        <div class="rank-list">{''.join(item_card(row, timeframe='weekly') for row in rows)}</div>
       </section>
     </main>"""
     return shell(
@@ -3031,7 +3057,7 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
         cat_sections.append(f"""
         <section class="category-block" id="{esc(cat.get('id'))}">
           <div class="section-title compact-title"><div><span>{esc(cat.get('description'))}</span><h2>{esc(cat.get('name'))}</h2></div></div>
-          <div class="rank-list">{''.join(item_card(row) for row in cat_rows)}</div>
+          <div class="rank-list">{''.join(item_card(row, timeframe=timeframe) for row in cat_rows)}</div>
         </section>""")
     body = f"""
     <main>
@@ -3051,11 +3077,11 @@ def render_timeframe(data: dict[str, Any], timeframe: str) -> str:
       {return_visitor_panel(timeframe)}
       <section class="wrap block" data-growth-section="top3-leaderboard-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>Leaderboard</span><h2>Top 3</h2></div></div>
-        {top_three(rows)}
+        {top_three(rows, timeframe)}
       </section>
       <section class="wrap board" id="all-items" data-growth-section="ranking-main-list-v1" data-growth-experiment="ranking-list-engagement-context-v1">
         <div class="section-title"><div><span>All categories</span><h2>전체 순위</h2></div><em>{len(rows)} items</em></div>
-        <div class="rank-list">{''.join(item_card(row) for row in rows)}</div>
+        <div class="rank-list">{''.join(item_card(row, timeframe=timeframe) for row in rows)}</div>
       </section>
       {run_change_snapshot(data, timeframe, rows)}
       {evidence_gap_snapshot(rows, timeframe, data.get('collection_health', {}))}

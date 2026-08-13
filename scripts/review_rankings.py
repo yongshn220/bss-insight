@@ -1701,6 +1701,32 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel export access is needed to compare scroll depth, first item-card clicks, and share/copy behavior before/after the layout order change.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "ranking-item-click-attribution-v1",
+        "status": "live-ranking-card-utm-context-after-build",
+        "objective": "Tag core Top 3 podium and ranking-card item-detail clicks with UTM context so owner item-interest can be measured separately from generic page loads.",
+        "utm_campaign_pattern": "daily-visits-500-{timeframe}-ranking-item-clicks",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (Top 3 podium + Weekly/Monthly item cards)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (podium_card and ranking_card links)",
+            "https://gnsresearchhub.vercel.app/rankings/monthly.html",
+            "https://gnsresearchhub.vercel.app/categories/wigs-hair-pieces.html (category ranking cards use weekly context)",
+        ],
+        "tracked_events": [
+            "growth_click podium_card with link_utm_medium=podium_card",
+            "growth_click item_card with link_utm_medium=ranking_card",
+            "growth_exposure page_type=item_detail with utm_campaign=daily-visits-500-{timeframe}-ranking-item-clicks after card navigation",
+        ],
+        "tracked_quality_metrics": [
+            "podium hrefs use utm_source=site&utm_medium=podium_card&utm_campaign=daily-visits-500-{timeframe}-ranking-item-clicks",
+            "rank-hit hrefs use utm_source=site&utm_medium=ranking_card&utm_campaign=daily-visits-500-{timeframe}-ranking-item-clicks",
+            f"weekly_top_item_id={top3_ids[0] if top3_ids else 'none'}",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+        ],
+        "owner_value": "The UI looks the same to BSS owners, but future analytics can identify which concrete product cards drive item-detail interest, helping optimize toward 500/day without external posting or fabricated demand claims.",
+        "measurement_need": "Basic Vercel visits are measured; GA4 Data API or Vercel custom-event/UTM export is still needed to compare ranking_card vs podium_card item-detail conversion centrally.",
+        "last_refreshed_at": now,
+    })
     focus_items = review.get("next_loop_focus_items", []) if isinstance(review.get("next_loop_focus_items", []), list) else []
     focus_item_ids = [str(item.get("item_id")) for item in focus_items if isinstance(item, dict) and item.get("item_id")]
     supplemental_rows = [
@@ -2235,6 +2261,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "next_step": "After analytics export access is connected, compare growth_section_view order, first item_card/podium_card clicks, scroll depth, and share/copy events before/after the ranking-first layout change.",
             "last_refreshed_at": now,
         })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "ranking-item-click-attribution-v1",
+            "status": "active-utm-context-after-review",
+            "hypothesis": "UTM-tagging core podium and ranking-card item links should make item-detail interest measurable by concrete product card and timeframe instead of relying only on generic path counts.",
+            "next_step": "After GA4/Vercel export access is connected, compare growth_click item_card/podium_card events and item_detail exposures segmented by link_utm_medium=ranking_card/podium_card and daily-visits-500-{timeframe}-ranking-item-clicks campaigns.",
+            "last_refreshed_at": now,
+        })
 
     save_json(MARKETING_BACKLOG_PATH, marketing)
     return {"top3_item_ids": top3_ids, "draft_count": len(drafts), "updated_at": now}
@@ -2643,6 +2676,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["ops_panels_before_ranking", "top3_and_main_list_before_supporting_modules"],
             "success_metric": "first-session podium_card/item_card clicks, ranking-main-list section views, scroll depth to support modules, share/copy events, and repeat visits once analytics export is connected",
             "hypothesis": "A ranking-first layout should fit busy BSS owner behavior better by showing concrete product picks before secondary evidence, focus, share, feed, shortcut, and calendar panels.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "ranking-item-click-attribution-v1",
+            "status": "active-utm-context-after-build",
+            "variants": ["untagged_internal_item_links", "podium_and_ranking_card_item_links_with_utm_context"],
+            "success_metric": "item-detail exposures and visits segmented by utm_medium=podium_card vs ranking_card, item_card clicks, source-link clicks, and repeat visits once GA4/Vercel export access is connected",
+            "hypothesis": "Adding UTM context to core ranking-card item links should make the 500/day growth loop more actionable by showing which concrete BSS product cards create item-detail interest, without changing evidence scoring or trend claims.",
             "last_refreshed_at": now,
         })
 

@@ -1,7 +1,7 @@
 {
   "goal_id": "daily-visits-500",
   "created_at": "2026-08-07T01:08:59Z",
-  "updated_at": "2026-08-13T16:11:15.301189Z",
+  "updated_at": "2026-08-13T17:47:48.127678Z",
   "owner": "GNS Research Hub",
   "primary_goal": {
     "metric": "average_daily_visits",
@@ -10,19 +10,19 @@
     "definition": "Average daily visits to https://gnsresearchhub.vercel.app over a rolling 30-day period. Prefer unique visitors when provider data is available; otherwise use page sessions/visits consistently and label the limitation."
   },
   "measurement_status": {
-    "last_checked_at": "2026-08-13T16:11:15.301189Z",
-    "provider_checked": "Vercel Web Analytics REST API is now connected for central visit/pageview measurement. Measured rolling 30d average_daily_visits=0.27, period_unique_visitors=8, period_pageviews=13. GA4 tag and Vercel client bridge remain provider-ready; component custom-event and some UTM breakdowns are still plan/API gated unless GA4 Data API access or Vercel custom-event export is connected. Ranking/review metrics refreshed (weekly trend_items=11, watchlist_items=33) and regenerated top3 marketing drafts ['glueless-pre-cut-hd-lace-wig', 'rhinestone-stud-earrings-6mm', 'lash-bond-and-seal'].",
+    "last_checked_at": "2026-08-13T17:47:48.127678Z",
+    "provider_checked": "Vercel Web Analytics REST API is now connected for central visit/pageview measurement. Measured rolling 30d average_daily_visits=0.27, period_unique_visitors=8, period_pageviews=13. GA4 tag and Vercel client bridge remain provider-ready; component custom-event and some UTM breakdowns are still plan/API gated unless GA4 Data API access or Vercel custom-event export is connected. Ranking/review metrics refreshed (weekly trend_items=10, watchlist_items=34) and regenerated top3 marketing drafts ['glueless-pre-cut-hd-lace-wig', 'rhinestone-stud-earrings-6mm', 'lash-bond-and-seal'].",
     "rolling_30d_average_daily_visits": 0.27,
     "raw_result": "Vercel Web Analytics visits/count: rolling_30d_average_daily_visits=0.27; period_unique_visitors=8; period_pageviews=13; target_progress=0.054%; top_paths=[{'requestPath': '/', 'visitors': 8, 'pageviews': 8}, {'requestPath': '/rankings/weekly.html', 'visitors': 2, 'pageviews': 2}, {'requestPath': '/items/chrome-nail-powder.html', 'visitors': 1, 'pageviews': 1}, {'requestPath': '/items/rhinestone-stud-earrings-6mm.html', 'visitors': 1, 'pageviews': 2}].",
-    "interpretation": "Traffic is now measured, but the hub is still far below the 500/day target: 0.27/day vs 500/day (gap 499.73/day). This run therefore treats distribution/channel measurement and owner-share conversion as the main growth blocker, not just instrumentation. Improved: published trend item coverage 10→11 (+1) Improved: recent trend item coverage 10→11 (+1)",
+    "interpretation": "Traffic is now measured, but the hub is still far below the 500/day target: 0.27/day vs 500/day (gap 499.73/day). This run therefore treats distribution/channel measurement and owner-share conversion as the main growth blocker, not just instrumentation. Improved source: all-window published trend item coverage 38→39 (+1) Improved source: published trend URL total 114→116 (+2)",
     "vercel_web_analytics": {
       "status": "measured",
       "measurement_source": "vercel_web_analytics_rest_api",
       "project_name": "gns_research_hub",
       "project_context_status": "project_lookup_success",
       "window_days": 30,
-      "since": "2026-07-14T16:11:10.551831Z",
-      "until": "2026-08-13T16:11:10.551831Z",
+      "since": "2026-07-14T17:47:44.336110Z",
+      "until": "2026-08-13T17:47:44.336110Z",
       "rolling_30d_average_daily_visits": 0.27,
       "average_daily_pageviews": 0.43,
       "target_average_daily_visits": 500,
@@ -364,7 +364,7 @@
       ],
       "success_metric": "item-detail UTM sessions from owner_share/x/email/message links, item_copy/message_copy events, item source-link clicks, and repeat item-detail entrances once analytics export is connected",
       "hypothesis": "Item-specific social preview cards should make shared BSS owner links more trustworthy because previews show the item name, display test, risk note, trend URL count, and WATCHLIST status instead of implying a vendor listing image is evidence.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "utm-attribution-persistence-v1",
@@ -573,7 +573,7 @@
       ],
       "success_metric": "UTM-attributed top3 share clicks, owner brief copies, item-detail entrances, and repeat visits once analytics export is available",
       "hypothesis": "Keeping public SNS/rep drafts synchronized with the live Top 3 will reduce dead/stale shares and improve repeat-visit quality toward 500/day.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "run-change-snapshot-v1",
@@ -584,7 +584,7 @@
       ],
       "success_metric": "run_change_review clicks, ranking-card clicks after viewing latest-loop changes, share/copy events, and repeat visits once analytics export is available",
       "hypothesis": "BSS owners and reps will revisit/share more often when the dashboard clearly separates material evidence/source changes from routine refreshes.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "trend-preserving-source-cap-v1",
@@ -595,7 +595,7 @@
       ],
       "success_metric": "items_with_published_trend_url, published_trend_urls_total, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
       "hypothesis": "Preserving dated published URLs before same-day supply listings enter the per-item cap should improve evidence trust and reduce avoidable WATCHLIST labeling without counting search URLs as evidence.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "common-event-page-context-v1",
@@ -606,7 +606,7 @@
       ],
       "success_metric": "growth_exposure, growth_click, growth_section_view, growth_engagement_summary, and share/copy events segmented by page_type, timeframe, and page_item_id once analytics export is connected",
       "hypothesis": "BSS owner growth optimization needs event context that distinguishes home, timeframe ranking, and item-detail pages without brittle URL parsing in the analytics dashboard.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "apify-sharded-fallback-v1",
@@ -617,7 +617,7 @@
       ],
       "success_metric": "fresh TikTok Shop URLs retained, cached fallback URLs minimized, no increase in unsupported trend claims, source-link/item-card engagement once analytics export is connected",
       "hypothesis": "Sharded actor fallback will keep BSS owner item cards current through upstream TikTok Shop collector instability while preserving evidence discipline.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "post-review-site-sync-v1",
@@ -628,7 +628,7 @@
       ],
       "success_metric": "Live homepage/ranking focus cards show the same updated_at and focus items as /data/next_loop_focus_public.json; downstream focus-watchlist clicks once analytics export is connected",
       "hypothesis": "BSS owners and reps will trust the hub more when visible WATCHLIST focus cards match the latest post-QA review instead of lagging one run behind.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "return-visitor-attribution-v1",
@@ -650,7 +650,7 @@
       ],
       "success_metric": "growth_return_visit_prompt exposures, return_visitor CTA clicks, share/copy events, and rolling 30-day repeat visits once analytics export is connected",
       "hypothesis": "Returning BSS owners should be routed directly to changed ranking/watchlist actions instead of re-reading the full dashboard, increasing repeat-use value toward 500/day.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "visit-session-boundary-v1",
@@ -661,7 +661,7 @@
       ],
       "success_metric": "growth_exposure and growth_engagement_summary segmented by fresh session_id, visit_count, is_returning_visitor, first/current UTM, and repeat item-detail entrances once analytics export is connected",
       "hypothesis": "Renewing session_id after the 30-minute visit boundary prevents repeat owners from being collapsed into a stale browser session, improving measurement toward the 500/day goal.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "social-share-preview-card-v1",
@@ -672,7 +672,7 @@
       ],
       "success_metric": "UTM-attributed sessions from owner_share/x/email links, share/copy events, and repeat visits once analytics export is connected",
       "hypothesis": "Ranking-specific social preview images should make shared BSS owner links clearer and more trustworthy because previews show Top 3 item names plus trend/watchlist counts without unsupported claims.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "rss-owner-feed-v1",
@@ -683,7 +683,7 @@
       ],
       "success_metric": "utm_source=rss sessions, item-detail entrances, returning-owner visits, and share/copy events once analytics export is connected",
       "hypothesis": "A subscriber/crawler-friendly RSS feed should create another organic repeat-visit path for BSS owners and reps without requiring external SNS posting permissions.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "category-landing-pages-v1",
@@ -694,7 +694,7 @@
       ],
       "success_metric": "utm_medium=category_nav/category_page sessions, category_copy_link share events, category ranking-card clicks, and repeat visits once analytics export is connected",
       "hypothesis": "Focused category pages should turn broad BSS store lanes into crawlable/shareable entry points while preserving item-only ranking discipline.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "owner-feed-subscribe-v1",
@@ -705,7 +705,7 @@
       ],
       "success_metric": "growth_section_view owner-feed-subscribe-v1, cta_owner_feed_open clicks, feed_copy copy results, utm_source=rss sessions, and returning-owner visits once analytics export is connected",
       "hypothesis": "Making the feed path visible should increase repeat owner visits compared with an RSS feed that only exists in metadata and sitemap.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "owner-shortcut-save-v1",
@@ -716,7 +716,7 @@
       ],
       "success_metric": "utm_medium=shortcut and utm_source=pwa sessions, shortcut copy/open events, returning-owner visit_count, and repeat ranking entrances once analytics export is connected",
       "hypothesis": "Giving owners/reps an installable shortcut and copyable saved link should reduce friction to reopening the dashboard, supporting repeat visits toward 500/day without external posting permissions.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "vercel-analytics-head-bootstrap-v1",
@@ -727,7 +727,7 @@
       ],
       "success_metric": "Vercel Analytics custom event receipt for growth_exposure, growth_click, growth_share_copy_result, and growth_engagement_summary once export access is available",
       "hypothesis": "Creating the Vercel Analytics queue in the document head before deferred growth.js runs should reduce missed first-event risk and make provider-side counts better align with local QA buffers.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "item-evidence-summary-v1",
@@ -738,7 +738,7 @@
       ],
       "success_metric": "item-evidence-summary section views, source-jump clicks, evidence-summary copy results, source_domain clicks, item-detail shares, and repeat item-detail entrances once analytics export is connected",
       "hypothesis": "BSS owners and reps will trust and share item pages more when each detail page summarizes trend claim status, 14-day recency, supply validation, and watchlist references before the source list.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "timeframe-evidence-ladder-v1",
@@ -749,7 +749,7 @@
       ],
       "success_metric": "growth_section_view timeframe-evidence-ladder-v1, cta_timeframe_evidence_ladder clicks, timeframe entrances via utm_medium=evidence_ladder, and repeat item-detail visits once analytics export is connected",
       "hypothesis": "Showing Weekly/Monthly/Quarterly/Yearly evidence coverage side by side should keep owners engaged during thin weekly evidence periods while preserving evidence discipline and creating measurable cross-window navigation.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "owner-5-minute-route-v1",
@@ -760,7 +760,7 @@
       ],
       "success_metric": "growth_section_view owner-5-minute-route-v1, owner_route_item clicks, owner_route_copy results, route_copy UTM sessions, and item-detail entrances once analytics export is connected",
       "hypothesis": "A 5-minute owner route should convert more busy BSS owners/reps into item-detail visits and shares than asking them to interpret the full ranking first.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "owner-calendar-reminder-v1",
@@ -771,7 +771,7 @@
       ],
       "success_metric": "owner-calendar-reminder section views, calendar file downloads/copy events, utm_source=calendar return visits, and repeat visitor rate once analytics export is connected",
       "hypothesis": "A weekly .ics reminder gives owners/reps a low-friction return path outside SNS and should improve repeat visits toward the 500/day goal once provider measurement is connected.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "focus-query-diversification-v1",
@@ -782,7 +782,7 @@
       ],
       "success_metric": "next-loop weak-item published trend URL gains, weekly WATCHLIST reduction, and source-link engagement once analytics export is connected",
       "hypothesis": "Diversifying next_loop_focus probes should find more dated item-relevant URLs for weak BSS owner items than repeatedly querying only generic trend phrases, without scoring generated search URLs.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "supplemental-trend-query-coverage-v1",
@@ -793,7 +793,7 @@
       ],
       "success_metric": "weekly trend_items, WATCHLIST count, zero-trend category count, supplemental published source-link engagement, and no increase in unsupported/search evidence claims once analytics export is connected",
       "hypothesis": "Concrete Nails/Jewelry item types are often covered in public sources through look/style language, so bounded supplemental published-source probes should lower false WATCHLIST gaps while preserving the rule that search URLs and supply listings do not create trend claims.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "analytics-provider-health-event-v1",
@@ -804,7 +804,7 @@
       ],
       "success_metric": "growth_provider_ready event presence and provider-side event counts before interpreting growth_click/share/copy funnels once analytics export is available",
       "hypothesis": "Provider health events with event_schema_version=growth-event-schema-v2 should reduce false growth conclusions by showing whether GA4/Vercel bridges were actually ready on each visit before comparing CTA or repeat-visit metrics.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "category-share-preview-card-v1",
@@ -815,7 +815,7 @@
       ],
       "success_metric": "category_page UTM sessions, category_copy_link/share events, item-card clicks from category pages, and repeat visits once analytics export is connected",
       "hypothesis": "Store-zone-specific social preview cards should make category landing shares more trustworthy and relevant for BSS owners than the generic all-category ranking image.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "ranking-first-layout-v1",
@@ -826,7 +826,7 @@
       ],
       "success_metric": "first-session podium_card/item_card clicks, ranking-main-list section views, scroll depth to support modules, share/copy events, and repeat visits once analytics export is connected",
       "hypothesis": "A ranking-first layout should fit busy BSS owner behavior better by showing concrete product picks before secondary evidence, focus, share, feed, shortcut, and calendar panels.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "coverage-gap-first-focus-v1",
@@ -837,7 +837,7 @@
       ],
       "success_metric": "missing_published_trend_items reduction, next-loop focus follow-up improvements, weekly trend_items, WATCHLIST count, and source-link engagement once analytics export is connected",
       "hypothesis": "True all-window missing published-source gaps should be prioritized before recency-only gaps so the next collector improves trust blockers that matter most to BSS owners.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "collection-evidence-regression-recovery-v1",
@@ -848,7 +848,7 @@
       ],
       "success_metric": "collection_evidence_deltas recovery, missing_published_trend_items reduction, source-link engagement, and repeat visits once analytics export is connected",
       "hypothesis": "All-window/source delta review will make the 500/day growth loop safer by detecting lost dated evidence or source freshness even when weekly Top 3 stays unchanged.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "link-destination-utm-context-v1",
@@ -859,7 +859,7 @@
       ],
       "success_metric": "growth_click and growth_share_copy_result segmented by link_utm_source, link_utm_medium, link_utm_campaign, link_utm_content, destination_path, component_experiment_id, and item_id once analytics export is connected",
       "hypothesis": "BSS owner growth optimization needs destination-level UTM context on every clicked/copied link so owner_share, X, email, message, RSS, shortcut, calendar, focus-watchlist, and item-detail share paths can be compared without brittle URL parsing.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "category-brief-copy-v1",
@@ -870,7 +870,7 @@
       ],
       "success_metric": "growth_section_view category-brief-copy-v1, category_brief_copy/email events, category_brief UTM sessions, item-card clicks from category pages, and repeat visits once analytics export is connected",
       "hypothesis": "Category pages should convert more sharing and repeat visits when each store-zone page offers a one-click brief with concrete item display/risk/evidence labels instead of only a URL.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "apify-failure-cooldown-v1",
@@ -881,7 +881,7 @@
       ],
       "success_metric": "fewer repeated failed Apify attempts during upstream failures, cache_age_days within policy, fresh_evidence_urls recovery after cooldown, and no unsupported trend claims",
       "hypothesis": "Using a short cooldown after a recent TikTok Shop actor failure should preserve cron/runtime stability and owner trust by labeling cache reuse explicitly while still retrying automatically after cooldown expiry.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "direct-message-owner-share-v1",
@@ -892,7 +892,7 @@
       ],
       "success_metric": "utm_source=message sessions, share_*_message_copy results, sms_draft clicks, item-detail entrances, and returning-owner visits once analytics export is connected",
       "hypothesis": "SMS/Kakao-ready direct message copy should improve practical distribution to BSS owners and reps while remaining draft/copy-only and evidence-safe without external SNS credentials.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "tiktok-source-health-label-v1",
@@ -903,7 +903,7 @@
       ],
       "success_metric": "evidence-gap section views, evidence_snapshot_review clicks, item-card/source-link engagement, and repeat visits once analytics export is connected",
       "hypothesis": "BSS owners will trust the ranking more when TikTok Shop freshness clearly says Fresh vs Cached supply-only instead of a ratio that can look like a score.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "whatsapp-owner-share-v1",
@@ -914,7 +914,7 @@
       ],
       "success_metric": "share_*_whatsapp_draft clicks, utm_source=message sessions, item-detail entrances, and returning-owner visits once analytics export is connected",
       "hypothesis": "Adding WhatsApp draft links gives owners/reps a mobile group-share path without auto-posting, improving distribution options toward the 500/day visit goal while preserving evidence-safe message copy.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "basic-analytics-measurement-v1",
@@ -925,7 +925,7 @@
       ],
       "success_metric": "rolling_30d_average_daily_visits, period_unique_visitors, pageviews, top_paths, and gap_to_500/day from Vercel Web Analytics REST API; component funnels still require GA4 Data API or Vercel custom-event export",
       "hypothesis": "Showing real measured traffic on the dashboard and in public JSON will keep growth operations honest and shift the next loop from generic instrumentation to concrete distribution and owner-share conversion work.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "native-mobile-share-v1",
@@ -936,7 +936,7 @@
       ],
       "success_metric": "growth_native_share_result, native_share UTM sessions, item-detail entrances, share/copy events, and returning-owner visits once analytics export is connected",
       "hypothesis": "Mobile BSS owners will forward/reopen item links more easily when a phone-native share sheet or copy fallback is available beside SMS/WhatsApp/X drafts, without granting external posting credentials.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "owner-print-sheet-v1",
@@ -947,7 +947,7 @@
       ],
       "success_metric": "owner-print-sheet section views, owner-share-sheet page visits, print_sheet/owner_handout/category_lane UTM sessions, owner_print_sheet copy events, and repeat item-detail entrances once analytics export is connected",
       "hypothesis": "A print/screenshot-friendly handout should create practical offline and rep-distribution visits without external SNS credentials while preserving evidence discipline.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     },
     {
       "experiment_id": "ranking-card-evidence-badge-v1",
@@ -958,7 +958,18 @@
       ],
       "success_metric": "ranking-main-list item_card clicks, WATCHLIST card click quality, source-link clicks, share/copy events, and repeat visits once analytics export is connected",
       "hypothesis": "Visible Trend-backed/WATCHLIST badges on each ranking card should reduce black-box score confusion and make owner clicks more intentional without changing rank or evidence scoring.",
-      "last_refreshed_at": "2026-08-13T16:11:15.301189Z"
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
+    },
+    {
+      "experiment_id": "ranking-item-click-attribution-v1",
+      "status": "active-utm-context-after-build",
+      "variants": [
+        "untagged_internal_item_links",
+        "podium_and_ranking_card_item_links_with_utm_context"
+      ],
+      "success_metric": "item-detail exposures and visits segmented by utm_medium=podium_card vs ranking_card, item_card clicks, source-link clicks, and repeat visits once GA4/Vercel export access is connected",
+      "hypothesis": "Adding UTM context to core ranking-card item links should make the 500/day growth loop more actionable by showing which concrete BSS product cards create item-detail interest, without changing evidence scoring or trend claims.",
+      "last_refreshed_at": "2026-08-13T17:47:48.127678Z"
     }
   ],
   "reporting": {
@@ -974,7 +985,7 @@
       "reporting_api_status": "basic_visits_measured",
       "custom_event_api_status": "blocked_or_unavailable: payment_required",
       "utm_breakdown_status": "blocked_or_unavailable: payment_required",
-      "last_basic_measurement_at": "2026-08-13T16:11:15.301189Z"
+      "last_basic_measurement_at": "2026-08-13T17:47:48.127678Z"
     },
     "ga4": {
       "status": "enabled-in-site-head",

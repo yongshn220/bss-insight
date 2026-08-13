@@ -289,10 +289,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('.podium-card')).toHaveCount(3);
     await expect(page.locator('.podium-card').first()).toHaveAttribute('data-item-id', /.+/);
     await expect(page.locator('.podium-card').first()).toHaveAttribute('data-item-rank', /\d+/);
+    await expect(page.locator('.podium-card').first()).toHaveAttribute('href', /daily-visits-500-weekly-ranking-item-clicks/);
+    await expect(page.locator('.podium-card').first()).toHaveAttribute('href', /utm_medium=podium_card/);
 
     const rankCards = page.locator('.rank-card');
     await expect(rankCards.first()).toBeVisible();
     expect(await rankCards.count()).toBeGreaterThanOrEqual(8);
+    await expect(rankCards.first().locator('.rank-hit')).toHaveAttribute('href', /daily-visits-500-weekly-ranking-item-clicks/);
+    await expect(rankCards.first().locator('.rank-hit')).toHaveAttribute('href', /utm_medium=ranking_card/);
     await expect(rankCards.first().locator('.evidence-badge')).toBeVisible();
     await expect(rankCards.first().locator('.evidence-badge')).toHaveAttribute('data-evidence-status', /trend-backed|watchlist/);
     await expect(rankCards.first().locator('.owner-actions')).toBeVisible();
@@ -604,13 +608,15 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(clickEvents.some((event: any) => event.event === 'growth_exposure' && event.page_type === 'ranking' && event.first_utm_source === 'e2e' && event.current_utm_source === 'site')).toBe(true);
 
     await page.locator('#all-items .rank-card .rank-hit').first().click();
-    await expect(page).toHaveURL(/\/items\/.+\.html$/);
+    await expect(page).toHaveURL(/\/items\/.+\.html(\?.*)?$/);
     const itemExposure = await page.evaluate(() => {
       const events = (window as any).__GNS_GROWTH__?.events?.() ?? [];
       const exposures = events.filter((event: any) => event.event === 'growth_exposure' && event.page_type === 'item_detail');
       return exposures[exposures.length - 1];
     });
     expect(itemExposure.utm_source).toBe('site');
+    expect(itemExposure.utm_medium).toBe('ranking_card');
+    expect(itemExposure.utm_campaign).toBe('daily-visits-500-weekly-ranking-item-clicks');
     expect(itemExposure.first_utm_source).toBe('e2e');
     expect(itemExposure.page_item_id).toMatch(/.+/);
     expect(itemExposure.session_id).toMatch(/^gns_/);
@@ -642,6 +648,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'basic-analytics-measurement-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
+    expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'ranking-item-click-attribution-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(goal.initial_experiments?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);
@@ -1021,6 +1028,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'return-visitor-prompt-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-first-layout-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-item-click-attribution-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'focus-query-diversification-v1')).toBe(true);
@@ -1035,6 +1043,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'native-mobile-share-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'ranking-item-click-attribution-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-feed-subscribe-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'focus-query-diversification-v1')).toBe(true);
