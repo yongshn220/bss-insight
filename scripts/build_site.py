@@ -1000,6 +1000,15 @@ def category_share_card_path(category_id: object) -> str:
     return f"/assets/share-category-{category_id}.svg"
 
 
+def item_share_card_path(item_id: object) -> str:
+    """Return the generated OG/Twitter image path for an item detail page."""
+    safe_id = str(item_id or "").strip()
+    if not safe_id:
+        safe_id = "unknown-item"
+    safe_id = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "-" for ch in safe_id.lower())
+    return f"/assets/share-item-{safe_id}.svg"
+
+
 def svg_text(value: object, limit: int | None = None) -> str:
     """Escape and optionally clamp text for the generated social preview SVG."""
     text = " ".join(str(value or "").split())
@@ -1135,6 +1144,84 @@ def write_social_share_cards(data: dict[str, Any]) -> list[str]:
 </svg>
 """
         out = assets_dir / f"share-category-{category_id}.svg"
+        out.write_text(svg, encoding="utf-8")
+        generated.append(str(out.relative_to(ROOT)))
+
+    # Item detail pages are the strongest owner/reps share target, but using a
+    # random listing image as the social preview can make a shared card look like
+    # an unsupported product ad. These deterministic item cards summarize the
+    # current evidence status, display test, and risk note without inventing price
+    # or availability and without upgrading WATCHLIST rows into trends.
+    seen_item_ids: set[str] = set()
+    for row in weekly_rows:
+        item_id = str(row.get("item_id") or "").strip()
+        if not item_id or item_id in seen_item_ids:
+            continue
+        seen_item_ids.add(item_id)
+        counts = row.get("source_counts", {}) if isinstance(row.get("source_counts"), dict) else {}
+        trend_count = safe_int(counts.get("trend_evidence") or counts.get("news_magazine"))
+        recent_count = safe_int(counts.get("recent_trend_evidence") or counts.get("recent_evidence"))
+        supply_count = safe_int(counts.get("retail_product_evidence"))
+        watchlist_count = safe_int(counts.get("watchlist_links") or counts.get("manual_references"))
+        evidence = evidence_status_label(row)
+        display = row.get("display_tip") or "front-area display test"
+        risk = row.get("risk") or "track sell-through and shrink"
+        status_color = "#047857" if trend_count else "#f97316"
+        status_fill = "#ecfdf3" if trend_count else "#fff7ed"
+        svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="{svg_text(row.get('item_name'))} BSS item detail social preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.52" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fff7ed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1032" cy="96" r="132" fill="#171717" opacity="0.055"/>
+  <circle cx="118" cy="548" r="150" fill="#0072f5" opacity="0.07"/>
+  <text x="82" y="80" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#0072f5" letter-spacing="3">BSS ITEM DETAIL · WEEKLY</text>
+  <text x="82" y="148" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#171717">{svg_text(row.get('item_name'), 36)}</text>
+  <text x="82" y="194" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#555555">{svg_text(row.get('category_name'), 44)} · Rank #{svg_text(row.get('rank'))} · Score {svg_text(row.get('score'))}</text>
+  <g transform="translate(82 226)">
+    <rect width="1036" height="82" rx="24" fill="{status_fill}"/>
+    <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="800" fill="{status_color}">Evidence status</text>
+    <text x="28" y="62" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#171717">{svg_text(evidence, 58)}</text>
+    <text x="1010" y="52" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Search links are watchlist only</text>
+  </g>
+  <g transform="translate(82 334)">
+    <rect width="500" height="96" rx="22" fill="#ffffff" opacity="0.98"/>
+    <text x="24" y="32" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#f97316">Display test</text>
+    <text x="24" y="63" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#171717">{svg_text(display, 48)}</text>
+  </g>
+  <g transform="translate(618 334)">
+    <rect width="500" height="96" rx="22" fill="#ffffff" opacity="0.98"/>
+    <text x="24" y="32" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#f97316">Risk / caution</text>
+    <text x="24" y="63" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#171717">{svg_text(risk, 48)}</text>
+  </g>
+  <g transform="translate(82 466)">
+    <rect width="240" height="70" rx="20" fill="#171717"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#ffffff" opacity="0.72">Trend URLs</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff">{trend_count}</text>
+  </g>
+  <g transform="translate(342 466)">
+    <rect width="240" height="70" rx="20" fill="#f8fafc"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#555555">14d URLs</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#171717">{recent_count}</text>
+  </g>
+  <g transform="translate(602 466)">
+    <rect width="240" height="70" rx="20" fill="#f8fafc"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#555555">Supply URLs</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#171717">{supply_count}</text>
+  </g>
+  <g transform="translate(862 466)">
+    <rect width="256" height="70" rx="20" fill="#fff7ed"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#9a3412">Watchlist links</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#9a3412">{watchlist_count}</text>
+  </g>
+  <text x="82" y="590" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Item detail share card · Growth goal 500/day · Generated {svg_text(generated_at, 24)} · gnsresearchhub.vercel.app</text>
+</svg>
+"""
+        out = assets_dir / Path(item_share_card_path(item_id)).name
         out.write_text(svg, encoding="utf-8")
         generated.append(str(out.relative_to(ROOT)))
     return generated
@@ -2694,7 +2781,7 @@ def render_item_detail(data: dict[str, Any], item_id: str) -> str:
         page_type="item_detail",
         page_path=f"/items/{item_id}.html",
         description=page_description(str(row.get("item_name") or "BSS item detail"), [row]),
-        image_url=row.get("image_url"),
+        image_url=item_share_card_path(item_id),
         json_ld=product_json_ld(row),
     )
 

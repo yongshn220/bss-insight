@@ -737,7 +737,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('#wigs-hair-pieces .rank-card').first()).toBeVisible();
   });
 
-  test('ranking cards click through to item detail pages and back', async ({ page }) => {
+  test('ranking cards click through to item detail pages and back', async ({ page, request }) => {
     await page.goto('/rankings/weekly.html');
 
     const firstCard = page.locator('#all-items .rank-card').first();
@@ -766,6 +766,16 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const sourceClickEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(sourceClickEvents.some((event: any) => event.event === 'growth_click' && event.type === 'source_link' && event.section === 'source-evidence-clicks-v1' && event.component_experiment_id === 'source-evidence-clicks-v1' && event.source_layer && event.source_kind && event.source_status && event.source_domain && event.source_discovery_kind)).toBe(true);
+    const detailOgImage = await page.locator('meta[property="og:image"]').getAttribute('content');
+    expect(detailOgImage).toMatch(/https:\/\/gnsresearchhub\.vercel\.app\/assets\/share-item-.+\.svg$/);
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', detailOgImage ?? '');
+    const itemShareCardPath = new URL(detailOgImage ?? '').pathname;
+    const itemShareCardResponse = await request.get(itemShareCardPath);
+    expect(itemShareCardResponse.status()).toBeLessThan(400);
+    const itemShareCardSvg = await itemShareCardResponse.text();
+    expect(itemShareCardSvg).toContain('BSS ITEM DETAIL · WEEKLY');
+    expect(itemShareCardSvg).toContain('Evidence status');
+    expect(itemShareCardSvg).toContain(itemName);
     await expect(page.locator('.item-share-kit')).toBeVisible();
     await expect(page.locator('.item-share-kit')).toHaveAttribute('data-growth-section', 'item-detail-share-card-v1');
     await expect(page.locator('.item-share-kit')).toHaveAttribute('data-growth-experiment', 'item-detail-share-card-v1');

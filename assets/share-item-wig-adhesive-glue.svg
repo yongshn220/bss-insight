@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Wig Adhesive Glue BSS item detail social preview">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.52" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fff7ed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1032" cy="96" r="132" fill="#171717" opacity="0.055"/>
+  <circle cx="118" cy="548" r="150" fill="#0072f5" opacity="0.07"/>
+  <text x="82" y="80" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#0072f5" letter-spacing="3">BSS ITEM DETAIL · WEEKLY</text>
+  <text x="82" y="148" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" fill="#171717">Wig Adhesive Glue</text>
+  <text x="82" y="194" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#555555">Hair Care &amp; Styling · Rank #15 · Score 41</text>
+  <g transform="translate(82 226)">
+    <rect width="1036" height="82" rx="24" fill="#fff7ed"/>
+    <text x="28" y="34" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="800" fill="#f97316">Evidence status</text>
+    <text x="28" y="62" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#171717">WATCHLIST · evidence insufficient</text>
+    <text x="1010" y="52" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Search links are watchlist only</text>
+  </g>
+  <g transform="translate(82 334)">
+    <rect width="500" height="96" rx="22" fill="#ffffff" opacity="0.98"/>
+    <text x="24" y="32" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#f97316">Display test</text>
+    <text x="24" y="63" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#171717">잠금 또는 직원 시야 안 진열, remover와 함께 배치</text>
+  </g>
+  <g transform="translate(618 334)">
+    <rect width="500" height="96" rx="22" fill="#ffffff" opacity="0.98"/>
+    <text x="24" y="32" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#f97316">Risk / caution</text>
+    <text x="24" y="63" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#171717">피부 반응/반품/사용법 설명 중요</text>
+  </g>
+  <g transform="translate(82 466)">
+    <rect width="240" height="70" rx="20" fill="#171717"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#ffffff" opacity="0.72">Trend URLs</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff">0</text>
+  </g>
+  <g transform="translate(342 466)">
+    <rect width="240" height="70" rx="20" fill="#f8fafc"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#555555">14d URLs</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#171717">0</text>
+  </g>
+  <g transform="translate(602 466)">
+    <rect width="240" height="70" rx="20" fill="#f8fafc"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#555555">Supply URLs</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#171717">13</text>
+  </g>
+  <g transform="translate(862 466)">
+    <rect width="256" height="70" rx="20" fill="#fff7ed"/>
+    <text x="24" y="28" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#9a3412">Watchlist links</text>
+    <text x="24" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#9a3412">14</text>
+  </g>
+  <text x="82" y="590" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Item detail share card · Growth goal 500/day · Generated 2026-08-13T07:01:10.190… · gnsresearchhub.vercel.app</text>
+</svg>

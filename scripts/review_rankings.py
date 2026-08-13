@@ -1986,6 +1986,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {
+            "experiment_id": "item-detail-share-card-v1",
+            "status": "active-static-item-shareability-after-build",
+            "variants": ["detail_pages_use_product_listing_og_image", "item_specific_evidence_status_og_twitter_card"],
+            "success_metric": "item-detail UTM sessions from owner_share/x/email/message links, item_copy/message_copy events, item source-link clicks, and repeat item-detail entrances once analytics export is connected",
+            "hypothesis": "Item-specific social preview cards should make shared BSS owner links more trustworthy because previews show the item name, display test, risk note, trend URL count, and WATCHLIST status instead of implying a vendor listing image is evidence.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
             "experiment_id": "rss-owner-feed-v1",
             "status": "active-static-distribution-after-build",
             "variants": ["no_subscriber_feed", "weekly_owner_item_rss_feed_with_utm_links"],
