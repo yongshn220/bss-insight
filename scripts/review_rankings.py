@@ -1979,6 +1979,31 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "measurement_need": "GA4/Vercel export access is still needed to compare utm_source=message sessions and WhatsApp draft click events against SMS/Kakao, owner_share, X, email, RSS, shortcut, and calendar paths.",
         "last_refreshed_at": now,
     })
+    ensure_campaign(active_campaigns, {
+        "campaign_id": "ranking-card-evidence-badge-v1",
+        "status": "live-ranking-list-trust-ux-after-build",
+        "objective": "Make every ranking card show a visible Trend-backed vs WATCHLIST small-test badge before the owner opens an item detail page.",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (.rank-card .evidence-badge)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (.rank-card .evidence-badge)",
+            "https://gnsresearchhub.vercel.app/rankings/monthly.html (.rank-card .evidence-badge)",
+            "https://gnsresearchhub.vercel.app/categories/{category_id}.html (.rank-card .evidence-badge)",
+        ],
+        "tracked_events": [
+            "growth_click item_card after seeing card-level evidence status",
+            "growth_section_view ranking-main-list-v1 with visible evidence badges",
+            "growth_click podium_card remains trend-backed-only for Top 3 leaders",
+        ],
+        "tracked_quality_metrics": [
+            "every .rank-card includes .evidence-badge with data-evidence-status and data-trend-urls",
+            "watchlist cards display WATCHLIST · small test only before chips/detail pages",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "Busy BSS owners can tell immediately whether an item is safe to discuss as trend-backed or should stay a shrink-aware small test, reducing black-box score confusion on the main ranking list.",
+        "measurement_need": "GA4/Vercel export access is needed to compare item_card clicks, source-link clicks, and share/copy behavior before/after visible card-level evidence badges.",
+        "last_refreshed_at": now,
+    })
 
     experiment_backlog = marketing.setdefault("experiment_backlog", [])
     if isinstance(experiment_backlog, list):
@@ -2127,6 +2152,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-static-retention-after-review",
             "hypothesis": "A downloadable weekly .ics reminder should create another measurable return-visit path for busy BSS owners/reps who will not subscribe to RSS or save a PWA shortcut.",
             "next_step": "After GA4/Vercel export access is connected, compare calendar_reminder clicks, utm_source=calendar return visits, and is_returning_visitor rates against RSS, shortcut, and owner-share paths.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "ranking-card-evidence-badge-v1",
+            "status": "active-ranking-list-trust-ux-after-review",
+            "hypothesis": "Visible Trend-backed/WATCHLIST badges on each ranking card should improve owner trust and item-card click quality because weak evidence rows are labeled as small tests before a detail-page click.",
+            "next_step": "After GA4/Vercel export access is connected, compare ranking-main-list item_card clicks, WATCHLIST card click rate, source-link clicks, and share/copy behavior against prior ranking cards that exposed status mostly through chips.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -2519,6 +2551,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["no_calendar_reminder", "weekly_ics_reminder_with_calendar_utm"],
             "success_metric": "owner-calendar-reminder section views, calendar file downloads/copy events, utm_source=calendar return visits, and repeat visitor rate once analytics export is connected",
             "hypothesis": "A weekly .ics reminder gives owners/reps a low-friction return path outside SNS and should improve repeat visits toward the 500/day goal once provider measurement is connected.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "ranking-card-evidence-badge-v1",
+            "status": "active-ranking-list-trust-ux-after-build",
+            "variants": ["status_visible_only_in_chips_or_detail", "card_level_trend_watchlist_badge"],
+            "success_metric": "ranking-main-list item_card clicks, WATCHLIST card click quality, source-link clicks, share/copy events, and repeat visits once analytics export is connected",
+            "hypothesis": "Visible Trend-backed/WATCHLIST badges on each ranking card should reduce black-box score confusion and make owner clicks more intentional without changing rank or evidence scoring.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

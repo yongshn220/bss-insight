@@ -297,6 +297,10 @@ h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.9
 .rank-main, .score-box { position:relative; z-index:2; min-width:0; }
 .card-topline { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
 .category-label { color:var(--soft); font-size:12px; font-weight:600; }
+.card-badges { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
+.evidence-badge { display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; font-family:'Geist Mono', ui-monospace, monospace; font-size:10px; font-weight:800; white-space:nowrap; box-shadow:rgba(0,0,0,.07) 0 0 0 1px; }
+.evidence-badge.trend { background:#ecfdf3; color:var(--green); }
+.evidence-badge.watchlist { background:#fff7ed; color:var(--orange); }
 .rank-card h3 { margin:0; font-size:22px; line-height:1.16; letter-spacing:-.045em; }
 .rank-card p { margin:8px 0 12px; color:#555; font-size:14px; line-height:1.5; }
 .move { display:inline-flex; padding:4px 8px; border-radius:999px; background:#f3f3f3; color:#555; font-family:'Geist Mono', ui-monospace, monospace; font-size:11px; font-weight:600; white-space:nowrap; }
@@ -388,6 +392,7 @@ h1 { margin:0; max-width:860px; font-size:clamp(42px, 7vw, 78px); line-height:.9
   .rank-img { width:100%; height:180px; }
   .score-box { grid-column:auto; text-align:left; }
   .card-topline { align-items:flex-start; flex-direction:column; }
+  .card-badges { justify-content:flex-start; }
   .footer { flex-direction:column; }
 }
 

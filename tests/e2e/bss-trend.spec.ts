@@ -287,6 +287,8 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     const rankCards = page.locator('.rank-card');
     await expect(rankCards.first()).toBeVisible();
     expect(await rankCards.count()).toBeGreaterThanOrEqual(8);
+    await expect(rankCards.first().locator('.evidence-badge')).toBeVisible();
+    await expect(rankCards.first().locator('.evidence-badge')).toHaveAttribute('data-evidence-status', /trend-backed|watchlist/);
     await expect(rankCards.first().locator('.owner-actions')).toBeVisible();
     await expect(rankCards.first().locator('.owner-action-note')).toHaveCount(3);
     await expect(rankCards.first().getByText('Display')).toBeVisible();
@@ -764,6 +766,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
       await expect(page.locator('.quick-pick-card').first()).toHaveAttribute('href', new RegExp(`daily-visits-500-${label.toLowerCase()}-owner-quick-picks`));
       expect(await page.locator('#all-items .rank-card').count()).toBeGreaterThan(0);
       await expect(page.locator('#all-items .rank-card').first().locator('.owner-actions')).toBeVisible();
+      const allRankCards = page.locator('#all-items .rank-card');
+      const evidenceBadges = page.locator('#all-items .rank-card .evidence-badge');
+      await expect(evidenceBadges.first()).toBeVisible();
+      expect(await evidenceBadges.count()).toBe(await allRankCards.count());
+      await expect(evidenceBadges.first()).toHaveAttribute('data-trend-urls', /\d+/);
+      if (label === 'Weekly') {
+        await expect(page.locator('#all-items .rank-card.watchlist-only .evidence-badge.watchlist').first()).toContainText('WATCHLIST');
+      }
 
       const categoryChips = page.locator('.category-strip a');
       expect(await categoryChips.count()).toBeGreaterThan(1);
@@ -991,6 +1001,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'owner-calendar-reminder-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'ranking-card-evidence-badge-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'direct-message-owner-share-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'whatsapp-owner-share-v1')).toBe(true);
@@ -1004,6 +1015,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'collection-evidence-regression-recovery-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'item-evidence-summary-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'owner-calendar-reminder-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'ranking-card-evidence-badge-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'direct-message-owner-share-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'whatsapp-owner-share-v1')).toBe(true);

@@ -554,6 +554,33 @@ def evidence_chips(row: dict[str, Any]) -> str:
     return "".join(f'<span class="chip"><b>{esc(label)}</b>{esc(value)}</span>' for label, value in chips)
 
 
+def evidence_status_badge(row: dict[str, Any]) -> str:
+    """Small card-level trust badge so WATCHLIST rows are not hidden in chips.
+
+    The ranking list is the highest-traffic owner surface. Owners should not need
+    to open details or inspect chips to know whether an item is trend-backed or a
+    small-test WATCHLIST. This badge uses only existing source counts; it does not
+    change score, rank, or evidence classification.
+    """
+    counts = row.get("source_counts", {}) if isinstance(row.get("source_counts"), dict) else {}
+    trend_count = safe_int(counts.get("trend_evidence") or counts.get("news_magazine"))
+    recent_count = safe_int(counts.get("recent_trend_evidence") or counts.get("recent_evidence"))
+    if trend_count:
+        recent_text = f" · {recent_count} recent" if recent_count else ""
+        label = f"Trend-backed · {trend_count} URL{'' if trend_count == 1 else 's'}{recent_text}"
+        status = "trend-backed"
+        class_name = "trend"
+    else:
+        label = "WATCHLIST · small test only"
+        status = "watchlist"
+        class_name = "watchlist"
+    return (
+        f'<span class="evidence-badge {esc(class_name)}" data-evidence-status="{esc(status)}" '
+        f'data-trend-urls="{esc(trend_count)}" data-recent-trend-urls="{esc(recent_count)}">'
+        f'{esc(label)}</span>'
+    )
+
+
 def clamp_text(value: object, limit: int) -> str:
     """Keep ranking cards scannable while still showing owner-useful details."""
     text = " ".join(str(value or "").split())
@@ -591,7 +618,7 @@ def item_card(row: dict[str, Any], compact: bool = False) -> str:
       <div class="rank-main">
         <div class="card-topline">
           <span class="category-label">{esc(row.get('category_name'))}</span>
-          <span class="move {esc(row.get('momentum'))}">{esc(momentum_label(row))} · {esc(fmt_change(row.get('rank_change')))}</span>
+          <span class="card-badges">{evidence_status_badge(row)}<span class="move {esc(row.get('momentum'))}">{esc(momentum_label(row))} · {esc(fmt_change(row.get('rank_change')))}</span></span>
         </div>
         <h3>{esc(row.get('item_name'))}</h3>
         <p>{esc(desc)}</p>
