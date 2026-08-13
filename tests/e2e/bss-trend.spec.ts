@@ -236,6 +236,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-share="weekly_x_intent"]')).toHaveAttribute('href', /daily-visits-500-weekly-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_sms_draft"]')).toHaveAttribute('href', /^sms:/);
     await expect(page.locator('[data-growth-share="weekly_whatsapp_draft"]')).toHaveAttribute('href', /^https:\/\/wa\.me\/\?text=/);
+    await expect(page.locator('[data-growth-share="weekly_native_share"]')).toHaveAttribute('data-native-share', 'true');
+    await expect(page.locator('[data-growth-share="weekly_native_share"]')).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
+    await expect(page.locator('[data-growth-share="weekly_native_share"]')).toHaveAttribute('data-native-share-url', /utm_medium=mobile/);
+    await expect(page.locator('[data-growth-share="weekly_native_share"]')).toHaveAttribute('data-native-share-text', /BSS mobile share/);
     await expect(page.locator('[data-growth-share="weekly_message_copy"]')).toHaveAttribute('data-copy-url', /utm_source=message/);
     await expect(page.locator('[data-growth-share="weekly_message_copy"]')).toHaveAttribute('data-copy-url', /utm_medium=direct/);
     await expect(page.locator('[data-growth-share="weekly_message_copy"]')).toHaveAttribute('data-copy-text', /BSS owner text/);
@@ -244,6 +248,9 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(page.locator('[data-growth-share="weekly_top3_x_intent"]').first()).toHaveAttribute('href', /daily-visits-500-weekly-top3-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_top3_sms_draft"]').first()).toHaveAttribute('href', /^sms:/);
     await expect(page.locator('[data-growth-share="weekly_top3_whatsapp_draft"]').first()).toHaveAttribute('href', /^https:\/\/wa\.me\/\?text=/);
+    await expect(page.locator('[data-growth-share="weekly_top3_native_share"]').first()).toHaveAttribute('data-native-share', 'true');
+    await expect(page.locator('[data-growth-share="weekly_top3_native_share"]').first()).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
+    await expect(page.locator('[data-growth-share="weekly_top3_native_share"]').first()).toHaveAttribute('data-native-share-url', /utm_campaign=daily-visits-500-weekly-top3-owner-share/);
     await expect(page.locator('[data-growth-share="weekly_top3_message_copy"]').first()).toHaveAttribute('data-copy-url', /utm_source=message/);
     await expect(page.locator('[data-growth-share="weekly_top3_message_copy"]').first()).toHaveAttribute('data-copy-url', /utm_medium=direct/);
     await expect(page.locator('[data-growth-share="weekly_top3_message_copy"]').first()).toHaveAttribute('data-copy-text', /BSS direct share/);
@@ -407,6 +414,14 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     });
     const whatsappDraftEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(whatsappDraftEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_whatsapp_draft' && event.link_utm_source === 'message' && event.link_utm_medium === 'direct' && event.link_utm_campaign === 'daily-visits-500-weekly-owner-share')).toBe(true);
+
+    const nativeShareButton = page.locator('[data-growth-share="weekly_native_share"]').first();
+    await nativeShareButton.click();
+    await expect(nativeShareButton).toHaveText(/Shared|Copied|Text ready/);
+    const nativeShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(nativeShareEvents.some((event: any) => event.event === 'growth_click' && event.type === 'share_weekly_native_share' && event.link_utm_source === 'native_share' && event.link_utm_medium === 'mobile' && event.link_utm_campaign === 'daily-visits-500-weekly-owner-share')).toBe(true);
+    expect(nativeShareEvents.some((event: any) => event.event === 'growth_native_share_result' && event.share_action === 'weekly_native_share' && event.section === 'owner-share-kit-v1' && event.link_utm_source === 'native_share' && event.copy_mode && event.copy_text_length > 120)).toBe(true);
+    expect(nativeShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'weekly_native_share' && event.section === 'owner-share-kit-v1' && event.link_utm_medium === 'mobile')).toBe(true);
 
     const directMessageButton = page.locator('[data-growth-share="weekly_message_copy"]').first();
     await directMessageButton.click();
@@ -810,6 +825,10 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(itemCopyButton).toHaveAttribute('data-copy-url', /utm_content=/);
     await expect(page.locator('[data-growth-share="item_sms_draft"]')).toHaveAttribute('href', /^sms:/);
     await expect(page.locator('[data-growth-share="item_whatsapp_draft"]')).toHaveAttribute('href', /^https:\/\/wa\.me\/\?text=/);
+    await expect(page.locator('[data-growth-share="item_native_share"]')).toHaveAttribute('data-native-share', 'true');
+    await expect(page.locator('[data-growth-share="item_native_share"]')).toHaveAttribute('data-native-share-url', /utm_source=native_share/);
+    await expect(page.locator('[data-growth-share="item_native_share"]')).toHaveAttribute('data-native-share-url', /utm_campaign=daily-visits-500-item-detail-share/);
+    await expect(page.locator('[data-growth-share="item_native_share"]')).toHaveAttribute('data-native-share-text', /BSS item detail mobile share/);
     await expect(page.locator('[data-growth-share="item_message_copy"]')).toHaveAttribute('data-copy-url', /utm_source=message/);
     await expect(page.locator('[data-growth-share="item_message_copy"]')).toHaveAttribute('data-copy-url', /utm_medium=direct/);
     await expect(page.locator('[data-growth-share="item_message_copy"]')).toHaveAttribute('data-copy-text', /BSS item detail text/);
@@ -817,6 +836,13 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     await expect(itemCopyButton).toHaveText(/Copied|Link ready/);
     const itemShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
     expect(itemShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_copy_link' && event.section === 'item-detail-share-card-v1' && event.component_experiment_id === 'item-detail-share-card-v1' && event.link_utm_source === 'owner_share' && event.link_utm_campaign === 'daily-visits-500-item-detail-share')).toBe(true);
+
+    const itemNativeShareButton = page.locator('[data-growth-share="item_native_share"]').first();
+    await itemNativeShareButton.click();
+    await expect(itemNativeShareButton).toHaveText(/Shared|Copied|Text ready/);
+    const itemNativeShareEvents = await page.evaluate(() => (window as any).__GNS_GROWTH__?.events?.() ?? []);
+    expect(itemNativeShareEvents.some((event: any) => event.event === 'growth_native_share_result' && event.share_action === 'item_native_share' && event.section === 'item-detail-share-card-v1' && event.link_utm_source === 'native_share' && event.link_utm_campaign === 'daily-visits-500-item-detail-share')).toBe(true);
+    expect(itemNativeShareEvents.some((event: any) => event.event === 'growth_share_copy_result' && event.share_action === 'item_native_share' && event.copy_text_length > 120 && event.link_utm_medium === 'mobile')).toBe(true);
 
     const itemMessageButton = page.locator('[data-growth-share="item_message_copy"]').first();
     await itemMessageButton.click();
@@ -945,6 +971,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'direct-message-owner-share-v1')).toBe(true);
     expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'whatsapp-owner-share-v1')).toBe(true);
+    expect(marketing.active_campaigns?.some((campaign: any) => campaign.campaign_id === 'native-mobile-share-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'social-share-preview-card-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'ranking-first-layout-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'rss-owner-feed-v1')).toBe(true);
@@ -957,6 +984,7 @@ test.describe('BSS Trend Ranking Playwright bug + operation tests', () => {
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'link-destination-utm-context-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'direct-message-owner-share-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'whatsapp-owner-share-v1')).toBe(true);
+    expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'native-mobile-share-v1')).toBe(true);
     expect(marketing.experiment_backlog?.some((experiment: any) => experiment.experiment_id === 'timeframe-evidence-ladder-v1')).toBe(true);
     const socialShareCampaign = marketing.active_campaigns?.find((campaign: any) => campaign.campaign_id === 'social-share-preview-card-v1');
     expect(socialShareCampaign?.live_locations).toContain('https://gnsresearchhub.vercel.app/assets/share-weekly.svg');

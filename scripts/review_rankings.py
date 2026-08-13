@@ -1848,6 +1848,32 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "native-mobile-share-v1",
+        "status": "live-site-mobile-share-after-build",
+        "objective": "Add Web Share API buttons with copy fallback to ranking, Top 3, and item-detail share modules so phone users can forward owner-ready item links without external SNS credentials.",
+        "utm_campaign_pattern": "daily-visits-500-{timeframe}-owner-share, daily-visits-500-{timeframe}-top3-owner-share, and daily-visits-500-item-detail-share",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/index.html (weekly_native_share and weekly_top3_native_share)",
+            "https://gnsresearchhub.vercel.app/rankings/weekly.html (native share buttons)",
+            "https://gnsresearchhub.vercel.app/items/{item_id}.html (item_native_share)",
+        ],
+        "tracked_events": [
+            "growth_click share_{timeframe}_native_share with link_utm_source=native_share",
+            "growth_click share_{timeframe}_top3_native_share with item_id context",
+            "growth_native_share_result with native_share_supported/native_shared/copy fallback status",
+            "growth_share_copy_result for native share fallback so funnels remain comparable to SMS/Kakao copy events",
+        ],
+        "tracked_quality_metrics": [
+            "native share buttons use utm_source=native_share&utm_medium=mobile",
+            "Share text includes display test, evidence_status_label, risk/caution, and evidence discipline rule",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "Many BSS owners open links on mobile. Native share reduces friction by letting them use the phone share sheet or a safe copy fallback while preserving UTM and evidence-safe copy.",
+        "measurement_need": "GA4/Vercel export access is still needed to compare native_share mobile events against SMS, WhatsApp, owner_share, RSS, shortcut, and calendar paths.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "whatsapp-owner-share-v1",
         "status": "live-site-whatsapp-draft-after-build",
         "objective": "Add WhatsApp draft links to ranking, Top 3, and item detail share modules so BSS owners/reps get another common direct-message distribution path without auto-posting or external credentials.",
@@ -2035,6 +2061,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "status": "active-site-direct-share-after-review",
             "hypothesis": "SMS/Kakao-ready copy should create more practical owner/reps distribution than X/email-only drafts because many BSS owners respond to direct short messages and no external posting credentials are required.",
             "next_step": "After analytics export access is connected, compare utm_source=message sessions, share_*_message_copy results, sms_draft clicks, and return visits against owner_share/x/email/RSS/shortcut/calendar channels.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
+            "experiment_id": "native-mobile-share-v1",
+            "status": "active-site-mobile-share-after-review",
+            "hypothesis": "A Web Share API button with copy fallback should reduce mobile owner forwarding friction versus forcing users to choose SMS/WhatsApp/X buttons separately, while UTM and evidence labels keep results measurable and safe.",
+            "next_step": "After GA4/Vercel export access is connected, compare native_share mobile events, fallback copy results, item-detail entrances, and return visits against SMS/Kakao, WhatsApp, owner_share, RSS, shortcut, and calendar channels.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
@@ -2401,6 +2434,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["x_email_copy_only", "sms_kakao_direct_message_copy_with_utm"],
             "success_metric": "utm_source=message sessions, share_*_message_copy results, sms_draft clicks, item-detail entrances, and returning-owner visits once analytics export is connected",
             "hypothesis": "SMS/Kakao-ready direct message copy should improve practical distribution to BSS owners and reps while remaining draft/copy-only and evidence-safe without external SNS credentials.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "native-mobile-share-v1",
+            "status": "active-site-mobile-share-after-build",
+            "variants": ["separate_channel_buttons_only", "native_phone_share_with_copy_fallback"],
+            "success_metric": "growth_native_share_result, native_share UTM sessions, item-detail entrances, share/copy events, and returning-owner visits once analytics export is connected",
+            "hypothesis": "Mobile BSS owners will forward/reopen item links more easily when a phone-native share sheet or copy fallback is available beside SMS/WhatsApp/X drafts, without granting external posting credentials.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

@@ -546,7 +546,7 @@
     const context = elementContext(target);
     const share = target.closest('[data-growth-share]');
     if (share) {
-      const href = share.getAttribute('href') || share.getAttribute('data-copy-url') || '';
+      const href = share.getAttribute('href') || share.getAttribute('data-copy-url') || share.getAttribute('data-native-share-url') || '';
       const text = trimText(share.textContent || share.getAttribute('aria-label') || href);
       const shareAction = share.getAttribute('data-growth-share') || 'unknown';
       return { type: `share_${shareAction}`, share_action: shareAction, href, text, ...linkDestinationPayload(href), ...context };
@@ -593,10 +593,62 @@
     return false;
   }
 
+  function installNativeShareButtons() {
+    document.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-native-share="true"]');
+      if (!button) return;
+      event.preventDefault();
+      const url = button.getAttribute('data-native-share-url') || button.getAttribute('data-copy-url') || window.location.href;
+      const text = button.getAttribute('data-native-share-text') || url;
+      const title = button.getAttribute('data-native-share-title') || document.title || 'BSS Trend Ranking';
+      const shareAction = button.getAttribute('data-growth-share') || 'native_share';
+      const context = elementContext(button);
+      const payload = {
+        type: 'native_share_result',
+        share_action: shareAction,
+        href: url,
+        native_share_supported: Boolean(navigator.share),
+        native_shared: false,
+        copied: false,
+        copy_mode: 'native_share',
+        copy_text_length: text.length,
+        ...linkDestinationPayload(url),
+        ...context,
+      };
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, text, url });
+          payload.native_shared = true;
+          button.setAttribute('data-copy-state', 'copied');
+          button.textContent = 'Shared';
+        } else {
+          const copied = await safeWriteClipboard(text);
+          payload.copied = copied;
+          payload.copy_mode = 'brief_text';
+          button.setAttribute('data-copy-state', copied ? 'copied' : 'manual-copy');
+          button.textContent = copied ? 'Copied' : 'Text ready';
+        }
+      } catch (_error) {
+        const copied = await safeWriteClipboard(text);
+        payload.copied = copied;
+        payload.copy_mode = 'brief_text';
+        payload.native_share_error = 'cancelled_or_failed';
+        button.setAttribute('data-copy-state', copied ? 'copied' : 'manual-copy');
+        button.textContent = copied ? 'Copied' : 'Text ready';
+      }
+      engagementCounters.copy_result_count += 1;
+      track('growth_native_share_result', payload);
+      track('growth_share_copy_result', {
+        ...payload,
+        type: 'share_copy_result',
+      });
+    });
+  }
+
   function installCopyButtons() {
     document.addEventListener('click', async (event) => {
       const button = event.target.closest('[data-copy-url]');
-      if (!button) return;
+      if (!button || button.matches('[data-native-share="true"]')) return;
       event.preventDefault();
       const url = button.getAttribute('data-copy-url') || '';
       const copyText = button.getAttribute('data-copy-text') || url;
@@ -689,6 +741,7 @@
     applyExperiment(variant);
     applyReturnVisitorPrompt(visitor);
     installClickTracking();
+    installNativeShareButtons();
     installCopyButtons();
     installSectionViewTracking();
     installEngagementSummaryTracking();

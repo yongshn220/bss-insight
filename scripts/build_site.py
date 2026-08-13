@@ -963,6 +963,29 @@ def whatsapp_intent_url(message: str) -> str:
     return "https://wa.me/?" + urllib.parse.urlencode({"text": message})
 
 
+def native_share_button(
+    share_action: str,
+    *,
+    url: object,
+    text: object,
+    title: object = "BSS Trend Ranking",
+    label: str = "Phone share",
+) -> str:
+    """Return a Web Share API button with copy fallback and growth UTM context.
+
+    The button is still user-initiated: no external account is posted to by the
+    site or the cron job. growth.js handles navigator.share when a mobile browser
+    supports it and falls back to copy-ready text otherwise.
+    """
+    return (
+        f'<button class="share-action" type="button" data-growth-share="{esc(share_action)}" '
+        'data-native-share="true" '
+        f'data-native-share-url="{esc(url)}" '
+        f'data-native-share-text="{esc(text)}" '
+        f'data-native-share-title="{esc(title)}">{esc(label)}</button>'
+    )
+
+
 def owner_direct_message_text(
     *,
     item_name: object,
@@ -1525,6 +1548,13 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
         campaign=campaign,
         utm_content=f"{timeframe}-owner-message",
     )
+    native_url = growth_campaign_url(
+        ranking_path,
+        source="native_share",
+        medium="mobile",
+        campaign=campaign,
+        utm_content=f"{timeframe}-native-share",
+    )
     item_name = row.get("item_name") or "top item"
     category = row.get("category_name") or "BSS item"
     score = row.get("score") or ""
@@ -1548,6 +1578,14 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
         evidence=evidence_label,
         url=message_url,
     )
+    native_text = owner_direct_message_text(
+        prefix=f"{label} BSS mobile share",
+        item_name=f"#{row.get('rank')} {item_name}",
+        display=display,
+        risk=risk,
+        evidence=evidence_label,
+        url=native_url,
+    )
     sms_intent = sms_intent_url(message_text)
     whatsapp_intent = whatsapp_intent_url(message_text)
     return f"""
@@ -1568,6 +1606,7 @@ def share_panel(timeframe: str, rows: list[dict[str, Any]]) -> str:
             <a class="share-action" data-growth-share="{esc(timeframe)}_email_forward" href="{esc(mailto)}">Email draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            {native_share_button(f"{timeframe}_native_share", url=native_url, text=native_text, title=f"{label} BSS owner ranking: {item_name}")}
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_copy_link" data-copy-url="{esc(owner_url)}">Copy owner link</button>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
@@ -2090,6 +2129,14 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
             utm_content=item_id,
             utm_term=timeframe,
         )
+        native_url = growth_campaign_url(
+            item_path,
+            source="native_share",
+            medium="mobile",
+            campaign=campaign,
+            utm_content=item_id,
+            utm_term=timeframe,
+        )
         text = (
             f"Beauty Supply owners: {label} share starter — {item_name}. "
             f"Display test: {display}. Evidence status: {evidence_label}."
@@ -2115,6 +2162,14 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
             evidence=evidence_label,
             url=message_url,
         )
+        native_text = owner_direct_message_text(
+            prefix=f"{label} BSS mobile share",
+            item_name=f"#{row.get('rank')} {item_name}",
+            display=display,
+            risk=risk,
+            evidence=evidence_label,
+            url=native_url,
+        )
         sms_intent = sms_intent_url(message_text)
         whatsapp_intent = whatsapp_intent_url(message_text)
         cards.append(f"""
@@ -2130,6 +2185,7 @@ def owner_share_strip(timeframe: str, rows: list[dict[str, Any]]) -> str:
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_email_forward" href="{esc(mailto)}">Email draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
             <a class="share-action" data-growth-share="{esc(timeframe)}_top3_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            {native_share_button(f"{timeframe}_top3_native_share", url=native_url, text=native_text, title=f"{label} BSS share starter: {item_name}")}
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
             <button class="share-action" type="button" data-growth-share="{esc(timeframe)}_top3_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
@@ -2291,6 +2347,13 @@ def item_share_panel(row: dict[str, Any]) -> str:
         campaign=campaign,
         utm_content=item_id,
     )
+    native_url = growth_campaign_url(
+        item_path,
+        source="native_share",
+        medium="mobile",
+        campaign=campaign,
+        utm_content=item_id,
+    )
     text = (
         f"Beauty Supply Store owners: {item_name} detail page shows display tip, risk, "
         f"and evidence status ({evidence_label}). Display test: {display}."
@@ -2316,6 +2379,14 @@ def item_share_panel(row: dict[str, Any]) -> str:
         evidence=evidence_label,
         url=message_url,
     )
+    native_text = owner_direct_message_text(
+        prefix="BSS item detail mobile share",
+        item_name=item_name,
+        display=display,
+        risk=risk,
+        evidence=evidence_label,
+        url=native_url,
+    )
     sms_intent = sms_intent_url(message_text)
     whatsapp_intent = whatsapp_intent_url(message_text)
     return f"""
@@ -2336,6 +2407,7 @@ def item_share_panel(row: dict[str, Any]) -> str:
             <a class="share-action" data-growth-share="item_email_forward" href="{esc(mailto)}">Email draft</a>
             <a class="share-action" data-growth-share="item_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
             <a class="share-action" data-growth-share="item_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            {native_share_button("item_native_share", url=native_url, text=native_text, title=f"BSS item detail: {item_name}")}
             <button class="share-action" type="button" data-growth-share="item_copy_link" data-copy-url="{esc(owner_url)}">Copy item link</button>
             <button class="share-action" type="button" data-growth-share="item_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(message_text)}">Copy SMS/Kakao text</button>
           </div>
