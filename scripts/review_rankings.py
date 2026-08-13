@@ -1702,6 +1702,35 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
         "last_refreshed_at": now,
     })
     ensure_campaign(active_campaigns, {
+        "campaign_id": "category-direct-mobile-share-v1",
+        "status": "live-category-page-direct-mobile-share-after-build",
+        "objective": "Add SMS/Kakao text copy, SMS draft, WhatsApp draft, and phone-native share actions to every store-zone category page so low-traffic owner/reps sessions can forward the most relevant BSS lane without external SNS credentials.",
+        "utm_campaign": "daily-visits-500-category-direct-mobile-share",
+        "live_locations": [
+            "https://gnsresearchhub.vercel.app/categories/wigs-hair-pieces.html (category-share-kit-v1 direct/mobile actions)",
+            "https://gnsresearchhub.vercel.app/categories/lashes-brows.html (category-share-kit-v1 direct/mobile actions)",
+            "https://gnsresearchhub.vercel.app/categories/nails.html (category-share-kit-v1 direct/mobile actions)",
+            "https://gnsresearchhub.vercel.app/categories/jewelry-fashion-accessories.html (category-share-kit-v1 direct/mobile actions)",
+        ],
+        "tracked_events": [
+            "growth_click share_category_sms_draft with link_utm_source=message and link_utm_medium=direct",
+            "growth_click share_category_whatsapp_draft with embedded message UTM parsed from wa.me text",
+            "growth_click share_category_native_share with link_utm_source=native_share and link_utm_medium=mobile",
+            "growth_native_share_result share_action=category_native_share",
+            "growth_share_copy_result share_action=category_message_copy copy_mode=brief_text",
+        ],
+        "tracked_quality_metrics": [
+            f"category_direct_share_pages={len(category_ids)}",
+            "category message copy states the category itself is not a trend claim and keeps WATCHLIST rows small-test only",
+            "direct/mobile category links use daily-visits-500-category-direct-mobile-share with message/direct or native_share/mobile UTMs",
+            f"weekly_trend_items={metrics.get('trend_items', 'unknown')}/{metrics.get('items', 'unknown')}",
+            f"weekly_watchlist_items={metrics.get('watchlist_items', 'unknown')}",
+        ],
+        "owner_value": "A rep or owner can forward a Wig, Lash, Nail, Jewelry, or Tools lane by text/WhatsApp/phone share, preserving concrete item-level evidence labels instead of asking the recipient to scan the full dashboard.",
+        "measurement_need": "GA4/Vercel export access is still needed to compare category direct-message/mobile share events and category UTM sessions against X/email/category_copy_link behavior toward 500/day.",
+        "last_refreshed_at": now,
+    })
+    ensure_campaign(active_campaigns, {
         "campaign_id": "ranking-first-layout-v1",
         "status": "live-site-ux-after-build",
         "objective": "Move the Top 3 leaderboard and main item ranking immediately after the hero/category chips so busy BSS owners see concrete product picks before growth, evidence, or share tooling panels.",
@@ -2281,6 +2310,13 @@ def refresh_marketing_backlog(review: dict[str, Any], rows: list[dict[str, Any]]
             "last_refreshed_at": now,
         })
         ensure_experiment(experiment_backlog, {
+            "experiment_id": "category-direct-mobile-share-v1",
+            "status": "active-category-direct-mobile-share-after-review",
+            "hypothesis": "Category pages should produce more practical owner/reps distribution when each store-zone link can be sent as SMS/Kakao text, WhatsApp draft, or phone-native share instead of relying only on X/email/copy-link actions.",
+            "next_step": "After GA4/Vercel export access is connected, compare category_message_copy, category_sms_draft, category_whatsapp_draft, and category_native_share events plus daily-visits-500-category-direct-mobile-share UTM sessions against category_copy_link and category_brief behavior.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiment_backlog, {
             "experiment_id": "ranking-first-layout-v1",
             "status": "active-site-ux-after-review",
             "hypothesis": "Putting Top 3 and the main item ranking before evidence/growth/share panels should increase first-session item-card clicks and reduce owner confusion because the page behaves like a ranking dashboard instead of a long ops report.",
@@ -2694,6 +2730,14 @@ def refresh_growth_goal(review: dict[str, Any], marketing_summary: dict[str, Any
             "variants": ["generic_weekly_share_image_on_category_pages", "store_zone_category_specific_og_twitter_cards"],
             "success_metric": "category_page UTM sessions, category_copy_link/share events, item-card clicks from category pages, and repeat visits once analytics export is connected",
             "hypothesis": "Store-zone-specific social preview cards should make category landing shares more trustworthy and relevant for BSS owners than the generic all-category ranking image.",
+            "last_refreshed_at": now,
+        })
+        ensure_experiment(experiments, {
+            "experiment_id": "category-direct-mobile-share-v1",
+            "status": "active-category-page-direct-mobile-share-after-build",
+            "variants": ["category_x_email_copy_only", "category_sms_whatsapp_native_and_message_copy"],
+            "success_metric": "category_message_copy, category_sms_draft, category_whatsapp_draft, category_native_share/native result events, daily-visits-500-category-direct-mobile-share UTM sessions, category page repeat visits, and downstream item-card clicks once analytics export is connected",
+            "hypothesis": "Store-zone category pages should travel farther when a BSS owner or rep can forward the exact Wig/Lash/Nail/Jewelry lane by direct message or phone share, while copy keeps the rule that the category itself is not a trend claim.",
             "last_refreshed_at": now,
         })
         ensure_experiment(experiments, {

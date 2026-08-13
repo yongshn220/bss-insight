@@ -2994,6 +2994,23 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
         utm_content=cat_id,
         utm_term="weekly",
     )
+    direct_campaign = "daily-visits-500-category-direct-mobile-share"
+    message_url = growth_campaign_url(
+        category_path,
+        source="message",
+        medium="direct",
+        campaign=direct_campaign,
+        utm_content=cat_id,
+        utm_term="weekly",
+    )
+    native_url = growth_campaign_url(
+        category_path,
+        source="native_share",
+        medium="mobile",
+        campaign=direct_campaign,
+        utm_content=cat_id,
+        utm_term="weekly",
+    )
     x_intent = "https://twitter.com/intent/tweet?" + urllib.parse.urlencode({
         "text": (
             f"Beauty Supply owners: {cat_name} item ranking shows concrete product types, "
@@ -3016,6 +3033,24 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
             f"Link: {owner_url}"
         ),
     })
+    lead_row = trend_rows[0] if trend_rows else (rows[0] if rows else {})
+    lead_item = lead_row.get("item_name") if isinstance(lead_row, dict) else ""
+    lead_display = lead_row.get("display_tip") if isinstance(lead_row, dict) else ""
+    lead_risk = lead_row.get("risk") if isinstance(lead_row, dict) else ""
+    category_message_text = owner_direct_message_text(
+        prefix="BSS category share text",
+        item_name=f"{cat_name} lane · lead item: {lead_item or 'current category ranking'}",
+        display=lead_display or f"Open the {cat_name} category page and start with the top concrete item cards.",
+        risk=lead_risk or "Keep WATCHLIST rows as small tests; track sell-through, shrink, and reorder requests.",
+        evidence=(
+            f"{len(trend_rows)}/{len(rows)} trend-backed item(s); {watchlist_items} WATCHLIST. "
+            "The category itself is not a trend claim."
+        ),
+        url=message_url,
+    )
+    category_native_text = category_message_text.replace(message_url, native_url)
+    sms_intent = sms_intent_url(category_message_text)
+    whatsapp_intent = whatsapp_intent_url(category_message_text)
     top_cards = top_three(rows, 'weekly')
     if not rows:
         top_cards = """
@@ -3082,7 +3117,11 @@ def render_category_page(data: dict[str, Any], category: dict[str, Any]) -> str:
           <div class="share-actions">
             <a class="share-action" data-growth-share="category_x_intent" href="{esc(x_intent)}" target="_blank" rel="noreferrer">X draft</a>
             <a class="share-action" data-growth-share="category_email_forward" href="{esc(mailto)}">Email draft</a>
+            <a class="share-action" data-growth-share="category_sms_draft" href="{esc(sms_intent)}">SMS draft</a>
+            <a class="share-action" data-growth-share="category_whatsapp_draft" href="{esc(whatsapp_intent)}" target="_blank" rel="noreferrer">WhatsApp draft</a>
+            {native_share_button("category_native_share", url=native_url, text=category_native_text, title=f"BSS category owner ranking: {cat_name}")}
             <button class="share-action" type="button" data-growth-share="category_copy_link" data-copy-url="{esc(owner_url)}">Copy category link</button>
+            <button class="share-action" type="button" data-growth-share="category_message_copy" data-copy-url="{esc(message_url)}" data-copy-text="{esc(category_message_text)}">Copy SMS/Kakao text</button>
           </div>
         </article>
       </section>
